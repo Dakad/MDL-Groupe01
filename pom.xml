@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>be.unamur.info.mdl</groupId>
-	<artifactId>labo</artifactId>
+	<groupId>be.unamur.info</groupId>
+	<artifactId>mdl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>labo</name>
-	<description>Demo project to  Spring Boot for Labo MDL</description>
+	<name>MDLabo</name>
+	<description>Spring Boot for Labo MDL</description>
 
 
 	<parent>

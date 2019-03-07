@@ -4,8 +4,8 @@
 	<artifactId>frontend</artifactId>
 
 	<parent>
-		<groupId>be.unamur.info.mdl</groupId>
-		<artifactId>labo</artifactId>
+		<groupId>be.unamur.info</groupId>
+		<artifactId>mdl</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
