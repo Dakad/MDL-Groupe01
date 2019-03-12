@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dto;
 
 import java.io.Serializable;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class UserDTO implements Serializable {
     private String password;
 
     @NotBlank()
+    @Email()
     private String email;
 
 
