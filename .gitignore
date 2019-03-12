@@ -31,6 +31,7 @@ logback.out.xml
 
 # Custom
 *.properties
+*.yaml
 
 backend/src/main/resources/public/
 backend/target
