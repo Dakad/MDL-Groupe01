@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dto.UserDTO;
 
 public interface UserService {
 
@@ -8,17 +9,16 @@ public interface UserService {
     public boolean addUser(User user);
 
     /**
-     *
      * @return true if the login is successful and false if not
      */
-    public boolean login(String username, String password);
+    public boolean login(UserDTO user);
 
     /**
      * A method used within the login method
-     * @param user the User object matching the username
-     * @param password
-     * @return true if the given password matches the user object's
+     * @param loginCredentials an object containing the login credentials
+     * @param databaseUser an object containing a user entity's data
+     * @return true if the UserDTO passwords match
      */
-    public Boolean checkPassword(User user, String password);
+    public Boolean checkPassword(UserDTO loginCredentials, UserDTO databaseUser);
 
 }
