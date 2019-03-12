@@ -32,7 +32,7 @@ class UserServiceImpl implements UserService {
 
     // TODO Check if the UserDTO's email is already taken
 
-    // TODO Check if the UserDTO's usernameis already take
+    // TODO Check if the UserDTO's username is already taken
 
     // userRepository.save(newUser);
     return true;
@@ -41,7 +41,7 @@ class UserServiceImpl implements UserService {
 
   @Override
   public boolean login(UserDTO userLogin) {
-    UserDTO userEntity = userRepository.findByUsername(userLogin.username).toDTO();
+    UserDTO userEntity = userRepository.findByUsername(userLogin.username()).toDTO();
     if (checkPassword(userLogin, userEntity)) {
       return true;
     }
