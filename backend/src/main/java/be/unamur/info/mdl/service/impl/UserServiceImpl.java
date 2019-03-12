@@ -3,15 +3,14 @@ package be.unamur.info.mdl.service.impl;
 import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This class is responsible of all possible services related to the /api/user
- *
  */
 @Service("userService")
 @Transactional
@@ -39,13 +38,18 @@ class UserServiceImpl implements UserService {
     return true;
   }
 
+
   @Override
-  public boolean login(UserDTO user) {
+  public boolean login(UserDTO userLogin) {
+    UserDTO userEntity = userRepository.findByUsername(userLogin.username).toDTO();
+    if (checkPassword(userLogin, userEntity)) {
+      return true;
+    }
     return false;
   }
 
-  @Override
-  public Boolean checkPassword(UserDTO loginCredentials, UserDTO databaseUser) {
-    return null;
+  private boolean checkPassword(UserDTO userLogin, UserDTO userEntity) {
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    return encoder.matches(userLogin.password(), userEntity.password());
   }
 }

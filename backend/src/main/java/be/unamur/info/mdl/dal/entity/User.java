@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
-
+import be.unamur.info.mdl.dto.UserDTO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ public class User {
   private Long id;
 
   @Column(unique = true, nullable = false)
-  private String userName;
+  private String username;
 
   @Column
   private String password;
@@ -25,10 +25,18 @@ public class User {
   private String email;
 
   @Column(name = "first_name")
-  private String firstName;
+  private String firstname;
 
   @Column(name = "last_name")
-  private String lastName;
+  private String lastname;
 
+
+  protected User() {
+  }
+
+
+  public UserDTO toDTO() {
+    return new UserDTO(username, password, lastname, firstname, email);
+  }
 
 }

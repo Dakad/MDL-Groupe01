@@ -15,12 +15,4 @@ public interface UserService {
      */
     public boolean login(UserDTO user);
 
-    /**
-     * A method used within the login method
-     * @param loginCredentials an object containing the login credentials
-     * @param databaseUser an object containing a user entity's data
-     * @return true if the UserDTO passwords match
-     */
-    public Boolean checkPassword(UserDTO loginCredentials, UserDTO databaseUser);
-
 }
