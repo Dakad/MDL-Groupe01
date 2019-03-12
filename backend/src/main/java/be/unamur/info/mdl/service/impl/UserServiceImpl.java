@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import be.unamur.info.mdl.dal.entity.User;
@@ -25,10 +26,26 @@ class UserServiceImpl implements UserService {
     this.userRepository = userRepository;
   }
 
+
   @Override
-  public boolean addUser(User newUser, String rawPassword) {
-    // TODO
-    userRepository.save(newUser);
+  public boolean register(UserDTO newUser) {
+    // TODO Check if the userDTO is not null
+
+    // TODO Check if the UserDTO's email is already taken
+
+    // TODO Check if the UserDTO's usernameis already take
+
+    // userRepository.save(newUser);
     return true;
+  }
+
+  @Override
+  public boolean login(UserDTO user) {
+    return false;
+  }
+
+  @Override
+  public Boolean checkPassword(UserDTO loginCredentials, UserDTO databaseUser) {
+    return null;
   }
 }
