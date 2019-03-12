@@ -9,7 +9,6 @@ public interface UserService {
     public boolean addUser(User user);
 
     /**
-     *
      * @return true if the login is successful and false if not
      */
     public boolean login(UserDTO user);
