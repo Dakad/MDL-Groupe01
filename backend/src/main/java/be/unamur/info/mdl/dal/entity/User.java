@@ -7,8 +7,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity // This tells Hibernate to make a table out of this class
+@Getter
+@Setter
+@Accessors(fluent = true)
+@AllArgsConstructor()
 public class User {
 
   @Id
@@ -30,9 +40,6 @@ public class User {
   @Column(name = "last_name")
   private String lastname;
 
-
-  protected User() {
-  }
 
 
   public UserDTO toDTO() {
