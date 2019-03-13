@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
@@ -10,17 +10,19 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class UserServiceImplTest {
 
-  @InjectMocks
+  @Autowired
   private UserService userService;
 
   @Mock
