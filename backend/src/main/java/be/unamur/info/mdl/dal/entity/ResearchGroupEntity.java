@@ -43,4 +43,13 @@ public class ResearchGroupEntity {
   public void setNbre(int nbre) {
     this.nbre = nbre;
   }
+
+  @Override
+  public String toString() {
+    return "ResearchGroupEntity{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", nbre=" + nbre +
+        '}';
+  }
 }
