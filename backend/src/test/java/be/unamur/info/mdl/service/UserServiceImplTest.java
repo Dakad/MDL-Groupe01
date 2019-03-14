@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.service;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
@@ -43,11 +44,19 @@ public class UserServiceImplTest {
   private UserService userService;
 
   @MockBean
-  private UserRepository userDAO;
+  private UserRepository userRepository;
 
   private Map<Long, User> mockUsers;
-  User MOCK_USER_1 = new User(123L, "user1", "user1_pwd", "user1@email.dom", null, null);
-  User MOCK_USER_2 = new User(456L, "user2", "user2_pwd", "user2@email.dom", null, null);
+
+
+  // User1.password = user1_pwd
+  private static final User MOCK_USER_1 = new User(123L, "user1",
+      "user1_pwd", "user1@email.dom", null,
+      null);
+  // User1.password = user2_pwd
+  private static final User MOCK_USER_2 = new User(456L, "user2",
+      "user2_pwd", "user2@email.dom", null,
+      null);
 
 
   @Before
@@ -59,11 +68,11 @@ public class UserServiceImplTest {
     mockUsers.put(MOCK_USER_2.getId(), MOCK_USER_2);
 
     MockitoAnnotations.initMocks(this);
-    Mockito.when(userDAO.save(MOCK_USER_1)).thenReturn(MOCK_USER_1);
-    Mockito.when(userDAO.save(MOCK_USER_2)).thenReturn(MOCK_USER_2);
+    Mockito.when(userRepository.save(MOCK_USER_1)).thenReturn(MOCK_USER_1);
+    Mockito.when(userRepository.save(MOCK_USER_2)).thenReturn(MOCK_USER_2);
 
-    Mockito.when(userDAO.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
-    Mockito.when(userDAO.findByUsername(MOCK_USER_2.getUsername())).thenReturn(MOCK_USER_2);
+    Mockito.when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
+    Mockito.when(userRepository.findByUsername(MOCK_USER_2.getUsername())).thenReturn(MOCK_USER_2);
   }
 
   @Ignore
@@ -121,6 +130,18 @@ public class UserServiceImplTest {
 
     isLogged = userService.login(user2);
     assertFalse("The login should be rejected for incorect pwd", isLogged);
+  }
+
+  @Ignore
+  @Test
+  public void when_login_ok() {
+    // Unkown username without password
+    UserDTO user = new UserDTO();
+    user.setUsername("user1");
+    user.setPassword("test");
+
+    boolean isLogged = userService.login(user);
+    assertFalse("The login should be accepted for good credentials", !isLogged);
   }
 
 
