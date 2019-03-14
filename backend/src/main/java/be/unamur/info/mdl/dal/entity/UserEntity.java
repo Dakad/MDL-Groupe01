@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -17,9 +17,9 @@ public class User {
     private String email;
 
 
-    protected User() {}
+    protected UserEntity() {}
 
-    public User(String name, String email) {
+    public UserEntity(String name, String email) {
     	this.name(name);
     	this.email(email);
 	}
@@ -53,6 +53,6 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("User[id=%d, name='%s', email='%s']", id, name, email);
+		return String.format("UserEntity[id=%d, name='%s', email='%s']", id, name, email);
 	}
 }
