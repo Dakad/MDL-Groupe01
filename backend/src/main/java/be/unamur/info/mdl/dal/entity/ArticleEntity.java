@@ -28,7 +28,7 @@ public class ArticleEntity {
   private int nbreCitation;
   @OneToOne(cascade= CascadeType.ALL)
   @JoinColumn(name="user_ID", unique= true, nullable=true, insertable=true, updatable=true)
-  private UserEntity department;
+  private UserEntity user;
 
 
   public ArticleEntity(String title, LocalDate publicationDate, float price, int nbrePage,

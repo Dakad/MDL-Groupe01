@@ -1,11 +1,15 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
 @Entity
 public class StateofTheArtEntity {
   @Id
@@ -17,7 +21,9 @@ public class StateofTheArtEntity {
   private String subject;
   @Column
   private LocalDate date;
-
+  @OneToOne(cascade= CascadeType.ALL)
+  @JoinColumn(name="user_ID", unique= true, nullable=true, insertable=true, updatable=true)
+  private UserEntity user;
   public StateofTheArtEntity(String name, String subject, LocalDate date) {
     this.name = name;
     this.subject = subject;
