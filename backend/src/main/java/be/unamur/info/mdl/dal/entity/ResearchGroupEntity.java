@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-public class ResearchGroup {
+public class ResearchGroupEntity {
   @Id
   @GeneratedValue(strategy= GenerationType.AUTO)
   private Long id;
@@ -15,7 +15,7 @@ public class ResearchGroup {
   private int nbre;
 
 
-  public ResearchGroup(String name, int nbre) {
+  public ResearchGroupEntity(String name, int nbre) {
     this.name = name;
     this.nbre = nbre;
   }
