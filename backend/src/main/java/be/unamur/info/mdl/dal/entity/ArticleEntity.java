@@ -80,4 +80,16 @@ public class ArticleEntity {
   public void setPublicationDate(LocalDate publicationDate) {
     this.publicationDate = publicationDate;
   }
+
+  @Override
+  public String toString() {
+    return "ArticleEntity{" +
+        "id=" + id +
+        ", title='" + title + '\'' +
+        ", publicationDate=" + publicationDate +
+        ", price=" + price +
+        ", nbrePage=" + nbrePage +
+        ", nbreCitation=" + nbreCitation +
+        '}';
+  }
 }

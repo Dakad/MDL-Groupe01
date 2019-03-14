@@ -31,4 +31,12 @@ public class UniversityEntity {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public String toString() {
+    return "UniversityEntity{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        '}';
+  }
 }
