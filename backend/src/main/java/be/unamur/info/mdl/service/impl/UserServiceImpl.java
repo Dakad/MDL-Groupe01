@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     // TODO Check if the UserDTO's username is already taken
 
-    // userRepository.save(newUser);
+    // userRepository.save(newUserEntity);
     return true;
   }
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
   
     @Override
     public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO){
-        User user = userRepository.findByUsername(username);
+        UserEntity user = userRepository.findByUsername(username);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if(encoder.matches(passwordChangeDTO.getOldpwd(),user.toDTO().getPassword())){
             user.setPassword(passwordChangeDTO.getNewpwd());

@@ -3,7 +3,7 @@ package be.unamur.info.mdl.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
@@ -50,11 +50,11 @@ public class UserServiceImplTest {
 
 
   // User1.password = user1_pwd
-  private static final User MOCK_USER_1 = new User(123L, "user1",
+  private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
       "user1_pwd", "user1@email.dom", null,
       null);
   // User1.password = user2_pwd
-  private static final User MOCK_USER_2 = new User(456L, "user2",
+  private static final UserEntity MOCK_USER_2 = new UserEntity(456L, "user2",
       "user2_pwd", "user2@email.dom", null,
       null);
 
