@@ -1,66 +1,47 @@
 package be.unamur.info.mdl.dal.entity;
 
-
 import be.unamur.info.mdl.dto.UserDTO;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
 
-    private String username;
-    private String password;
-    private String name;
-	private String firstname;
-    private String email;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
+  @Column(unique = true, nullable = false)
+  private String username;
 
-    protected User() {}
+  @Column
+  private String password;
 
-    public User(String name, String email) {
-    	this.name(name);
-    	this.email(email);
-	}
+  @Email
+  private String email;
 
+  @Column(name = "first_name")
+  private String firstname;
 
-
-	public Long id() {
-		return id;
-	}
-
-	public void id(Long id) {
-		this.id = id;
-	}
-
-	public String name() {
-		return name;
-	}
-
-	public void name(String name) {
-		this.name = name;
-	}
-
-	public String email() {
-		return email;
-	}
-
-	public void email(String email) {
-		this.email = email;
-	}
+  @Column(name = "last_name")
+  private String lastname;
 
 
-	@Override
-	public String toString() {
-		return String.format("User[id=%d, name='%s', email='%s']", id, name, email);
-	}
+  public UserDTO toDTO() {
+    return  new UserDTO(username, password, lastname, firstname, email);
+  }
 
-	public UserDTO toDTO() {
-    	return new UserDTO(username,password,name,firstname,email);
-	}
 }
