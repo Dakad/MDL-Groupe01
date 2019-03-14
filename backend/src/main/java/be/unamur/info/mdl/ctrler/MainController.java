@@ -21,22 +21,19 @@ public class MainController {
   private UserService userService;
 
 
-  @GetMapping(path = "/add")
-  public @ResponseBody String addNewUser(@RequestParam String name, @RequestParam String email) {
+  @GetMapping(path = "/register")
+  public @ResponseBody String register(@RequestBody String name, @RequestParam String email) {
     //
     return null;
   }
 
 
-  @GetMapping(path = "/login")
-  public @ResponseBody String login(@RequestBody UserDTO userDTO) {
-    String result;
-    if (userService.login(userDTO)) {
-      result = String.format("{LOGIN SUCCESS: %b}", true);
-    } else {
-      result = String.format("{LOGIN SUCCESS: %b}", false);
-    }
-    return result;
-  }
+	@RequestMapping(value="/login", method = RequestMethod.POST)
+	public @ResponseBody String login(@RequestBody UserDTO userDTO){
+		String result;
+		if(userService.login(userDTO))	result = String.format("{LOGIN SUCCESS: %b}",true);
+		else result = String.format("{LOGIN SUCCESS: %b}",false);
+		return result;
+	}
 
 }
