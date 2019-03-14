@@ -1,11 +1,14 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ArticleEntity {
@@ -23,6 +26,10 @@ public class ArticleEntity {
   private int nbrePage;
   @Column(name= "nbre_citation")
   private int nbreCitation;
+  @OneToOne(cascade= CascadeType.ALL)
+  @JoinColumn(name="user_ID", unique= true, nullable=true, insertable=true, updatable=true)
+  private UserEntity department;
+
 
   public ArticleEntity(String title, LocalDate publicationDate, float price, int nbrePage,
       int nbreCitation) {
