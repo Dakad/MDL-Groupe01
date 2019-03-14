@@ -1,16 +1,24 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
 public class StateofTheArtEntity {
-
+  @Id
+  @GeneratedValue(strategy= GenerationType.AUTO)
   private Long id;
+  @Column(unique = true, nullable = false)
   private String name;
+  @Column
   private String subject;
+  @Column
   private LocalDate date;
 
-  public StateofTheArtEntity(Long id, String name, String subject, LocalDate date) {
-    this.id = id;
+  public StateofTheArtEntity(String name, String subject, LocalDate date) {
     this.name = name;
     this.subject = subject;
     this.date = date;
