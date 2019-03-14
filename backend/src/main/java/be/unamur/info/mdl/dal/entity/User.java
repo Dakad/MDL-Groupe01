@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 
 import be.unamur.info.mdl.dto.UserDTO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,5 +63,10 @@ public class User {
 
 	public UserDTO toDTO() {
     	return new UserDTO(username,password,name,firstname,email);
+	}
+
+	public void setPassword(String newpassword){
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		password = encoder.encode(newpassword);
 	}
 }
