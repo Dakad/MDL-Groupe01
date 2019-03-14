@@ -3,15 +3,12 @@ package be.unamur.info.mdl.dto;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Accessors(fluent = true, chain = true)
+
+@Data
+@AllArgsConstructor
 public class UserDTO implements Serializable {
 
   @NotBlank()
@@ -29,14 +26,5 @@ public class UserDTO implements Serializable {
 
 
   private String firstname;
-
-
-  public UserDTO(String username, String password, String name, String firstname, String email) {
-    this.username = username;
-    this.password = password;
-    this.lastname = name;
-    this.firstname = firstname;
-    this.email = email;
-  }
 
 }
