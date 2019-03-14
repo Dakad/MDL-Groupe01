@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dto.CredentialDTO;
+import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
   }
 
 
+
   @Override
   public boolean login(CredentialDTO userLogin){
     UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
@@ -48,6 +50,19 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
+  
+    @Override
+    public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO){
+        User user = userRepository.findByUsername(username);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(encoder.matches(passwordChangeDTO.getOldpwd(),user.toDTO().getPassword())){
+            user.setPassword(passwordChangeDTO.getNewpwd());
+            return true;
+        }
+        return false;
+    }
+
+  
   private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity){
       BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
       return encoder.matches(userLogin.getPassword(),userEntity.getPassword());  
