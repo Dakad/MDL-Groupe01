@@ -14,11 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+@Data
 @Entity // This tells Hibernate to make a table out of this class
-@Getter
-@Setter
-@Accessors(fluent = true)
-@AllArgsConstructor()
 public class User {
 
   @Id
@@ -41,9 +38,8 @@ public class User {
   private String lastname;
 
 
-
   public UserDTO toDTO() {
-    return new UserDTO(username, password, lastname, firstname, email);
+    return  new UserDTO(username, password, lastname, firstname, email);
   }
 
 }
