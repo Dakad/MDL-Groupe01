@@ -42,7 +42,7 @@ class UserServiceImpl implements UserService {
 
   @Override
   public boolean login(UserDTO userLogin) {
-    UserDTO userEntity = userRepository.findByUsername(userLogin.username()).toDTO();
+    UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
     if (checkPassword(userLogin, userEntity)) {
       return true;
     }
@@ -51,6 +51,6 @@ class UserServiceImpl implements UserService {
 
   private boolean checkPassword(UserDTO userLogin, UserDTO userEntity) {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    return encoder.matches(userLogin.password(), userEntity.password());
+    return encoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 }

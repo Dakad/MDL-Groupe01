@@ -15,7 +15,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Data
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
   @Id
