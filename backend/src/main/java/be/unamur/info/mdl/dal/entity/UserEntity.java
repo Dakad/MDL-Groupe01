@@ -29,7 +29,7 @@ public class UserEntity {
   @Column(unique = true, nullable = false)
   private String username;
 
-  @Column
+  @Column(nullable = false)
   private String password;
 
   @Email
@@ -40,6 +40,7 @@ public class UserEntity {
 
   @Column(name = "last_name")
   private String lastname;
+
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -55,6 +56,7 @@ public class UserEntity {
   )
   @JoinColumn(name = "stateoftheart_id")
   private List<StateofTheArtEntity> stateofthearts = new ArrayList<>();
+
 
   @OneToMany(
       cascade = CascadeType.ALL,
