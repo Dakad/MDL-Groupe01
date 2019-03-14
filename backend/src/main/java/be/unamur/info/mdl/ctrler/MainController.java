@@ -49,7 +49,7 @@ public class MainController {
 		return null;
 	}
 
-	@GetMapping(path="/login")
+	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public @ResponseBody String login(@RequestBody UserDTO userDTO){
 		String result;
 		if(userService.login(userDTO))	result = String.format("{LOGIN SUCCESS: %b}",true);
