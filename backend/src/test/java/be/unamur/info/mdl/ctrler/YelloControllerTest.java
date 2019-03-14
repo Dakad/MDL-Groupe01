@@ -1,4 +1,4 @@
-package be.unamur.info.mdl;
+package be.unamur.info.mdl.ctrler;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
