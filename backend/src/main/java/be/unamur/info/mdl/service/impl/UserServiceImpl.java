@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("userService")
 @Transactional
-public
-class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
   private UserRepository userRepository;
 
@@ -41,16 +41,15 @@ class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean login(UserDTO userLogin) {
+  public boolean login(CredentialDTO userLogin){
     UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
-    if (checkPassword(userLogin, userEntity)) {
-      return true;
-    }
+    if(checkPassword(userLogin,userEntity)) return true;
+
     return false;
   }
 
-  private boolean checkPassword(UserDTO userLogin, UserDTO userEntity) {
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    return encoder.matches(userLogin.getPassword(), userEntity.getPassword());
+  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity){
+      BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+      return encoder.matches(userLogin.getPassword(),userEntity.getPassword());  
   }
 }
