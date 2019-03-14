@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,14 +24,14 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean login(UserDTO userLogin){
-        UserDTO userEntity = userRepository.findByUsername(userLogin.username).toDTO();
+    public boolean login(CredentialDTO userLogin){
+        UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
         if(checkPassword(userLogin,userEntity)) return true;
         return false;
     }
 
-    private boolean checkPassword(UserDTO userLogin, UserDTO userEntity){
+    private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(userLogin.password,userEntity.password);
+        return encoder.matches(userLogin.getPassword(),userEntity.getPassword());
     }
 }
