@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class dfg {
+public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
