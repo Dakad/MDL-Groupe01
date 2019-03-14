@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.ctrler;
 
 
+import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class MainController {
 
 
 	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public @ResponseBody String login(@RequestBody UserDTO userDTO){
+	public @ResponseBody String login(@RequestBody CredentialDTO userDTO){
 		String result;
 		if(userService.login(userDTO))	result = String.format("{LOGIN SUCCESS: %b}",true);
 		else result = String.format("{LOGIN SUCCESS: %b}",false);
