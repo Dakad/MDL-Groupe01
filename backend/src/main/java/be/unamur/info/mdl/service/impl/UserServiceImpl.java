@@ -9,6 +9,7 @@ import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,29 +22,34 @@ public class UserServiceImpl implements UserService {
 
   private UserRepository userRepository;
 
+  private final PasswordEncoder passwordEncoder;
+
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
 
   @Override
-  public boolean register(UserDTO newUser) throws RegistrationException {
-    // TODO Check if the userDTO is not null
-    if (newUser == null) {
+  public boolean register(UserDTO userData) throws RegistrationException {
+    if (userData == null) {
       throw new RegistrationException("Empty user data received.");
     }
 
-    if (userRepository.findByUsername(newUser.getUsername()) != null) {
-      throw new RegistrationException(newUser.getUsername() + " is already taken.");
+    if (userRepository.findByUsername(userData.getUsername()) != null) {
+      throw new RegistrationException(userData.getUsername() + " is already taken.");
     }
 
-    if (userRepository.findByEmail(newUser.getEmail()) != null) {
-      throw new RegistrationException(newUser.getEmail() + " is already taken.");
+    if (userRepository.findByEmail(userData.getEmail()) != null) {
+      throw new RegistrationException(userData.getEmail() + " is already taken.");
     }
 
-    // userRepository.save(newUser);
+    userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
+
+    this.userRepository.save(User.of(userData));
+
     return true;
   }
 
