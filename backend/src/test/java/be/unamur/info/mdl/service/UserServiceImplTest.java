@@ -2,10 +2,12 @@ package be.unamur.info.mdl.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +15,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -30,20 +32,20 @@ public class UserServiceImplTest {
 
   @Profile("test")
   @Configuration
-  static public class TestConfiguration {
+  static public class UserRepositoryConfiguration {
 
-    @Bean(name = "userService")
+    @Bean
     @Primary
-    public UserService userService() {
-      return Mockito.mock(UserServiceImpl.class);
+    public UserRepository userRepository() {
+      return Mockito.mock(UserRepository.class);
     }
   }
 
 
-  @Autowired
-  private UserService userService;
+  @InjectMocks
+  private UserServiceImpl userService;
 
-  @MockBean
+  @Mock
   private UserRepository userRepository;
 
   private Map<Long, User> mockUsers;
@@ -58,21 +60,26 @@ public class UserServiceImplTest {
       "user2_pwd", "user2@email.dom", null,
       null);
 
-
-  @Before
-  public void init() {
-//    this.userService = new UserServiceImpl(userDAO);
-
+  {
     mockUsers = new HashMap<>(3);
     mockUsers.put(MOCK_USER_1.getId(), MOCK_USER_1);
     mockUsers.put(MOCK_USER_2.getId(), MOCK_USER_2);
 
+  }
+
+
+  @Before
+  public void init() {
+//    this.userService = new UserServiceImpl(userDAO);
     MockitoAnnotations.initMocks(this);
+
+
+/*
     Mockito.when(userRepository.save(MOCK_USER_1)).thenReturn(MOCK_USER_1);
     Mockito.when(userRepository.save(MOCK_USER_2)).thenReturn(MOCK_USER_2);
+*/
 
-    Mockito.when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
-    Mockito.when(userRepository.findByUsername(MOCK_USER_2.getUsername())).thenReturn(MOCK_USER_2);
+
   }
 
   @Ignore
@@ -100,48 +107,68 @@ public class UserServiceImplTest {
   }
 
   @Test
-  public void when_loginWithUnknownUsername_thenReturnsFalse() {
-    UserDTO user1 = new UserDTO();
+  public void when_loginWitKnowUsernameNoPassword_thenReturnsFalse() {
+    CredentialDTO user1 = new CredentialDTO();
     user1.setUsername("user1");
 
-    boolean isLogged = userService.login(user1);
-    assertFalse("The login should be rejected for empty password", isLogged);
+    when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
 
-    UserDTO user2 = new UserDTO();
-    user1.setUsername("user");
-    user2.setPassword("pwd");
-    isLogged = userService.login(user2);
-    assertFalse("The login should be rejected for unknown user", isLogged);
+    boolean isAuth = userService.login(user1);
+    assertFalse("The login should be rejected for empty password", isAuth);
   }
 
+
+  @Test
+  public void when_loginWithUnknownUsername_thenReturnsFalse() {
+    CredentialDTO user2 = new CredentialDTO();
+    user2.setUsername("user");
+    user2.setPassword("pwd");
+
+    when(userRepository.findByUsername("user")).thenReturn(new User());
+
+    boolean isAuth = userService.login(user2);
+    verify(userRepository).findByUsername("user");
+    assertFalse("The login should be rejected for unknown user", isAuth);
+  }
+
+
+  @Test
+  public void when_loginWithNoPwd_thenReturnsFalse() {
+    // Unkown username without password
+    CredentialDTO user = new CredentialDTO();
+    user.setUsername("user1");
+
+    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
+
+    boolean isAuth = userService.login(user);
+    assertFalse("The login should be rejected for no password", isAuth);
+  }
 
   @Test
   public void when_loginWithIncorrectPwd_thenReturnsFalse() {
-    // Unkown username without password
-    UserDTO user1 = new UserDTO();
-    user1.setUsername("user1");
+    // Known user with incorrect password
 
-    boolean isLogged = userService.login(user1);
-    assertFalse("The login should be rejected for no password", isLogged);
+    CredentialDTO user = new CredentialDTO();
+    user.setUsername(MOCK_USER_1.getUsername());
+    user.setPassword("pwd");
 
-    UserDTO user2 = new UserDTO();
-    user1.setUsername(MOCK_USER_1.getUsername());
-    user2.setPassword("pwd");
+    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
 
-    isLogged = userService.login(user2);
-    assertFalse("The login should be rejected for incorect pwd", isLogged);
+    boolean isAuth = userService.login(user);
+    assertFalse("The login should be rejected for incorect pwd", isAuth);
   }
 
-  @Ignore
   @Test
   public void when_login_ok() {
     // Unkown username without password
-    UserDTO user = new UserDTO();
+    CredentialDTO user = new CredentialDTO();
     user.setUsername("user1");
-    user.setPassword("test");
+    user.setPassword("user1_pwd");
+
+    when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
 
     boolean isLogged = userService.login(user);
-    assertFalse("The login should be accepted for good credentials", !isLogged);
+    assertTrue("The login should be accepted for good credentials", !isLogged);
   }
 
 
