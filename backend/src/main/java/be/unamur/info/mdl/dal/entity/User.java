@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Entity
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -40,8 +42,15 @@ public class User {
   private String lastname;
 
 
+  public static User of(UserDTO userData) {
+    return new User(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
+        userData.getFirstname(), userData.getLastname()
+    );
+  }
+
+
   public UserDTO toDTO() {
-    return  new UserDTO(username, password, lastname, firstname, email);
+    return new UserDTO(username, password, lastname, firstname, email);
   }
 
 }
