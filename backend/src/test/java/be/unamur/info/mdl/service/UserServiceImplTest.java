@@ -2,9 +2,11 @@ package be.unamur.info.mdl.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import be.unamur.info.mdl.config.ApplicationConfiguration;
 import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
@@ -14,15 +16,16 @@ import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +38,7 @@ public class UserServiceImplTest {
 
   @Profile("test")
   @Configuration
+  @Import({ApplicationConfiguration.class})
   static public class UserRepositoryConfiguration {
 
     @Bean
@@ -47,6 +51,9 @@ public class UserServiceImplTest {
 
   @InjectMocks
   private UserServiceImpl userService;
+
+  @Autowired
+  private BCryptPasswordEncoder pwdEncoder;
 
   @Mock
   private UserRepository userRepository;
@@ -73,21 +80,14 @@ public class UserServiceImplTest {
 
   @Before
   public void init() {
-//    this.userService = new UserServiceImpl(userDAO);
     MockitoAnnotations.initMocks(this);
-
-
-/*
-    Mockito.when(userRepository.save(MOCK_USER_1)).thenReturn(MOCK_USER_1);
-    Mockito.when(userRepository.save(MOCK_USER_2)).thenReturn(MOCK_USER_2);
-*/
 
   }
 
 
   @Test(expected = RegistrationException.class)
-  public void when_registerNullDTO_then_throwsException() {
-    userService.login(null);
+  public void when_registerNullDTO_then_throwsException() throws RegistrationException {
+    userService.register(null);
   }
 
 
@@ -110,10 +110,22 @@ public class UserServiceImplTest {
     userService.register(newUser);
   }
 
-  @Ignore
-  @Test(expected = Exception.class)
-  public void when_register_ok() {
 
+  @Test(expected = Exception.class)
+  public void when_register_ok() throws RegistrationException {
+    String newUserPassword = "mock_password";
+    UserDTO newUser = new UserDTO();
+    newUser.setUsername(MOCK_USER_1.getUsername());
+    newUser.setEmail(MOCK_USER_1.getEmail());
+    newUser.setPassword(newUserPassword);
+
+    when(userRepository.findByUsername(newUser.getUsername())).thenReturn(MOCK_USER_1);
+    when(userRepository.save(any())).thenReturn(null);
+
+    userService.register(newUser);
+
+    verify(pwdEncoder).encode(newUser.getPassword());
+    verify(userRepository).save(any());
   }
 
   @Test
