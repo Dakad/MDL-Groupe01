@@ -1,11 +1,12 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dto.CredentialDTO;
-import be.unamur.info.mdl.dto.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dto.CredentialDTO;
+import be.unamur.info.mdl.dto.PasswordChangeDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,15 +42,29 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean login(CredentialDTO userLogin){
+  public boolean login(CredentialDTO userLogin) {
     UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
-    if(checkPassword(userLogin,userEntity)) return true;
-
+    if (checkPassword(userLogin, userEntity)) {
+      return true;
+    }
     return false;
   }
 
-  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity){
-      BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-      return encoder.matches(userLogin.getPassword(),userEntity.getPassword());  
+
+  @Override
+  public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO) {
+    User user = userRepository.findByUsername(username);
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    if (encoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
+      user.setPassword(passwordChangeDTO.getNewPassword());
+      return true;
+    }
+    return false;
+  }
+
+
+  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity) {
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    return encoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 }
