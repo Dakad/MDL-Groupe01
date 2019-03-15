@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
+import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -79,25 +82,32 @@ public class UserServiceImplTest {
     Mockito.when(userRepository.save(MOCK_USER_2)).thenReturn(MOCK_USER_2);
 */
 
-
   }
 
-  @Ignore
-  @Test
+
+  @Test(expected = RegistrationException.class)
   public void when_registerNullDTO_then_throwsException() {
-
+    userService.login(null);
   }
 
-  @Ignore
-  @Test(expected = Exception.class)
-  public void when_registerWithTakenEmail_then_throwsException() {
 
+  @Test(expected = RegistrationException.class)
+  public void when_registerWithTakenEmail_then_throwsException() throws RegistrationException {
+    UserDTO newUser = new UserDTO();
+    newUser.setEmail(MOCK_USER_1.getEmail());
+
+    when(userRepository.findByEmail(newUser.getEmail())).thenReturn(MOCK_USER_1);
+    userService.register(newUser);
   }
 
-  @Ignore
-  @Test(expected = Exception.class)
-  public void when_registerWithTakenUsername_then_throwsException() {
 
+  @Test(expected = RegistrationException.class)
+  public void when_registerWithTakenUsername_then_throwsException() throws RegistrationException {
+    UserDTO newUser = new UserDTO();
+    newUser.setUsername(MOCK_USER_1.getUsername());
+
+    when(userRepository.findByUsername(newUser.getUsername())).thenReturn(MOCK_USER_1);
+    userService.register(newUser);
   }
 
   @Ignore

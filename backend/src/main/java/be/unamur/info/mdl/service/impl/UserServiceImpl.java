@@ -6,6 +6,7 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
+import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,19 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean register(UserDTO newUser) {
+  public boolean register(UserDTO newUser) throws RegistrationException {
     // TODO Check if the userDTO is not null
+    if (newUser == null) {
+      throw new RegistrationException("Empty user data received.");
+    }
 
-    // TODO Check if the UserDTO's email is already taken
+    if (userRepository.findByUsername(newUser.getUsername()) != null) {
+      throw new RegistrationException(newUser.getUsername() + " is already taken.");
+    }
 
-    // TODO Check if the UserDTO's username is already taken
+    if (userRepository.findByEmail(newUser.getEmail()) != null) {
+      throw new RegistrationException(newUser.getEmail() + " is already taken.");
+    }
 
     // userRepository.save(newUser);
     return true;
