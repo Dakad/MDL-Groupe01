@@ -1,7 +1,7 @@
 package be.unamur.info.mdl.ctrler;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 // import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import be.unamur.info.mdl.dal.entity.User;
-import be.unamur.info.mdl.service.UserService;
-
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -36,16 +32,16 @@ public class MainController {
 			return "Invalid Params Data";
 		}
 
-		User newUser = new User(name,email);
-		// userService.addUser(newUser);
+		UserEntity newUserEntity = new UserEntity(name,email);
+		// userService.addUser(newUserEntity);
 		return "Saved";
 	}
 
 	@GetMapping(path="/all")
-	public @ResponseBody Map<Long, User> getAllUsers() {
+	public @ResponseBody Map<Long, UserEntity> getAllUsers() {
 		// This returns a JSON or XML with the users
-		// Map<Long, User> users = new HashMap<Long, User>();
-		// for (User user : userService.findAll()) {
+		// Map<Long, UserEntity> users = new HashMap<Long, UserEntity>();
+		// for (UserEntity user : userService.findAll()) {
 		// 	users.put(user.id(), user);
 		// }
 		// return users;

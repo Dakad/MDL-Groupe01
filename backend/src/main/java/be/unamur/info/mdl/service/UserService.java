@@ -1,11 +1,11 @@
 package be.unamur.info.mdl.service;
 
-import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 
 public interface UserService {
 
 
-    public boolean addUser(User user);
+    public boolean addUser(UserEntity userEntity);
 
 
 }
