@@ -1,4 +1,4 @@
-[user]
+[userEntity]
 	name = <Github Username>
 	email = <Github Email>
 	# signingkey = <GPGKEYIDHERE>
@@ -40,7 +40,7 @@
 	cob = checkout -b
 
 	# Quickly see what you’ve done today (commits that aren’t merges on all branches)
-	today = !git log --since=midnight --author=\"`git config user.name`\" --no-merges --all
+	today = !git log --since=midnight --author=\"`git config userEntity.name`\" --no-merges --all
 
 	# show a graphical representation of your repo
 	grog = log --color --graph --abbrev-commit --decorate --all --format=format:\"%C(bold blue)%h%C(reset) %C(bold cyan)%s%C(reset) %C(bold yellow)%d%C(reset)%n  %C(dim white)%aD %C(cyan)(%ar)%n%C(dim white)  %an %C(cyan)[ %G? %GS]%C(reset)\"

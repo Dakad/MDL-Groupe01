@@ -2,7 +2,7 @@ package be.unamur.info.mdl.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.service.UserService;
 
@@ -15,8 +15,8 @@ class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 
-    public boolean addUser(User newUser){
-        userRepository.save(newUser);
+    public boolean addUser(UserEntity newUserEntity){
+        userRepository.save(newUserEntity);
         return true;
     }
 }
