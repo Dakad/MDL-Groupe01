@@ -32,7 +32,7 @@ public class UserServiceImplTest {
   @InjectMocks
   private UserServiceImpl userService;
 
-  @Autowired
+  @Mock
   private BCryptPasswordEncoder pwdEncoder;
 
   @Mock
