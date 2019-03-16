@@ -44,7 +44,7 @@ public class ArticleEntity {
 
 
   @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_ID", unique = true)
+  @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
 
   
