@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
