@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("test")
 @Configuration
 @Import({ApplicationConfiguration.class})
-public class TestApplicationConfiguration {
+public class ApplicationTestConfiguration {
 
   @Bean
   @Primary
