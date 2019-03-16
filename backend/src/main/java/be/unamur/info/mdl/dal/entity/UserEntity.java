@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dal.entity;
 
 
+import be.unamur.info.mdl.dto.UserDTO;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
