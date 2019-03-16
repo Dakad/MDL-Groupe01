@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,5 +23,7 @@ public class BookmarkEntity {
   @Column
   private String name;
 
-  
+  @OneToOne(cascade= CascadeType.ALL)
+  @JoinColumn(name="user_ID", unique= true, nullable=true, insertable=true, updatable=true)
+  private UserEntity user;
 }
