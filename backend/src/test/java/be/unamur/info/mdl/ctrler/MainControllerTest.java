@@ -26,12 +26,45 @@ public class MainControllerTest {
 
   private static final String LOGIN_URL = "/api/login";
 
+
+  @Test
+  public void login_with_null_credentials() throws Exception {
+    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST, LOGIN_URL, new CredentialDTO())
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
   @Test
   public void login_with_empty_credentials() throws Exception {
+    CredentialDTO credential = new CredentialDTO("", "");
+    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST, LOGIN_URL, credential)
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+//        .andExpect(content().json("Yello Greetings from Spring Boot!"))
+    ;
 
-    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST,LOGIN_URL,new CredentialDTO())
-        .accept(MediaType.APPLICATION_JSON))
+    CredentialDTO credential2 = new CredentialDTO("correct_username", "");
+    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST, LOGIN_URL, credential2)
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
-//        .andExpect(content().string(equalTo("Yello Greetings from Spring Boot!")));
+
+    CredentialDTO credential3 = new CredentialDTO("", "correct_pwd");
+    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST, LOGIN_URL, credential3)
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
   }
+
+
+  @Test
+  public void login_with__credentials() throws Exception {
+    CredentialDTO credential = new CredentialDTO("", "");
+    api.perform(MockMvcRequestBuilders.request(HttpMethod.POST, LOGIN_URL, credential)
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+//        .andExpect(content().json("Yello Greetings from Spring Boot!"))
+    ;
+  }
+
+
+
 }
