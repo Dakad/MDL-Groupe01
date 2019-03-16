@@ -7,6 +7,7 @@ import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean login(CredentialDTO userLogin) {
+  public boolean login(@Valid CredentialDTO userLogin) {
     UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
     if (checkPassword(userLogin, userEntity)) {
       return true;
