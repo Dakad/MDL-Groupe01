@@ -1,9 +1,11 @@
 package be.unamur.info.mdl.service;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -93,21 +95,23 @@ public class UserServiceImplTest {
   }
 
 
-  @Test(expected = Exception.class)
+  @Test
   public void when_register_ok() throws RegistrationException {
     String newUserPassword = "mock_password";
     UserDTO newUser = new UserDTO();
-    newUser.setUsername(MOCK_USER_1.getUsername());
-    newUser.setEmail(MOCK_USER_1.getEmail());
+    newUser.setUsername("new_user");
+    newUser.setEmail("new_user@mail.dom");
     newUser.setPassword(newUserPassword);
 
-    when(userRepository.findByUsername(newUser.getUsername())).thenReturn(MOCK_USER_1);
-//    when(userRepository.save(any())).thenReturn(null);
+    when(pwdEncoder.encode(newUserPassword)).thenReturn(newUserPassword+"_encrypted");
+    when(userRepository.save(any())).thenReturn(null);
 
     userService.register(newUser);
 
-    verify(pwdEncoder).encode(newUser.getPassword());
+    verify(pwdEncoder).encode(newUserPassword);
     verify(userRepository).save(any());
+
+    assertNotEquals("The password should be encoded",newUser.getPassword());
   }
 
   @Test(expected = InvalidCredentialException.class)
