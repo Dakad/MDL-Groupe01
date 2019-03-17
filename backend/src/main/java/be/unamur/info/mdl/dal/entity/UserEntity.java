@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -73,7 +72,8 @@ public class UserEntity {
   @JoinColumn(name = "bookmark_id")
   private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
-  @OneToOne(mappedBy="user", fetch = FetchType.LAZY, optional = false)
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "profil_id", referencedColumnName = "id")
   private UserProfilEntity userProfil;
 
 
