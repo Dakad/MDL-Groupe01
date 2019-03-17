@@ -2,6 +2,7 @@ package be.unamur.info.mdl.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,6 +11,7 @@ import be.unamur.info.mdl.dal.entity.User;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import java.util.HashMap;
@@ -20,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -108,46 +109,47 @@ public class UserServiceImplTest {
     verify(userRepository).save(any());
   }
 
-  @Test
-  public void when_loginWitKnowUsernameNoPassword_thenReturnsFalse() {
+  @Test(expected = InvalidCredentialException.class)
+  public void when_loginWitKnowUsernameNoPassword_then_throwsException()
+      throws InvalidCredentialException {
     CredentialDTO user1 = new CredentialDTO();
     user1.setUsername("user1");
 
     when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
 
-    boolean isAuth = userService.login(user1);
-    assertFalse("The login should be rejected for empty password", isAuth);
+    userService.login(user1);
+    fail("The login should be rejected for empty password");
   }
 
 
-  @Test
-  public void when_loginWithUnknownUsername_thenReturnsFalse() {
+  @Test(expected = InvalidCredentialException.class)
+  public void when_loginWithUnknownUsername_then_throwsException() throws InvalidCredentialException {
     CredentialDTO user2 = new CredentialDTO();
     user2.setUsername("user");
     user2.setPassword("pwd");
 
     when(userRepository.findByUsername("user")).thenReturn(new User());
 
-    boolean isAuth = userService.login(user2);
+    userService.login(user2);
     verify(userRepository).findByUsername("user");
-    assertFalse("The login should be rejected for unknown user", isAuth);
+    fail("The login should be rejected for unknown user");
   }
 
 
-  @Test
-  public void when_loginWithNoPwd_thenReturnsFalse() {
+  @Test(expected = InvalidCredentialException.class)
+  public void when_loginWithNoPwd_then_throwsException() throws InvalidCredentialException {
     // Unkown username without password
     CredentialDTO user = new CredentialDTO();
     user.setUsername("user1");
 
     when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
 
-    boolean isAuth = userService.login(user);
-    assertFalse("The login should be rejected for no password", isAuth);
+    userService.login(user);
+    fail("The login should be rejected for no password");
   }
 
-  @Test
-  public void when_loginWithIncorrectPwd_thenReturnsFalse() {
+  @Test(expected = InvalidCredentialException.class)
+  public void when_loginWithIncorrectPwd_then_throwsException() throws InvalidCredentialException {
     // Known user with incorrect password
 
     CredentialDTO user = new CredentialDTO();
@@ -156,8 +158,8 @@ public class UserServiceImplTest {
 
     when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
 
-    boolean isAuth = userService.login(user);
-    assertFalse("The login should be rejected for incorect pwd", isAuth);
+    userService.login(user);
+    fail("The login should be rejected for incorect pwd");
   }
 
   @Test
@@ -169,8 +171,13 @@ public class UserServiceImplTest {
 
     when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
 
-    boolean isLogged = userService.login(user);
-    assertTrue("The login should be accepted for good credentials", !isLogged);
+    String isLogged = null;
+    try {
+      String token = userService.login(user);
+    } catch (InvalidCredentialException e) {
+      fail("The login should be accepted for good credentials");
+    }
+
   }
 
 
