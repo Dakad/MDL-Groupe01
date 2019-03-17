@@ -1,9 +1,9 @@
 package be.unamur.info.mdl.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,22 +22,23 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
 
   @InjectMocks
   private UserServiceImpl userService;
 
   @Mock
-  private BCryptPasswordEncoder pwdEncoder;
+  private UserRepository userRepository;
 
   @Mock
-  private UserRepository userRepository;
+  private PasswordEncoder pwdEncoder;
+
 
   private Map<Long, User> mockUsers;
 
@@ -48,8 +49,8 @@ public class UserServiceImplTest {
       null);
   // User1.password = user2_pwd
   private static final User MOCK_USER_2 = new User(456L, "user2",
-      "user2_pwd", "user2@email.dom", null,
-      null);
+      "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
+      "user2@email.dom", null,null);
 
   {
     mockUsers = new HashMap<>(3);
@@ -123,7 +124,8 @@ public class UserServiceImplTest {
 
 
   @Test(expected = InvalidCredentialException.class)
-  public void when_loginWithUnknownUsername_then_throwsException() throws InvalidCredentialException {
+  public void when_loginWithUnknownUsername_then_throwsException()
+      throws InvalidCredentialException {
     CredentialDTO user2 = new CredentialDTO();
     user2.setUsername("user");
     user2.setPassword("pwd");
@@ -166,14 +168,15 @@ public class UserServiceImplTest {
   public void when_login_ok() {
     // Unkown username without password
     CredentialDTO user = new CredentialDTO();
-    user.setUsername("user1");
-    user.setPassword("user1_pwd");
+    user.setUsername("user2");
+    user.setPassword("user2_pwd");
 
-    when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
+    when(userRepository.findByUsername("user2")).thenReturn(MOCK_USER_2);
+    when(pwdEncoder.matches(anyString(),anyString())).thenReturn(true);
 
-    String isLogged = null;
     try {
       String token = userService.login(user);
+      assertNotNull("Should have received a valid token", token);
     } catch (InvalidCredentialException e) {
       fail("The login should be accepted for good credentials");
     }
