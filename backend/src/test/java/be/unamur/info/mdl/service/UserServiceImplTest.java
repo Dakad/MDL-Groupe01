@@ -46,24 +46,23 @@ public class UserServiceImplTest {
   @MockBean
   private UserRepository userRepository;
 
-  private Map<Long, User> mockUsers;
 
 
   // User1.password = user1_pwd
   private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
       "user1_pwd", "user1@email.dom", null,
-      null);
+      null,null,null,null);
   // User1.password = user2_pwd
   private static final UserEntity MOCK_USER_2 = new UserEntity(456L, "user2",
       "user2_pwd", "user2@email.dom", null,
-      null);
+      null,null,null,null);
 
 
   @Before
   public void init() {
 //    this.userService = new UserServiceImpl(userDAO);
 
-    mockUsers = new HashMap<>(3);
+    HashMap<Object, Object> mockUsers = new HashMap<>(3);
     mockUsers.put(MOCK_USER_1.getId(), MOCK_USER_1);
     mockUsers.put(MOCK_USER_2.getId(), MOCK_USER_2);
 
