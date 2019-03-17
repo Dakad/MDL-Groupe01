@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dto;
 
-import java.io.Serializable;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,15 +9,21 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO implements Serializable {
+public class UserDTO extends CredentialDTO {
 
-  private String username;
-
-  private String password;
+  @NotBlank(message = "The email is required")
+  @Email(message = "The email provided is not valid")
+  private String email;
 
   private String lastname;
 
   private String firstname;
 
-  private String email;
+
+  public UserDTO(String username, String password, String lastname, String firstname, String email) {
+    super(username, password);
+    this.email = email;
+    this.lastname = lastname;
+    this.firstname = firstname;
+  }
 }

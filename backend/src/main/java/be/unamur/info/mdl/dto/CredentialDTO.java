@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CredentialDTO implements Serializable {
 
-  @NotBlank(message = "The username cannot be empty or blank")
+  @NotBlank(message = "The username is required")
   private String username;
 
 
-  @NotBlank(message = "The password cannot be empty or blank")
+  @NotBlank(message = "The password is required")
   @Pattern(
       regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#&+-_@=£$!%*\\^\\?]?).{8,30}$",
       message = "The password must be at least 8 characters long, containing 1 uppercase and number"
