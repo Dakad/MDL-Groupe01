@@ -2,6 +2,7 @@ package be.unamur.info.mdl.ctrler;
 
 
 import be.unamur.info.mdl.dto.CredentialDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,7 +41,7 @@ public class MainController {
 
 
   @GetMapping(path = "/register")
-  public String register(@RequestBody String name, @RequestParam String email) {
+  public String register(@Valid @RequestBody UserDTO userData) {
     //
     return null;
   }
