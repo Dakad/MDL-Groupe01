@@ -4,8 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +13,7 @@ import org.springframework.data.annotation.Id;
 
 @Data
 @Entity
+@Table(name = "userProfil")
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -28,6 +29,5 @@ public class UserProfilEntity {
   @Column
   private String status;
   @OneToOne
-  @JoinColumn(name="user")
   private UserEntity user;
 }

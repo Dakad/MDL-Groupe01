@@ -1,19 +1,21 @@
 package be.unamur.info.mdl.dal.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table(name="bookmark")
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookmarkEntity {
@@ -25,7 +27,7 @@ public class BookmarkEntity {
   @Column
   private String name;
 
-  @OneToOne(cascade= CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="user_id", unique= true)
   private UserEntity user;
 }
