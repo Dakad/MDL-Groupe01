@@ -102,7 +102,7 @@ public class UserServiceImplTest {
     newUser.setPassword(newUserPassword);
 
     when(userRepository.findByUsername(newUser.getUsername())).thenReturn(MOCK_USER_1);
-    when(userRepository.save(any())).thenReturn(null);
+//    when(userRepository.save(any())).thenReturn(null);
 
     userService.register(newUser);
 
