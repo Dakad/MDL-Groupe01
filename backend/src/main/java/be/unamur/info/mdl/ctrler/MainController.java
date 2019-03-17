@@ -3,6 +3,7 @@ package be.unamur.info.mdl.ctrler;
 
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.service.UserService;
+import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,14 +49,16 @@ public class MainController {
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @ResponseStatus(code = HttpStatus.OK)
   @Validated
-  public String login(@Valid @RequestBody CredentialDTO userDTO) {
-    String result;
-    if (userService.login(userDTO)) {
-      result = String.format("{LOGIN SUCCESS: %b}", true);
-    } else {
-      result = String.format("{LOGIN SUCCESS: %b}", false);
+  public ResponseEntity<Map<String,String>> login(@Valid @RequestBody CredentialDTO userDTO) {
+    Map<String,String> result = new HashMap<>();
+    try {
+      String token = userService.login(userDTO);
+      result.put("auth_token", token);
+      return ResponseEntity.status(HttpStatus.OK).body(result);
+    } catch (InvalidCredentialException ex) {
+      result.put("auth_token", ex.getMessage());
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
     }
-    return result;
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
