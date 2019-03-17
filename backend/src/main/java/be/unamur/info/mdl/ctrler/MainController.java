@@ -5,6 +5,7 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
+import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
@@ -40,15 +41,22 @@ public class MainController {
   private UserService userService;
 
 
-  @GetMapping(path = "/register")
-  public String register(@Valid @RequestBody UserDTO userData) {
-    //
-    return null;
+  @RequestMapping(path = "/register", method = RequestMethod.POST)
+  public ResponseEntity<Map<String,String>> register(@Valid @RequestBody UserDTO userData) {
+    Map<String,String> response = new HashMap<>();
+    try {
+      this.userService.register(userData);
+      response.put("success", "New user registred");
+      return new ResponseEntity(response, HttpStatus.CREATED);
+    } catch (RegistrationException ex) {
+      response.put("error", ex.getMessage());
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
   }
 
 
   @RequestMapping(value = "/login", method = RequestMethod.POST)
-  @ResponseStatus(code = HttpStatus.OK)
   @Validated
   public ResponseEntity<Map<String,String>> login(@Valid @RequestBody CredentialDTO userDTO) {
     Map<String,String> result = new HashMap<>();
@@ -74,7 +82,7 @@ public class MainController {
     } catch (JsonProcessingException ex) {
       ex.printStackTrace();
     }
-    return String.format("{\"params\" : %s }", json.toString());
+    return String.format("{\"validation\" : %s }", json.toString());
   }
 
 }

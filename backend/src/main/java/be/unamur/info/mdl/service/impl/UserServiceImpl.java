@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
     if(userEntity == null || !checkPassword(userLogin, userEntity)){
       throw new InvalidCredentialException("Invalid username or password provided");
     }
+    //TODO Send Real JWToken
     return "JWT_TOKEN";
   }
 
