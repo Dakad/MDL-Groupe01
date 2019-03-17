@@ -7,11 +7,14 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table (name = "User")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
@@ -44,6 +48,7 @@ public class UserEntity {
 
 
   @OneToMany(
+      mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
@@ -52,6 +57,7 @@ public class UserEntity {
 
 
   @OneToMany(
+      mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
@@ -60,12 +66,15 @@ public class UserEntity {
 
 
   @OneToMany(
+      mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
   @JoinColumn(name = "bookmark_id")
   private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
+  @OneToOne(mappedBy="user", fetch = FetchType.LAZY, optional = false)
+  private UserProfilEntity userProfil;
 
 
   public UserDTO toDTO() {
