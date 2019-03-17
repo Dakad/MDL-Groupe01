@@ -12,8 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -78,12 +76,8 @@ public class UserEntity {
   @JoinColumn(name = "profil_id", referencedColumnName = "id")
   private UserProfilEntity userProfil;
 
-  @ManyToMany
-  @JoinTable(
-      name = "user_university",
-      joinColumns= @JoinColumn(name="user_id"),
-      inverseJoinColumns = @JoinColumn(name = "profil_id"))
 
+  @OneToMany(mappedBy = "user")
   private Set<UniversityEntity> university;
 
   public UserDTO toDTO() {
