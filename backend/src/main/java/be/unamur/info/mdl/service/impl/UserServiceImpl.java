@@ -6,6 +6,7 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
+import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +57,12 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean login(@Valid CredentialDTO userLogin) {
+  public String login(@Valid CredentialDTO userLogin) throws InvalidCredentialException {
     UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
-    if (checkPassword(userLogin, userEntity)) {
-      return true;
+    if(userEntity == null || !checkPassword(userLogin, userEntity)){
+      throw new InvalidCredentialException("Invalid username or password provided");
     }
-    return false;
+    return "JWT_TOKEN";
   }
 
 
@@ -78,7 +79,6 @@ public class UserServiceImpl implements UserService {
 
 
   private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity) {
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    return encoder.matches(userLogin.getPassword(), userEntity.getPassword());
+    return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 }
