@@ -1,14 +1,15 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="article")
 public class ArticleEntity {
 
   @Id
@@ -42,9 +44,10 @@ public class ArticleEntity {
   @Min(0)
   private int nbreCitation;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", unique = true)
+  private UserEntity user;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_ID", unique = true)
-  private UserEntity department;
+  
 
 }
