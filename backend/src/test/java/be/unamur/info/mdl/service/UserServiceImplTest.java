@@ -71,7 +71,7 @@ public class UserServiceImplTest {
 
   @Test(expected = RegistrationException.class)
   public void when_registerNullDTO_then_throwsException() throws RegistrationException {
-    userService.register(null);
+    userService.signin(null);
   }
 
 
@@ -81,7 +81,7 @@ public class UserServiceImplTest {
     newUser.setEmail(MOCK_USER_1.getEmail());
 
     when(userRepository.findByEmail(newUser.getEmail())).thenReturn(MOCK_USER_1);
-    userService.register(newUser);
+    userService.signin(newUser);
   }
 
 
@@ -91,7 +91,7 @@ public class UserServiceImplTest {
     newUser.setUsername(MOCK_USER_1.getUsername());
 
     when(userRepository.findByUsername(newUser.getUsername())).thenReturn(MOCK_USER_1);
-    userService.register(newUser);
+    userService.signin(newUser);
   }
 
 
@@ -106,7 +106,7 @@ public class UserServiceImplTest {
     when(pwdEncoder.encode(newUserPassword)).thenReturn(newUserPassword+"_encrypted");
     when(userRepository.save(any())).thenReturn(null);
 
-    userService.register(newUser);
+    userService.signin(newUser);
 
     verify(pwdEncoder).encode(newUserPassword);
     verify(userRepository).save(any());

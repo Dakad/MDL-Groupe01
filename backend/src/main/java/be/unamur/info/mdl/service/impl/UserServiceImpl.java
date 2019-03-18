@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean register(UserDTO userData) throws RegistrationException {
+  public boolean signin(UserDTO userData) throws RegistrationException {
     if (userData == null) {
       throw new RegistrationException("Empty user data received.");
     }
