@@ -7,18 +7,19 @@
 
 
     <div class="central">
-      <div class="tittle">
-        <h1> <img src="../assets/logochicken.jpg" style="width:100px;height:100px;">
-          No Assigned Name</h1>
+      <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
+      <div class="title">
+        <h1>No Assigned Name</h1>
       </div>
 
-      <div class="searchbar">
-        <!-- place the searched words in var searchwords and the action to
-        script the search is searchIt -->
-        <input class="searchText" v-model="searchwords" placeholder="search a state of the art">
-        <div class="switchbutton"><button v-on:click="searchIt"  class="fa fa-search">search</button></div>
 
+      <!-- place the searched words in var searchwords and the action to
+       script the search is searchIt -->
+      <input class="searchText" v-model="searchwords" placeholder="search a state of the art">
+      <div class="searchbutton">
+        <button v-on:click="searchIt"  class="fa fa-search">search</button>
       </div>
+
 
       <div class="filter">
 
@@ -73,6 +74,21 @@
     height: 30%;
     overflow: auto;
   }
+
+  .logoimg{
+    width: 10%;
+    height: 10%;
+    position: absolute;
+    left: 20%;
+    top: 30%;
+  }
+
+  .title{
+    position: absolute;
+    top: 5%;
+    left: 35%;
+  }
+
   h1 {
     padding: 50px;
   }
@@ -85,7 +101,7 @@
   .recommended {
     margin: 0;
     position: absolute;
-    top: 70%;
+    top: 75%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -93,6 +109,7 @@
     height: 40%;
     border: 3px solid gray;
     overflow: auto;
+    z-index: -1;
   }
 
   .recoNews {
@@ -108,14 +125,15 @@
     height: 7%;
     position: absolute;
     left: 1%;
+    top: 87%;
   }
 
-  .switchbutton{
+  .searchbutton{
     width: 10%;
     height: 15%;
     position: absolute;
     left: 92%;
-
+    top:87%;
   }
 
 
