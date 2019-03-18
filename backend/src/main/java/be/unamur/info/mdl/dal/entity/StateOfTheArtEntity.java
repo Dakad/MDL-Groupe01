@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +21,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "stateoftheart")
-public class StateofTheArtEntity {
+@Table(name = "state_of_the_art")
+public class StateOfTheArtEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,13 +37,14 @@ public class StateofTheArtEntity {
 
 
   @Column(nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @PastOrPresent
   private LocalDate date;
 
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="user_id", unique= true)
+  @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
-
 
 
 }

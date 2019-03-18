@@ -2,29 +2,22 @@ package be.unamur.info.mdl.dal.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
 public class UserUniversityKey implements Serializable {
 
-    @Column(name ="user_id")
-    Long userId;
-    @Column(name="university_id")
-    Long universityId;
+  @Column(name = "user_id")
+  private Long userId;
 
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
-  }
-
-  public Long getUniversityId() {
-    return universityId;
-  }
-
-  public void setUniversityId(Long universityId) {
-    this.universityId = universityId;
-  }
+  @Column(name = "university_id")
+  private Long universityId;
 
 
 }
