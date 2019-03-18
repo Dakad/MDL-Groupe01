@@ -40,13 +40,13 @@ public class MainControllerTest {
 
   private static final String LOGIN_URL = "/api/login";
 
-  private static final String REGISTER_URL = "/api/register";
+  private static final String SIGNIN_URL = "/api/signin";
 
 
   @Test
   public void register_with_null_data() throws Exception {
     JSONObject newUser = new JSONObject();
-    api.perform(MockMvcRequestBuilders.post(REGISTER_URL)
+    api.perform(MockMvcRequestBuilders.post(SIGNIN_URL)
         .content(newUser.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -61,7 +61,7 @@ public class MainControllerTest {
     newUser.put("password", "");
     newUser.put("email", "");
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser.toString())
         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -73,7 +73,7 @@ public class MainControllerTest {
     newUser2.put("password", "");
     newUser2.put("email", "");
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser2.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ public class MainControllerTest {
     newUser3.put("password", "incorrect_password");
     newUser3.put("email", "");
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser3.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -100,7 +100,7 @@ public class MainControllerTest {
     newUser4.put("password", "correct_password_123");
     newUser4.put("email", "");
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser4.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -114,7 +114,7 @@ public class MainControllerTest {
     newUser5.put("password", "correct_password_123");
     newUser5.put("email", "");
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser5.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -131,9 +131,9 @@ public class MainControllerTest {
     newUser.put("password", "my_PWD_123");
     newUser.put("email", "new_user@mail.dom");
 
-    when(userService.register(any())).thenThrow(new RegistrationException("Username already taken."));
+    when(userService.signin(any())).thenThrow(new RegistrationException("Username already taken."));
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -149,9 +149,9 @@ public class MainControllerTest {
     newUser.put("password", "my_PWD_123");
     newUser.put("email", "already_taken@mail.dom");
 
-    when(userService.register(any())).thenThrow(new RegistrationException("Email already taken."));
+    when(userService.signin(any())).thenThrow(new RegistrationException("Email already taken."));
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser.toString())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -167,9 +167,9 @@ public class MainControllerTest {
     newUser.put("password", "my_PWD_123");
     newUser.put("email", "already_taken@mail.dom");
 
-    when(userService.register(any())).thenReturn(true);
+    when(userService.signin(any())).thenReturn(true);
 
-    api.perform(post(REGISTER_URL)
+    api.perform(post(SIGNIN_URL)
         .content(newUser.toString())
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())

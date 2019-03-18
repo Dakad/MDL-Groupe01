@@ -11,21 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,11 +36,11 @@ public class MainController {
   private UserService userService;
 
 
-  @RequestMapping(path = "/register", method = RequestMethod.POST)
-  public ResponseEntity<Map<String,String>> register(@Valid @RequestBody UserDTO userData) {
+  @RequestMapping(path = "/signin", method = RequestMethod.POST)
+  public ResponseEntity<Map<String,String>> signin(@Valid @RequestBody UserDTO userData) {
     Map<String,String> response = new HashMap<>();
     try {
-      this.userService.register(userData);
+      this.userService.signin(userData);
       response.put("success", "New user registred");
       return new ResponseEntity(response, HttpStatus.CREATED);
     } catch (RegistrationException ex) {
