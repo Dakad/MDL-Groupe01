@@ -3,6 +3,7 @@
   <section class="accueilapp">
     <header class="header">
       <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche -->
+      <navappregister/>
     </header>
 
 
@@ -49,8 +50,14 @@
 <script>
   import 'swiper/dist/css/swiper.css';
   import { swiper, swiperSlide } from 'vue-awesome-swiper';
+  import navappregister from './NavBarRegister.vue';
 
-  export default { };
+  export default {  
+    name:'app',
+    components:{
+      navappregister
+    }
+  };
 </script>
 
 
