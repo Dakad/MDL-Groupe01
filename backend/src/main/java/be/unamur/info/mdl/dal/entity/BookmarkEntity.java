@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name="bookmark")
+@Table(name = "bookmark")
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookmarkEntity {
@@ -27,7 +27,8 @@ public class BookmarkEntity {
   @Column
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="user_id", unique= true)
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
 }

@@ -13,10 +13,9 @@ import org.springframework.data.annotation.Id;
 
 @Data
 @Entity
-@Table(name = "userProfil")
+@Table(name = "user_profil")
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class UserProfilEntity {
 
   @Id
@@ -28,6 +27,7 @@ public class UserProfilEntity {
 
   @Column
   private String status;
+
   @OneToOne
   private UserEntity user;
 }

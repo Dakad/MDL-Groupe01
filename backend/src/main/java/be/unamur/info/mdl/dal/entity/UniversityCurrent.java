@@ -1,21 +1,30 @@
 package be.unamur.info.mdl.dal.entity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Modlisation of joinTable
+// Modelisation of joinTable
 @Data
-@NoArgsConstructor
 @Entity
+@Table(name = "university_current")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UniversityCurrent {
 
   @EmbeddedId
   private UserUniversityKey id;
+
+  @Column
+  private boolean current;
+
 
   @ManyToOne
   @MapsId("user_id")
@@ -25,39 +34,8 @@ public class UniversityCurrent {
   @ManyToOne
   @MapsId("university_id")
   @JoinColumn(name = "university_id")
-  private UserEntity university;
+  private UniversityEntity university;
 
-  private boolean current;
 
-  public UserUniversityKey getId() {
-    return id;
-  }
 
-  public void setId(UserUniversityKey id) {
-    this.id = id;
-  }
-
-  public UserEntity getUser() {
-    return user;
-  }
-
-  public void setUser(UserEntity user) {
-    this.user = user;
-  }
-
-  public UserEntity getUniversity() {
-    return university;
-  }
-
-  public void setUniversity(UserEntity university) {
-    this.university = university;
-  }
-
-  public boolean isCurrent() {
-    return current;
-  }
-
-  public void setCurrent(boolean current) {
-    this.current = current;
-  }
 }

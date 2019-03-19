@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table(name = "domain")
 @AllArgsConstructor
-@Table(name="domain")
 @NoArgsConstructor
 public class DomainEntity {
 
@@ -23,6 +23,5 @@ public class DomainEntity {
 
   @Column(unique = true, nullable = false)
   private String name;
-
 
 }
