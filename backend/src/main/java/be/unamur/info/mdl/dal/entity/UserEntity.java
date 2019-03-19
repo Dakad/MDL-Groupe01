@@ -91,6 +91,14 @@ public class UserEntity {
   private Set<User> users = new HashSet<>();
 
 
+
+  public static User of(UserDTO userData) {
+    return new User(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
+        userData.getFirstname(), userData.getLastname()
+    );
+  }
+
+
   public UserDTO toDTO() {
     return new UserDTO(username, password, lastname, firstname, email);
   }
