@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,8 +15,6 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,18 +44,13 @@ public class UserServiceImplTest {
   // User1.password = user1_pwd
   private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
       "user1_pwd", "user1@email.dom", null,
-      null,null,null,null);
+      null,null,null,null, null , null ,null);
   // User1.password = user2_pwd
-  private static final User MOCK_USER_2 = new User(456L, "user2",
+  private static final UserEntity MOCK_USER_2 = new UserEntity(456L, "user2",
       "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
-      "user2@email.dom", null,null);
+      "user2@email.dom", null,
+    null,null,null,null, null , null ,null);
 
-  {
-    mockUsers = new HashMap<>(3);
-    mockUsers.put(MOCK_USER_1.getId(), MOCK_USER_1);
-    mockUsers.put(MOCK_USER_2.getId(), MOCK_USER_2);
-
-  }
 
 
   @Before
@@ -133,7 +125,7 @@ public class UserServiceImplTest {
     user2.setUsername("user");
     user2.setPassword("pwd");
 
-    when(userRepository.findByUsername("user")).thenReturn(new User());
+    when(userRepository.findByUsername("user")).thenReturn(new UserEntity());
 
     userService.login(user2);
     verify(userRepository).findByUsername("user");
