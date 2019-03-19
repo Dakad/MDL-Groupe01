@@ -92,9 +92,9 @@ public class UserEntity {
 
 
 
-  public static User of(UserDTO userData) {
-    return new User(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
-        userData.getFirstname(), userData.getLastname()
+  public static UserEntity of(UserDTO userData) {
+    return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
+        userData.getFirstname(), userData.getLastname(), null,null, null,null,null,null
     );
   }
 
