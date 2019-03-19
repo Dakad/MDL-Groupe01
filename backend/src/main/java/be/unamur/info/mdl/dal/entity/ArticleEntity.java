@@ -10,7 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="article")
+@Table(name = "article")
 public class ArticleEntity {
 
   @Id
@@ -29,7 +32,9 @@ public class ArticleEntity {
   @Column(unique = true, nullable = false)
   private String title;
 
-  @Column(name = "publiation_date", nullable = false)
+  @Column(name = "publication_date", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @PastOrPresent
   private LocalDate publicationDate;
 
   @Column
@@ -44,10 +49,10 @@ public class ArticleEntity {
   @Min(0)
   private int nbreCitation;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", unique = true)
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
 
-  
 
 }

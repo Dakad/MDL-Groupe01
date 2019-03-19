@@ -26,7 +26,7 @@ import org.h2.engine.User;
 
 @Data
 @Entity
-@Table (name = "User")
+@Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
@@ -51,12 +51,16 @@ public class UserEntity {
   private String lastname;
 
 
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "profil_id", referencedColumnName = "id")
+  private UserProfilEntity userProfil;
+
+
   @OneToMany(
       mappedBy = "user",
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
-
   private List<ArticleEntity> articles = new ArrayList<>();
 
 
@@ -65,8 +69,7 @@ public class UserEntity {
       cascade = CascadeType.ALL,
       orphanRemoval = true
   )
-
-  private List<StateofTheArtEntity> stateofthearts = new ArrayList<>();
+  private List<StateOfTheArtEntity> stateofthearts = new ArrayList<>();
 
 
   @OneToMany(
@@ -76,21 +79,20 @@ public class UserEntity {
   )
   private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "profil_id", referencedColumnName = "id")
-  private UserProfilEntity userProfil;
-
 
   @OneToMany(mappedBy = "user")
   private Set<UniversityEntity> university = new HashSet<>();
-  @ManyToMany(cascade={CascadeType.ALL})
-  @JoinTable(name="user_follower",
-      joinColumns={@JoinColumn(name="user_id")},
-      inverseJoinColumns={@JoinColumn(name="following_ID")})
-  private Set <User> users= new HashSet<>();
-  public UserDTO toDTO() {
-    return  new UserDTO(username, password, lastname, firstname, email);
-  }
 
+
+  @ManyToMany(cascade = {CascadeType.ALL})
+  @JoinTable(name = "user_follower",
+      joinColumns = {@JoinColumn(name = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "following_id")})
+  private Set<User> users = new HashSet<>();
+
+
+  public UserDTO toDTO() {
+    return new UserDTO(username, password, lastname, firstname, email);
+  }
 
 }

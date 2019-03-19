@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Table(name = "research_group")
 @AllArgsConstructor
-@Table(name = "researchGroup")
 @NoArgsConstructor
 public class ResearchGroupEntity {
 
