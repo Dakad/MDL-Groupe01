@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
-    this.userRepository.save(User.of(userData));
+    this.userRepository.save(UserEntity.of(userData));
 
     return true;
   }
