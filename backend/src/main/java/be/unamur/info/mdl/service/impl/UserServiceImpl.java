@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * This class is responsible of all possible services related to the /api/user
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO) {
-    User user = userRepository.findByUsername(username);
+    UserEntity user = userRepository.findByUsername(username);
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     if (encoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
       user.setPassword(passwordChangeDTO.getNewPassword());

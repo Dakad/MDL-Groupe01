@@ -9,7 +9,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import be.unamur.info.mdl.dal.entity.User;
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.UserDTO;
@@ -42,13 +42,12 @@ public class UserServiceImplTest {
   private PasswordEncoder pwdEncoder;
 
 
-  private Map<Long, User> mockUsers;
 
 
   // User1.password = user1_pwd
-  private static final User MOCK_USER_1 = new User(123L, "user1",
+  private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
       "user1_pwd", "user1@email.dom", null,
-      null);
+      null,null,null,null);
   // User1.password = user2_pwd
   private static final User MOCK_USER_2 = new User(456L, "user2",
       "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
