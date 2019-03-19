@@ -1,0 +1,13 @@
+
+validation:
+  user:
+    username:
+      notBlank : The username cannot be empty or blank
+    password:
+      pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#&+-_@=£$!%*\\^\\?]?).{8,30}$"
+      notBlank: The username cannot be empty or blank
+      format : The password must be at least 8 characters long, containing at leats 1 uppercase and 1 number
+
+NotBlank:
+  credentialdto:
+    password: TEst de Message
