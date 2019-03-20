@@ -16,9 +16,16 @@
 
       <!-- place the searched words in var searchwords and the action to
        script the search is searchIt -->
-      <input class="searchText" v-model="searchwords" placeholder="search a state of the art">
+      <div class="searchText">
+        <md-field>
+          <label>Type your search here</label>
+          <md-input v-model="type"></md-input>
+          <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
+        </md-field>
+      </div>
       <div class="searchbutton">
-        <button v-on:click="searchIt"  class="fa fa-search">search</button>
+        <!-- <button v-on:click="searchIt"  class="fa fa-search">search</button> -->
+        <md-button class="md-raised" v-on:click="searchIt">search</md-button>
       </div>
 
 
@@ -73,12 +80,12 @@
 
   .central {
     position: absolute;
-    top: 20%;
+    top: 30%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     width: 75%;
-    height: 30%;
+    height: 35%;
     overflow: auto;
   }
 
@@ -87,17 +94,17 @@
     height: 10%;
     position: absolute;
     left: 20%;
-    top: 30%;
   }
 
   .title{
+
     position: absolute;
-    top: 5%;
     left: 35%;
   }
 
   h1 {
-    padding: 50px;
+    margin-left: 50px;
+    margin-top: 35px;
   }
 
   p {
@@ -127,20 +134,20 @@
     left: 90%;
   }
 
-  .searchText {
-    width: 90%;
-    height: 7%;
+  .searchText{
+    height: 20%;
+    width: 87%;
+
     position: absolute;
-    left: 1%;
-    top: 87%;
+    top:70%;
   }
 
   .searchbutton{
     width: 10%;
     height: 15%;
     position: absolute;
-    left: 92%;
-    top:87%;
+    left: 89%;
+    top:75%;
   }
 
 
