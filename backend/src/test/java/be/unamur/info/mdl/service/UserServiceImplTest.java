@@ -39,18 +39,15 @@ public class UserServiceImplTest {
   private PasswordEncoder pwdEncoder;
 
 
-
-
   // User1.password = user1_pwd
   private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
-      "user1_pwd", "user1@email.dom", null,
-      null,null,null,null, null , null ,null, null,null, null);
+    "user1_pwd", "user1@email.dom", null,
+    null, null, null, null, null, null, null, null, null, null);
   // User1.password = user2_pwd
   private static final UserEntity MOCK_USER_2 = new UserEntity(456L, "user2",
-      "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
-      "user2@email.dom", null,
-    null,null,null,null, null , null ,null, null, null, null);
-
+    "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
+    "user2@email.dom", null,
+    null, null, null, null, null, null, null, null, null, null);
 
 
   @Before
@@ -94,7 +91,7 @@ public class UserServiceImplTest {
     newUser.setEmail("new_user@mail.dom");
     newUser.setPassword(newUserPassword);
 
-    when(pwdEncoder.encode(newUserPassword)).thenReturn(newUserPassword+"_encrypted");
+    when(pwdEncoder.encode(newUserPassword)).thenReturn(newUserPassword + "_encrypted");
     when(userRepository.save(any())).thenReturn(null);
 
     userService.signin(newUser);
@@ -102,16 +99,16 @@ public class UserServiceImplTest {
     verify(pwdEncoder).encode(newUserPassword);
     verify(userRepository).save(any());
 
-    assertNotEquals("The password should be encoded",newUser.getPassword());
+    assertNotEquals("The password should be encoded", newUser.getPassword());
   }
 
   @Test(expected = InvalidCredentialException.class)
   public void when_loginWitKnowUsernameNoPassword_then_throwsException()
-      throws InvalidCredentialException {
+    throws InvalidCredentialException {
     CredentialDTO user1 = new CredentialDTO();
     user1.setUsername("user1");
 
-    when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
+//    when(userRepository.findByUsername("user1")).thenReturn(MOCK_USER_1);
 
     userService.login(user1);
     fail("The login should be rejected for empty password");
@@ -120,12 +117,12 @@ public class UserServiceImplTest {
 
   @Test(expected = InvalidCredentialException.class)
   public void when_loginWithUnknownUsername_then_throwsException()
-      throws InvalidCredentialException {
+    throws InvalidCredentialException {
     CredentialDTO user2 = new CredentialDTO();
     user2.setUsername("user");
     user2.setPassword("pwd");
 
-    when(userRepository.findByUsername("user")).thenReturn(new UserEntity());
+//    when(userRepository.findByUsername("user")).thenReturn(new UserEntity());
 
     userService.login(user2);
     verify(userRepository).findByUsername("user");
@@ -139,7 +136,7 @@ public class UserServiceImplTest {
     CredentialDTO user = new CredentialDTO();
     user.setUsername("user1");
 
-    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
+//    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
 
     userService.login(user);
     fail("The login should be rejected for no password");
@@ -153,7 +150,7 @@ public class UserServiceImplTest {
     user.setUsername(MOCK_USER_1.getUsername());
     user.setPassword("pwd");
 
-    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
+//    when(userRepository.findByUsername(MOCK_USER_1.getUsername())).thenReturn(MOCK_USER_1);
 
     userService.login(user);
     fail("The login should be rejected for incorect pwd");
@@ -166,8 +163,9 @@ public class UserServiceImplTest {
     user.setUsername("user2");
     user.setPassword("user2_pwd");
 
+    when(userRepository.existsByUsername("user2")).thenReturn(true);
     when(userRepository.findByUsername("user2")).thenReturn(MOCK_USER_2);
-    when(pwdEncoder.matches(anyString(),anyString())).thenReturn(true);
+    when(pwdEncoder.matches(anyString(), anyString())).thenReturn(true);
 
     try {
       String token = userService.login(user);
