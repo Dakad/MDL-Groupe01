@@ -1,7 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,5 +47,5 @@ public class BookmarkEntity {
     name = "bookmark_article",
     joinColumns = @JoinColumn(name = "bookmark_id"),
     inverseJoinColumns = @JoinColumn(name = "article_id"))
-  private Set<ArticleEntity> articles = new LinkedHashSet<>();;
+  private Set<ArticleEntity> articles;
 }

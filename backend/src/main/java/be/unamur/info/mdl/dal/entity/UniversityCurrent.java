@@ -31,11 +31,11 @@ public class UniversityCurrent {
   @JoinColumn(name = "user_id")
   private UserEntity user;
 
+
   @ManyToOne
   @MapsId("university_id")
   @JoinColumn(name = "university_id")
   private UniversityEntity university;
-
 
 
 }

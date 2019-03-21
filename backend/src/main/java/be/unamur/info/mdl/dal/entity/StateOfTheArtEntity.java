@@ -1,7 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,22 +33,21 @@ public class StateOfTheArtEntity {
   @Column(unique = true, nullable = false)
   private String name;
 
-
   @Column(nullable = false)
   private String subject;
-
 
   @Column(nullable = false)
   @PastOrPresent
   private LocalDate date;
 
-
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
+
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -61,13 +59,14 @@ public class StateOfTheArtEntity {
   )
   private Set<ArticleEntity> articles;
 
+
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "tag_states_of_theart",
     joinColumns = {@JoinColumn(name = "state_of_the_art_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags = new LinkedHashSet<>();
+  private Set<TagEntity> tags;
 
 
 }

@@ -62,7 +62,7 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<ArticleEntity> articles = new LinkedHashSet<>();
+  private Set<ArticleEntity> articles;
 
 
   @OneToMany(
@@ -70,7 +70,7 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<StateOfTheArtEntity> stateofthearts = new LinkedHashSet<>();
+  private Set<StateOfTheArtEntity> stateOfTheArts;
 
 
   @OneToMany(
@@ -78,11 +78,11 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
+  private Set<BookmarkEntity> bookmarks;
 
 
   @OneToMany(mappedBy = "user")
-  private Set<UniversityCurrent> university = new  LinkedHashSet<>();
+  private Set<UniversityCurrent> university;
 
 
   @ManyToMany(cascade = {
@@ -91,7 +91,8 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<UserEntity> followers = new  LinkedHashSet<>();
+  private Set<UserEntity> followers = new LinkedHashSet<>();
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -99,7 +100,8 @@ public class UserEntity {
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private Set<ResearchGroupEntity> research_group = new  LinkedHashSet<>();
+  private Set<ResearchGroupEntity> research_group;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -107,13 +109,13 @@ public class UserEntity {
   @JoinTable(name = "follower_tags",
     joinColumns = {@JoinColumn(name = "follower_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags = new  LinkedHashSet<>();
+  private Set<TagEntity> tags;
 
 
   public static UserEntity of(UserDTO userData) {
     return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
       userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null,
-      null,null
+      null, null
     );
   }
 
