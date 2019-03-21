@@ -1,6 +1,6 @@
 <template>
   <section class="register">
-    <div>
+     <div>
         <p>Register Page</p>
         <p>Work In progress</p>
     </div>
