@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class UniversityEntity {
   private String name;
 
   @OneToMany(mappedBy ="university")
-  private Set<UserEntity> user;
+  private Set<UniversityCurrent> user = new LinkedHashSet<>();;
 
 
 }
