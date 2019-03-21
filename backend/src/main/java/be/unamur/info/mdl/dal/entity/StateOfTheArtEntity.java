@@ -1,6 +1,9 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,10 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,14 +40,34 @@ public class StateOfTheArtEntity {
 
 
   @Column(nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
   @PastOrPresent
   private LocalDate date;
 
 
+  @Column(name = "created_at")
+  private LocalDate createdAt = LocalDate.now();
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE
+  })
+  @JoinTable(name = "article_in_state",
+    joinColumns = @JoinColumn(name = "state_of_the_art_id"),
+    inverseJoinColumns = @JoinColumn(name = "article_id")
+  )
+  private Set<ArticleEntity> articles;
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "tag_states_of_theart",
+    joinColumns = {@JoinColumn(name = "state_of_the_art_id")},
+    inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+  private Set<TagEntity> tags = new LinkedHashSet<>();
 
 
 }

@@ -2,9 +2,8 @@ package be.unamur.info.mdl.dal.entity;
 
 
 import be.unamur.info.mdl.dto.UserDTO;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,7 +21,6 @@ import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.h2.engine.User;
 
 @Data
 @Entity
@@ -50,51 +48,72 @@ public class UserEntity {
   @Column(name = "last_name")
   private String lastname;
 
+  @Column(name = "created_at")
+  private LocalDate createdAt;
+
 
   @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "profil_id", referencedColumnName = "id")
+  @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
   private UserProfilEntity userProfil;
 
 
   @OneToMany(
-      mappedBy = "user",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
   )
-  private List<ArticleEntity> articles = new ArrayList<>();
+  private Set<ArticleEntity> articles = new LinkedHashSet<>();
 
 
   @OneToMany(
-      mappedBy = "user",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
   )
-  private List<StateOfTheArtEntity> stateofthearts = new ArrayList<>();
+  private Set<StateOfTheArtEntity> stateofthearts = new LinkedHashSet<>();
 
 
   @OneToMany(
-      mappedBy = "user",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
   )
-  private List<BookmarkEntity> bookmarks = new ArrayList<>();
+  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
 
   @OneToMany(mappedBy = "user")
-  private Set<UniversityEntity> university = new HashSet<>();
+  private Set<UniversityCurrent> university = new  LinkedHashSet<>();
 
 
-  @ManyToMany(cascade = {CascadeType.ALL})
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
   @JoinTable(name = "user_follower",
-      joinColumns = {@JoinColumn(name = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<User> users = new HashSet<>();
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "following_id")})
+  private Set<UserEntity> followers = new  LinkedHashSet<>();
 
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "user_group",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "group_id")})
+  private Set<ResearchGroupEntity> research_group = new  LinkedHashSet<>();
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "follower_tags",
+    joinColumns = {@JoinColumn(name = "follower_id")},
+    inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+  private Set<TagEntity> tags = new  LinkedHashSet<>();
 
 
   public static UserEntity of(UserDTO userData) {
     return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
-        userData.getFirstname(), userData.getLastname(), null,null, null,null,null,null
+      userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null,
+      null,null
     );
   }
 
