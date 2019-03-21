@@ -15,14 +15,6 @@ export default new Router({
       component: accueilapp,
     },
     {
-      path: '/register',
-      component: register
-    },
-    {path: '/login',
-    component: login
-
-    },
-    {
       path: '*',
       redirect: '/',
     },
