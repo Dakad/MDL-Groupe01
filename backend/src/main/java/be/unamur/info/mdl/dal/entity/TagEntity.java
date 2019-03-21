@@ -1,6 +1,5 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,11 +19,14 @@ public class TagEntity {
   @Id
   private String name;
 
+
   @ManyToMany(mappedBy = "tags")
   private Set<ArticleEntity> articles;
 
+
   @ManyToMany(mappedBy = "tags")
-  private Set<StateOfTheArtEntity> statesofthearts;
+  private Set<StateOfTheArtEntity> statesOfTheArts;
+
   @ManyToMany(mappedBy = "tags")
-  private Set<UserEntity> follower = new LinkedHashSet<>();;
+  private Set<UserEntity> followers;
 }
