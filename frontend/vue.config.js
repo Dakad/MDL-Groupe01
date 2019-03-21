@@ -13,14 +13,6 @@ module.exports = {
       }
     }
   },
-  configureWebpack:{
-    resolve:{
-      module:[
-        path.resolve("./src"),
-        path.resolve("./node_modules")
-      ]
-    }
-  }
   // Change build paths to make them Maven compatible
   // see https://cli.vuejs.org/config/
   outputDir: 'target/dist',
