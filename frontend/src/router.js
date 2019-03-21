@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import accueilapp from './components/AccueilVue.vue';
-import register from './components/Register.vue';
-import login from './components/Login.vue';
+import research from './components/Research.vue';
 
 Vue.use(Router);
 
@@ -18,5 +17,9 @@ export default new Router({
       path: '*',
       redirect: '/',
     },
+    {
+      path : '/result',
+      component: research,
+    }
   ],
 });

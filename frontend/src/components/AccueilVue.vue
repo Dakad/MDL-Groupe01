@@ -24,7 +24,7 @@
         </md-field>
       </div>
       <div class="searchbutton">
-        <md-button class="md-raised" v-on:click="searchIt">search</md-button>
+        <md-button class="md-raised" v-on:click="searchIt" href='/result'>search</md-button>
       </div>
 
 
