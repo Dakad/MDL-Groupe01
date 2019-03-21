@@ -24,7 +24,6 @@
         </md-field>
       </div>
       <div class="searchbutton">
-        <!-- <button v-on:click="searchIt"  class="fa fa-search">search</button> -->
         <md-button class="md-raised" v-on:click="searchIt">search</md-button>
       </div>
 
@@ -40,8 +39,11 @@
       <p>recommended</p>
 
       <div class="recoNews">
-        <button v-on:click="switcher">recommander</button>
+        <md-button class="md-raised" v-on:click="switcher">recommanded</md-button>
       </div>
+     <div id="slider">
+       <carousel :autoplay="true">' + buildSlideMarkup(10) + '</carousel>
+     </div>
 
     </div>
   </section>
@@ -55,15 +57,23 @@
 
 
 <script>
-  import 'swiper/dist/css/swiper.css';
-  import { swiper, swiperSlide } from 'vue-awesome-swiper';
   import navappregister from './NavBarRegister.vue';
+  import Vue from 'vue';
+  import { Carousel, Slide } from 'vue-carousel';
+
+  const buildSlideMarkup = (count) => {
+    let slideMarkup = '';
+    for (var i = 1; i <= count; i++) {
+      slideMarkup += '<slide><span class="label">' + i + '</span></slide>'
+    }
+    return slideMarkup;
+  };
 
   export default {  
     name:'app',
     components:{
-      navappregister
-    }
+      navappregister, Carousel, Slide
+    },
   };
 </script>
 
@@ -131,7 +141,7 @@
     margin-right: 50px;
     position: absolute;
     top: 5%;
-    left: 90%;
+    left: 85%;
   }
 
   .searchText{
@@ -148,6 +158,31 @@
     position: absolute;
     left: 89%;
     top:75%;
+  }
+
+  .VueCarousel-slide {
+    position: relative;
+    background: #42b983;
+    color: #fff;
+    font-family: Arial;
+    font-size: 24px;
+    text-align: center;
+    min-height: 50px;
+  }
+
+  .label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #slider {
+    width: 80%;
+    height: 70%;
+    position: absolute;
+    top: 20%;
+    left: 10% ;
   }
 
 
