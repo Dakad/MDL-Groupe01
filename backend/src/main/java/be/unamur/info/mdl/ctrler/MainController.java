@@ -2,6 +2,11 @@ package be.unamur.info.mdl.ctrler;
 
 
 import be.unamur.info.mdl.dto.CredentialDTO;
+<<<<<<< Updated upstream
+=======
+import be.unamur.info.mdl.dto.SearchQueryDTO;
+import be.unamur.info.mdl.dto.SearchResultDTO;
+>>>>>>> Stashed changes
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
@@ -17,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+<<<<<<< Updated upstream
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+=======
+import org.springframework.web.bind.annotation.*;
+>>>>>>> Stashed changes
 
 // import org.springframework.stereotype.Controller;
 
@@ -65,6 +74,14 @@ public class MainController {
     }
   }
 
+<<<<<<< Updated upstream
+=======
+  @RequestMapping(value = "/search?p={page}&o={order}&s={sort}", method = RequestMethod.GET)
+  public ResponseEntity<SearchResultDTO> search(@Valid @RequestParam SearchQueryDTO searchQuerry) {
+
+  }
+
+>>>>>>> Stashed changes
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
