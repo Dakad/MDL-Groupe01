@@ -2,14 +2,14 @@
   <header class="navappregister">
     <div>
       <!-- Create the login dialog -->
-      <md-dialog :md-active.sync="showLoginDialog">
+      <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
         <md-dialog-title>Login</md-dialog-title>
         <login/>
         <!--Button to close the dialog-->
       </md-dialog>
 
       <!--Create the register dialog-->
-      <md-dialog :md-active.sync="showRegisterDialog">
+      <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
         <md-dialog-title>Create Account</md-dialog-title>
         <register/>
       </md-dialog>
@@ -29,9 +29,12 @@
 
 
 <style lang="scss" scoped>
-.md-dialog {
-  widows: 100%;
+.signin-dialog {
+  width: 55%;
 }
+// .md-dialog {
+//   widows: 100%;
+// }
 </style>
 
 
