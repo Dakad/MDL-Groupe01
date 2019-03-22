@@ -21,7 +21,7 @@
         </md-field>
       </div>
       <div class="searchbutton">
-        <md-button class="md-raised" v-on:click="searchIt" href="/result">search</md-button>
+        <md-button class="md-raised" v-on:click="searchIt()" href="/result">search</md-button>
       </div>
 
       <div class="filter"></div>
@@ -71,7 +71,8 @@ export default {
     //   }
     //   return slideMarkup;
     // }
-  }
+  },
+  searchIt() {}
 };
 </script>
 
