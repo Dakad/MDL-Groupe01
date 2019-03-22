@@ -1,7 +1,12 @@
 <template>
   <section class="accueilapp">
+    <!-- <header class="header"> -->
+    <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche -->
+    <!-- <Navbar/> -->
+    <!-- </header> -->
+
     <div class="central">
-      <img class="logoimg" src="@/assets/logochicken.jpg" style="width:100px;height:100px;">
+      <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
       <div class="title">
         <h1>No Assigned Name</h1>
       </div>
@@ -11,7 +16,7 @@
       <div class="searchText">
         <md-field>
           <label>Type your search here</label>
-          <md-input v-model="type"></md-input>
+          <md-input v-model="searchInput"></md-input>
           <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
         </md-field>
       </div>
@@ -21,7 +26,7 @@
 
       <div class="filter"></div>
     </div>
-
+    <!--
     <div class="recommended">
       <p>recommended</p>
 
@@ -29,9 +34,13 @@
         <md-button class="md-raised" v-on:click="switcher">recommanded</md-button>
       </div>
       <div id="slider">
-        <carousel :autoplay="true">' + buildSlideMarkup(10) + '</carousel>
+        <carousel :autoplay="carrouselAutoplay">
+          <slide>
+            <span class="label">1</span>
+          </slide>
+        </carousel>
       </div>
-    </div>
+    </div>-->
   </section>
 </template>
 
@@ -39,21 +48,29 @@
 
 <script>
 import { Carousel, Slide } from "vue-carousel";
+import Navbar from "@/components/Navbar.vue";
 
 export default {
   name: "Accueil",
   components: {
     Carousel,
-    Slide
+    Slide,
+    Navbar
+  },
+  data() {
+    return {
+      searchInput: null,
+      carrouselAutoplay: true
+    };
   },
   methods: {
-    buildSlideMarkup(count) {
-      let slideMarkup = "";
-      for (var i = 1; i <= count; i++) {
-        slideMarkup += '<slide><span class="label">' + i + "</span></slide>";
-      }
-      return slideMarkup;
-    }
+    // buildSlideMarkup(count) {
+    //   let slideMarkup = "";
+    //   for (var i = 1; i <= count; i++) {
+    //     slideMarkup += '<slide><span class="label">' + i + "</span></slide>";
+    //   }
+    //   return slideMarkup;
+    // }
   }
 };
 </script>
