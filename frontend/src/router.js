@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import NotFound from './pages/NotFound.vue';
-import Accueil from './pages/AccueilVue.vue';
+import Accueil from './pages/Accueil.vue';
 // import Resultat from './pages/Resultat.vue';
 
 Vue.use(Router);

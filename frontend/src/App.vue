@@ -1,21 +1,19 @@
 <template>
   <div id="app">
-    <header class="navbar">
-      <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche -->
-      <navbar/>
-    </header>
+    <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche-->
+    <navbar/>
 
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+import Navbar from "@/components/Navbar.vue";
 
 export default {
   name: "App",
   components: {
-    NavBar
+    Navbar
   }
 };
 </script>

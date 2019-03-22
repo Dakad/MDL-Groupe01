@@ -1,5 +1,5 @@
 <template>
-  <section class="navappregister">
+  <header class="navappregister">
     <div>
       <!-- Create the login dialog -->
       <md-dialog :md-active.sync="showLoginDialog">
@@ -24,7 +24,7 @@
         <md-button class="md-primary md-raised" @click="showLoginDialog = true">Sign up</md-button>
       </md-toolbar>
     </div>
-  </section>
+  </header>
 </template>
 
 
