@@ -131,7 +131,7 @@
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
               <!-- this will get rid of version info from war file name -->
-              <finalName>${project.artifactId}</finalName>
+              <finalName>latest-release</finalName>
             </configuration>
           </plugin>
         </plugins>
