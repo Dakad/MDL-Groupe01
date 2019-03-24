@@ -34,7 +34,7 @@
         <md-button class="md-raised" v-on:click="switcher">recommanded</md-button>
       </div>
       <div id="slider">
-        <carousel :autoplay="carrouselAutoplay">
+        <carousel :autoplay=true>
           <slide>
             <span class="label">1</span>
           </slide>
