@@ -59,28 +59,29 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String login(@Valid CredentialDTO userLogin) throws InvalidCredentialException {
-    UserDTO userEntity = userRepository.findByUsername(userLogin.getUsername()).toDTO();
-    if(userEntity == null || !checkPassword(userLogin, userEntity)){
-      throw new InvalidCredentialException("Invalid username or password provided");
+    if (this.userRepository.existsByUsername(userLogin.getUsername())){
+      UserDTO user = userRepository.findByUsername(userLogin.getUsername()).toDTO();
+      if (checkPassword(userLogin, user)) {
+        //TODO Send Real JWToken
+        return "JWT_TOKEN";
+      }
     }
-    //TODO Send Real JWToken
-    return "JWT_TOKEN";
+    throw new InvalidCredentialException("Invalid username or password provided");
+  }
+
+  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity) {
+    return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 
 
   @Override
   public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO) {
     UserEntity user = userRepository.findByUsername(username);
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    if (encoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
+    if (this.passwordEncoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
       user.setPassword(passwordChangeDTO.getNewPassword());
       return true;
     }
     return false;
   }
 
-
-  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity) {
-    return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
-  }
 }

@@ -6,8 +6,8 @@
 
   <groupId>be.unamur.info</groupId>
   <artifactId>mdl</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
 
   <name>MDLabo</name>
   <description>Spring Boot for Labo MDL</description>

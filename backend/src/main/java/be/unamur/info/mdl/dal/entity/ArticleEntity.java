@@ -1,7 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -59,26 +58,25 @@ public class ArticleEntity {
   private LocalDate createdAt = LocalDate.now();
 
 
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
 
-    //Relation entre Articles et Bookmark
-  @ManyToMany(mappedBy = "articles")
-  private Set<BookmarkEntity>bookmark;
 
-  // Auto referece des articles
+  @ManyToMany(mappedBy = "articles")
+  private Set<BookmarkEntity> bookmark;
+
+
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "article_references",
     joinColumns = {@JoinColumn(name = "article_id")},
     inverseJoinColumns = {@JoinColumn(name = "reference_id")})
-  private Set<ArticleEntity> references = new LinkedHashSet<>();
+  private Set<ArticleEntity> references;
 
   @ManyToMany(mappedBy = "articles")
-  private Set <StateOfTheArtEntity> state_of_the_art;
+  private Set<StateOfTheArtEntity> state_of_the_art;
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -86,8 +84,7 @@ public class ArticleEntity {
   @JoinTable(name = "tag_article",
     joinColumns = {@JoinColumn(name = "article_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags = new LinkedHashSet<>();
-
+  private Set<TagEntity> tags;
 
 
 }
