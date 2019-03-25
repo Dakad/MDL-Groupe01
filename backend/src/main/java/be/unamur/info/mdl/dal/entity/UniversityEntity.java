@@ -1,6 +1,5 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name ="university")
+@Table(name = "university")
 public class UniversityEntity {
 
   @Id
@@ -27,8 +26,8 @@ public class UniversityEntity {
   @Column(unique = true, nullable = false)
   private String name;
 
-  @OneToMany(mappedBy ="university")
-  private Set<UniversityCurrent> user = new LinkedHashSet<>();;
+  @OneToMany(mappedBy = "university")
+  private Set<UniversityCurrent> members;
 
 
 }

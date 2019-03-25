@@ -7,14 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RequestMapping(path = "/")
 @RestController
 public class APIBaseController {
 /*
@@ -39,13 +36,9 @@ public class APIBaseController {
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
         }
-        return String.format("{\"validation\" : %s }", json.toString());
+      return String.format("{\"validation\" : %s }", json);
     }
 
 
-    @GetMapping(value = {"api", "zen", "/api/zen"})
-    public String yello() {
-        return "Yello from MDL API !";
-    }
 
 }
