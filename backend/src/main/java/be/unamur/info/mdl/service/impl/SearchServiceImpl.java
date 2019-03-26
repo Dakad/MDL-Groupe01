@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+@Service("searchService")
 
 public class SearchServiceImpl implements SearchService {
   private UserRepository userRepository;
@@ -41,8 +44,7 @@ public class SearchServiceImpl implements SearchService {
       default: sort = "createdAt";
     }
 
-    String keywords = String.join(" ",searchQuery.getKeyword());
-
+    String keywords = searchQuery.getKeyword();
     //USERS
     Pageable pageable;
     if(sort == "name") {
