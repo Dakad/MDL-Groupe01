@@ -70,7 +70,9 @@ public class MainController extends APIBaseController {
   }
 
   @RequestMapping(value = "/search", method = RequestMethod.GET)//?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
-  public ResponseEntity<SearchResultDTO> search(@RequestParam int p, String o, String s, String k, String t) {
+  public ResponseEntity<SearchResultDTO> search(@RequestParam Integer p, String o, String s, String k, String t) {
+    if(p == null || o == "" || s == "" || k == "") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    if(p < 0) p = 0;
     SearchQueryDTO searchQuery = new SearchQueryDTO(k,t,p,o,s);
     SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
