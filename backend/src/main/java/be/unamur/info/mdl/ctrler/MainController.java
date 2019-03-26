@@ -30,6 +30,7 @@ public class MainController extends APIBaseController {
 
   @Autowired
   private UserService userService;
+  @Autowired
   private SearchService searchService;
 
 
@@ -68,9 +69,10 @@ public class MainController extends APIBaseController {
     }
   }
 
-  @RequestMapping(value = "/search?p={page}&o={order}&s={sort}", method = RequestMethod.GET)
-  public ResponseEntity<SearchResultDTO> search(@Valid @RequestParam SearchQueryDTO searchQuerry) {
-    SearchResultDTO resultDTO = searchService.getSearchResults(searchQuerry);
+  @RequestMapping(value = "/search", method = RequestMethod.GET)//?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
+  public ResponseEntity<SearchResultDTO> search(@RequestParam int p, String o, String s, String k, String t) {
+    SearchQueryDTO searchQuery = new SearchQueryDTO(k,t,p,o,s);
+    SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
 
