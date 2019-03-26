@@ -73,7 +73,7 @@ public class MainController extends APIBaseController {
   //?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
   @RequestMapping(value = "/search", method = RequestMethod.GET)
   public ResponseEntity<SearchResultDTO> search(
-    @RequestParam(defaultValue = "0", required = false) Integer p,
+    @RequestParam(defaultValue = "0", required = false) int p,
     @RequestParam(defaultValue = "ASC", required = false) String o,
     @RequestParam(defaultValue = "DATE", required = false) String s,
     @RequestParam String k,
