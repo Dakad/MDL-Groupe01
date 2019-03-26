@@ -6,12 +6,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import be.unamur.info.mdl.service.impl.SearchServiceImpl;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +35,10 @@ public class  MainControllerTest {
 
   @MockBean
   private UserServiceImpl userService;
+
+  @MockBean
+  private SearchServiceImpl searchService;
+
 //
 //  @MockBean
 //  private UserRepository userDAO;
@@ -40,6 +47,8 @@ public class  MainControllerTest {
   private static final String LOGIN_URL = "/api/login";
 
   private static final String SIGNIN_URL = "/api/signin";
+
+  private static final String SEARCH_URL = "/api/search";
 
 
   @Test
@@ -285,6 +294,21 @@ public class  MainControllerTest {
   }
 
   @Test
+  public void search_with_empty_params_will_throws_exception() throws Exception {
+    JSONObject credential = new JSONObject();
+    credential.put("username","correct_user_name");
+    credential.put("password", "correct_Pwd_123");
+
+    when(userService.login(any())).thenReturn("JWT_TEST_TOKEN");
+
+    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
+        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+    ;
+  }
+
+
+  @Test
   public void login_with_credentials() throws Exception {
     JSONObject credential = new JSONObject();
     credential.put("username","correct_user_name");
@@ -293,11 +317,11 @@ public class  MainControllerTest {
     when(userService.login(any())).thenReturn("JWT_TEST_TOKEN");
 
     api.perform(MockMvcRequestBuilders.post(LOGIN_URL)
-        .content(credential.toString())
-        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.auth_token").exists())
-        .andExpect(jsonPath("$.auth_token").value("JWT_TEST_TOKEN"))
+      .content(credential.toString())
+      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.auth_token").exists())
+      .andExpect(jsonPath("$.auth_token").value("JWT_TEST_TOKEN"))
     ;
   }
 
