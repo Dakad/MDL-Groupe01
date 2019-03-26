@@ -14,6 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.PastOrPresent;
+
+import be.unamur.info.mdl.dto.ArticleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,5 +56,8 @@ public class ArticleEntity {
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
 
+  public ArticleDTO toDTO(){
+    return new ArticleDTO(id,title,publicationDate,price,nbrePage,nbreCitation,user.toDTO());
+  }
 
 }
