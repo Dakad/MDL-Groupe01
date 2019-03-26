@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.PastOrPresent;
+
+import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,5 +48,8 @@ public class StateOfTheArtEntity {
   @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
 
+  public StateOfTheArtDTO toDTO(){
+    return new StateOfTheArtDTO(id,name,subject,date,user.toDTO());
+  }
 
 }

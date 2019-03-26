@@ -2,8 +2,10 @@ package be.unamur.info.mdl.dal.repository;
 
 
 import be.unamur.info.mdl.dal.entity.UserEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 
 import java.util.List;
 
@@ -16,5 +18,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByEmail(String email);
 
-    List<UserEntity> findDistinctByFirstnameLikeOrLastnameLike(String firstname, String lastname);
+    List<UserEntity> findDistinctByFirstnameLikeOrLastnameLike(String firstname, String lastname, Pageable pageable);
 }
