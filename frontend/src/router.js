@@ -18,8 +18,10 @@ export default new Router({
 
     { name: '404', path: '/404', component: NotFound },
 
-    { name: '', path: '*', redirect: '/404' },
 
-    { name: 'Article', path: '/', component: Article }
+    { name: 'Article', path: '/article', component: Article },
+
+    { name: '', path: '*', redirect: '/404' }
+
   ]
 });
