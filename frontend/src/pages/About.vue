@@ -14,31 +14,7 @@
     </b-row>
 
     <div class="card-expansion">
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/christelle.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">Christelle Trinon</div>
-          <div class="md-subhead">Product Owner</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
-
+      <person image="../assets/team/christelle.jpg" name="Christelle Trinon" role="Product Owner" descr="Description"></person>
       <md-card>
         <md-card-media>
           <img src="../assets/team/guillaume.jpg" alt="People">
@@ -172,8 +148,12 @@
 </template>
 
 <script>
+import Person from "../components/about/Person.vue"
 export default {
-  name: "About"
+  name: "About",
+  components: {
+    Person
+  }
 };
 </script>
 
