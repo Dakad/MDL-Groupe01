@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
@@ -26,16 +25,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MainControllerTest {
+public class  MainControllerTest {
 
   @Autowired
   private MockMvc api;
 
   @MockBean
   private UserServiceImpl userService;
-
-  @MockBean
-  private UserRepository userDAO;
+//
+//  @MockBean
+//  private UserRepository userDAO;
 
 
   private static final String LOGIN_URL = "/api/login";
