@@ -2,7 +2,7 @@
     <div class="menuArticle">
       <button class="fas fa-file-download" v-on:click="downloadRef()"></button>
       <button class="far fa-bookmark" v-on:click="bookmark()"></button>
-      <button class="fas fa-plus" v-on:click="addToSOTA()"></button>
+      <button class="fas fa-star" v-on:click="addToSOTA()"></button>
     </div>
 </template>
 
@@ -11,13 +11,13 @@
       name: "MenuArticle",
       methods: {
         downloadRef(){
-          <!-- TODO add the download function -->
+          // TODO add the download function
         },
         bookmark(){
-          <!-- TODO add to the bookmark function -->
+          // TODO add to the bookmark function
         },
         addToSOTA(){
-          <!-- TODO add the add to SOTA function -->
+          // TODO add the add to SOTA function
         }
       }
     }
