@@ -4,14 +4,13 @@
       <!-- Create the login dialog -->
       <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
         <md-dialog-title>Login</md-dialog-title>
-        <login/>
-        <!--Button to close the dialog-->
+        <login @close="showLoginDialog= false"/>
       </md-dialog>
 
       <!--Create the register dialog-->
       <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
         <md-dialog-title>Create Account</md-dialog-title>
-        <register/>
+        <register @close="showRegisterDialog = false"/>
       </md-dialog>
 
       <!--The main navigation bar-->
@@ -39,8 +38,8 @@
 
 
 <script>
-import Login from "./Login.vue";
-import Register from "./Register.vue";
+import Login from "./navbar/Login.vue";
+import Register from "./navbar/Register.vue";
 
 export default {
   name: "Navbar",
