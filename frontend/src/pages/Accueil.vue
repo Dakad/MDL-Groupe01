@@ -1,10 +1,5 @@
 <template>
   <section class="accueilapp">
-    <!-- <header class="header"> -->
-    <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche -->
-    <!-- <Navbar/> -->
-    <!-- </header> -->
-
     <div class="central">
       <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
       <div class="title">
@@ -47,15 +42,13 @@
 
 
 <script>
-import { Carousel, Slide } from "vue-carousel";
-import Navbar from "@/components/Navbar.vue";
+// import { Carousel, Slide } from "vue-carousel";
 
 export default {
   name: "Accueil",
   components: {
-    Carousel,
-    Slide,
-    Navbar
+    // Carousel,
+    // Slide,
   },
   data() {
     return {
