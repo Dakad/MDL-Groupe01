@@ -13,10 +13,10 @@ export default new Router({
   routes: [
     { name: 'accueil', path: '/', component: Accueil },
 
-    // { name: 'resultat', path: '/result', component: Resultat },
+    //{ name: 'resultat', path: '/result', component: Resultat },
 
     { name: '404', path: '/404', component: NotFound },
 
-    { name: '', path: '*', redirect: '/404' }
+    { name: '', path: '*', redirect: '/404' },
   ]
 });

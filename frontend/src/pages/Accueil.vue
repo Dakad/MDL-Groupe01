@@ -8,16 +8,8 @@
 
       <!-- place the searched words in var searchwords and the action to
       script the search is searchIt-->
-      <div class="searchText">
-        <md-field>
-          <label>Type your search here</label>
-          <md-input v-model="searchInput"></md-input>
-          <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
-        </md-field>
-      </div>
-      <div class="searchbutton">
-        <md-button class="md-raised" v-on:click="searchIt()" href="/result">search</md-button>
-      </div>
+
+      <search></search>
 
       <div class="filter"></div>
     </div>
@@ -43,12 +35,14 @@
 
 <script>
 // import { Carousel, Slide } from "vue-carousel";
+import Search from '@/components/navbar/Search';
 
 export default {
   name: "Accueil",
   components: {
     // Carousel,
     // Slide,
+    Search
   },
   data() {
     return {
