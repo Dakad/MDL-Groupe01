@@ -14,9 +14,11 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByUsername(String username);
+  boolean existsByUsername(String username);
 
-    UserEntity findByEmail(String email);
+  List<UserEntity> findDistinctByFirstnameLikeOrLastnameLike(String firstname, String lastname, Pageable pageable);
 
-    List<UserEntity> findDistinctByFirstnameLikeOrLastnameLike(String firstname, String lastname, Pageable pageable);
+  UserEntity findByUsername(String username);
+
+  UserEntity findByEmail(String email);
 }

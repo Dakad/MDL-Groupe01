@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name ="university")
+@Table(name = "university")
 public class UniversityEntity {
 
   @Id
@@ -26,8 +26,8 @@ public class UniversityEntity {
   @Column(unique = true, nullable = false)
   private String name;
 
-  @OneToMany(mappedBy ="university")
-  private Set<UserEntity> user;
+  @OneToMany(mappedBy = "university")
+  private Set<UniversityCurrent> members;
 
 
 }

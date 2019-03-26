@@ -1,24 +1,15 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.PastOrPresent;
-
 import be.unamur.info.mdl.dto.ArticleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Entity
@@ -35,29 +26,59 @@ public class ArticleEntity {
   private String title;
 
   @Column(name = "publication_date", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
   @PastOrPresent
   private LocalDate publicationDate;
 
   @Column
-  @Min(0)
+  @PositiveOrZero
   private float price;
 
-  @Column(name = "nbre_page")
-  @Min(1)
-  private int nbrePage;
+  @Column(name = "nbre_pages")
+  @PositiveOrZero
+  private int nbrePages;
 
-  @Column(name = "nbre_citation")
-  @Min(0)
-  private int nbreCitation;
+  @Column(name = "nbre_citations")
+  @PositiveOrZero
+  private int nbreCitations;
+
+  @Column(name = "nbre_vues")
+  @PositiveOrZero
+  private int nbreVues = 0;
+
+  @Column(name = "created_at")
+  private LocalDate createdAt = LocalDate.now();
+
 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
 
+  @ManyToMany(mappedBy = "articles")
+  private Set<BookmarkEntity> bookmark;
+
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "article_references",
+    joinColumns = {@JoinColumn(name = "article_id")},
+    inverseJoinColumns = {@JoinColumn(name = "reference_id")})
+  private Set<ArticleEntity> references;
+
+  @ManyToMany(mappedBy = "articles")
+  private Set<StateOfTheArtEntity> state_of_the_art;
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "tag_article",
+    joinColumns = {@JoinColumn(name = "article_id")},
+    inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+  private Set<TagEntity> tags;
+
   public ArticleDTO toDTO(){
-    return new ArticleDTO(id,title,publicationDate,price,nbrePage,nbreCitation,user.toDTO());
+    return new ArticleDTO(id,title,publicationDate,price,nbrePages,nbreCitations,user.toDTO());
   }
 
 }
