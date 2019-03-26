@@ -1,6 +1,5 @@
 <template>
   <div class="article">
-    <Navbar></Navbar>
     <Search></Search>
     <h1> {{ articleTitle }} </h1>
     <menuArticle></menuArticle>
@@ -12,14 +11,13 @@
 <script>
   import InfoNav from '@/components/article/InfoNav';
   import MenuArticle from '@/components/article/MenuArticle';
-  import Navbar from '@/components/Navbar';
+
 
     export default {
         name: "Article",
         components: {
           InfoNav,
-          MenuArticle,
-          Navbar
+          MenuArticle
       },
       data() {
         return {
