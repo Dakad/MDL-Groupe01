@@ -3,7 +3,7 @@ import Router from 'vue-router';
 
 import NotFound from './pages/NotFound.vue';
 import Accueil from './pages/Accueil.vue';
-// import Resultat from './pages/Resultat.vue';
+import Resultat from './pages/Resultat.vue';
 
 Vue.use(Router);
 
@@ -13,7 +13,7 @@ export default new Router({
   routes: [
     { name: 'accueil', path: '/', component: Accueil },
 
-    //{ name: 'resultat', path: '/result', component: Resultat },
+    { name: 'resultat', path: '/result', component: Resultat },
 
     { name: '404', path: '/404', component: NotFound },
 
