@@ -3,6 +3,7 @@
             <div class ='tabs'>
             <md-tabs>
                 <md-tab id="sota" md-label="State Of The Art">
+                  <!--Todo : Make a list of state art-->
                   <sota/>
                 </md-tab>
                 <md-tab id="article" md-label="Article">
@@ -16,6 +17,7 @@
                 </md-tab>
             </md-tabs>
         </div>
+
 
 
           <div class="first">
@@ -59,13 +61,13 @@ export default {
 }
 
 .first{
-    position: absolute;
+    position: relative;
     top: 15%;
     left: 5%;
 }
   
 .second{
-    position: absolute;
+    position: relative;
     top: 60%;
     left: 5%;
 }
