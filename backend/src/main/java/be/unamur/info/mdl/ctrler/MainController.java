@@ -73,16 +73,20 @@ public class MainController extends APIBaseController {
   //?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
   @RequestMapping(value = "/search", method = RequestMethod.GET)
   public ResponseEntity<SearchResultDTO> search(
-    @RequestParam(defaultValue = "0", required = false) int p,
+    @RequestParam(defaultValue = "0", required = false) String p,
     @RequestParam(defaultValue = "ASC", required = false) String o,
     @RequestParam(defaultValue = "DATE", required = false) String s,
     @RequestParam String k,
     @RequestParam(required = false) String t) {
 
-    if (p < 0) {
-      p = 0;
+    int page;
+    try{page = Integer.parseInt(p);}
+    catch (NumberFormatException e){
+      page = 0;
     }
-    SearchQueryDTO searchQuery = new SearchQueryDTO(k, t, p, o, s);
+
+    if(page <0) page = 0;
+    SearchQueryDTO searchQuery = new SearchQueryDTO(k, t, page, o, s);
     SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
