@@ -5,6 +5,7 @@ import NotFound from './pages/NotFound.vue';
 import Accueil from './pages/Accueil.vue';
 // import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
+import Sota from'./pages/Sota';
 
 Vue.use(Router);
 
@@ -20,6 +21,8 @@ export default new Router({
 
 
     { name: 'Article', path: '/article', component: Article },
+
+    { name: 'Sota', path: '/Sota', component: Sota },
 
     { name: '', path: '*', redirect: '/404' }
 
