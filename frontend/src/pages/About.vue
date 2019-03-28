@@ -14,23 +14,26 @@
     </b-row>
 
     <div class="card-expansion">
-      <person image="https://i.imgur.com/zy9W4LX.jpg" name="Christelle Trinon" role="Product Owner" descr="Description"></person>
-      <person image="https://i.imgur.com/iiXpIYv.jpg" name="Guillaume Maître" role="Scum Master" descr="Description"></person>
-      <person image="https://i.imgur.com/5uuVNrI.jpg" name="Bastien Müllers" role="Infrastructure Manager" descr="Description"></person>
-      <br>
-      <person image="https://i.imgur.com/0gt2KG4.jpg" name="David Adegnon" role="Team Member" descr="Description"></person>
-      <person image="https://i.imgur.com/rRJjme8.jpg" name="William Turatsinze" role="Team Member" descr="Description"></person>
-      <person image="https://i.imgur.com/LIKBZf0.jpg" name="Ludovic Wasterlain" role="Team Member" descr="Description"></person>
-    </div>   
+      <person v-for="member in team" v-bind:key="member.name" :image="member.avatar" :name="member.name" :role="member.role" :descr="member.descr"></person>
+      </div>   
   </b-container>
 </template>
 
 <script>
-import Person from "../components/about/Person.vue"
+import Person from "../components/about/Person.vue";
+import { getTeam } from "../services/api";
 export default {
   name: "About",
   components: {
     Person
+  },
+  data: function () {
+    team: null
+  },
+  methods: {
+    getTeam() {
+      getTeam().then(data=>this.team=data)
+    }
   }
 };
 </script>
