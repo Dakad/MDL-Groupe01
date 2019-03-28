@@ -6,7 +6,7 @@
         <md-dialog-title>
           <md-icon :class="['md-size-2x', {'text-danger':loginFailed}]">security</md-icon>&nbsp; Login
         </md-dialog-title>
-        <login @error="handleLoginError($event)" @close="showLoginDialog=false"/>
+        <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
       </md-dialog>
 
       <!--Create the register dialog-->
@@ -15,7 +15,10 @@
           <md-icon :class="[ 'md-size-2x',{'text-danger':signinFailed }]">account_box</md-icon>&nbsp;
           <span>Create account</span>
         </md-dialog-title>
-        <register @close="showRegisterDialog = false"/>
+        <register
+          @error="handleError('register', $event)"
+          @success="handleSuccess('signin',$event)"
+        />
       </md-dialog>
 
       <!--The main navigation bar-->
@@ -54,7 +57,6 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
-import { postLogin, postSignin } from "@/services/api-user";
 
 export default {
   name: "Navbar",
@@ -71,13 +73,38 @@ export default {
     };
   },
   methods: {
-    handleLoginError(error) {
-      this.loginFailed = true;
+    handleError(component, error) {
+      switch (component) {
+        case "login":
+          this.loginFailed = true;
+          break;
+        case "register":
+        case "signin":
+          this.signinFailed = true;
+        default:
+          break;
+      }
       this.showSnackbar = true;
       this.snackbarMsg = error;
     },
-    handleSigninError(error) {
-      this.loginFailed = true;
+
+    handleSuccess(component, msg) {
+      switch (component) {
+        case "login":
+          this.showLoginDialog = false;
+          msg = `Hello ${msg} ! Welcome BACK :-D !!`;
+          break;
+        case "register":
+        case "signin":
+          this.showRegisterDialog = false;
+          if (!msg) {
+            msg = "Welcome on board !! Please login with your credentials !";
+          }
+        default:
+          break;
+      }
+      this.showSnackbar = true;
+      this.snackbarMsg = msg;
     }
   }
 };

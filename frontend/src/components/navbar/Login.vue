@@ -111,6 +111,7 @@ export default {
     validateLogin() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
+        this.invalid = {};
         this.auth();
       } else {
         this.$emit("error", this.msg);
@@ -122,16 +123,15 @@ export default {
         .then(res => {
           console.log(res);
           this.sending = false;
+          this.$emit("success", this.login.username);
+          this.clearForm();
         })
         .catch(err => {
-          if (err.status == 400) {
-            this.msg = "Authentication denied - Please correct your input";
-            this.invalid = Object.assign({}, err.body["validation"]);
-          }
-          if (err.status == 409) {
-            this.clearForm();
-            this.msg = "Authentication denied - " + err.body["error"];
-          }
+          // if (!err.ok) {
+          this.msg = "Authentication denied - Please correct your credentials";
+          this.invalid = Object.assign({}, err.body["validation"]);
+          // this.msg = "Authentication denied - " + err.body["error"];
+          // }
           console.error(err);
           this.sending = false;
           this.$emit("error", this.msg);
