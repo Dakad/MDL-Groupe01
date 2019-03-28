@@ -14,137 +14,15 @@
     </b-row>
 
     <div class="card-expansion">
-      <person image="../assets/team/christelle.jpg" name="Christelle Trinon" role="Product Owner" descr="Description"></person>
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/guillaume.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">Guillaume Maître</div>
-          <div class="md-subhead">Scrum Master</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
-
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/bastien.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">Bastien Müllers</div>
-          <div class="md-subhead">Infrastructure Manager</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
-
+      <person image="https://i.imgur.com/zy9W4LX.jpg" name="Christelle Trinon" role="Product Owner" descr="Description"></person>
+      <person image="https://i.imgur.com/iiXpIYv.jpg" name="Guillaume Maître" role="Scum Master" descr="Description"></person>
+      <person image="https://i.imgur.com/5uuVNrI.jpg" name="Bastien Müllers" role="Infrastructure Manager" descr="Description"></person>
       <br>
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/david.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">David Adegnon</div>
-          <div class="md-subhead">Team Member</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
-
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/william.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">William Turatsinze</div>
-          <div class="md-subhead">Team Member</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
-
-      <md-card>
-        <md-card-media>
-          <img src="../assets/team/ludovic.jpg" alt="People">
-        </md-card-media>
-
-        <md-card-header>
-          <div class="md-title">Ludovic Wasterlain</div>
-          <div class="md-subhead">Team Member</div>
-        </md-card-header>
-
-        <md-card-expand>
-          <md-card-actions md-alignment="space-between">
-            <md-card-expand-trigger>
-              <md-button>Learn more</md-button>
-            </md-card-expand-trigger>
-          </md-card-actions>
-
-          <md-card-expand-content>
-            <md-card-content>
-              Description
-            </md-card-content>
-          </md-card-expand-content>
-        </md-card-expand>
-      </md-card>
+      <person image="https://i.imgur.com/0gt2KG4.jpg" name="David Adegnon" role="Team Member" descr="Description"></person>
+      <person image="https://i.imgur.com/rRJjme8.jpg" name="William Turatsinze" role="Team Member" descr="Description"></person>
+      <person image="https://i.imgur.com/LIKBZf0.jpg" name="Ludovic Wasterlain" role="Team Member" descr="Description"></person>
     </div>   
   </b-container>
-
-
-
 </template>
 
 <script>

@@ -1,5 +1,4 @@
 <template>
-    <div class="card-expansion">
       <md-card>
         <md-card-media>
           <img :src="image" alt="People">
@@ -24,7 +23,6 @@
           </md-card-expand-content>
         </md-card-expand>
       </md-card>
-    </div>   
 </template>
 
 <script>
