@@ -20,10 +20,7 @@
               <span class="md-error" v-if="invalid['username'] != null">{{invalid['username']}}</span>
             </md-field>
 
-            <md-field
-              md-has-password
-              :class="[getValidationClass('password'), {'md-invalid': invalid['password'] != null}]"
-            >
+            <md-field md-has-password :class="[getValidationClass('password')]">
               <label for="password">Password</label>
               <md-input
                 type="password"
@@ -33,24 +30,20 @@
                 :disabled="sending"
                 autofocus
               ></md-input>
-              {{invalid['password']}}
-              <span
-                class="md-error"
-                v-if="!$v.login.password.required"
-              >The password is required</span>
-              <span class="md-error" v-if="invalid['password']">{{invalid['password']}}</span>
 
+              <span class="md-error" v-if="!$v.login.password.required">The password is required</span>
               <span
                 class="md-error"
                 v-if="!$v.login.password.sameAsUsername"
               >Cannot be the same as the username</span>
+
+              <!-- <span class="md-error" v-if="invalid['password']">Invalid password</span> -->
             </md-field>
           </div>
 
           <div class="actions md-layout md-alignment-center-space-between">
-            <a href="/resetpassword">Reset password</a>
-            <!-- <md-button type="submit" class="md-primary md-raised" :disabled="sending">Log me in</md-button> -->
-            <b-button type="submit" variant="outline-info">Log me in</b-button>
+            <!-- <a href="/resetpassword">Reset password</a> -->
+            <b-button type="submit" variant="outline-info" :disabled="sending">Log me in</b-button>
           </div>
 
           <div class="loading-overlay" v-if="sending">
