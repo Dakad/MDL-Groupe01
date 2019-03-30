@@ -5,6 +5,14 @@
       <h1> {{ articleTitle }} </h1>
       <div class="menuBo"><menuSota></menuSota></div>
       <div class="abstrct"> <p> {{ abstract }} </p> </div>
+
+      <!-- TODO rajouter le templace d'affichage d'article une fois le merge fait pour SOTA -->
+      <h5>List of article in the SOTA:</h5>
+      <ul id="articleList">
+        <li v-for="item in articles">
+          {{ item }}
+        </li>
+      </ul>
     </div>
     <div class="rightContainer">
       <infoNav></infoNav>
@@ -16,6 +24,7 @@
 <script>
   import InfoNav from '@/components/article/InfoNav';
   import MenuSota from '@/components/Sota/MenuSota';
+  import json from '@/assets/dummy-SOTA.json';
 
 
   export default {
@@ -26,8 +35,10 @@
     },
     data() {
       return {
-        articleTitle: 'Dummy title of SOTA',
-        abstract: 'Import listing of the article in the sota'
+        json,
+        articleTitle: json.title,
+        abstract: json.description,
+        articles: json.article
       };
     },
   }

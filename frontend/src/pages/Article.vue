@@ -16,6 +16,7 @@
 <script>
   import InfoNav from '@/components/article/InfoNav';
   import MenuArticle from '@/components/article/MenuArticle';
+  import json from '@/assets/dummy-Article.json';
 
 
     export default {
@@ -26,8 +27,9 @@
       },
       data() {
         return {
-          articleTitle: 'Dummy title',
-          abstract: 'Dummy Abstract that do nothing but just show you some text because why not'
+          json,
+          articleTitle: json.title,
+          abstract: json.abstract
         };
       },
     }
