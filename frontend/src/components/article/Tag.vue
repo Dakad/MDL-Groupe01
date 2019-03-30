@@ -1,17 +1,22 @@
 <template>
   <div>
     <h5>List of tag:</h5>
-    <p>{{tagList}}</p>
+    <ul id="tagList">
+      <li v-for="item in tags">
+        {{ item }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+  import json from '@/assets/dummy-Article.json';
     export default {
       name: "Tag",
       data() {
         return {
-          // TODO mettre en place la récupération des données du backend
-          tagList: 'Info, ML, Vizu, things',
+          json,
+          tags: json.tags,
         };
       },
     }

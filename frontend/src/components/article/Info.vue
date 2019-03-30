@@ -1,24 +1,27 @@
 <template>
   <div>
-  <p>Domaine : {{ domaine }}</p>
-  <p>Date : {{ datePublication }}</p>
-  <p>Price : {{Price}}</p>
+  <p>Date of publication : {{ datePublication }}</p>
+    <p>Date of creation : {{ dateCreation }}</p>
+    <p>Link : <a bind-href=link> {{ link}} </a></p>
   <p>Number of citation : {{ nbCitation }}</p>
   <p>Number of page : {{nbPage}}</p>
+    <p>Number of views : {{ nbVue }}</p>
   </div>
 </template>
 
 <script>
+  import json from '@/assets/dummy-Article.json';
     export default {
       name: "Info",
       data() {
         return {
-          // TODO mettre en place la récupération des données du backend
-          domaine: 'Informatique',
-          datePublication: '12/04/2142',
-          Price : '279€',
-          nbCitation : '289',
-          nbPage : '89'
+          json,
+          datePublication: json.published_at,
+          dateCreation: json.created_at,
+          link: json.link,
+          nbCitation : json.nb_citations,
+          nbPage : json.nb_pages,
+          nbVue : json.nb_views
         };
       },
     }
