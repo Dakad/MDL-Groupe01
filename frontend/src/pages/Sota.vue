@@ -1,6 +1,5 @@
 <template>
-  <div class="article">
-    <Search></Search>
+  <div class="Sota">
     <div class="leftContainer">
       <h1> {{ articleTitle }} </h1>
       <div class="menuBo"><menuSota></menuSota></div>
@@ -45,7 +44,7 @@
 
 </script>
 
-<style>
+<style scoped>
   h1{
     position: absolute;
     left: 10%;

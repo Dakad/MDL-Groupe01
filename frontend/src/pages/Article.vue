@@ -36,7 +36,7 @@
 
 </script>
 
-<style>
+<style scoped>
   h1{
     position: absolute;
     left: 10%;
