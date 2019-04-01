@@ -6,6 +6,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import io.swagger.annotations.Api;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
+@Api(value="main_controller", description="Operations of main_controler")
 public class MainController extends APIBaseController {
 
   @Autowired
