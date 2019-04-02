@@ -24,7 +24,7 @@
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
         <!--SiteName refer to AccueilVue-->
-        <a class="md-title" style="flex: 1" href="/">SiteName</a>
+        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
         <div v-if="isAuthenticated">
           <md-button class="md-icon-button md-dense md-primary" @click="logout()">
             <md-icon>person</md-icon>
