@@ -1,24 +1,15 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.time.LocalDate;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
+import be.unamur.info.mdl.dto.ArticleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Entity
@@ -58,10 +49,10 @@ public class ArticleEntity {
   private LocalDate createdAt = LocalDate.now();
 
 
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
-
 
   @ManyToMany(mappedBy = "articles")
   private Set<BookmarkEntity> bookmark;
@@ -86,5 +77,8 @@ public class ArticleEntity {
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<TagEntity> tags;
 
+  public ArticleDTO toDTO(){
+    return new ArticleDTO(id,title,publicationDate,price,nbrePages,nbreCitations,user.toDTO());
+  }
 
 }

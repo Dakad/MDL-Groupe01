@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.PastOrPresent;
+
+import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,6 +50,9 @@ public class StateOfTheArtEntity {
   @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
 
+  public StateOfTheArtDTO toDTO(){
+    return new StateOfTheArtDTO(id,name,subject,date,user.toDTO());
+  }
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
