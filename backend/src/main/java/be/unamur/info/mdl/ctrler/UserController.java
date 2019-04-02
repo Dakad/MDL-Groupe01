@@ -14,16 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/user")
-@Api(value = "user_controller", description = "Operations of user_controler")
+@Api(value = "user_controller", description = "Operations of UserControler")
 public class UserController extends APIBaseController {
 
   @Autowired
   private UserService userService;
 
-  @ApiOperation(value = "Changepwd", response = String.class)
+  @ApiOperation(value = "Change the user password", response = String.class)
   @RequestMapping(path = "/{username}/changepwd", method = RequestMethod.POST)
-  public @ResponseBody
-  String changePassword(@PathVariable("username") String username,
+  public @ResponseBody String changePassword(@PathVariable("username") String username,
     @RequestBody PasswordChangeDTO passwordChangeDTO) {
     if (userService.changePassword(username, passwordChangeDTO)) {
       return "OK";
