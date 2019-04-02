@@ -2,7 +2,10 @@ package be.unamur.info.mdl.ctrler;
 
 
 import be.unamur.info.mdl.dto.CredentialDTO;
+import be.unamur.info.mdl.dto.SearchQueryDTO;
+import be.unamur.info.mdl.dto.SearchResultDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -29,6 +33,8 @@ public class MainController extends APIBaseController {
 
   @Autowired
   private UserService userService;
+  @Autowired
+  private SearchService searchService;
 
 
   @GetMapping(value = {"", "/zen"})
@@ -64,6 +70,28 @@ public class MainController extends APIBaseController {
       result.put("error", ex.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
     }
+  }
+
+
+  //?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
+  @RequestMapping(value = "/search", method = RequestMethod.GET)
+  public ResponseEntity<SearchResultDTO> search(
+    @RequestParam(defaultValue = "0", required = false) String p,
+    @RequestParam(defaultValue = "ASC", required = false) String o,
+    @RequestParam(defaultValue = "DATE", required = false) String s,
+    @RequestParam String k,
+    @RequestParam(required = false) String t) {
+
+    int page;
+    try{page = Integer.parseInt(p);}
+    catch (NumberFormatException e){
+      page = 0;
+    }
+
+    if(page <0) page = 0;
+    SearchQueryDTO searchQuery = new SearchQueryDTO(k, t, page, o, s);
+    SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
+    return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
 
 
