@@ -36,5 +36,7 @@ const getList = url => {
 // Exports
 
 export function getTeam() {
-  return Vue.http.get('api/team', team);
+  return Vue.http.get('api/team').then(function(response){
+    return response.body
+  });
 }
