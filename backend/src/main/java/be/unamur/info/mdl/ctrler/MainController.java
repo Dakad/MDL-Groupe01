@@ -28,11 +28,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
-@Api(value="main_controller", description="Operations of main_controler")
+@Api(value = "main_controller", description = "Operations of main_controler")
 public class MainController extends APIBaseController {
 
   @Autowired
   private UserService userService;
+
   @Autowired
   private SearchService searchService;
 
@@ -42,7 +43,7 @@ public class MainController extends APIBaseController {
     return "Yello from MDL API !";
   }
 
-  @ApiOperation(value = "Inscription" , response = ResponseEntity.class)
+  @ApiOperation(value = "Inscription", response = ResponseEntity.class)
   @RequestMapping(path = "/signin", method = RequestMethod.POST)
   public ResponseEntity<Map<String, String>> signin(@Valid @RequestBody UserDTO userData) {
     Map<String, String> response = new HashMap<>();
@@ -57,7 +58,7 @@ public class MainController extends APIBaseController {
 
   }
 
-  @ApiOperation(value = "Connexion" , response = ResponseEntity.class)
+  @ApiOperation(value = "Connexion", response = ResponseEntity.class)
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @Validated
   public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialDTO userDTO) {
@@ -83,12 +84,15 @@ public class MainController extends APIBaseController {
     @RequestParam(required = false) String t) {
 
     int page;
-    try{page = Integer.parseInt(p);}
-    catch (NumberFormatException e){
+    try {
+      page = Integer.parseInt(p);
+    } catch (NumberFormatException e) {
       page = 0;
     }
 
-    if(page <0) page = 0;
+    if (page < 0) {
+      page = 0;
+    }
     SearchQueryDTO searchQuery = new SearchQueryDTO(k, t, page, o, s);
     SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);

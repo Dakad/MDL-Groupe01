@@ -13,19 +13,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path="/api/user")
-@Api(value="user_controller", description="Operations of user_controler")
+@RequestMapping(path = "/api/user")
+@Api(value = "user_controller", description = "Operations of user_controler")
 public class UserController extends APIBaseController {
-    @Autowired
-    private UserService userService;
-    @ApiOperation(value = "Changepwd" , response = String.class)
-    @RequestMapping(path="/{username}/changepwd", method = RequestMethod.POST)
-    public @ResponseBody String changePassword(@PathVariable("username") String username, @RequestBody PasswordChangeDTO passwordChangeDTO){
-        if(userService.changePassword(username,passwordChangeDTO)){
-            return "OK";
-        }
-        return "ERROR : 409 CONFLICT";
+
+  @Autowired
+  private UserService userService;
+
+  @ApiOperation(value = "Changepwd", response = String.class)
+  @RequestMapping(path = "/{username}/changepwd", method = RequestMethod.POST)
+  public @ResponseBody
+  String changePassword(@PathVariable("username") String username,
+    @RequestBody PasswordChangeDTO passwordChangeDTO) {
+    if (userService.changePassword(username, passwordChangeDTO)) {
+      return "OK";
     }
+    return "ERROR : 409 CONFLICT";
+  }
 
 }
 
