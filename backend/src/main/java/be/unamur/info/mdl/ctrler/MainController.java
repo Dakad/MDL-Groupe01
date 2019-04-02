@@ -101,7 +101,9 @@ public class MainController extends APIBaseController {
     @ApiResponse(code = 409, message = "If the username or password is not recognized")
   })
   @RequestMapping(value = "/login", method = RequestMethod.POST)
-  public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialDTO userDTO) {
+  public ResponseEntity<Map<String, String>> login(
+    @ApiParam(value = "Credentials", required = true)
+    @Valid @RequestBody CredentialDTO userDTO) {
     Map<String, String> result = new HashMap<>();
     try {
       String token = userService.login(userDTO);
