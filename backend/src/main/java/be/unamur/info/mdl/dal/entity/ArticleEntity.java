@@ -1,24 +1,17 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.time.LocalDate;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
+import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.TagDTO;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Entity
@@ -75,8 +68,10 @@ public class ArticleEntity {
     inverseJoinColumns = {@JoinColumn(name = "reference_id")})
   private Set<ArticleEntity> references;
 
+
   @ManyToMany(mappedBy = "articles")
   private Set<StateOfTheArtEntity> state_of_the_art;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -86,5 +81,12 @@ public class ArticleEntity {
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<TagEntity> tags;
 
+
+
+  public ArticleDTO toDTO() {
+    Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
+    return new ArticleDTO(id, title, publicationDate, price, nbrePages, nbreCitations, user.toDTO(),
+      listOfTags);
+  }
 
 }
