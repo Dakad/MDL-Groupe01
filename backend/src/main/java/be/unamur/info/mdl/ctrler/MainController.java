@@ -7,6 +7,7 @@ import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -35,7 +36,7 @@ public class MainController extends APIBaseController {
     return "Yello from MDL API !";
   }
 
-
+  @ApiOperation(value = "Inscription" , response = ResponseEntity.class)
   @RequestMapping(path = "/signin", method = RequestMethod.POST)
   public ResponseEntity<Map<String, String>> signin(@Valid @RequestBody UserDTO userData) {
     Map<String, String> response = new HashMap<>();
@@ -50,7 +51,7 @@ public class MainController extends APIBaseController {
 
   }
 
-
+  @ApiOperation(value = "Connexion" , response = ResponseEntity.class)
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @Validated
   public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialDTO userDTO) {
