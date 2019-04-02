@@ -14,8 +14,8 @@
     </b-row>
 
     <div class="card-expansion">
-      <person v-for="member in team" v-bind:key="member.name" :image="member.avatar" :name="member.name" :role="member.role" :descr="member.descr"></person>
-      </div>   
+      <person v-for="(member,index) in team" v-bind:key="member.name" :position="index" :image="member.avatar" :name="member.name" :role="member.role" :descr="member.descr"></person>
+    </div>   
   </b-container>
 </template>
 
@@ -28,7 +28,12 @@ export default {
     Person
   },
   data: function () {
-    team: null
+    return {
+      team: null
+    }
+  },
+  mounted() {
+    this.getTeam()
   },
   methods: {
     getTeam() {
