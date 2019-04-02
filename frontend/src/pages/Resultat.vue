@@ -9,6 +9,7 @@
                   <sota title="Complot" date="11-09-2001" v-bind:authors="['Georges Bush', 'Al Gore']"/>
                 </md-tab>
                 <md-tab id="article" md-label="Article">
+                  <!--Todo : make a list of article-->
                   <articles title="La visualisation des ovnis" date="01-01-2019" v-bind:authors="['Bruno Dumas']"/>
                   <articles title="Le réchauffement climatique en musique" date="27-09-2005" v-bind:authors="['Joe Duplantier',' Mario Duplantier', ' Christian Andreu', 'Jean-Michel Labadie', 'Alexandre Cornillon']"/>
                   <articles title="Machine Learning : visualisation quality" date="08-12-2018" v-bind:authors="['Benoit Frenay','Adrien Bibal']"/>
