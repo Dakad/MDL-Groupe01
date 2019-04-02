@@ -3,25 +3,24 @@
     <div class="central">
       <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
       <div class="title">
-        <h1>No Assigned Name</h1>
+        <h1>Froggosaur</h1>
       </div>
 
       <!-- place the searched words in var searchwords and the action to
       script the search is searchIt-->
 
-      <search></search>
+      <search id="search"></search>
 
       <div class="filter"></div>
     </div>
-    <!--
-    <div class="recommended">
-      <p>recommended</p>
 
-      <div class="recoNews">
-        <md-button class="md-raised" v-on:click="switcher">recommanded</md-button>
+  <!--<div class="recommended">
+      <p>recommended</p>
+      <div class="switch-news">
+        <md-button class="md-raised" v-on:click="switcher">What might interest you</md-button>
       </div>
       <div id="slider">
-        <carousel :autoplay=true>
+        <carousel autoplay=true>
           <slide>
             <span class="label">1</span>
           </slide>
@@ -34,20 +33,20 @@
 
 
 <script>
-// import { Carousel, Slide } from "vue-carousel";
+//import { Carousel, Slide } from "vue-carousel";
 import Search from '@/components/navbar/Search';
 
 export default {
   name: "Accueil",
   components: {
-    // Carousel,
-    // Slide,
+    //Carousel,
+    //Slide,
     Search
   },
   data() {
     return {
       searchInput: null,
-      carrouselAutoplay: true
+      //carrouselAutoplay: true
     };
   },
   methods: {
@@ -101,12 +100,16 @@ h1 {
   margin-top: 35px;
 }
 
+#search {
+  margin-top: 150px;
+}
+
 p {
   margin-left: 15px;
   width: 20%;
 }
 
-.recommended {
+/*.recommended {
   margin: 0;
   position: absolute;
   top: 75%;
@@ -120,18 +123,17 @@ p {
   z-index: -1;
 }
 
-.recoNews {
+.switch-news {
   float: right;
   margin-right: 50px;
   position: absolute;
   top: 5%;
   left: 85%;
-}
+}*/
 
 .searchText {
   height: 20%;
   width: 87%;
-
   position: absolute;
   top: 70%;
 }
@@ -144,7 +146,7 @@ p {
   top: 75%;
 }
 
-.VueCarousel-slide {
+/*.VueCarousel-slide {
   position: relative;
   background: #42b983;
   color: #fff;
@@ -152,7 +154,7 @@ p {
   font-size: 24px;
   text-align: center;
   min-height: 50px;
-}
+}*/
 
 .label {
   position: absolute;
@@ -161,11 +163,11 @@ p {
   transform: translate(-50%, -50%);
 }
 
-#slider {
+/*#slider {
   width: 80%;
   height: 70%;
   position: absolute;
   top: 20%;
   left: 10%;
-}
+}*/
 </style>
