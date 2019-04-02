@@ -1,6 +1,8 @@
 package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.TagDTO;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,10 +51,10 @@ public class ArticleEntity {
   private LocalDate createdAt = LocalDate.now();
 
 
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity user;
+
 
   @ManyToMany(mappedBy = "articles")
   private Set<BookmarkEntity> bookmark;
@@ -66,8 +68,10 @@ public class ArticleEntity {
     inverseJoinColumns = {@JoinColumn(name = "reference_id")})
   private Set<ArticleEntity> references;
 
+
   @ManyToMany(mappedBy = "articles")
   private Set<StateOfTheArtEntity> state_of_the_art;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -77,8 +81,12 @@ public class ArticleEntity {
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<TagEntity> tags;
 
-  public ArticleDTO toDTO(){
-    return new ArticleDTO(id,title,publicationDate,price,nbrePages,nbreCitations,user.toDTO());
+
+
+  public ArticleDTO toDTO() {
+    Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
+    return new ArticleDTO(id, title, publicationDate, price, nbrePages, nbreCitations, user.toDTO(),
+      listOfTags);
   }
 
 }
