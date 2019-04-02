@@ -9,7 +9,12 @@ import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,22 @@ public class MainController extends APIBaseController {
   @GetMapping(value = {"", "/zen"})
   public String yello() {
     return "Yello from MDL API !";
+  }
+
+
+  @RequestMapping(path = "/team", method = RequestMethod.GET)
+  public ResponseEntity<List<Object>> getTeamMembers() {
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      TypeReference<List<Object>> typeReference = new TypeReference<List<Object>>() {
+      };
+      InputStream inputStream = TypeReference.class.getResourceAsStream("/json/team.json");
+
+      List<Object> members = mapper.readValue(inputStream, typeReference);
+      return ResponseEntity.ok(members);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+    }
   }
 
 
