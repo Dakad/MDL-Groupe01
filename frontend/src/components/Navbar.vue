@@ -25,10 +25,17 @@
       <md-toolbar class="md=accent" md-elevation="1">
         <!--SiteName refer to AccueilVue-->
         <a class="md-title" style="flex: 1" href="/">SiteName</a>
-        <!--Login button open the login dialog-->
-        <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
-        <!--Register button refer to the register page (RegisterVue)-->
-        <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+        <div v-if="isAuthenticated">
+          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
+            <md-icon>person</md-icon>
+          </md-button>
+        </div>
+        <div v-else>
+          <!--Login button open the login dialog-->
+          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+          <!--Register button refer to the register page (RegisterVue)-->
+          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+        </div>
       </md-toolbar>
     </div>
     <md-snackbar
@@ -57,6 +64,7 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
+import { isLogged, logout } from "@/services/api-user";
 
 export default {
   name: "Navbar",
@@ -65,6 +73,7 @@ export default {
     return {
       showLoginDialog: false,
       showRegisterDialog: false,
+      isAuthenticated: false,
       loginFailed: false,
       signinFailed: false,
       showSnackbar: false,
@@ -93,6 +102,7 @@ export default {
         case "login":
           this.showLoginDialog = false;
           msg = `Hello ${msg} ! Welcome BACK :-D !!`;
+          this.isAuthenticated = true;
           break;
         case "register":
         case "signin":
@@ -105,6 +115,12 @@ export default {
       }
       this.showSnackbar = true;
       this.snackbarMsg = msg;
+    },
+    logout() {
+      logout();
+      this.isAuthenticated = false;
+      this.snackbarMsg = "Bye, see you !";
+      this.showSnackbar = true;
     }
   }
 };
