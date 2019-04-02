@@ -27,6 +27,9 @@ public class ArticleEntity {
   @Column(unique = true, nullable = false)
   private String title;
 
+  @Column(name="abstract", unique = true, nullable = false)
+  private String content;
+
   @Column(name = "publication_date", nullable = false)
   @PastOrPresent
   private LocalDate publicationDate;

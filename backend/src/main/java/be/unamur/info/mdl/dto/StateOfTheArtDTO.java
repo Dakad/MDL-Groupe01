@@ -1,11 +1,9 @@
 package be.unamur.info.mdl.dto;
 
-import com.sun.tracing.dtrace.ArgsAttributes;
+import java.time.LocalDate;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.LocalDate;
 import lombok.NoArgsConstructor;
 
 @Data

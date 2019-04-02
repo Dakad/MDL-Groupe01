@@ -1,7 +1,10 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.PastOrPresent;
-
-import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,9 +51,6 @@ public class StateOfTheArtEntity {
   @JoinColumn(name = "user_id", unique = true)
   private UserEntity user;
 
-  public StateOfTheArtDTO toDTO(){
-    return new StateOfTheArtDTO(id,name,subject,date,user.toDTO());
-  }
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -74,4 +72,9 @@ public class StateOfTheArtEntity {
   private Set<TagEntity> tags;
 
 
+
+  public StateOfTheArtDTO toDTO() {
+    Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
+    return new StateOfTheArtDTO(id, name, subject, date, user.toDTO(), listOfTags);
+  }
 }
