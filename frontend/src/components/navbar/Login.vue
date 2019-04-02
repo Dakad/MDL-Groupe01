@@ -4,7 +4,9 @@
       <form novalidate class="md-layout" @submit.prevent="validateLogin">
         <md-content class="md-elevation-3">
           <div class="form">
-            <md-field :class="getValidationClass('username')">
+            <md-field
+              :class="[getValidationClass('username'), {'md-invalid': invalid['username'] != null}]"
+            >
               <label for="username">Username</label>
               <md-input
                 name="username"
@@ -13,12 +15,12 @@
                 :disabled="sending"
                 autofocus
               ></md-input>
-
               <span class="md-error" v-if="!$v.login.username.required">The username is required</span>
               <span class="md-error" v-if="!$v.login.username.minLength">At least, 2 characters</span>
+              <span class="md-error" v-if="invalid['username'] != null">{{invalid['username']}}</span>
             </md-field>
 
-            <md-field md-has-password :class="getValidationClass('password')">
+            <md-field md-has-password :class="[getValidationClass('password')]">
               <label for="password">Password</label>
               <md-input
                 type="password"
@@ -32,15 +34,16 @@
               <span class="md-error" v-if="!$v.login.password.required">The password is required</span>
               <span
                 class="md-error"
-                v-else-if="!$v.login.password.sameAsUsername"
+                v-if="!$v.login.password.sameAsUsername"
               >Cannot be the same as the username</span>
+
+              <!-- <span class="md-error" v-if="invalid['password']">Invalid password</span> -->
             </md-field>
           </div>
 
           <div class="actions md-layout md-alignment-center-space-between">
-            <a href="/resetpassword">Reset password</a>
-            <!-- <md-button type="submit" class="md-primary md-raised" :disabled="sending">Log me in</md-button> -->
-            <b-button type="submit" variant="outline-primary">Log me in</b-button>
+            <!-- <a href="/resetpassword">Reset password</a> -->
+            <b-button type="submit" variant="outline-info" :disabled="sending">Log me in</b-button>
           </div>
 
           <div class="loading-overlay" v-if="sending">
@@ -49,15 +52,6 @@
           </div>
         </md-content>
       </form>
-      <md-snackbar
-        md-position="center"
-        :md-duration="durationSnackbar"
-        :md-active.sync="showSnackbar"
-        md-persistent
-      >
-        <span>{{msg}}</span>
-        <!-- <md-button class="md-primary" @click="showSnackbar = false">Retry</md-button> -->
-      </md-snackbar>
     </div>
   </section>
 </template>
@@ -73,6 +67,7 @@ import {
   sameAs
 } from "vuelidate/lib/validators";
 import { postLogin } from "@/services/api-user";
+
 export default {
   name: "Login",
   mixins: [validationMixin],
@@ -84,9 +79,7 @@ export default {
         password: null
       },
       sending: false,
-      msg: null,
-      durationSnackbar: 4000,
-      showSnackbar: false
+      invalid: {}
     };
   },
   validations: {
@@ -118,7 +111,10 @@ export default {
     validateLogin() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
+        this.invalid = {};
         this.auth();
+      } else {
+        this.$emit("error", this.msg);
       }
     },
     auth() {
@@ -127,18 +123,18 @@ export default {
         .then(res => {
           console.log(res);
           this.sending = false;
+          this.$emit("success", this.login.username);
+          this.clearForm();
         })
         .catch(err => {
-          if (err.status == 400) {
-            this.msg = "Authentication denied - Please correct your input";
-            // TODO Show the uncorrect field in the form
-          }
-          if (err.status == 409) {
-            this.msg = "Authentication denied - " + err.body["error"];
-          }
+          // if (!err.ok) {
+          this.msg = "Authentication denied - Please correct your credentials";
+          this.invalid = Object.assign({}, err.body["validation"]);
+          // this.msg = "Authentication denied - " + err.body["error"];
+          // }
           console.error(err);
           this.sending = false;
-          this.showSnackbar = true;
+          this.$emit("error", this.msg);
         });
     }
   }
