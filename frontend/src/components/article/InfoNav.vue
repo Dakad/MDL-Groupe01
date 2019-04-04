@@ -25,6 +25,11 @@ import Ref from "@/components/article/Tag";
 
 export default {
   name: "InfoNav",
+  props: {
+    info: Object,
+    tags: Array,
+    refs: Array
+  },
   components: {
     Info,
     Tag,
