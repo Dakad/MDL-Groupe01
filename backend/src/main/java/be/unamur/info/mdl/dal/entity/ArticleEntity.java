@@ -36,7 +36,7 @@ public class ArticleEntity {
 
   @Column(unique = true, nullable = false)
   private String title;
-  @Column(name = "publication_date", nullable = false)
+  @Column(name = "publication_at", nullable = false)
   @PastOrPresent
   private LocalDate publicationDate;
 
@@ -108,8 +108,7 @@ public class ArticleEntity {
 
   public ArticleDTO toDTO() {
     Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
-    return new ArticleDTO(id, title, publicationDate, price, nbrePages, nbreCitations, user.toDTO(),
-      listOfTags);
+    return new ArticleDTO(id,title,content,publicationDate,price,nbrePages, nbreCitations,user.toDTO(), listOfTags);
   }
 
 }
