@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.TagDTO;
+import java.util.Collections;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,7 +34,15 @@ public class TagEntity {
   private Set<UserEntity> followers;
 
 
+  public static TagEntity of(TagDTO t) {
+    return new TagEntity(t.getName(), Collections.emptySet(), Collections.emptySet(),
+      Collections.emptySet());
+  }
+
+
   public TagDTO toDTO() {
     return new TagDTO(name);
   }
+
+
 }
