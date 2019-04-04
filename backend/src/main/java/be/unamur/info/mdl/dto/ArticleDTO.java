@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dto;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -15,9 +16,12 @@ import lombok.NoArgsConstructor;
 public class ArticleDTO {
 
   private Long id;
-  
+
   @NotBlank(message = "The title is required")
   private String title;
+
+  @NotBlank(message = "The content(abstract) is required")
+  private String content;
 
   @PastOrPresent(message = "publicationDate cannot be in the futur")
   private LocalDate publicationDate;
@@ -33,16 +37,6 @@ public class ArticleDTO {
 
   private UserDTO user;
 
-  private Set<TagDTO> tags;
+  private Set<TagDTO> tags = Collections.emptySet();
 
-  public ArticleDTO(String title, LocalDate publicationDate, float price, int nbrePage,
-    int nbreCitation, UserDTO user, Set<TagDTO> tags) {
-    this.title = title;
-    this.publicationDate = publicationDate;
-    this.price = price;
-    this.nbrePage = nbrePage;
-    this.nbreCitation = nbreCitation;
-    this.user = user;
-    this.tags = tags;
-  }
 }
