@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleDTO {
-  private long id;
+  private Long id;
 
   private String title;
 
@@ -26,4 +26,15 @@ public class ArticleDTO {
   private UserDTO user;
 
   private Set<TagDTO> tags;
+
+  public ArticleDTO(String title, LocalDate publicationDate, float price, int nbrePage,
+    int nbreCitation, UserDTO user, Set<TagDTO> tags) {
+    this.title = title;
+    this.publicationDate = publicationDate;
+    this.price = price;
+    this.nbrePage = nbrePage;
+    this.nbreCitation = nbreCitation;
+    this.user = user;
+    this.tags = tags;
+  }
 }
