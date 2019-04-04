@@ -5,7 +5,9 @@ import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleException;
+import org.springframework.stereotype.Service;
 
+@Service("articleService")
 public class ArticleServImpl implements ArticleService {
   private ArticleRepository articleRepository;
 
@@ -15,13 +17,11 @@ public class ArticleServImpl implements ArticleService {
       throw new ArticleException("Empty user data received.");
     }
 
-    if (articleRepository.findByName(articleData.getTitle()) != null) {
+    if (articleRepository.existsByTitle(articleData.getTitle())) {
       throw new ArticleException(articleData.getTitle() + " is already taken.");
     }
 
-
     this.articleRepository.save(ArticleEntity.of(articleData));
-
     return true;
   }
 
