@@ -9,9 +9,9 @@
   "nb_pages": 12,
   "nb_views": 696,
   "sotas": [
-    "SoTA on visualisation problem",
-    "SoTA on some random stuff",
-    "SoTA on cool stuff that do stuff"
+    { "id": 123, "title": "SoTA on visualisation problem" },
+    { "id": 123, "title": "SoTA on some random stuff" },
+    { "id": 123, "title": "SoTA on cool stuff that do stuff" }
   ],
   "tags": ["Informatique", "MachineLearning", "Vizualisation"],
   "refs": ["CoolStuff1", "CoolStuff2"]
