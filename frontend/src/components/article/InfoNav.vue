@@ -3,15 +3,15 @@
     <div>
       <md-tabs>
         <md-tab id="tab-info" md-label="Info">
-          <Info/>
+          <Info :info="info"/>
         </md-tab>
 
         <md-tab id="tab-ref" md-label="Reference">
-          <Tag/>
+          <Tag :tags="tags"/>
         </md-tab>
 
         <md-tab id="tab-tag" md-label="Tag">
-          <Ref/>
+          <Ref :refs="refs"/>
         </md-tab>
       </md-tabs>
     </div>
@@ -26,7 +26,7 @@ import Ref from "@/components/article/Tag";
 export default {
   name: "InfoNav",
   props: {
-    info: Object,
+    info: Array,
     tags: Array,
     refs: Array
   },

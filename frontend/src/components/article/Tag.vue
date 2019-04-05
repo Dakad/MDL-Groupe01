@@ -8,15 +8,12 @@
 </template>
 
 <script>
-import json from "@/assets/dummy-Article.json";
+// import json from "@/assets/dummy-Article.json";
 export default {
   name: "Tag",
   props: ["tags"],
   data() {
-    return {
-      json,
-      tags: json.tags
-    };
+    return {};
   }
 };
 </script>
