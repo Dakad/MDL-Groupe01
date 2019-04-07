@@ -25,7 +25,7 @@ export function logout() {
 
 export function postLogin(credentials) {
   return Vue.http.post('api/login', credentials).then(res => {
-    let token = res.headers.get('authorizations');
+    let token = res.headers.get('authorization');
     if (!token) {
       token = res.body['auth_token_type'] + res.body['auth_token'];
     }
