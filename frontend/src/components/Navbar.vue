@@ -64,6 +64,7 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
+import { ping } from "@/services/api";
 import { isLogged, logout } from "@/services/api-user";
 
 export default {
@@ -80,6 +81,12 @@ export default {
       snackbarMsg: null,
       snackbarTime: 5000
     };
+  },
+  mounted() {
+    ping().catch(err => {
+      this.snackbarMsg = "API Error - API doesn't respond";
+      this.showSnackbar = true;
+    });
   },
   methods: {
     handleError(component, error) {
