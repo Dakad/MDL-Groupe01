@@ -1,6 +1,8 @@
 package be.unamur.info.mdl.ctrler;
 
 
+import be.unamur.info.mdl.config.SecurityConfig;
+import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -107,8 +110,14 @@ public class MainController extends APIBaseController {
     Map<String, String> result = new HashMap<>();
     try {
       String token = userService.login(userDTO);
+      HttpHeaders header = new HttpHeaders();
+      header.set(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX+token);
+
       result.put("auth_token", token);
-      return ResponseEntity.status(HttpStatus.OK).body(result);
+      result.put("auth_header", SecurityUtils.HEADER_STRING);
+      result.put("auth_token_type", SecurityUtils.TOKEN_PREFIX);
+
+      return ResponseEntity.status(HttpStatus.OK).headers(header).body(result);
     } catch (InvalidCredentialException ex) {
       result.put("error", ex.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
