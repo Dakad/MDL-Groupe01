@@ -127,7 +127,6 @@ export default {
           this.clearForm();
         })
         .catch(err => {
-          // if (!err.ok) {
           this.msg = "Authentication denied - Please correct your credentials";
           this.invalid = Object.assign({}, err.body["validation"]);
           // this.msg = "Authentication denied - " + err.body["error"];
