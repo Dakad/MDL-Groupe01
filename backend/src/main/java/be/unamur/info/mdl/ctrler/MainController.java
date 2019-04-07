@@ -1,7 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
 
-import be.unamur.info.mdl.config.SecurityConfig;
 import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
@@ -18,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
-@Api(value = "main_controller", description = "Operations of MainControler")
+@Api(value = "main_controller", description = "Operations of MainController")
 public class MainController extends APIBaseController {
 
   @Autowired
@@ -56,9 +56,9 @@ public class MainController extends APIBaseController {
   }
 
 
-  @ApiOperation(value = "Retrieve theth list of team members", response = List.class)
+  @ApiOperation(value = "Retrieve the list of team members", response = List.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "List of each person with it avatar, fullname, role and short description"),
+    @ApiResponse(code = 200, message = "List of each person with it avatar, full name, role and short description"),
     @ApiResponse(code = 500, message = "If some shit hit the fan :-)")
   })
   @RequestMapping(path = "/team", method = RequestMethod.GET)
@@ -77,9 +77,9 @@ public class MainController extends APIBaseController {
   }
 
 
-  @ApiOperation(value = "Inscription", response = ResponseEntity.class)
+  @ApiOperation(value = "Registration", response = ResponseEntity.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 201, message = "Successfully registred user"),
+    @ApiResponse(code = 201, message = "Successfully registered user"),
     @ApiResponse(code = 400, message = "Some required fields are invalid"),
     @ApiResponse(code = 409, message = "If the username or email is already taken")
   })
@@ -88,7 +88,7 @@ public class MainController extends APIBaseController {
     Map<String, String> response = new HashMap<>();
     try {
       this.userService.signin(userData);
-      response.put("success", "New user registred");
+      response.put("success", "New user registered");
       return new ResponseEntity(response, HttpStatus.CREATED);
     } catch (RegistrationException ex) {
       response.put("error", ex.getMessage());
@@ -97,9 +97,11 @@ public class MainController extends APIBaseController {
   }
 
 
-  @ApiOperation(value = "Connexion", response = ResponseEntity.class)
+  @ApiOperation(value = "Authentication", response = ResponseEntity.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully authenticated user"),
+    @ApiResponse(code = 200, message = "Successfully authenticated user", responseHeaders = {
+      @ResponseHeader(name = SecurityUtils.HEADER_STRING, description = "Hold the Token with the prefix"),
+    }),
     @ApiResponse(code = 400, message = "Some required fields are invalid"),
     @ApiResponse(code = 409, message = "If the username or password is not recognized")
   })
@@ -139,7 +141,7 @@ public class MainController extends APIBaseController {
     @ApiParam(value = "Sort", allowMultiple = true, defaultValue = "DATE")
     @RequestParam(defaultValue = "DATE", required = false) String s,
 
-    @ApiParam(value = "Kewords", required = true)
+    @ApiParam(value = "Keywords", required = true)
     @RequestParam String k,
 
     @ApiParam(value = "Tags")
