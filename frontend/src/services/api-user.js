@@ -3,55 +3,37 @@
 
 // Import
 import Vue from 'vue';
+
+// Mine
+import { addToStorage, isInStorage, removeFromStorage } from './storage';
+
 // -------------------------------------------------------------------
 // Properties
-const Api = Vue.http;
 
-const Storage = localStorage;
-
-const isInStorage = key => Storage.hasOwnProperty(key);
-
-const getFromStorage = key => JSON.parse(Storage.getItem(key));
-
-const addToStorage = (key, item) => Storage.setItem(key, JSON.stringify(item));
-
-const removeFromStorage = key => Storage.removeItem(key);
-
-/**
- * Retrieve the list either from the CacheStorage or directly through the API.
- * @param {String} url API url where to get the list.
- * @returns {Promise} containing the resolved list.
- */
-const getList = url => {
-  const key = 'API_LIST_FOR_' + url.replace(/\//g, '').toUpperCase();
-  if (isInStorage(key)) {
-    return Promise.resolve(getFromStorage(key));
-  } else {
-    return Api.get(url).then(({ data }) => {
-      addToStorage(key, data);
-      return data;
-    });
-  }
-};
+const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
 
 // -------------------------------------------------------------------
 // Exports
 
 export function isLogged() {
-  return isInStorage('AUTH_TOKEN');
+  return isInStorage(KEY_AUTH_TOKEN);
 }
 
 export function logout() {
-  removeFromStorage('AUTH_TOKEN');
+  removeFromStorage(KEY_AUTH_TOKEN);
 }
 
 export function postLogin(credentials) {
-  return Vue.http.post('api/login', credentials).then(data => console.log(data));
+  return Vue.http.post('api/login', credentials).then(res => {
+    let token = res.headers.get('authorizations');
+    if (!token) {
+      token = res.body['auth_token_type'] + res.body['auth_token'];
+    }
+    addToStorage(KEY_AUTH_TOKEN, token);
+    return res.json();
+  });
 }
 
 export function postSignin(data) {
-  return Vue.http.post('api/signin', data).then(res => {
-    addToStorage('AUTH_TOKEN', res.body['auth_token']);
-    return res;
-  });
+  return Vue.http.post('api/signin', data);
 }
