@@ -121,7 +121,6 @@ export default {
       this.sending = true;
       postLogin(this.login)
         .then(res => {
-          console.log(res);
           this.sending = false;
           this.$emit("success", this.login.username);
           this.clearForm();
