@@ -21,7 +21,7 @@ public class TagEntity {
   private String name;
 
 
-  @ManyToMany(mappedBy = "tags")
+  @ManyToMany(mappedBy = "keywords")
   private Set<ArticleEntity> articles;
 
 
