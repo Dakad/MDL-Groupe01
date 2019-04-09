@@ -221,6 +221,8 @@ export default {
           }
           if (err.status == 409) {
             this.msg = "Registration denied - " + err.body["error"];
+          } else {
+            this.msg = "Internal API Error";
           }
           console.error(err);
           this.sending = false;
