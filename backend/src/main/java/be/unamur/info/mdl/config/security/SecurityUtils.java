@@ -13,16 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 public abstract class SecurityUtils {
 
-  @Value("${app.auth.secret:QW2RoG7!Fq_FO$Anf#C2vg4kTK&kgP3XS#TCe}")
+  @Value("${app.auth.secret}")
   public static final String SECRET = "QW2RoG7!Fq_FO$Anf#C2vg4kTK&kgP3XS#TCe";
 
-  @Value("${app.auth.tokenExpirationInMs:8640000000}")
+  @Value("${app.auth.tokenExpirationInMs}")
   public static final long EXPIRATION_TIME = 864_000_00 * 100; // 100 days
 
-  @Value("${app.auth.prefix:Bearer }")
+  @Value("${app.auth.prefix}")
   public static final String TOKEN_PREFIX = "Bearer ";
 
-  @Value("${app.auth.header:Authorization}")
+  @Value("${app.auth.header}")
   public static final String HEADER_STRING = "Authorization";
 
 //  @Value("${app.auth.redirectUrl:}")
@@ -35,8 +35,8 @@ public abstract class SecurityUtils {
 
 
   public static String generateToken(String subject) {
-    final Date now = new Date();
-    final Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
+    Date now = new Date();
+    Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
     return Jwts.builder()
       .setSubject(subject)
