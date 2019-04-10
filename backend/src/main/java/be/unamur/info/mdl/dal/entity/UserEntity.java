@@ -1,8 +1,10 @@
 package be.unamur.info.mdl.dal.entity;
 
 
+import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,6 +51,9 @@ public class UserEntity {
 
   @Column(name = "created_at")
   private LocalDate createdAt;
+
+  @Column(name = "domain")
+  private String domain;
 
 
   @OneToOne(cascade = CascadeType.ALL)
@@ -114,13 +119,24 @@ public class UserEntity {
   public static UserEntity of(UserDTO userData) {
     return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
       userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null,
-      null, null
+      null, null, null
     );
   }
 
 
   public UserDTO toDTO() {
     return new UserDTO(username, password, lastname, firstname, email);
+  }
+
+  //TODO : UnJava this mess
+  public ProfileBasicInfoDTO toProfileBasicInfoDTO(){
+    Iterator<UniversityCurrent> iterator = university.iterator();
+    while(iterator.hasNext()){
+      UniversityCurrent universityCurrent = iterator.next();
+      if(!universityCurrent.isCurrent()){
+        return new ProfileBasicInfoDTO(lastname, firstname,domain,universityCurrent.getUniversity().toInfoDTO(),email,userProfil.getProfilePictureURL());}
+    }
+    return null;
   }
 
 }
