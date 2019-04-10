@@ -92,7 +92,7 @@ public class ArticleEntity {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
-  private UserEntity user;
+  private UserEntity creator;
 
 
   @ManyToMany(cascade = {
@@ -156,11 +156,25 @@ public class ArticleEntity {
       data.keywords(listOfKeywords);
     }
 
-    if (this.user != null) {
-      data.user(user.toDTO());
+    if (this.creator != null) {
+      data.user(creator.toDTO());
     }
 
     return data.build();
+  }
+
+
+  public static ArticleEntity of(ArticleDTO dto) {
+    ArticleEntityBuilder entity = ArticleEntity.builder();
+
+    entity.id(dto.getId()).reference(dto.getReference());
+    entity.title(dto.getTitle()).content(dto.getContent()).url(dto.getUrl()).price(dto.getPrice());
+
+    entity.publicationYear(dto.getYear()).publicationMonth(dto.getMonth());
+    entity.pages(dto.getPages()).nbCitations(dto.getNbCitations()).nbViews(dto.getNbViews());
+    entity.creator(UserEntity.of(dto.getUser()));
+
+    return entity.build();
   }
 
 }
