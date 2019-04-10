@@ -4,6 +4,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class ArticleEntity {
   @Column(unique = true, nullable = false)
   private String title;
 
-  @Column(name = "abstract", unique = true, nullable = false)
+  @Column(name = "abstract", nullable = false)
   private String content;
 
   @Column(name = "url", unique = true, nullable = false)
@@ -67,7 +68,7 @@ public class ArticleEntity {
   @Column(name = "publication_month")
   private String publicationMonth;
 
-  @Column
+  @Column(name="price")
   private float price;
 
   @Column(name = "pages")
@@ -91,7 +92,7 @@ public class ArticleEntity {
 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", unique = true, nullable = false)
+  @JoinColumn(name = "creator_user_id", unique = true, nullable = false)
   private UserEntity creator;
 
 
@@ -102,7 +103,7 @@ public class ArticleEntity {
     name = "article_authors",
     joinColumns = @JoinColumn(name = "author_id"),
     inverseJoinColumns = @JoinColumn(name = "article_id"))
-  private Set<AuthorEntity> authors;
+  private Set<AuthorEntity> authors = Collections.emptySet();
 
 
   @ManyToMany(mappedBy = "articles")
@@ -141,6 +142,7 @@ public class ArticleEntity {
       .id(this.id).reference(this.reference)
       .title(this.title).content(this.content).url(url).price(price);
 
+    data.journal(this.journal).number(this.journalNumber).publisher(this.publisher);
     data.year(this.publicationYear).month(this.publicationMonth);
     data.pages(this.pages).nbCitations(nbCitations).nbViews(nbViews);
 
@@ -157,7 +159,7 @@ public class ArticleEntity {
     }
 
     if (this.creator != null) {
-      data.user(creator.toDTO());
+      data.creator(creator.toDTO());
     }
 
     return data.build();
@@ -170,9 +172,14 @@ public class ArticleEntity {
     entity.id(dto.getId()).reference(dto.getReference());
     entity.title(dto.getTitle()).content(dto.getContent()).url(dto.getUrl()).price(dto.getPrice());
 
+    entity.journal(dto.getJournal()).journalNumber(dto.getNumber());
     entity.publicationYear(dto.getYear()).publicationMonth(dto.getMonth());
     entity.pages(dto.getPages()).nbCitations(dto.getNbCitations()).nbViews(dto.getNbViews());
-    entity.creator(UserEntity.of(dto.getUser()));
+
+    if(dto.getCreator() != null){
+      entity.creator(UserEntity.of(dto.getCreator()));
+    }
+
 
     return entity.build();
   }
