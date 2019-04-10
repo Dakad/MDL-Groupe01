@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.TagDTO;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +28,12 @@ public class TagEntity {
   @ManyToMany(mappedBy = "tags")
   private Set<StateOfTheArtEntity> statesOfTheArts;
 
+
   @ManyToMany(mappedBy = "tags")
   private Set<UserEntity> followers;
+
+
+  public TagDTO toDTO() {
+    return new TagDTO(name);
+  }
 }
