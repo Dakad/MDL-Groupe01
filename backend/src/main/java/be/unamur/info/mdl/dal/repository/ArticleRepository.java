@@ -11,5 +11,9 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   ArticleEntity findByTitle(String title);
 
+  ArticleEntity findByReference(String reference);
+
   boolean existsByTitle(String title);
+
+  boolean existsByReference(String reference);
 }

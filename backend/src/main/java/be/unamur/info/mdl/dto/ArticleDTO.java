@@ -63,12 +63,14 @@ public class ArticleDTO {
   @NotBlank()
   private String category;
 
-  @NotBlank(message="The author(s) must be defined")
-  private List<String> authors;
+
+  private List<@NotBlank(message="The author(s) must be defined")String> authors;
 
   private LocalDate createdAt;
 
-  private UserDTO user;
+  private UserDTO creator;
+
+  private List<String> keywordList;
 
   private Set<TagDTO> keywords = Collections.emptySet();
 
