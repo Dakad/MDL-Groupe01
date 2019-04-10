@@ -24,7 +24,14 @@
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
         <!--SiteName refer to AccueilVue-->
-        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
+        <a class="md-title" href="/">Froggosaur</a>
+        <div class="search">
+          <form class="form-inline my-2 my-lg-0 ml-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
+          </form>
+        </div>
+        <div class="buttons">
         <div v-if="isAuthenticated">
           <md-button class="md-icon-button md-dense md-primary" @click="logout()">
             <md-icon>person</md-icon>
@@ -35,6 +42,7 @@
           <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
           <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+        </div>
         </div>
       </md-toolbar>
     </div>
@@ -55,6 +63,12 @@
 .signin-dialog {
   width: 55%;
 }
+// .buttons {
+//   align-content: right;
+// }
+// .search {
+//   align: center;
+// }
 // .md-dialog {
 //   widows: 100%;
 // }
