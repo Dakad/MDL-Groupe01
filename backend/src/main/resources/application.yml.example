@@ -12,9 +12,18 @@ spring:
   datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:local_db?createDB
-    username:
+    username: sa
     password:
     validationQuery: SELECT 1
+app:
+  auth:
+    secret: 1j3@BeV!ltA&_SecretKeyToGenJWTs_m$O6Qz3qj
+    tokenExpirationInMs: 8460000000  # 100 days
+    prefix: "Bearer "
+    header: Authorization
+    secureEndpoints:
+      - /api/team
+
 
 ---
 
