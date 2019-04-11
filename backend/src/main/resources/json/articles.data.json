@@ -1,7 +1,6 @@
 [
   {
     "title": "A GIS based component-oriented integrated system for estimation, visualization and analysis of road traffic air pollution",
-    "author": "Rebolj Danijel and Sturm Peter J",
     "journal": "Environmental Modelling & Software",
     "volume": "14",
     "number": "6",
@@ -9,6 +8,8 @@
     "year": 1999,
     "publisher": "Elsevier",
     "content": "A GIS based component-oriented integrated system for estimation, visualization and analysis of road traffic air pollution",
+    "url": "https://www.sciencedirect.com/science/article/pii/S1364815299000171",
+    "category": "Computer science",
     "keywords": [],
     "authors": ["Rebolj Danijel", "Sturm Peter J"],
     "reference": "rebolj1999gis"
@@ -22,7 +23,7 @@
     "issn": "0169-023X",
     "doi": "https://doi.org/10.1016/j.datak.2019.03.002",
     "url": "http://www.sciencedirect.com/science/article/pii/S0169023X18303951",
-    "author": "Zijun Chen and Qin Yuan and Wenyuan Liu",
+    "category": "Analytics",
     "keywords": [
       "spatio-temporal databases",
       "data streams",
@@ -43,7 +44,7 @@
     "issn": "0963-8687",
     "doi": "https://doi.org/10.1016/j.jsis.2017.07.003",
     "url": "http://www.sciencedirect.com/science/article/pii/S0963868717302615",
-    "author": "Wendy Arianne Günther and Mohammad H. Rezazade Mehrizi and Marleen Huysman and Frans Feldberg",
+    "category": "Computer science",
     "keywords": [
       "big data",
       "analytics",
@@ -71,8 +72,10 @@
     "issn": "0268-4012",
     "doi": "https://doi.org/10.1016/j.ijinfomgt.2014.10.007",
     "url": "http://www.sciencedirect.com/science/article/pii/S0268401214001066",
-    "author": "Amir Gandomi and Murtaza Haider",
+    "category": "Computer science",
     "keywords": [
+      "big data",
+      "analytics",
       "big data analytics",
       "big data definition",
       "unstructured data analytics",
@@ -83,25 +86,15 @@
     "reference": "GANDOMI2015137"
   },
   {
-    "title": "Monitoring best region in spatial data streams in road networks",
-    "author": "Chen Zijun and Yuan Qin and Liu Wenyuan",
-    "journal": "Data & Knowledge Engineering",
-    "year": 2019,
-    "publisher": "Elsevier",
-    "content": "Monitoring best region in spatial data streams in road networks",
-    "keywords": [],
-    "authors": ["Chen Zijun", "Yuan Qin", "Liu Wenyuan"],
-    "reference": "chen2019monitoring"
-  },
-  {
     "title": "Dynamo: a public interactive surface supporting the cooperative sharing and exchange of media",
-    "author": "Izadi Shahram and Brignull Harry and Rodden Tom and Rogers Yvonne and Underwood Mia",
     "booktitle": "Proceedings of the 16th annual ACM symposium on User interface software and technology",
     "pages": "159--168",
     "year": 2003,
     "organization": "ACM",
     "content": "Dynamo: a public interactive surface supporting the cooperative sharing and exchange of media",
-    "keywords": [],
+    "url": "http://doi.acm.org/10.1145/964696.964714",
+    "category": "Public interface",
+    "keywords": ["public interface"],
     "authors": [
       "Izadi Shahram",
       "Brignull Harry",
@@ -112,7 +105,6 @@
     "reference": "izadi2003dynamo"
   },
   {
-    "author": "Jiang Jiawei and Tong Yunhai and Lu Hua and Cui Bin and Lei Kai and Yu Lele",
     "title": "GVoS: A General System for Near-Duplicate Video-Related Applications on Storm",
     "journal": "ACM Trans. Inf. Syst.",
     "issue_date": "August 2017",
@@ -129,6 +121,7 @@
     "acmid": "3041657",
     "publisher": "ACM",
     "address": "New York, NY, USA",
+    "category": "A.I.",
     "keywords": [
       "near duplicate video",
       "general system",
@@ -147,7 +140,6 @@
     "reference": "Jiang:2017:GGS:3077622.3041657"
   },
   {
-    "author": "Vogel Daniel and Balakrishnan Ravin",
     "title": "Interactive Public Ambient Displays: Transitioning from Implicit to Explicit, Public to Personal, Interaction with Multiple Users",
     "booktitle": "Proceedings of the 17th Annual ACM Symposium on User Interface Software and Technology",
     "series": "UIST '04",
@@ -161,7 +153,9 @@
     "acmid": "1029656",
     "publisher": "ACM",
     "address": "New York, NY, USA",
+    "category": "Public interface",
     "keywords": [
+      "public interface",
       "ambient displays",
       "interactive public displays",
       "subtle interaction",
