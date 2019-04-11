@@ -1,9 +1,9 @@
 package be.unamur.info.mdl;
 
-import be.unamur.info.mdl.config.DBFillerRunner;
+import be.unamur.info.mdl.config.DbDataLoaderRunner;
+import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.UserService;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,9 +24,11 @@ public class MainApplication extends SpringBootServletInitializer {
   }
 
 
+/*
   @Bean
-  public CommandLineRunner runDBFiller(UserService userService, ArticleService articleService) {
-    return new DBFillerRunner(userService, articleService);
+  public CommandLineRunner runDBFiller(UserService userService, ArticleService articleService, TagRepository tagRepository) {
+    return new DbDataLoaderRunner(userService, articleService, tagRepository);
   }
+*/
 
 }
