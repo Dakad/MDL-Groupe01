@@ -1,19 +1,20 @@
 package be.unamur.info.mdl.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDate;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -36,6 +37,7 @@ public class ArticleDTO {
   private String url;
 
   @NotBlank()
+  @JsonAlias({"booktitle"})
   private String journal;
 
   private String volume;
@@ -61,17 +63,20 @@ public class ArticleDTO {
   private int nbViews;
 
   @NotBlank()
-  private String category;
-
-
-  private List<@NotBlank(message="The author(s) must be defined")String> authors;
+  private String category = "unknown";
 
   private LocalDate createdAt;
 
   private UserDTO creator;
 
-  private List<String> keywordList;
+  private List<@NotBlank(message="The author(s) must be defined")String> authors = Collections.emptyList();
 
-  private Set<TagDTO> keywords = Collections.emptySet();
+  @Builder.Default
+  @JsonProperty("keywords")
+  private List<String> keywordList = new LinkedList<>();
+
+  @Builder.Default
+  @JsonProperty("keywords_object")
+  private Set<TagDTO> keywords = new LinkedHashSet<>();
 
 }
