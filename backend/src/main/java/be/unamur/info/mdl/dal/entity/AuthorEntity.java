@@ -10,12 +10,14 @@ import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "author")
 public class AuthorEntity {
 
@@ -25,6 +27,10 @@ public class AuthorEntity {
 
   @Column(name = "name", unique = true, nullable = false)
   private String name;
+
+  @Column(name = "slug", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
+  private String slug;
 
 
   @ManyToMany(mappedBy = "authors")

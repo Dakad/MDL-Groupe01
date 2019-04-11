@@ -4,7 +4,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -24,30 +25,37 @@ import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @Table(name = "article")
 public class ArticleEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private long id;
 
   @Column(unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String reference;
 
   @Column(unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String title;
 
   @Column(name = "abstract", nullable = false)
+  @Lob
   private String content;
 
   @Column(name = "url", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String url;
 
   @Column(name = "journal", nullable = false)
@@ -68,7 +76,7 @@ public class ArticleEntity {
   @Column(name = "publication_month")
   private String publicationMonth;
 
-  @Column(name="price")
+  @Column(name = "price")
   private float price;
 
   @Column(name = "pages")
@@ -83,16 +91,17 @@ public class ArticleEntity {
   private int nbViews;
 
   @Column(name = "created_at")
+  @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "category_id", unique = true, nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "category_id", nullable = false)
   private TagEntity category;
 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "creator_user_id", unique = true, nullable = false)
+  @JoinColumn(name = "creator_user_id", nullable = false)
   private UserEntity creator;
 
 
@@ -103,11 +112,13 @@ public class ArticleEntity {
     name = "article_authors",
     joinColumns = @JoinColumn(name = "author_id"),
     inverseJoinColumns = @JoinColumn(name = "article_id"))
-  private Set<AuthorEntity> authors = Collections.emptySet();
+  @Builder.Default
+  private Set<AuthorEntity> authors = new LinkedHashSet<>();
 
 
   @ManyToMany(mappedBy = "articles")
-  private Set<BookmarkEntity> bookmarks;
+  @Builder.Default
+  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
 
   @ManyToMany(cascade = {
@@ -116,11 +127,13 @@ public class ArticleEntity {
   @JoinTable(name = "article_references",
     joinColumns = {@JoinColumn(name = "article_id")},
     inverseJoinColumns = {@JoinColumn(name = "reference_id")})
-  private Set<ArticleEntity> references;
+  @Builder.Default
+  private Set<ArticleEntity> references = new LinkedHashSet<>();
 
 
   @ManyToMany(mappedBy = "articles")
-  private Set<StateOfTheArtEntity> sotas;
+  @Builder.Default
+  private Set<StateOfTheArtEntity> sotas = new LinkedHashSet<>();
 
 
   @ManyToMany(cascade = {
@@ -129,7 +142,8 @@ public class ArticleEntity {
   @JoinTable(name = "article_keywords",
     joinColumns = {@JoinColumn(name = "article_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> keywords;
+  @Builder.Default
+  private Set<TagEntity> keywords = new LinkedHashSet<>();
 
 
   /**
@@ -172,14 +186,14 @@ public class ArticleEntity {
     entity.id(dto.getId()).reference(dto.getReference());
     entity.title(dto.getTitle()).content(dto.getContent()).url(dto.getUrl()).price(dto.getPrice());
 
-    entity.journal(dto.getJournal()).journalNumber(dto.getNumber());
-    entity.publicationYear(dto.getYear()).publicationMonth(dto.getMonth());
+    entity.journal(dto.getJournal()).journalVolume(dto.getVolume()).journalNumber(dto.getNumber());
+    entity.publisher(dto.getPublisher()).publicationYear(dto.getYear())
+      .publicationMonth(dto.getMonth());
     entity.pages(dto.getPages()).nbCitations(dto.getNbCitations()).nbViews(dto.getNbViews());
 
-    if(dto.getCreator() != null){
+    if (dto.getCreator() != null) {
       entity.creator(UserEntity.of(dto.getCreator()));
     }
-
 
     return entity.build();
   }
