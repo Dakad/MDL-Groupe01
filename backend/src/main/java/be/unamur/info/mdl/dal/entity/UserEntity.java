@@ -3,6 +3,7 @@ package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -61,7 +62,7 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<ArticleEntity> articles;
+  private Set<ArticleEntity> articles = new LinkedHashSet<>();
 
 
   @OneToMany(
