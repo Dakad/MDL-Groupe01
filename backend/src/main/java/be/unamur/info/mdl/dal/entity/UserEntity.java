@@ -5,6 +5,7 @@ import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -62,11 +63,11 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<ArticleEntity> articles;
+  private Set<ArticleEntity> articles = new LinkedHashSet<>();
 
 
   @OneToMany(
