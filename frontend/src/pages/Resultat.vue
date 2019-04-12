@@ -50,16 +50,21 @@
 
     <div class="first">
       <h2>Sort by :</h2>
-      <md-radio v-model="radio1" value="domain">Domain of Research</md-radio>
-      <md-radio v-model="radio1" value="date">Date</md-radio>
-      <md-radio v-model="radio1" value="views">Views</md-radio>
-      <md-radio v-model="radio1" value="ref">References</md-radio>
+      <md-radio v-model="sortBy" value="name">Name</md-radio>
+      <md-radio v-model="sortBy" value="title">Title</md-radio>
+      <md-radio v-model="sortBy" value="date">Date</md-radio>
+
+      <!-- <md-radio v-model="sortBy" value="domain">Domain of Research</md-radio>
+      <md-radio v-model="sortBy" value="date">Date</md-radio>
+      <md-radio v-model="sortBy" value="views">Views</md-radio>
+      <md-radio v-model="sortBy" value="ref">References</md-radio>-->
     </div>
     <hr>
     <div class="second">
-      <md-radio v-model="radio2" value="asc">Ascending</md-radio>
-      <md-radio v-model="radio2" value="des">Descending</md-radio>
-      <small>{{ radio1 }} + {{ radio2 }}</small>
+      <h2>Order by :</h2>
+      <md-radio v-model="orderBy" value="asc">Ascending</md-radio>
+      <md-radio v-model="orderBy" value="desc">Descending</md-radio>
+      <small>{{ sortBy }} + {{ orderBy }}</small>
     </div>
   </section>
 </template>
@@ -69,6 +74,9 @@ import sota from "@/components/resulat/Sota";
 import author from "@/components/resulat/Author";
 import graphics from "@/components/resulat/Graphics";
 import articles from "@/components/resulat/Article";
+
+import { getSearchResults } from "@/services/api";
+
 export default {
   components: {
     sota,
@@ -76,10 +84,49 @@ export default {
     graphics,
     articles
   },
-  data: () => ({
-    radio1: "domain",
-    radio2: "asc"
-  })
+  data() {
+    return {
+      loading: false,
+      searchTerm: null,
+      sortBy: "name",
+      orderBy: "asc",
+      page: 0,
+      results: {
+        articles: [],
+        authors: [],
+        sotas: [],
+        users: []
+      }
+    };
+  },
+  created() {
+    // fetch the data when the view is created
+    // and the data is already being observed
+    this.fetchSearchResult();
+  },
+  watch: {
+    // call it again the method if the route changes
+    $route: "fetchSearchResult"
+  },
+  methods: {
+    fetchSearchResult() {
+      this.loading = true;
+      this.searchTerm = this.$route.query["search"];
+
+      const searchQuery = {
+        st: this.searchTerm,
+        s: this.sortBy,
+        o: this.orderBy,
+        p: this.page
+      };
+      getSearchResults(searchQuery)
+        .then(data => {
+          this.loading = false;
+          this.results = data;
+        })
+        .catch(console.error);
+    }
+  }
 };
 </script>
 
