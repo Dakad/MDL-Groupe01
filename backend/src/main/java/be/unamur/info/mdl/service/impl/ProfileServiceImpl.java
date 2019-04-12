@@ -11,7 +11,8 @@ public class ProfileServiceImpl implements ProfileService {
   private UserRepository userRepository;
 
   @Override
-  public ProfileBasicInfoDTO getBasicInfo(String id) {
-    return userRepository.findById(id).toProfileBasicInfoDTO();
+  public ProfileBasicInfoDTO getBasicInfo(String username) {
+    if (!userRepository.existsByUsername(username)) return null;
+    return userRepository.findByUsername(username).toProfileBasicInfoDTO();
   }
 }
