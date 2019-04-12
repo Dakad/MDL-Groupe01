@@ -40,7 +40,10 @@ public class ProfileController {
   private ProfileService profileService;
 
   @RequestMapping(path="/basic", method = RequestMethod.GET)
-  public ProfileBasicInfoDTO getBasicInfo(@RequestParam(required = true) String id){
-    return profileService.getBasicInfo(id);
+  public ResponseEntity getBasicInfo(@RequestParam(required = true) String username){
+    if(username == "") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please specify a username");
+    ProfileBasicInfoDTO dto = profileService.getBasicInfo(username);
+    if(dto==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    return ResponseEntity.status(HttpStatus.OK).body(dto);
   }
 }
