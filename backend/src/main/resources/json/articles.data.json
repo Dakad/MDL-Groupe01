@@ -1,0 +1,168 @@
+[
+  {
+    "title": "A GIS based component-oriented integrated system for estimation, visualization and analysis of road traffic air pollution",
+    "journal": "Environmental Modelling & Software",
+    "volume": "14",
+    "number": "6",
+    "pages": "531--539",
+    "year": 1999,
+    "publisher": "Elsevier",
+    "content": "A GIS based component-oriented integrated system for estimation, visualization and analysis of road traffic air pollution",
+    "url": "https://www.sciencedirect.com/science/article/pii/S1364815299000171",
+    "category": "Computer science",
+    "keywords": [],
+    "authors": ["Rebolj Danijel", "Sturm Peter J"],
+    "reference": "rebolj1999gis"
+  },
+  {
+    "title": "Monitoring best region in spatial data streams in road networks",
+    "journal": "Data & Knowledge Engineering",
+    "volume": "120",
+    "pages": "100 - 118",
+    "year": 2019,
+    "issn": "0169-023X",
+    "doi": "https://doi.org/10.1016/j.datak.2019.03.002",
+    "url": "http://www.sciencedirect.com/science/article/pii/S0169023X18303951",
+    "category": "Analytics",
+    "keywords": [
+      "spatio-temporal databases",
+      "data streams",
+      "best region search",
+      "road network"
+    ],
+    "content": "Given a set of spatial objects O, the search radius r and the submodular function f are specified by the user. The best region search (BRS) is to find an optimal area with fixed range size, in which the object set has the maximum submodular function value. The BRS problem has long been studied because of its wide application in spatial data mining, facility locating and so on. However, most of the existing work focus on either Euclidean space or motionless objects, which is not applicable in many real-life cases. In this paper, we propose the best region monitoring problem in the spatial data streams in road networks (MBRS). Many real life applications can obtain benefit from MBRS problem, such as monitoring traffic and tracking in ecology. We first propose an efficient algorithm to the static BRS problem in road networks, and extend the solution to a naive method to solve the MBRS problem. Then, we put forward effective pruning strategies and branch-and-bound algorithm GER on the basis of the preprocessing to monitor best region at different times. Finally, a large number of experiments verify the efficiency of the proposed method.",
+    "authors": ["Zijun Chen", "Qin Yuan", "Wenyuan Liu"],
+    "reference": "CHEN2019100"
+  },
+  {
+    "title": "Debating big data: A literature review on realizing value from big data",
+    "journal": "The Journal of Strategic Information Systems",
+    "volume": "26",
+    "number": "3",
+    "pages": "191 - 209",
+    "year": 2017,
+    "issn": "0963-8687",
+    "doi": "https://doi.org/10.1016/j.jsis.2017.07.003",
+    "url": "http://www.sciencedirect.com/science/article/pii/S0963868717302615",
+    "category": "Computer science",
+    "keywords": [
+      "big data",
+      "analytics",
+      "literature review",
+      "value realization",
+      "portability",
+      "interconnectivity"
+    ],
+    "content": "Big data has been considered to be a breakthrough technological development over recent years. Notwithstanding, we have as yet limited understanding of how organizations translate its potential into actual social and economic value. We conduct an in-depth systematic review of IS literature on the topic and identify six debates central to how organizations realize value from big data, at different levels of analysis. Based on this review, we identify two socio-technical features of big data that influence value realization: portability and interconnectivity. We argue that, in practice, organizations need to continuously realign work practices, organizational models, and stakeholder interests in order to reap the benefits from big data. We synthesize the findings by means of an integrated model.",
+    "authors": [
+      "Wendy Arianne Günther",
+      "Mohammad H. Rezazade Mehrizi",
+      "Marleen Huysman",
+      "Frans Feldberg"
+    ],
+    "reference": "GUNTHER2017191"
+  },
+  {
+    "title": "Beyond the hype: Big data concepts, methods, and analytics",
+    "journal": "International Journal of Information Management",
+    "volume": "35",
+    "number": "2",
+    "pages": "137 - 144",
+    "year": 2015,
+    "issn": "0268-4012",
+    "doi": "https://doi.org/10.1016/j.ijinfomgt.2014.10.007",
+    "url": "http://www.sciencedirect.com/science/article/pii/S0268401214001066",
+    "category": "Computer science",
+    "keywords": [
+      "big data",
+      "analytics",
+      "big data analytics",
+      "big data definition",
+      "unstructured data analytics",
+      "predictive analytics"
+    ],
+    "content": "Size is the first, and at times, the only dimension that leaps out at the mention of big data. This paper attempts to offer a broader definition of big data that captures its other unique and defining characteristics. The rapid evolution and adoption of big data by industry has leapfrogged the discourse to popular outlets, forcing the academic press to catch up. Academic journals in numerous disciplines, which will benefit from a relevant discussion of big data, have yet to cover the topic. This paper presents a consolidated description of big data by integrating definitions from practitioners and academics. The paper's primary focus is on the analytic methods used for big data. A particular distinguishing feature of this paper is its focus on analytics related to unstructured data, which constitute 95% of big data. This paper highlights the need to develop appropriate and efficient analytical methods to leverage massive volumes of heterogeneous data in unstructured text, audio, and video formats. This paper also reinforces the need to devise new tools for predictive analytics for structured big data. The statistical methods in practice were devised to infer from sample data. The heterogeneity, noise, and the massive size of structured big data calls for developing computationally efficient algorithms that may avoid big data pitfalls, such as spurious correlation.",
+    "authors": ["Amir Gandomi", "Murtaza Haider"],
+    "reference": "GANDOMI2015137"
+  },
+  {
+    "title": "Dynamo: a public interactive surface supporting the cooperative sharing and exchange of media",
+    "booktitle": "Proceedings of the 16th annual ACM symposium on User interface software and technology",
+    "pages": "159--168",
+    "year": 2003,
+    "organization": "ACM",
+    "content": "Dynamo: a public interactive surface supporting the cooperative sharing and exchange of media",
+    "url": "http://doi.acm.org/10.1145/964696.964714",
+    "category": "Public interface",
+    "keywords": ["public interface"],
+    "authors": [
+      "Izadi Shahram",
+      "Brignull Harry",
+      "Rodden Tom",
+      "Rogers Yvonne",
+      "Underwood Mia"
+    ],
+    "reference": "izadi2003dynamo"
+  },
+  {
+    "title": "GVoS: A General System for Near-Duplicate Video-Related Applications on Storm",
+    "journal": "ACM Trans. Inf. Syst.",
+    "issue_date": "August 2017",
+    "volume": "36",
+    "number": "1",
+    "month": "jun",
+    "year": 2017,
+    "issn": "1046-8188",
+    "pages": "3:1--3:36",
+    "articleno": "3",
+    "numpages": "36",
+    "url": "http://doi.acm.org/10.1145/3041657",
+    "doi": "10.1145/3041657",
+    "acmid": "3041657",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "category": "A.I.",
+    "keywords": [
+      "near duplicate video",
+      "general system",
+      "real-time processing",
+      "retrieval and detection"
+    ],
+    "content": "GVoS: A General System for Near-Duplicate Video-Related Applications on Storm",
+    "authors": [
+      "Jiang Jiawei",
+      "Tong Yunhai",
+      "Lu Hua",
+      "Cui Bin",
+      "Lei Kai",
+      "Yu Lele"
+    ],
+    "reference": "Jiang:2017:GGS:3077622.3041657"
+  },
+  {
+    "title": "Interactive Public Ambient Displays: Transitioning from Implicit to Explicit, Public to Personal, Interaction with Multiple Users",
+    "booktitle": "Proceedings of the 17th Annual ACM Symposium on User Interface Software and Technology",
+    "series": "UIST '04",
+    "year": 2004,
+    "isbn": "1-58113-957-8",
+    "location": "Santa Fe, NM, USA",
+    "pages": "137--146",
+    "numpages": "10",
+    "url": "http://doi.acm.org/10.1145/1029632.1029656",
+    "doi": "10.1145/1029632.1029656",
+    "acmid": "1029656",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "category": "Public interface",
+    "keywords": [
+      "public interface",
+      "ambient displays",
+      "interactive public displays",
+      "subtle interaction",
+      "ubicomp"
+    ],
+    "content": "Interactive Public Ambient Displays: Transitioning from Implicit to Explicit, Public to Personal, Interaction with Multiple Users",
+    "authors": ["Vogel Daniel", "Balakrishnan Ravin"],
+    "reference": "Vogel:2004:IPA:1029632.1029656"
+  }
+]
