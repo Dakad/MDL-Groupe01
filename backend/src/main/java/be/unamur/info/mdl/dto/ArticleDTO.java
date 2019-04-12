@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -21,8 +22,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ArticleDTO {
-
-  private long id;
 
   @NotBlank()
   private String reference;
@@ -57,26 +56,32 @@ public class ArticleDTO {
   private String pages;
 
   @PositiveOrZero()
+  @JsonProperty(value= "nb_citations")
   private int nbCitations;
 
   @PositiveOrZero
+  @JsonProperty(value= "nb_views")
   private int nbViews;
 
   @NotBlank()
   private String category = "unknown";
 
+  @JsonProperty(value= "created_at")
   private LocalDate createdAt;
 
   private UserDTO creator;
 
   private List<@NotBlank(message="The author(s) must be defined")String> authors = Collections.emptyList();
 
+  // Receive a list of String representing the keywords
   @Builder.Default
-  @JsonProperty("keywords")
-  private List<String> keywordList = new LinkedList<>();
+  @JsonProperty(value = "keywords", access = Access.WRITE_ONLY)
+  private Set<String> keywordList = new LinkedHashSet<>();
 
+
+  // Send Keywords with it name && slug
   @Builder.Default
-  @JsonProperty("keywords_object")
+  @JsonProperty(value = "keywords", access = Access.READ_ONLY)
   private Set<TagDTO> keywords = new LinkedHashSet<>();
 
 }
