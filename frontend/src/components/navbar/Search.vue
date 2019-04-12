@@ -3,7 +3,7 @@
     <div class="searchText">
       <md-field>
         <label>Type your search here</label>
-        <md-input v-model="searchInput"></md-input>
+        <md-input v-model="searchInput" @keyup.enter="searchIt"></md-input>
         <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
       </md-field>
     </div>
@@ -33,14 +33,15 @@ export default {
     };
   },
   methods: {
-    searchIt(){
-      this.$router.push({name:'resultat', query:{searchQuery:this.searchInput}})
+    searchIt() {
+      this.$router.push({
+        name: "resultat",
+        query: { searchQuery: this.searchInput }
+      });
     }
   }
 };
 </script>
 
 <style>
-
-
 </style>
