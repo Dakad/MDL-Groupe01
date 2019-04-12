@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -201,6 +203,7 @@ public class  MainControllerTest {
     ;
   }
 
+
   @Test
   public void register_with_credentials() throws Exception {
     JSONObject credential = new JSONObject();
@@ -294,6 +297,7 @@ public class  MainControllerTest {
     ;
   }
 
+
   @Test
   public void login_with_credentials() throws Exception {
     JSONObject credential = new JSONObject();
@@ -306,10 +310,16 @@ public class  MainControllerTest {
       .content(credential.toString())
       .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
+      .andExpect(header().exists("Authorization"))
       .andExpect(jsonPath("$.auth_token").exists())
       .andExpect(jsonPath("$.auth_token").value("JWT_TEST_TOKEN"))
+      .andExpect(jsonPath("$.auth_header").exists())
+      .andExpect(jsonPath("$.auth_header").isString())
+      .andExpect(jsonPath("$.auth_token_type").exists())
+      .andExpect(jsonPath("$.auth_token_type").isString())
     ;
   }
+
 
   @Test
   public void search_with_no_params_will_throws_exception() throws Exception {

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Data@NoArgsConstructor@AllArgsConstructor
 public class SearchQueryDTO {
   @NotBlank
-  private String keyword;
+  private String searchTerm;
 
   private String tag;
 
