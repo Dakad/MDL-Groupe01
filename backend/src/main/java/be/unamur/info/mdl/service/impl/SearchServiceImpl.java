@@ -1,76 +1,123 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
-import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.SearchQueryDTO;
+import be.unamur.info.mdl.dto.SearchResultDTO;
+import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
+import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service("searchService")
-
+@Transactional
 public class SearchServiceImpl implements SearchService {
+
   private UserRepository userRepository;
   private ArticleRepository articleRepository;
   private StateOfTheArtRepository stateOfTheArtRepository;
 
   @Autowired
-  public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,StateOfTheArtRepository stateOfTheArtRepository){
+  public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
+    StateOfTheArtRepository stateOfTheArtRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
   }
 
   @Override
-  public SearchResultDTO getSearchResults(SearchQueryDTO searchQuery){
-    SearchResultDTO searchResultDTO = new SearchResultDTO();
+  public SearchResultDTO getSearchResults(SearchQueryDTO searchQuery) {
+    SearchResultDTOBuilder searchResult = SearchResultDTO.builder();
+
+    // Replace the provided sort by the real Entities field
+    String sort = searchQuery.getSort();
+    switch (sort) {
+      case ("NAME"):
+        sort = "title";
+        break;
+      case ("DATE"):
+      default:
+        sort = "createdAt";
+        break;
+    }
 
     //PAGEABLE
     int page = searchQuery.getPage();
-    String sort;
-    switch(searchQuery.getSort()){
-      case("DATE") : sort = "createdAt";
-      case("NAME") : sort = "title";
-      default: sort = "createdAt";
-    }
+    String searchTerm = searchQuery.getSearchTerm();
+    Sort pageSort = this.getSort(sort, searchQuery.getOrder());
+    Pageable pageable = PageRequest.of(page, 20, pageSort);
 
-    String keywords = searchQuery.getKeyword();
     //USERS
-    Pageable pageable;
-    if(sort == "name") {
-      if(searchQuery.getOrder() == "ASC") pageable = PageRequest.of(page, 20, Sort.by("lastname").ascending());
-      else pageable = PageRequest.of(page, 20, Sort.by("lastname").descending());
-    }
-    else pageable = PageRequest.of(page, 20);
-    List<UserEntity> userEntityList = userRepository.findDistinctByFirstnameLikeOrLastnameLike(keywords,keywords,pageable);
-    List<UserDTO> userDTOList = new ArrayList();
-    userEntityList.forEach(u -> userDTOList.add(u.toDTO()));
-    searchResultDTO.setUsers(userDTOList);
+
+    List<UserDTO> userList = userRepository
+      .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm, searchTerm, pageable)
+      .map(u -> u.toDTO())
+      .collect(Collectors.toList());
+
+    searchResult.users(userList);
 
     //ARTICLES
-    if(searchQuery.getOrder() == "ASC") pageable = PageRequest.of(page,20,Sort.by(sort).ascending());
-    else pageable = PageRequest.of(page,20,Sort.by(sort).descending());
-    List<ArticleEntity> articleEntityList = articleRepository.findDistinctByTitleLike(keywords,pageable);
-    List<ArticleDTO> articleDTOList = new ArrayList();
-    articleEntityList.forEach(a -> articleDTOList.add(a.toDTO()));
-    searchResultDTO.setArticles(articleDTOList);
+    pageSort = this.getSort(sort, searchQuery.getOrder());
+    pageable = PageRequest.of(page, 20, pageSort);
+
+    List<ArticleDTO> articleList = articleRepository
+      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable)
+      .map(a -> a.toDTO())
+      .collect(Collectors.toList());
+
+    searchResult.articles(articleList);
 
     //SOTA
-    List<StateOfTheArtEntity> sotaList = stateOfTheArtRepository.findDistinctByNameLike(keywords,pageable);
-    List<StateOfTheArtDTO> sotaDTOList = new ArrayList();
-    sotaList.forEach(s -> sotaDTOList.add(s.toDTO()));
-    searchResultDTO.setStatesOfTheArt(sotaDTOList);
+    pageSort = this.getSort(sort, searchQuery.getOrder());
+    pageable = PageRequest.of(page, 20, pageSort);
 
-    return searchResultDTO;
+    List<StateOfTheArtDTO> sotaList = stateOfTheArtRepository
+      .findDistinctByNameContainingIgnoreCase(searchTerm, pageable)
+      .map(s -> s.toDTO())
+      .collect(Collectors.toList());
+
+    searchResult.statesOfTheArt(sotaList);
+
+    return searchResult.build();
+  }
+
+  /**
+   * Get the correct Sort based on the sortedBy term and sortedOrder
+   * @param searchSortedBy What to sort on
+   * @param searchSortOrder Which order for the sort (ASC or DESC)
+   * @return The correct Sort
+   */
+  private Sort getSort(String searchSortedBy, String searchSortOrder) {
+    Sort pageSort = Sort.unsorted();
+    switch (searchSortedBy) {
+      case "name":
+      case "title":
+        if (searchSortOrder == "ASC") {
+          pageSort = Sort.by("lastname", "firstname").ascending();
+        }
+        if (searchSortOrder == "DESC") {
+          pageSort = Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
+        }
+        break;
+      case "createdAt":
+        if (searchSortOrder == "ASC") {
+          pageSort = Sort.by(searchSortedBy).ascending();
+        }
+        break;
+      default:
+        pageSort = Sort.unsorted();
+    }
+
+    return pageSort;
   }
 }
