@@ -10,6 +10,7 @@ import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.media.jfxmedia.logging.Logger;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -43,10 +44,11 @@ public class ProfileController {
   private ProfileService profileService;
 
   @RequestMapping(path="/basic", method = RequestMethod.GET)
-  public ResponseEntity getBasicInfo(@RequestParam(required = true) @NotBlank(message = "Please specify a username") String username){
+  public ResponseEntity getBasicInfo(@RequestParam(required = true) @NotBlank(message = "Please specify a username") String u){
     try{
-      return ResponseEntity.status(HttpStatus.OK).body(profileService.getBasicInfo(username));
-    }catch(UsernameNotFoundException u) {
+      ProfileBasicInfoDTO dto = profileService.getBasicInfo(u);
+      return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }catch(UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
     }
 

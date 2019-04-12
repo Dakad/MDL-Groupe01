@@ -3,6 +3,7 @@ package be.unamur.info.mdl.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 
@@ -18,9 +19,12 @@ public class ProfileBasicInfoDTO {
   private String Name;
   @NotBlank
   private String Firstname;
+  @Nullable
   private String Domain;
+  @Nullable
   private UniversityInfoDTO University;
-  @NotBlank
+  @NotBlank @Nullable
   private String email;
+  @Nullable
   private String profilePictureURL;
 }
