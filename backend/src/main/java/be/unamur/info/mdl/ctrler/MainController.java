@@ -113,7 +113,7 @@ public class MainController extends APIBaseController {
     try {
       String token = userService.login(userDTO);
       HttpHeaders header = new HttpHeaders();
-      header.set(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX+token);
+      header.set(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + token);
 
       result.put("auth_token", token);
       result.put("auth_header", SecurityUtils.HEADER_STRING);
@@ -127,9 +127,9 @@ public class MainController extends APIBaseController {
   }
 
 
-  //?p={page}&o={order}&s={sort}&k={keyword}&t={tag}
+  //?st={searchTerm}&p={page}&o={order}&s={sort}&t={tag}
   @ApiOperation(value = "Search articles, S.O.T.A or authors", response = SearchResultDTO.class)
-  @ApiResponse(code = 200, message = "List of each searched category")
+  @ApiResponse(code = 200, message = "List of each searched elements")
   @RequestMapping(value = "/search", method = RequestMethod.GET)
   public ResponseEntity<SearchResultDTO> search(
     @ApiParam(value = "Pagination", defaultValue = "0")
@@ -141,8 +141,8 @@ public class MainController extends APIBaseController {
     @ApiParam(value = "Sort", allowMultiple = true, defaultValue = "DATE")
     @RequestParam(defaultValue = "DATE", required = false) String s,
 
-    @ApiParam(value = "Keywords", required = true)
-    @RequestParam String k,
+    @ApiParam(value = "Search term", required = true)
+    @RequestParam String st,
 
     @ApiParam(value = "Tags")
     @RequestParam(required = false) String t) {
@@ -157,7 +157,8 @@ public class MainController extends APIBaseController {
     if (page < 0) {
       page = 0;
     }
-    SearchQueryDTO searchQuery = new SearchQueryDTO(k, t, page, o, s);
+
+    SearchQueryDTO searchQuery = new SearchQueryDTO(st, t, page, o.toUpperCase(), s.toUpperCase());
     SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
