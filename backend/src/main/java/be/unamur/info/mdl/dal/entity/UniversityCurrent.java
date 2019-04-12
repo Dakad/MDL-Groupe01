@@ -37,5 +37,5 @@ public class UniversityCurrent {
   @JoinColumn(name = "university_id")
   private UniversityEntity university;
 
-
+  public boolean isCurrent(){return current;}
 }
