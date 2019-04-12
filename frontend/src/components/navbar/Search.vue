@@ -36,7 +36,7 @@ export default {
     searchIt() {
       this.$router.push({
         name: "resultat",
-        query: { searchQuery: this.searchInput }
+        query: { search: this.searchInput }
       });
     }
   }
