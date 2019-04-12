@@ -1,0 +1,17 @@
+[
+  {
+    "username": "Groot",
+    "password": "toorPassword123",
+    "email": "root@mail.dom",
+    "firstname": "Root",
+    "lastname" : "Mdl"
+  },
+  {
+    "username": "Std",
+    "password": "stdPassword123",
+    "email": "std@mail.dom",
+    "firstname": "Std",
+    "lastname" : "Mdl"
+  }
+
+]
