@@ -1,9 +1,11 @@
 package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
+import be.unamur.info.mdl.dal.repository.AuthorRepository;
 import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.AuthorDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
@@ -23,16 +25,20 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class SearchServiceImpl implements SearchService {
 
-  private UserRepository userRepository;
-  private ArticleRepository articleRepository;
-  private StateOfTheArtRepository stateOfTheArtRepository;
+  private final UserRepository userRepository;
+  private final ArticleRepository articleRepository;
+  private final StateOfTheArtRepository stateOfTheArtRepository;
+  private final AuthorRepository authorRepository;
+
 
   @Autowired
   public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-    StateOfTheArtRepository stateOfTheArtRepository) {
+    StateOfTheArtRepository stateOfTheArtRepository,
+    AuthorRepository authorRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
+    this.authorRepository = authorRepository;
   }
 
   @Override
@@ -65,6 +71,16 @@ public class SearchServiceImpl implements SearchService {
       .collect(Collectors.toList());
 
     searchResult.users(userList);
+
+    // AUTHORS
+
+    List<AuthorDTO> authors = authorRepository
+      .findDistinctByNameContainingIgnoreCase(searchTerm, pageable)
+      .map(a -> a.toDTO())
+      .collect(Collectors.toList());
+
+    searchResult.authors(authors);
+
 
     //ARTICLES
     pageSort = this.getSort(sort, searchQuery.getOrder());
