@@ -7,6 +7,7 @@ import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
@@ -21,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,10 +43,12 @@ public class ProfileController {
   private ProfileService profileService;
 
   @RequestMapping(path="/basic", method = RequestMethod.GET)
-  public ResponseEntity getBasicInfo(@RequestParam(required = true) String username){
-    if(username == "") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please specify a username");
-    ProfileBasicInfoDTO dto = profileService.getBasicInfo(username);
-    if(dto==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
-    return ResponseEntity.status(HttpStatus.OK).body(dto);
+  public ResponseEntity getBasicInfo(@RequestParam(required = true) @NotBlank(message = "Please specify a username") String username){
+    try{
+      return ResponseEntity.status(HttpStatus.OK).body(profileService.getBasicInfo(username));
+    }catch(UsernameNotFoundException u) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
+    }
+
   }
 }
