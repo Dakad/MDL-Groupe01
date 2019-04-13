@@ -127,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService {
    * @param newArticle - The new Article being created
    * @param keywords - The author's name list.
    */
-  private void attachKeywords(ArticleEntity newArticle, List<String> keywords) {
+  private void attachKeywords(ArticleEntity newArticle, Set<String> keywords) {
     Set<TagEntity> list = new LinkedHashSet<>(keywords.size());
     TagEntity keyword;
 
