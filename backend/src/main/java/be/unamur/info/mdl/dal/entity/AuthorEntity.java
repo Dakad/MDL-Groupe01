@@ -1,6 +1,10 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.AuthorDTO;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,4 +41,14 @@ public class AuthorEntity {
   private Set<ArticleEntity> articles;
 
 
+  public static AuthorEntity of(AuthorDTO dto){
+    return AuthorEntity.builder().slug(dto.getSlug()).name(dto.getName()).build();
+  }
+
+
+  public AuthorDTO toDTO() {
+//    List<ArticleDTO> articleList = this.articles.stream()
+//      .map(a -> a.toDTO()).collect(Collectors.toList());
+    return AuthorDTO.builder().name(this.name).slug(this.slug).build();
+  }
 }
