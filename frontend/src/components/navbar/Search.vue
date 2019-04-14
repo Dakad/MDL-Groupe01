@@ -26,14 +26,19 @@ export const MODE_NAVBAR = "in_navbar";
 
 export default {
   name: "Search",
-  props: ["mode"],
+  props: ["mode", "term"],
   data: function() {
     return {
       helperText: "Think well about your search and don't forget our filter",
-      searchInput: null
+      searchInput: this.term
     };
   },
   mounted() {},
+  watch: {
+    term: function(value) {
+      this.searchInput = value;
+    }
+  },
 
   computed: {
     isInModeNavbar() {
