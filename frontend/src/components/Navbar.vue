@@ -1,30 +1,19 @@
 <template>
   <header class="navappregister">
     <div>
-      <!-- Create the login dialog -->
-      <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
-        <md-dialog-title>
-          <md-icon :class="['md-size-2x', {'text-danger':loginFailed}]">security</md-icon>&nbsp; Login
-        </md-dialog-title>
-        <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
-      </md-dialog>
-
-      <!--Create the register dialog-->
-      <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
-        <md-dialog-title>
-          <md-icon :class="[ 'md-size-2x',{'text-danger':signinFailed }]">account_box</md-icon>&nbsp;
-          <span>Create account</span>
-        </md-dialog-title>
-        <register
-          @error="handleError('register', $event)"
-          @success="handleSuccess('signin',$event)"
-        />
-      </md-dialog>
-
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
-        <a class="md-title app-name" href="/" :class="{ 'flex': !searchBar.show }">Froggosaur</a>
-        <search v-show="searchBar.show" :mode="searchBar.mode" id="search" style="flex: 1"></search>
+        <router-link
+          to="/"
+          :class="[!searchBar.show ? 'flex': '', 'md-title','app-name']"
+        >Froggosaur</router-link>
+        <search
+          v-show="searchBar.show"
+          :mode="searchBar.mode"
+          :term="searchBar.input"
+          id="search"
+          class="flex"
+        ></search>
 
         <!-- <div class="search">
           <form class="form-inline my-2 my-lg-0 ml-auto">
@@ -46,6 +35,25 @@
           </div>
         </div>
       </md-toolbar>
+      <!-- Create the login dialog -->
+      <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
+        <md-dialog-title>
+          <md-icon :class="['md-size-2x', {'text-danger':loginFailed}]">security</md-icon>&nbsp; Login
+        </md-dialog-title>
+        <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
+      </md-dialog>
+
+      <!--Create the register dialog-->
+      <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
+        <md-dialog-title>
+          <md-icon :class="[ 'md-size-2x',{'text-danger':signinFailed }]">account_box</md-icon>&nbsp;
+          <span>Create account</span>
+        </md-dialog-title>
+        <register
+          @error="handleError('register', $event)"
+          @success="handleSuccess('signin',$event)"
+        />
+      </md-dialog>
     </div>
     <md-snackbar
       md-position="center"
@@ -64,13 +72,14 @@
 .signin-dialog {
   width: 55%;
 }
+.app-name {
+  text-decoration: none !important;
+}
 .flex {
   flex: 1;
 }
 .search {
-  margin: 0 10px;
-  padding: 0 40px;
-  widows: 80%;
+  margin: 0 40px;
 }
 // .buttons {
 //   align-content: right;
@@ -95,7 +104,8 @@ export default {
     return {
       searchBar: {
         mode: MODE_NAVBAR,
-        show: true
+        show: true,
+        input: this.$route.query["search"]
       },
       showLoginDialog: false,
       showRegisterDialog: false,
@@ -110,6 +120,7 @@ export default {
   watch: {
     "$route.name"(route) {
       this.searchBar.show = route != "accueil";
+      this.searchBar.input = this.$route.query["search"];
     }
   },
   mounted() {
