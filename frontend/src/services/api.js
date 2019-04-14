@@ -19,3 +19,7 @@ export function getTeam() {
     return response.body;
   });
 }
+
+export function getSearchResults(searchQuery) {
+  return Vue.http.get('api/search', { params: searchQuery }).then(res => res.body);
+}
