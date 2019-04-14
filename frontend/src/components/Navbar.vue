@@ -23,8 +23,8 @@
 
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
-        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
-        <search id="search"></search>
+        <a class="md-title app-name" href="/" :class="{ 'flex': !searchBar.show }">Froggosaur</a>
+        <search v-show="searchBar.show" :mode="searchBar.mode" id="search" style="flex: 1"></search>
 
         <!-- <div class="search">
           <form class="form-inline my-2 my-lg-0 ml-auto">
@@ -32,7 +32,7 @@
             <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
           </form>
         </div>-->
-        <div class="buttons">
+        <div class="buttons" style="float: right">
           <div v-if="isAuthenticated">
             <md-button class="md-icon-button md-dense md-primary" @click="logout()">
               <md-icon>person</md-icon>
@@ -64,11 +64,16 @@
 .signin-dialog {
   width: 55%;
 }
+.flex {
+  flex: 1;
+}
+.search {
+  margin: 0 10px;
+  padding: 0 40px;
+  widows: 80%;
+}
 // .buttons {
 //   align-content: right;
-// }
-// .search {
-//   align: center;
 // }
 // .md-dialog {
 //   widows: 100%;
@@ -79,8 +84,8 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
-import { ping } from "@/services/api";
-import Search from "@/components/navbar/Search";
+import { ping as sendPing } from "@/services/api";
+import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
 import { isLogged, logout } from "@/services/api-user";
 
 export default {
@@ -88,6 +93,10 @@ export default {
   components: { Login, Register, Search },
   data: function() {
     return {
+      searchBar: {
+        mode: MODE_NAVBAR,
+        show: true
+      },
       showLoginDialog: false,
       showRegisterDialog: false,
       isAuthenticated: false,
@@ -98,12 +107,20 @@ export default {
       snackbarTime: 5000
     };
   },
+  watch: {
+    "$route.name"(route) {
+      this.searchBar.show = route != "accueil";
+    }
+  },
   mounted() {
-    ping().catch(err => {
+    this.searchBar.show = this.$route.name != "accueil";
+
+    sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
       this.showSnackbar = true;
     });
   },
+
   methods: {
     handleError(component, error) {
       switch (component) {
