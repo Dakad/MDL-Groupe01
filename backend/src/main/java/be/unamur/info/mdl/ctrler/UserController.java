@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -60,7 +61,7 @@ public class UserController extends APIBaseController {
   @RequestMapping(path="/{username}/profile/followers", method = RequestMethod.GET)
   public ResponseEntity getFollowers(@PathVariable String username, @RequestParam(defaultValue = "0") int p){
     try {
-      UserDTO[] userDTOS = profileService.getFollowers(username, p);
+      List<UserDTO> userDTOS = profileService.getFollowers(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
     }catch (UsernameNotFoundException e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");

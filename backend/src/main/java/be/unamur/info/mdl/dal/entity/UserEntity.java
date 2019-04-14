@@ -6,10 +6,8 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import javax.jws.soap.SOAPBinding;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -99,7 +97,7 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<UserEntity> followers;
+  private List<UserEntity> followers;
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -107,7 +105,7 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<UserEntity> follows;
+  private List<UserEntity> follows;
 
 
   @ManyToMany(cascade = {
@@ -162,15 +160,16 @@ public class UserEntity {
       userProfil.getTwitterURL(),userProfil.getLinkedInURL());
   }
 
-  //TODO : C'EST DEGUEULASSE AAAAAAAAAAAA
-  public UserDTO[] getFollowersDTO(int page){
-    UserEntity[] followerArray = (UserEntity[]) followers.toArray();
-    UserDTO[] userDTOS = {};
-    for(int i =0; i < 20; i++){
-      if(followerArray[(page * 20) + i] == null) break;
-      userDTOS[i] = followerArray[(page * 20) + i].toDTO();
-    }
-    return userDTOS;
+  //TODO : test unitaire sur des listes de followers de tailles variées
+  public List<UserDTO> getFollowersDTO(int page){
+    int leftBound = page * 20;
+    int rightBound = page *20 + 20;
+    if(followers.size() <= leftBound) return null;
+    else if (followers.size() <= rightBound) rightBound = followers.size();
+    List<UserEntity> subList = followers.subList(leftBound, rightBound);
+    List<UserDTO> dtoList = new ArrayList();
+    subList.forEach(e -> dtoList.add(e.toDTO()));
+    return dtoList;
   }
 
 }
