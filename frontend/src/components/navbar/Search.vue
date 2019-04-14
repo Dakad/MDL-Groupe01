@@ -5,6 +5,9 @@
         <label>Type your search here</label>
         <md-input v-model="searchInput" @keyup.enter="searchIt"></md-input>
         <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
+        <md-button class="md-icon-button" @click="searchIt()">
+          <md-icon>search</md-icon>
+        </md-button>
       </md-field>
     </div>
     <div class="searchbutton">
