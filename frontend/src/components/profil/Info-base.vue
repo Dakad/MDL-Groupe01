@@ -9,7 +9,6 @@
           <p> {{workingDomaine}} </p>
           <p> {{mail}} </p>
       </div>
-
     </div>
 </template>
 
@@ -33,6 +32,6 @@
   }
 
   .info {
-    float: right;
+    float: left;
   }
 </style>
