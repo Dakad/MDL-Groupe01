@@ -10,6 +10,8 @@ import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("profileService")
 public class ProfileServiceImpl implements ProfileService {
 
@@ -33,7 +35,7 @@ public class ProfileServiceImpl implements ProfileService {
   }
 
   @Override
-  public UserDTO[] getFollowers(String username, int page) throws UsernameNotFoundException{
+  public List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException{
     if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
     return userRepository.findByUsername(username).getFollowersDTO(page);
   }
