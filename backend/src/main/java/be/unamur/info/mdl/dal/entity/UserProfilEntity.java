@@ -34,6 +34,15 @@ public class UserProfilEntity {
   @Column
   private String profilePictureURL;
 
+  @Column
+  private String facebookURL;
+
+  @Column
+  private String twitterURL;
+
+  @Column
+  private String linkedInURL;
+
   @OneToOne
   private UserEntity user;
 }

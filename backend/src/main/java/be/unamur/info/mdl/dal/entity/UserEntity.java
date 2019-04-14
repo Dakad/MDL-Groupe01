@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
@@ -99,6 +100,14 @@ public class UserEntity {
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
   private Set<UserEntity> followers;
 
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "user_follower",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "following_id")})
+  private Set<UserEntity> follows;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
@@ -120,7 +129,7 @@ public class UserEntity {
 
   public static UserEntity of(UserDTO userData) {
     return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
-      userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null,
+      userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null, null,
       null, null, null
     );
   }
@@ -143,6 +152,13 @@ public class UserEntity {
       ppurl = userProfil.getProfilePictureURL();
     } else ppurl = "https://i.imgur.com/0MC7ZG4.jpg";
     return new ProfileBasicInfoDTO(lastname, firstname,domain,universityInfoDTO,email,ppurl);
+  }
+
+  public ProfileSocialInfoDTO toProfileSocialInfoDTO(){
+    if(userProfil == null) return new ProfileSocialInfoDTO("This user hasn't added a bio.",
+      follows.size(),followers.size(),null, null, null);
+    return new ProfileSocialInfoDTO(userProfil.getDescription(),follows.size(),followers.size(),userProfil.getFacebookURL(),
+      userProfil.getTwitterURL(),userProfil.getLinkedInURL());
   }
 
 }
