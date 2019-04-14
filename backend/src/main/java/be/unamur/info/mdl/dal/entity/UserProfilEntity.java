@@ -31,6 +31,9 @@ public class UserProfilEntity {
   @Column
   private Status status;
 
+  @Column
+  private String profilePictureURL;
+
   @OneToOne
   private UserEntity user;
 }

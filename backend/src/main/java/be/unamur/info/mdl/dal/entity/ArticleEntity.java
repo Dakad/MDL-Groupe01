@@ -153,7 +153,7 @@ public class ArticleEntity {
    */
   public ArticleDTO toDTO() {
     ArticleDTOBuilder data = ArticleDTO.builder()
-      .id(this.id).reference(this.reference)
+      .reference(this.reference)
       .title(this.title).content(this.content).url(url).price(price);
 
     data.journal(this.journal).number(this.journalNumber).publisher(this.publisher);
@@ -183,7 +183,7 @@ public class ArticleEntity {
   public static ArticleEntity of(ArticleDTO dto) {
     ArticleEntityBuilder entity = ArticleEntity.builder();
 
-    entity.id(dto.getId()).reference(dto.getReference());
+    entity.reference(dto.getReference());
     entity.title(dto.getTitle()).content(dto.getContent()).url(dto.getUrl()).price(dto.getPrice());
 
     entity.journal(dto.getJournal()).journalVolume(dto.getVolume()).journalNumber(dto.getNumber());

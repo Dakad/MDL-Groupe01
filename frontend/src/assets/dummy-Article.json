@@ -1,13 +1,18 @@
 {
-    "title" : "DummyArticle",
-    "abstract" : "The abstract of a dummy article that do nothing but test is the variable show up when using a JSON with javascript/vuejs",
-    "published_at" : "24/03/2014",
-    "created_at" : "20/03/2014",
-    "link" : "https://www.youtube.com",
-    "nb_citations": 321,
-    "nb_pages": 12,
-    "nb_views": 696,
-    "sotas": ["SoTA on visualisation problem","SoTA on some random stuff","SoTA on cool stuff that do stuff"],
-    "tags" : ["Informatique","MachineLearning","Vizualisation"],
-    "refs" : ["CoolStuff1","CoolStuff2"]
+  "id": 123,
+  "title": "DummyArticle",
+  "abstract": "The abstract of a dummy article that do nothing but test is the variable show up when using a JSON with javascript/vuejs",
+  "published_at": "24/03/2014",
+  "created_at": "20/03/2014",
+  "link": "https://www.youtube.com",
+  "nb_citations": 321,
+  "nb_pages": 12,
+  "nb_views": 696,
+  "sotas": [
+    { "id": 123, "title": "SoTA on visualisation problem" },
+    { "id": 123, "title": "SoTA on some random stuff" },
+    { "id": 123, "title": "SoTA on cool stuff that do stuff" }
+  ],
+  "tags": ["Informatique", "MachineLearning", "Vizualisation"],
+  "refs": ["CoolStuff1", "CoolStuff2"]
 }
