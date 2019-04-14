@@ -1,7 +1,7 @@
 
 INSERT INTO USER(ID, CREATED_AT, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, USERNAME, PROFIL_ID) VALUES
-(1, NULL, 'root@mail.dom', 'Root', 'Mdl', '$2a$10$JrrGxRCes4ncJ5u.Y1Qr.e/dAO31T23uTVtyDXFRjytV/iu3LfgTW', 'Groot', NULL),
-(2, NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$Zy0r2byvDnkM2LYv.e7.SOhuXyk1F4YXfPHYCKuvuHakV4tJTuRu.', 'Std', NULL);
+(1, NULL, 'groot@mail.dom', 'Groot', 'Mdl', '$2a$10$WDEmEJ3RqocR09mVpQ3haOY23Ui1Yd/kJGCraRhh8ljVYvt3/ubmC', 'groot', NULL),
+(2, NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$UeAxB4YRdcXSnVoIIvOIt.CmmJqW12iWl.gfWcCdy.vQ4PNKKfmS2.', 'std', NULL);
 
 INSERT INTO TAG(ID, NAME, SLUG) VALUES
 (3, 'Computer science', 'computer-science'),

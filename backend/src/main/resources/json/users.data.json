@@ -1,13 +1,13 @@
 [
   {
-    "username": "Groot",
-    "password": "toorPassword123",
-    "email": "root@mail.dom",
-    "firstname": "Root",
+    "username": "groot",
+    "password": "grootPassword123",
+    "email": "groot@mail.dom",
+    "firstname": "Groot",
     "lastname" : "Mdl"
   },
   {
-    "username": "Std",
+    "username": "std",
     "password": "stdPassword123",
     "email": "std@mail.dom",
     "firstname": "Std",
