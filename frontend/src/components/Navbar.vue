@@ -23,26 +23,27 @@
 
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
-        <!--SiteName refer to AccueilVue-->
-        <a class="md-title" href="/">Froggosaur</a>
-        <div class="search">
+        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
+        <search id="search"></search>
+
+        <!-- <div class="search">
           <form class="form-inline my-2 my-lg-0 ml-auto">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
           </form>
-        </div>
+        </div>-->
         <div class="buttons">
-        <div v-if="isAuthenticated">
-          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-            <md-icon>person</md-icon>
-          </md-button>
-        </div>
-        <div v-else>
-          <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
-          <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
-        </div>
+          <div v-if="isAuthenticated">
+            <md-button class="md-icon-button md-dense md-primary" @click="logout()">
+              <md-icon>person</md-icon>
+            </md-button>
+          </div>
+          <div v-else>
+            <!--Login button open the login dialog-->
+            <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+            <!--Register button refer to the register page (RegisterVue)-->
+            <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+          </div>
         </div>
       </md-toolbar>
     </div>
@@ -79,11 +80,12 @@
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
 import { ping } from "@/services/api";
+import Search from "@/components/navbar/Search";
 import { isLogged, logout } from "@/services/api-user";
 
 export default {
   name: "Navbar",
-  components: { Login, Register },
+  components: { Login, Register, Search },
   data: function() {
     return {
       showLoginDialog: false,
