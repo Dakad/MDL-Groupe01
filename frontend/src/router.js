@@ -6,8 +6,8 @@ import Accueil from './pages/Accueil.vue';
 import About from './pages/About.vue';
 import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
-import Sota from'./pages/Sota';
-
+import Sota from './pages/Sota';
+import Profil from './pages/Profil';
 
 Vue.use(Router);
 
@@ -23,11 +23,12 @@ export default new Router({
 
     { name: '404', path: '/404', component: NotFound },
 
-    { name: 'Article', path: '/article', component: Article },
+    { name: 'articleDetails', path: '/article/:reference', component: Article },
 
-    { name: 'Sota', path: '/Sota', component: Sota },
+    { name: 'sota', path: '/sota', component: Sota },
+
+    { name: 'profil', path: '/profil', component: Profil },
 
     { name: '', path: '*', redirect: '/404' }
-
   ]
 });
