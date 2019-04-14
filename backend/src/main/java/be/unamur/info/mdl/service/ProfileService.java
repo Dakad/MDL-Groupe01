@@ -2,6 +2,7 @@ package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.micrometer.core.lang.Nullable;
 
@@ -20,4 +21,6 @@ public interface ProfileService{
    * @throws UsernameNotFoundException
    */
   ProfileSocialInfoDTO getSocialInfo(String username) throws UsernameNotFoundException;
+
+  UserDTO[] getFollowers(String username, int page) throws UsernameNotFoundException;
 }

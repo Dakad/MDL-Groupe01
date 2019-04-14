@@ -39,16 +39,15 @@ public class UserServiceImplTest {
   private PasswordEncoder pwdEncoder;
 
 
-  //TODO : what hte fcuk
   // User1.password = user1_pwd
   private static final UserEntity MOCK_USER_1 = new UserEntity(123L, "user1",
     "user1_pwd", "user1@email.dom", null,
-    null, null, null, null, null, null, null, null, null, null, null);
+    null, null, null, null, null, null, null, null, null, null,null, null);
   // User1.password = user2_pwd
   private static final UserEntity MOCK_USER_2 = new UserEntity(456L, "user2",
     "$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le",
     "user2@email.dom", null,
-    null, null, null, null, null, null, null, null, null, null,null);
+    null, null, null, null, null, null, null, null, null, null, null,null);
 
 
   @Before

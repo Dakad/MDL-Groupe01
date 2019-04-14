@@ -8,6 +8,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -159,6 +160,17 @@ public class UserEntity {
       follows.size(),followers.size(),null, null, null);
     return new ProfileSocialInfoDTO(userProfil.getDescription(),follows.size(),followers.size(),userProfil.getFacebookURL(),
       userProfil.getTwitterURL(),userProfil.getLinkedInURL());
+  }
+
+  //TODO : C'EST DEGUEULASSE AAAAAAAAAAAA
+  public UserDTO[] getFollowersDTO(int page){
+    UserEntity[] followerArray = (UserEntity[]) followers.toArray();
+    UserDTO[] userDTOS = {};
+    for(int i =0; i < 20; i++){
+      if(followerArray[(page * 20) + i] == null) break;
+      userDTOS[i] = followerArray[(page * 20) + i].toDTO();
+    }
+    return userDTOS;
   }
 
 }
