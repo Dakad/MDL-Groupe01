@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,12 +29,19 @@ public class UniversityEntity {
   @Column(unique = true, nullable = false)
   private String name;
 
-  @Column(unique = true, nullable = false)
-  private String site;
+
+  @Column(name = "website_url", unique = true, nullable = false)
+  private String websiteUrl;
+
 
   @OneToMany(mappedBy = "university")
   private Set<UniversityCurrent> members;
 
-  public UniversityInfoDTO toInfoDTO(){return new UniversityInfoDTO(name,site);}
+
+  @OneToMany(mappedBy = "currentUniversity")
+  private Set<UserEntity> currentMembers = new LinkedHashSet<>();
+
+
+  public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(name, websiteUrl); }
 
 }
