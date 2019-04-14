@@ -172,4 +172,16 @@ public class UserEntity {
     return dtoList;
   }
 
+  //TODO : test unitaire sur des listes de followers de tailles variées
+  public List<UserDTO> getFollowsDTO(int page){
+    int leftBound = page * 20;
+    int rightBound = page *20 + 20;
+    if(follows.size() <= leftBound) return null;
+    else if (follows.size() <= rightBound) rightBound = follows.size();
+    List<UserEntity> subList = follows.subList(leftBound, rightBound);
+    List<UserDTO> dtoList = new ArrayList();
+    subList.forEach(e -> dtoList.add(e.toDTO()));
+    return dtoList;
+  }
+
 }

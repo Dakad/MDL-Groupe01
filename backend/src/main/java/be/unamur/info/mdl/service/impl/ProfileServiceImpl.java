@@ -40,5 +40,11 @@ public class ProfileServiceImpl implements ProfileService {
     return userRepository.findByUsername(username).getFollowersDTO(page);
   }
 
+  @Override
+  public List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException{
+    if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    return userRepository.findByUsername(username).getFollowsDTO(page);
+  }
+
 
 }

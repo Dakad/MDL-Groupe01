@@ -68,5 +68,15 @@ public class UserController extends APIBaseController {
     }
   }
 
+  @RequestMapping(path="/{username}/profile/follows", method = RequestMethod.GET)
+  public ResponseEntity getFollows(@PathVariable String username, @RequestParam(defaultValue = "0") int p){
+    try {
+      List<UserDTO> userDTOS = profileService.getFollows(username, p);
+      return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
+    }catch (UsernameNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
 }
 
