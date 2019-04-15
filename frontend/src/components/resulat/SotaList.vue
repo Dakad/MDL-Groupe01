@@ -1,6 +1,6 @@
 <template>
   <div class="sota">
-    <md-card v-for="sota in sotas" :key="sota.reference">
+    <md-card v-for="sota in list" :key="sota.reference">
       <md-card-header>
         <div class="title">
           <h1>
