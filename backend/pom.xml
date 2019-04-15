@@ -7,7 +7,7 @@
   <parent>
     <groupId>be.unamur.info</groupId>
     <artifactId>mdl</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>backend</artifactId>
@@ -18,6 +18,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
+    <jjwt.version>0.9.0</jjwt.version>
   </properties>
 
 
@@ -51,12 +52,20 @@
       <artifactId>mariadb-java-client</artifactId>
     </dependency>
 
-    <!--
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-    -->
+    <!-- Security -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- Security - JwtTokeen -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt</artifactId>
+      <version>${jjwt.version}</version>
+    </dependency>
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -108,6 +117,11 @@
       <version>2.9.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.slugify</groupId>
+      <artifactId>slugify</artifactId>
+      <version>2.3</version>
+    </dependency>
 
     <!--
         <dependency>
