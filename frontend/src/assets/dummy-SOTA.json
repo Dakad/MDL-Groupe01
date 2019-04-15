@@ -1,13 +1,18 @@
 {
-    "title" : "DummySOTA",
-    "description" : "The description  of a dummy SOATA that do nothing but test is the variable show up when using a JSON with javascript/vuejs",
-    "published_at" : "24/03/2018",
-    "created_at" : "20/03/2017",
-    "link" : "https://www.genoux.com",
-    "nb_citations": 321,
-    "nb_pages": 36,
-    "nb_views": 42,
-    "sotas": ["SoTA on visualisation problem","SoTA on some random stuff","SoTA on cool stuff that do stuff"],
-    "tags" : ["Informatique","MachineLearning","Vizualisation"],
-    "article" : ["CoolStuff1","CoolStuff2","CoolStuff3"]
+  "id": 123,
+  "title": "DummySOTA",
+  "description": "The description  of a dummy SOATA that do nothing but test is the variable show up when using a JSON with javascript/vuejs",
+  "published_at": "24/03/2018",
+  "created_at": "20/03/2017",
+  "link": "https://www.genoux.com",
+  "nb_citations": 321,
+  "nb_pages": 36,
+  "nb_views": 42,
+  "sotas": [
+    "SoTA on visualisation problem",
+    "SoTA on some random stuff",
+    "SoTA on cool stuff that do stuff"
+  ],
+  "tags": ["Informatique", "MachineLearning", "Vizualisation"],
+  "article": ["CoolStuff1", "CoolStuff2", "CoolStuff3"]
 }

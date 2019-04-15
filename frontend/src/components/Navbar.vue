@@ -24,7 +24,7 @@
       <!--The main navigation bar-->
       <md-toolbar class="md=accent" md-elevation="1">
         <!--SiteName refer to AccueilVue-->
-        <a class="md-title" style="flex: 1" href="/">SiteName</a>
+        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
         <div v-if="isAuthenticated">
           <md-button class="md-icon-button md-dense md-primary" @click="logout()">
             <md-icon>person</md-icon>
@@ -64,6 +64,7 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
+import { ping } from "@/services/api";
 import { isLogged, logout } from "@/services/api-user";
 
 export default {
@@ -80,6 +81,12 @@ export default {
       snackbarMsg: null,
       snackbarTime: 5000
     };
+  },
+  mounted() {
+    ping().catch(err => {
+      this.snackbarMsg = "API Error - API doesn't respond";
+      this.showSnackbar = true;
+    });
   },
   methods: {
     handleError(component, error) {

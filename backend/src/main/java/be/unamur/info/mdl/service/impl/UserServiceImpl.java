@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
@@ -8,8 +9,12 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,18 +62,27 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public String login(@Valid CredentialDTO userLogin) throws InvalidCredentialException {
-    if (this.userRepository.existsByUsername(userLogin.getUsername())){
-      UserDTO user = userRepository.findByUsername(userLogin.getUsername()).toDTO();
-      if (checkPassword(userLogin, user)) {
-        //TODO Send Real JWToken
-        return "JWT_TOKEN";
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    if (this.userRepository.existsByUsername(username)){
+      throw new UsernameNotFoundException(username);
+    }
+    CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
+    return new User(credential.getUsername(), credential.getPassword(), Collections.EMPTY_LIST);
+  }
+
+
+  @Override
+  public String login(@Valid CredentialDTO credential) throws InvalidCredentialException {
+    if (this.userRepository.existsByUsername(credential.getUsername())){
+      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername()).toDTO();
+      if (checkPassword(credential, userCredential)) {
+        return SecurityUtils.generateToken(userCredential.getUsername());
       }
     }
     throw new InvalidCredentialException("Invalid username or password provided");
   }
 
-  private boolean checkPassword(CredentialDTO userLogin, UserDTO userEntity) {
+  private boolean checkPassword(CredentialDTO userLogin, CredentialDTO userEntity) {
     return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 
