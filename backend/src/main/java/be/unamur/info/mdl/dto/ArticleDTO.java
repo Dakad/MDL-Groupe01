@@ -3,12 +3,14 @@ package be.unamur.info.mdl.dto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import io.swagger.annotations.ApiModel;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ApiModel(value = "Article", description = "Model representing an Article")
 public class ArticleDTO {
 
   @NotBlank(message = "The reference is required")
@@ -28,16 +31,16 @@ public class ArticleDTO {
   @NotBlank(message = "The title is required")
   private String title;
 
-  @NotBlank(message = "The content(abstract) is required")
+  @NotBlank(message = "The content (abstract) is required")
   private String content;
 
-  @PastOrPresent(message = "publicationDate cannot be in the futur")
+  @PastOrPresent(message = "The publication date cannot be in the future")
   private LocalDate publicationDate;
 
-  @NotBlank("The URL is required")
+  @NotBlank(message = "The URL is required")
   private String url;
 
-  @NotBlank()
+  @NotBlank(message = "The publication medium is required ")
   @JsonAlias({"booktitle"})
   private String journal;
 
@@ -47,7 +50,7 @@ public class ArticleDTO {
 
   private String publisher;
 
-  @Positive("The year cannot null or negative")
+  @Positive(message = "The year cannot null or negative")
   private int year;
 
   private String month;
@@ -81,7 +84,7 @@ public class ArticleDTO {
   // Receive a list of String representing the keywords
   @Builder.Default
   @JsonProperty(value = "keywords", access = Access.WRITE_ONLY)
-  private Set<@NotBlank(message = "The keywords(s) must be defined")String> keywordList = new LinkedHashSet<>();
+  private Set<@NotBlank(message = "The keywords(s) must be defined") String> keywordList = new LinkedHashSet<>();
 
 
   // Send Keywords with it name && slug
