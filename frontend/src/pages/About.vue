@@ -52,7 +52,7 @@ export default {
     text-align: center;
   }
   .card-expansion {
-    height: 480px;
+    /* height: 480px; */
     text-align: center;
   }
   .md-card {
