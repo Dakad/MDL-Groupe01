@@ -27,20 +27,37 @@
         </carousel>
       </div>
     </div>-->
+    <div class="recommended">
+    <carousel :per-page="2">
+    <slide>
+      Slide 1 Content
+    </slide>
+    <slide>
+      Slide 2 Content
+    </slide>
+    <slide>
+      Slide 3 Content
+    </slide>
+    <slide>
+      Slide 4 Content
+    </slide>
+  </carousel>
+  </div>
   </section>
 </template>
 
 
 
 <script>
-//import { Carousel, Slide } from "vue-carousel";
+import { Carousel, Slide } from "vue-carousel";
+
 import Search from '@/components/navbar/Search';
 
 export default {
   name: "Accueil",
   components: {
-    //Carousel,
-    //Slide,
+    Carousel,
+    Slide,
     Search
   },
   data() {
@@ -109,7 +126,7 @@ p {
   width: 20%;
 }
 
-/*.recommended {
+.recommended {
   margin: 0;
   position: absolute;
   top: 75%;
@@ -123,7 +140,7 @@ p {
   z-index: -1;
 }
 
-.switch-news {
+/*.switch-news {
   float: right;
   margin-right: 50px;
   position: absolute;
