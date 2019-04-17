@@ -14,7 +14,10 @@
     </b-row>
 
     <div class="card-expansion">
-      <person v-for="(member,index) in team" v-bind:key="member.name" :position="index" :image="member.avatar" :name="member.name" :role="member.role" :descr="member.descr"></person>
+      <template v-for="(member,index) in team">
+        <person v-bind:key="member.name" :position="index" :image="member.avatar" :name="member.name" :role="member.role" :descr="member.descr"></person>
+        <br v-if="index == 2" v-bind:key="member.name">
+      </template>
     </div>   
   </b-container>
 </template>
