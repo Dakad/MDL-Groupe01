@@ -1,7 +1,7 @@
 <template>
   <div class="info">
     <div class="infotop">
-    <InfoBase></InfoBase>
+    <InfoBase :profil="profil"></InfoBase>
     </div>
 
     <div class="tabs">
@@ -26,10 +26,29 @@
 <script>
   import InfoBase from "@/components/profil/Info-base";
   import Sota from "../components/profil/Sota";
-    export default {
-        name: "profil",
-      components: {Sota, InfoBase}
+  import {getProfileBase} from "../services/api-user";
+
+  export default {
+      name: "profil",
+      components: {Sota, InfoBase},
+      data() {
+        return{
+          profil: null,
+        }
+      },
+      created() {
+        this.fetchProfile()
+      },
+      methods: {
+        fetchProfile(){
+          getProfileBase(username).then(function(data){
+            this.profil = data;
+            console.log(profil);
+          })
+        }
+      }
     }
+
 </script>
 
 <style scoped>

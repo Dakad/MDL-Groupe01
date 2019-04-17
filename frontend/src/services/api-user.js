@@ -37,3 +37,7 @@ export function postLogin(credentials) {
 export function postSignin(data) {
   return Vue.http.post('api/signin', data);
 }
+
+export function getProfileBase(username) {
+  return Vue.http.get('api/user/' + username + '/profile/base');
+}

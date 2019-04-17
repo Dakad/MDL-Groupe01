@@ -27,7 +27,7 @@ export default new Router({
 
     { name: 'sota', path: '/sota', component: Sota },
 
-    { name: 'profil', path: '/profil', component: Profil },
+    { name: 'profile', path: '/profile', component: Profil },
 
     { name: '', path: '*', redirect: '/404' }
   ]

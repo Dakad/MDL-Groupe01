@@ -1,13 +1,13 @@
 <template>
     <div class="InfoBase">
       <div class="pdp">
-        <img src="toDetermine">
+        <img :src="profil.profilePictureURL">
       </div>
       <div class="info">
           <h3>{{ firstLastName }}</h3>
-          <p> {{workPlace}} </p>
-          <p> {{workingDomaine}} </p>
-          <p> {{mail}} </p>
+          <p> {{profil.university}} </p>
+          <p> {{profil.domain}} </p>
+          <p> {{profil.email}} </p>
       </div>
     </div>
 </template>
@@ -15,12 +15,10 @@
 <script>
     export default {
         name: "InfoBase",
+        props: ["profil"],
       data() {
         return {
-          firstLastName: "Jean Sive",
-          workPlace: "UNamur",
-          workingDomaine: "Medecine Dentaire",
-          mail: "jean.sive@unamur.be"
+          firstLastName: profil.firstname + " " + profil.name
         };
       },
     }
