@@ -1,7 +1,10 @@
 package be.unamur.info.mdl.dal.repository;
 
+import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
 import java.util.stream.Stream;
+
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +12,7 @@ public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEnti
 
   Stream<StateOfTheArtEntity> findDistinctByNameContainingIgnoreCase(String title,
     Pageable pageable);
+
+  Stream<StateOfTheArtEntity> findDistinctByUser(UserEntity user, Pageable pageable);
+
 }

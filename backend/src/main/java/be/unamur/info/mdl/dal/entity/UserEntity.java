@@ -7,6 +7,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,7 +70,7 @@ public class UserEntity {
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
-  private UserProfilEntity userProfil;
+  private UserProfilEntity userProfile;
 
 
 
@@ -99,7 +100,7 @@ public class UserEntity {
 
 
   @OneToMany(mappedBy = "user")
-  private Set<UniversityCurrent> universities;
+  private List<UniversityCurrent> universities;
 
 
   @ManyToMany(cascade = {
@@ -111,13 +112,13 @@ public class UserEntity {
   private Set<UserEntity> followers;
 
 
-  @ManyToMany(cascade = {
+  @ManyToOne(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private Set<ResearchGroupEntity> research_group;
+  private ResearchGroupEntity research_group;
 
 
   @ManyToMany(cascade = {
@@ -150,8 +151,8 @@ public class UserEntity {
     }
 
     String avatar;
-    if (userProfil != null) {
-      avatar = userProfil.getProfilePictureURL();
+    if (userProfile != null) {
+      avatar = userProfile.getProfilePictureURL();
     } else {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }

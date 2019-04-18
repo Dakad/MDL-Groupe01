@@ -18,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.PastOrPresent;
+
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -76,5 +78,9 @@ public class StateOfTheArtEntity {
   public StateOfTheArtDTO toDTO() {
     Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
     return new StateOfTheArtDTO(id, name, subject, date, user.toDTO(), listOfTags);
+  }
+
+  public Pair<String, Long> toSotaInfo(){
+    return new Pair(name,id);
   }
 }

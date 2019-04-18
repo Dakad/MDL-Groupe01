@@ -32,6 +32,9 @@ public class ResearchGroupEntity {
   @Min(1)
   private int nbre;
 
+  @Column(name = "link")
+  private String link;
+
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
 
