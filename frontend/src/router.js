@@ -30,8 +30,6 @@ export default new Router({
 
     { name: 'profil', path: '/profil', component: Profil },
 
-    { name: '', path: '/wordCloud', component: Wordcloud},
-
     { name: '', path: '*', redirect: '/404' },
 
   ]
