@@ -5,8 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/state_of_the_art")
-@Api(value = "user_controller", description = "Operations of UserControler")
+@RequestMapping(path = "/api/sota")
+@Api(value = "sota_controller", description = "Operations of UserControler")
 public class StateOfTheArtController {
+ // @ApiOperation(value = "Return State Of the Art", response = String.class)
+  //@RequestMapping(path = "/{id}/", method = RequestMethod.GET)
+ // public ResponseEntity
 
 }
