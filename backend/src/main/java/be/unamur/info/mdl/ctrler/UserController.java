@@ -2,6 +2,7 @@ package be.unamur.info.mdl.ctrler;
 
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
@@ -43,6 +44,16 @@ public class UserController extends APIBaseController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
     }
 
+  }
+
+  @RequestMapping(path="/{username}/profile/pro", method = RequestMethod.GET)
+  public ResponseEntity getProInfo(@PathVariable String username){
+    try{
+      ProfileProInfoDTO dto = profileService.getProInfo(username);
+      return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }catch(UsernameNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
+    }
   }
 
 }

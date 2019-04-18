@@ -22,6 +22,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.PositiveOrZero;
+
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -196,6 +198,10 @@ public class ArticleEntity {
     }
 
     return entity.build();
+  }
+
+  public Pair<String, Long> toArticleInfo(){
+    return new Pair(title,id);
   }
 
 }
