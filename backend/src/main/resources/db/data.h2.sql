@@ -1,7 +1,8 @@
 
 INSERT INTO PUBLIC.USER(ID, CREATED_AT, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, USERNAME, PROFIL_ID) VALUES
-(1, NULL, 'root@mail.dom', 'Root', 'Mdl', '$2a$10$lwEE/XJw7KyQXZF9VKw/ruRxrd71BVFYaw7Cc3DNB/vzBArae4OMG', 'Groot', NULL),
-(2, NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$dF.qq42weuR37lcE36HO9eS2S3S7SQIpkyXFNQT8s5daFMPbcw2sK', 'Std', NULL);
+(1, NULL, 'groot@mail.dom', 'Groot', 'Mdl', '$2a$10$WDEmEJ3RqocR09mVpQ3haOY23Ui1Yd/kJGCraRhh8ljVYvt3/ubmC', 'groot', NULL),
+(2, NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$UeAxB4YRdcXSnVoIIvOIt.CmmJqW12iWl.gfWcCdy.vQ4PNKKfmS2.', 'std', NULL);
+
 
 INSERT INTO PUBLIC.AUTHOR(ID, NAME, SLUG) VALUES
 (11, 'Rebolj Danijel', 'rebolj-danijel'),
