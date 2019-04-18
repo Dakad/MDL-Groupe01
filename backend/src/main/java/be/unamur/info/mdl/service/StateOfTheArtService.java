@@ -11,6 +11,5 @@ public interface StateOfTheArtService {
 
 
 
-  public boolean SetStateofTheArt ();
 
 }
