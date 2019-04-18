@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 public class UserProfilEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column
@@ -31,7 +30,7 @@ public class UserProfilEntity {
   @Column
   private Status status;
 
-  @Column
+  @Column(name = "avatar_url")
   private String profilePictureURL;
 
   @Column

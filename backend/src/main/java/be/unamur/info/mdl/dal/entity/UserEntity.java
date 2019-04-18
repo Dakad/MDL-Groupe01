@@ -11,17 +11,19 @@ import javax.jws.soap.SOAPBinding;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserEntity {
 
   @Id
@@ -42,7 +45,7 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @Email
+  @Column(name = "email")
   private String email;
 
   @Column(name = "first_name")
@@ -58,9 +61,16 @@ public class UserEntity {
   private String domain;
 
 
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = true)
+  @JoinColumn(name = "current_univerty_id")
+  private UniversityEntity currentUniversity;
+
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
   private UserProfilEntity userProfil;
+
 
 
   @OneToMany(
@@ -68,6 +78,7 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @Builder.Default
   private Set<ArticleEntity> articles = new LinkedHashSet<>();
 
 
@@ -88,7 +99,7 @@ public class UserEntity {
 
 
   @OneToMany(mappedBy = "user")
-  private Set<UniversityCurrent> university;
+  private Set<UniversityCurrent> universities;
 
 
   @ManyToMany(cascade = {
@@ -126,11 +137,12 @@ public class UserEntity {
   private Set<TagEntity> tags;
 
 
-  public static UserEntity of(UserDTO userData) {
-    return new UserEntity(null, userData.getUsername(), userData.getPassword(), userData.getEmail(),
-      userData.getFirstname(), userData.getLastname(), null, null, null, null, null, null, null, null,
-      null, null, null
-    );
+
+  public static UserEntity of(UserDTO dto) {
+    UserEntityBuilder entity = UserEntity.builder();
+    entity.username(dto.getUsername()).password(dto.getPassword());
+    entity.firstname(dto.getFirstname()).lastname(dto.getLastname()).email(dto.getEmail());
+    return entity.build();
   }
 
 
@@ -138,19 +150,20 @@ public class UserEntity {
     return new UserDTO(username, password, lastname, firstname, email);
   }
 
-  //TODO : UnJava this mess
-  public ProfileBasicInfoDTO toProfileBasicInfoDTO(){
-    Iterator<UniversityCurrent> iterator = university.iterator();
-    UniversityInfoDTO universityInfoDTO = new UniversityInfoDTO();
-    while(iterator.hasNext()){
-      UniversityCurrent universityCurrent = iterator.next();
-      if(!universityCurrent.isCurrent()) universityInfoDTO = universityCurrent.getUniversity().toInfoDTO();
+
+  public ProfileBasicInfoDTO toProfileBasicInfoDTO() {
+    UniversityInfoDTO universityInfoDTO = null;
+    if(this.currentUniversity != null){
+      universityInfoDTO = this.currentUniversity.toInfoDTO();
     }
-    String ppurl;
-    if(userProfil != null){
-      ppurl = userProfil.getProfilePictureURL();
-    } else ppurl = "https://i.imgur.com/0MC7ZG4.jpg";
-    return new ProfileBasicInfoDTO(lastname, firstname,domain,universityInfoDTO,email,ppurl);
+
+    String avatar;
+    if (userProfil != null) {
+      avatar = userProfil.getProfilePictureURL();
+    } else {
+      avatar = "https://i.imgur.com/0MC7ZG4.jpg";
+    }
+    return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
   }
 
   public ProfileSocialInfoDTO toProfileSocialInfoDTO(){
