@@ -3,14 +3,14 @@
     <div class="leftContainer">
       <h1>{{ article.title }}</h1>
       <div class="menuBo">
-        <menuArticle :article-id="article.id"></menuArticle>
+        <menuArticle :articleId="article.reference"></menuArticle>
       </div>
       <div class="abstract">
-        <p>{{ article.abstract }}</p>
+        <p>{{ article.content }}</p>
       </div>
     </div>
     <div class="rightContainer">
-      <infoNav :tags="article.tags" :refs="article.refs" :info="article.sotas"></infoNav>
+      <infoNav :tags="article.keywords" :refs="article.refs" :info="article.sotas"></infoNav>
     </div>
   </div>
 </template>
@@ -19,28 +19,30 @@
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
 import json from "@/assets/dummy-Article.json";
+import { getArticleByReference } from "@/services/api";
 
 export default {
   name: "Article",
+  props: ["reference", "data"],
   components: {
     InfoNav,
     MenuArticle
   },
   data() {
     return {
-      article: {
-        tags: [],
-        refs: [],
-        sotas: []
-      }
+      article: {}
     };
   },
-  mounted() {
-    this.getArticle();
+  created() {
+    // fetch the data when the view is created
+    // and the data is already being observed
+    this.fetchArticle(this.$route.params["reference"]);
   },
   methods: {
-    getArticle() {
-      this.article = json;
+    fetchArticle(reference) {
+      return getArticleByReference(reference).then(
+        data => (this.article = data)
+      );
     }
   }
 };
