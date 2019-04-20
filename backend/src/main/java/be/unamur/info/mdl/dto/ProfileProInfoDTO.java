@@ -1,18 +1,25 @@
 package be.unamur.info.mdl.dto;
 
-import javafx.util.Pair;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileProInfoDTO {
-  private Pair<String,String> researchGroup;
-  private UniversityInfoDTO[] universities = new UniversityInfoDTO[20];
-  private List<Pair<String, Long>> recentArticles;
-  private List<Pair<String, Long>> recentSotAs;
+
+  @JsonAlias("research_group")
+  private List<String> researchGroup;
+
+  private List<UniversityInfoDTO> universities;
+
+  @JsonAlias("recent_articles")
+  private Map<String, String> recentArticles;
+
+  @JsonAlias("recent_sotas")
+  private Map<Long, String> recentSotAs;
 }
