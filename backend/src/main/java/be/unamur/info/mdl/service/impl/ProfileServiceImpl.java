@@ -61,7 +61,7 @@ public class ProfileServiceImpl implements ProfileService {
   public List<Pair<Long,String>> getBookmarks(String username, int page) throws UsernameNotFoundException{
     if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
     Sort sort = Sort.by("createdAt").descending();
-    Page<ArticleEntity> articles = bookmarkRepository.findByUser(userRepository.findByUsername(username), (Pageable) new PageRequest(page,50, sort));
+    Page<ArticleEntity> articles = bookmarkRepository.findByUser(userRepository.findByUsername(username), new PageRequest(page,50, sort));
     List<Pair<Long,String>> articlesInfo = new ArrayList();
     articles.forEach(a -> articlesInfo.add(a.toInfoDTO()));
     return articlesInfo;

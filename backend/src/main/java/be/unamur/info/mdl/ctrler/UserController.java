@@ -103,7 +103,7 @@ public class UserController extends APIBaseController {
     }
   }
 
-  @RequestMapping(path = "/{username}/profile/bookmarks/",method = RequestMethod.GET)
+  @RequestMapping(path = "/{username}/profile/bookmarks",method = RequestMethod.GET)
   public ResponseEntity getBookmarks(@PathVariable String username, @RequestParam(defaultValue = "0") int p){
     try{
       List<Pair<Long,String>> bookmarks = profileService.getBookmarks(username, p);
