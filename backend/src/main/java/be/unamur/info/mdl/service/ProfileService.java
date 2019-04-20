@@ -5,6 +5,7 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.micrometer.core.lang.Nullable;
+import javafx.util.Pair;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface ProfileService{
   List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException;
 
   List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException;
+
+  List<Pair<Long,String>> getBookmarks(String username, int page) throws UsernameNotFoundException;
 }
