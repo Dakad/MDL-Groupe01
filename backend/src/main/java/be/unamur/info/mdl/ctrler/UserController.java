@@ -14,14 +14,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import javax.validation.Valid;
+
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -99,6 +98,16 @@ public class UserController extends APIBaseController {
     try {
       List<UserDTO> userDTOS = profileService.getFollows(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
+    }catch (UsernameNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+  @RequestMapping(path = "/{username}/profile/bookmarks/",method = RequestMethod.GET)
+  public ResponseEntity getBookmarks(@PathVariable String username, @RequestParam(defaultValue = "0") int p){
+    try{
+      List<Pair<Long,String>> bookmarks = profileService.getBookmarks(username, p);
+      return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
     }catch (UsernameNotFoundException e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
     }
