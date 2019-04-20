@@ -59,6 +59,15 @@
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
+        <md-tab id="wordcloud" md-label="WordCloud" md-icon="cloud">
+          <word-cloud :tags="articlesTags"></word-cloud>
+          <!-- <md-empty-state
+            v-if="!results || articlesTags.length == 0"
+            md-icon="cloud"
+            md-label="No word cloud to display"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>-->
+        </md-tab>
       </md-tabs>
     </div>
   </section>
@@ -69,6 +78,7 @@ import sotaList from "@/components/resulat/SotaList";
 import authorList from "@/components/resulat/AuthorList";
 import articleList from "@/components/resulat/ArticleList";
 import graphics from "@/components/resulat/Graphics";
+import WordCloud from "@/components/resulat/WordCloud";
 
 import { getSearchResults } from "@/services/api";
 
@@ -77,7 +87,8 @@ export default {
     sotaList,
     authorList,
     articleList,
-    graphics
+    graphics,
+    WordCloud
   },
   data() {
     return {
@@ -86,7 +97,8 @@ export default {
       sortBy: "name",
       orderBy: "asc",
       page: 0,
-      results: {}
+      results: {},
+      articlesTags: []
     };
   },
   created() {
@@ -114,10 +126,16 @@ export default {
         return getSearchResults(searchQuery)
           .then(res => {
             this.loading = false;
+
             this.$set(this.results, "articles", res["articles"]);
             this.$set(this.results, "authors", res["authors"]);
             this.$set(this.results, "sotas", res["sotas"]);
             this.$set(this.results, "users", res["users"]);
+            const tagsSet = new Set();
+            res["articles"].forEach(article => {
+              article.keywords.forEach(k => tagsSet.add(k));
+            });
+            this.articlesTags = Array.from(tagsSet);
             // this.$set(this.$data, "results", res);
             // Object.keys(res).forEach(type => {
             //   this.$set(this.results, type, res[type]);
