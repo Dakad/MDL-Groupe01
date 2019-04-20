@@ -7,6 +7,8 @@ import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import javafx.util.Pair;
@@ -19,6 +21,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import java.util.List;
 
 @Service("profileService")
 public class ProfileServiceImpl implements ProfileService {
@@ -66,4 +69,23 @@ public class ProfileServiceImpl implements ProfileService {
       sotaInfo
     );
   }
+
+  public ProfileSocialInfoDTO getSocialInfo(String username) throws UsernameNotFoundException{
+    if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    return userRepository.findByUsername(username).toProfileSocialInfoDTO();
+  }
+
+  @Override
+  public List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException{
+    if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    return userRepository.findByUsername(username).getFollowersDTO(page);
+  }
+
+  @Override
+  public List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException{
+    if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    return userRepository.findByUsername(username).getFollowsDTO(page);
+  }
+
+
 }
