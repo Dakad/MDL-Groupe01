@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
-@Api(value = "main_controller", description = "Operations of MainController")
+@Api(value = "Main endpoints", description = "Operations of unrelated to specific ... ")
 public class MainController extends APIBaseController {
 
   @Autowired
@@ -50,7 +50,7 @@ public class MainController extends APIBaseController {
 
   @ApiOperation(value = "Ping endpoint to ensure, the API is effectively online", response = String.class)
   @ApiResponse(code = 200, message = "Simple message from the API")
-  @GetMapping(value = {"", "/zen"})
+  @GetMapping(path = {"", "/zen"})
   public String yello() {
     return "Yello from MDL API !";
   }
