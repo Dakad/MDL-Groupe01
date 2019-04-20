@@ -3,10 +3,10 @@ package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO.ProfileSocialInfoDTOBuilder;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -64,8 +64,7 @@ public class UserEntity {
   private String domain;
 
 
-
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = true)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
   @JoinColumn(name = "current_univerty_id")
   private UniversityEntity currentUniversity;
 
@@ -73,7 +72,6 @@ public class UserEntity {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
   private UserProfileEntity userProfile;
-
 
 
 
@@ -129,7 +127,7 @@ public class UserEntity {
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private ResearchGroupEntity research_group;
+  private ResearchGroupEntity researchGroup;
 
 
   @ManyToMany(cascade = {
@@ -139,7 +137,6 @@ public class UserEntity {
     joinColumns = {@JoinColumn(name = "follower_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<TagEntity> tags;
-
 
 
   public static UserEntity of(UserDTO dto) {
@@ -157,7 +154,7 @@ public class UserEntity {
 
   public ProfileBasicInfoDTO toProfileBasicInfoDTO() {
     UniversityInfoDTO universityInfoDTO = null;
-    if(this.currentUniversity != null){
+    if (this.currentUniversity != null) {
       universityInfoDTO = this.currentUniversity.toInfoDTO();
     }
 
@@ -170,19 +167,29 @@ public class UserEntity {
     return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
   }
 
-  public ProfileSocialInfoDTO toProfileSocialInfoDTO(){
-    if(userProfil == null) return new ProfileSocialInfoDTO("This user hasn't added a bio.",
-      follows.size(),followers.size(),null, null, null);
-    return new ProfileSocialInfoDTO(userProfil.getDescription(),follows.size(),followers.size(),userProfil.getFacebookURL(),
-      userProfil.getTwitterURL(),userProfil.getLinkedInURL());
+
+  public ProfileSocialInfoDTO toProfileSocialInfoDTO() {
+    ProfileSocialInfoDTOBuilder dto = ProfileSocialInfoDTO.builder();
+
+    dto.numFollowers(this.followers.size()).numFollows(this.follows.size());
+
+    if (this.userProfile != null) {
+      dto.bio(userProfile.getDescription());
+      dto.facebook(this.userProfile.getFacebookURL()).linkedin(this.userProfile.getLinkedInURL())
+        .twitter(this.userProfile.getTwitterURL());
+    }
+    return dto.build();
   }
 
   //TODO : test unitaire sur des listes de followers de tailles variées
-  public List<UserDTO> getFollowersDTO(int page){
+  public List<UserDTO> getFollowersDTO(int page) {
     int leftBound = page * 20;
-    int rightBound = page *20 + 20;
-    if(followers.size() <= leftBound) return null;
-    else if (followers.size() <= rightBound) rightBound = followers.size();
+    int rightBound = page * 20 + 20;
+    if (followers.size() <= leftBound) {
+      return null;
+    } else if (followers.size() <= rightBound) {
+      rightBound = followers.size();
+    }
     List<UserEntity> subList = followers.subList(leftBound, rightBound);
     List<UserDTO> dtoList = new ArrayList();
     subList.forEach(e -> dtoList.add(e.toDTO()));
@@ -190,11 +197,14 @@ public class UserEntity {
   }
 
   //TODO : test unitaire sur des listes de followers de tailles variées
-  public List<UserDTO> getFollowsDTO(int page){
+  public List<UserDTO> getFollowsDTO(int page) {
     int leftBound = page * 20;
-    int rightBound = page *20 + 20;
-    if(follows.size() <= leftBound) return null;
-    else if (follows.size() <= rightBound) rightBound = follows.size();
+    int rightBound = page * 20 + 20;
+    if (follows.size() <= leftBound) {
+      return null;
+    } else if (follows.size() <= rightBound) {
+      rightBound = follows.size();
+    }
     List<UserEntity> subList = follows.subList(leftBound, rightBound);
     List<UserDTO> dtoList = new ArrayList();
     subList.forEach(e -> dtoList.add(e.toDTO()));
