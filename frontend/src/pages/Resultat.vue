@@ -51,7 +51,7 @@
           ></md-empty-state>
         </md-tab>
         <md-tab id="graphics" md-label="Graphics" md-icon="timeline">
-          <graphics v-show="!loading"/>
+          <graphics :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
           <md-empty-state
             v-if="!results || results.length == 0"
             md-icon="view_module"
@@ -86,7 +86,9 @@ export default {
       sortBy: "name",
       orderBy: "asc",
       page: 0,
-      results: {}
+      results: {},
+      articlesTitles: [],
+      relatedArticles: []
     };
   },
   created() {
@@ -118,6 +120,8 @@ export default {
             this.$set(this.results, "authors", res["authors"]);
             this.$set(this.results, "sotas", res["sotas"]);
             this.$set(this.results, "users", res["users"]);
+            this.articlesTitles = res["articles"].map(a => a.title);
+            this.groupArticleByKeywords();
             // this.$set(this.$data, "results", res);
             // Object.keys(res).forEach(type => {
             //   this.$set(this.results, type, res[type]);
@@ -125,6 +129,38 @@ export default {
           })
           .catch(console.error);
       }, 3 * 1000);
+    },
+    /**
+     * Group articles based on common keywords among them.
+     */
+    groupArticleByKeywords() {
+      this.relatedArticles = [];
+      const { articles } = this.results;
+      for (let i = 0; i < articles.length; i++) {
+        let keywords = articles[i].keywords;
+        for (let j = i + 1; j < articles.length; j++) {
+          let commonKeyword = "";
+          let commonArticle = [];
+          let alreadyIn = false;
+          for (let k = 0; k < keywords.length; k++) {
+            let keywordName = keywords[k].name;
+            for (let l = 0; l < articles[j].keywords.length; l++) {
+              if (keywordName === articles[j].keywords[l].name) {
+                commonKeyword += keywordName;
+                if (alreadyIn === false) {
+                  alreadyIn = true;
+                  commonArticle.push(articles[i].title);
+                  commonArticle.push(articles[j].title);
+                }
+              }
+            }
+          }
+          commonArticle.push(commonKeyword);
+          if (commonArticle.length > 1) {
+            this.relatedArticles.push(commonArticle);
+          }
+        }
+      }
     },
     getEmptyStateLabel(type) {},
     getEmptyStateDescription(type) {
@@ -145,18 +181,21 @@ export default {
   position: absolute;
   top: 15%;
   left: 25%;
+  width: 75%;
 }
 
 .first {
   position: relative;
   top: 15%;
   left: 5%;
+  width: 20%;
 }
 
 .second {
   position: relative;
   top: 60%;
   left: 5%;
+  width: 20%;
 }
 .md-radio {
   display: flex;
