@@ -2,9 +2,9 @@
   <section class="results">
     <div class="first">
       <h2>Sort by :</h2>
-      <md-radio v-model="sortBy" value="name">Name</md-radio>
-      <md-radio v-model="sortBy" value="title">Title</md-radio>
-      <md-radio v-model="sortBy" value="date">Date</md-radio>
+      <md-radio v-model="sortBy" value="name" @change="updateSearchURL('sort', $event)">Name</md-radio>
+      <md-radio v-model="sortBy" value="title" @change="updateSearchURL('sort', $event)">Title</md-radio>
+      <md-radio v-model="sortBy" value="date" @change="updateSearchURL('sort', $event)">Date</md-radio>
 
       <!--
       <md-radio v-model="sortBy" value="domain">Domain of Research</md-radio>
@@ -16,8 +16,8 @@
     <hr>
     <div class="second">
       <h2>Order by :</h2>
-      <md-radio v-model="orderBy" value="asc">Ascending</md-radio>
-      <md-radio v-model="orderBy" value="desc">Descending</md-radio>
+      <md-radio v-model="orderBy" value="asc" @change="updateSearchURL('order', $event)">Ascending</md-radio>
+      <md-radio v-model="orderBy" value="desc" @change="updateSearchURL('order', $event)">Descending</md-radio>
       <small>{{ sortBy }} + {{ orderBy }}</small>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="loading-search-results" v-if="loading">
         <md-progress-bar md-mode="indeterminate"/>
       </div>
-      <md-tabs md-alignment="fixed" md-active-tab="articles">
+      <md-tabs md-alignment="fixed" :md-active-tab="activeTab" @md-changed="activeTab = $event">
         <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
           <sota-list v-show="!loading" :list="results.sotas"></sota-list>
           <md-empty-state
@@ -87,8 +87,9 @@ export default {
     return {
       loading: false,
       searchTerm: null,
-      sortBy: "name",
-      orderBy: "asc",
+      sortBy: this.$route.query["sort"] || "name",
+      orderBy: this.$route.query["order"] || "asc",
+      activeTab: "articles",
       page: 0,
       results: {},
       articlesTitles: [],
@@ -98,13 +99,22 @@ export default {
   created() {
     // fetch the data when the view is created
     // and the data is already being observed
+    const { search, order, sort } = this.$route.query;
+
     this.fetchSearchResult();
   },
   watch: {
     // call it again the method if the route changes
-    $route: "fetchSearchResult"
+    $route: "fetchSearchResult",
+    sortBy: by => updateSearchURL("sort", by),
+    orderBy: by => updateSearchURL("order", by)
   },
   methods: {
+    updateSearchURL(type, by) {
+      const query = { ...this.$route.query };
+      query[type] = by;
+      this.$router.push({ query });
+    },
     fetchSearchResult() {
       this.loading = true;
       this.searchTerm = this.$route.query["search"];
