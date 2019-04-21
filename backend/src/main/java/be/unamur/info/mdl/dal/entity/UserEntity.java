@@ -6,8 +6,10 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
-import java.util.*;
-import javax.jws.soap.SOAPBinding;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,7 +71,7 @@ public class UserEntity {
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
-  private UserProfilEntity userProfil;
+  private UserProfileEntity userProfil;
 
 
 
