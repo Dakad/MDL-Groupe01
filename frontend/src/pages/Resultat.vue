@@ -26,7 +26,7 @@
         <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
           <sota-list v-show="!loading" :list="results.sotas"></sota-list>
           <md-empty-state
-            v-if="!results.sotas || sotas.length == 0"
+            v-if="!results.sotas || results.sotas.length == 0"
             md-icon="view_module"
             md-label="No states of the art found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
@@ -35,7 +35,7 @@
         <md-tab id="articles" md-label="Articles" md-icon="description">
           <article-list v-show="!loading" :list="results.articles"></article-list>
           <md-empty-state
-            v-if="!results.articles || articles.length == 0"
+            v-if="!results.articles || results.articles.length == 0"
             md-icon="description"
             md-label="No articles found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
@@ -44,7 +44,7 @@
         <md-tab id="authors" md-label="Authors/Users" md-icon="people">
           <author-list v-show="!loading" :list="results.authors"></author-list>
           <md-empty-state
-            v-if="!results.authors || authors.length == 0"
+            v-if="!results.authors || results.authors.length == 0"
             md-icon="view_module"
             md-label="No states of the art found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
