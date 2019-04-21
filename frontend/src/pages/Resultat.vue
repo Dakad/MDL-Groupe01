@@ -48,19 +48,19 @@
           <author-list v-show="!loading" :list="results.authors"></author-list>
           <md-empty-state
             v-if="!results.authors || results.authors.length == 0"
-            md-icon="view_module"
+            md-icon="people"
             md-label="No states of the art found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
-        <md-tab id="graphics" md-label="Graphics" md-icon="timeline">
-          <graphics :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
+        <md-tab id="graphics" md-label="Graphics" md-icon="share" v-if="articlesTitles.length != 0">
           <md-empty-state
-            v-if="!results || results.length == 0"
-            md-icon="view_module"
+            v-if="articlesTitles.length == 0"
+            md-icon="share"
             md-label="No graphics to display"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+            md-description="Try another search"
           ></md-empty-state>
+          <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
         </md-tab>
       </md-tabs>
     </div>
@@ -76,6 +76,7 @@ import graphics from "@/components/resulat/Graphics";
 import { getSearchResults } from "@/services/api";
 
 export default {
+  name: "Resultat",
   components: {
     sotaList,
     authorList,
