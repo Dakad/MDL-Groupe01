@@ -22,6 +22,9 @@
     </div>
 
     <div class="tabs">
+      <div class="loading-search-results" v-if="loading">
+        <md-progress-bar md-mode="indeterminate"/>
+      </div>
       <md-tabs md-alignment="fixed" md-active-tab="articles">
         <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
           <sota-list v-show="!loading" :list="results.sotas"></sota-list>
@@ -177,6 +180,13 @@ export default {
 </script>
 
 <style scoped>
+.loading-search-results > md-progress-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
 .tabs {
   position: absolute;
   top: 15%;
