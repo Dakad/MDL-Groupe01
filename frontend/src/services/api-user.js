@@ -41,3 +41,7 @@ export function postSignin(data) {
 export function getProfileBase(username) {
   return Vue.http.get('api/user/' + username + '/profile/base');
 }
+
+export function getBookmark(username) {
+  return Vue.http.get('api/user/' + username + '/profile/bookmark');
+}
