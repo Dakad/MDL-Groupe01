@@ -2,7 +2,7 @@ package be.unamur.info.mdl.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CredentialDTO implements Serializable {
+@ApiModel(value = "Tag", description = "Model representing an Tag or Category")
+public class CredentialDTO {
 
   @NotBlank(message = "The username is required")
   private String username;
