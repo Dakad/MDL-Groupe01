@@ -7,7 +7,7 @@
     <div class="tabs">
     <md-tabs>
       <md-tab id="profile" md-label="My profile">
-        <MyProfile></MyProfile>
+        <MyProfile :infoPro="infoPro"></MyProfile>
       </md-tab>
       <md-tab id="Sota" md-label="State Of The Art">
         <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
@@ -47,7 +47,7 @@
 
 <script>
   import InfoBase from "@/components/profil/Info-base";
-  import {getProfileBase, getBookmark} from "../services/api-user";
+  import {getProfileBase, getBookmark, getProfileInfoPro} from "../services/api-user";
   import MyProfile from "../components/profil/MyProfile";
 
 
@@ -58,13 +58,15 @@
         return{
           profil: null,
           bookmarkList: null,
-          sotaList: null
+          sotaList: null,
+          infoPro: null
         }
       },
       created() {
         this.fetchProfile()
         this.fetchBookmark()
         this.fetchSota()
+        this.fetchDataPro()
       },
       methods: {
         fetchProfile(){
@@ -80,9 +82,15 @@
           })
         },
         fetchSota(){
-          getBookmark(username).then(function(data){
+          getProfileSota(username).then(function(data){
             this.sotaList = data;
             console.log(sotaList);
+          })
+        },
+        fetchDataPro(){
+          getProfileInfoPro(username).then(function(data){
+            this.infoPro = data;
+            console.log(infoPro);
           })
         }
       }

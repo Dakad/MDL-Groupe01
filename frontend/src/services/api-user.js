@@ -45,3 +45,7 @@ export function getProfileBase(username) {
 export function getBookmark(username) {
   return Vue.http.get('api/user/' + username + '/profile/bookmark');
 }
+
+export function getProfileInfoPro(username) {
+  return Vue.http.get('api/user/' + username + '/profile/pro');
+}
