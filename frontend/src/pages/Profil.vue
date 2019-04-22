@@ -7,10 +7,10 @@
     <div class="tabs">
     <md-tabs>
       <md-tab id="profile" md-label="My profile">
-
+        <MyProfile></MyProfile>
       </md-tab>
       <md-tab id="Sota" md-label="State Of The Art">
-        <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues  -->
+        <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
         <h5>Owned SotA</h5>
         <sota-list v-show="!loading" :list="sotaList.owned"></sota-list>
         <md-empty-state
@@ -26,7 +26,7 @@
           md-icon="view_module"
           md-label="No owned state of the art found"
           md-description="Create State of the art to see them here."
-        ></md-empty-state>
+        ></md-empty-state>  -->
       </md-tab>
       <md-tab id="Social" md-label="Social">
 
@@ -48,11 +48,12 @@
 <script>
   import InfoBase from "@/components/profil/Info-base";
   import {getProfileBase, getBookmark} from "../services/api-user";
+  import MyProfile from "../components/profil/MyProfile";
 
 
   export default {
       name: "profil",
-      components: { InfoBase},
+      components: {MyProfile, InfoBase},
       data() {
         return{
           profil: null,
