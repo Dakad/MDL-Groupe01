@@ -1,11 +1,11 @@
 package be.unamur.info.mdl.dto;
 
+import io.swagger.annotations.ApiModel;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * A data transfer object containing a user's profile basic information
@@ -13,18 +13,24 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "ProfileBasicInfo", description = "Model representing an user's profile basic information")
 public class ProfileBasicInfoDTO {
 
-  @NotBlank
+  @NotBlank(message = "The name is required")
   private String Name;
-  @NotBlank
+
+  @NotBlank(message = "The firstname is required")
   private String Firstname;
+
   @Nullable
   private String Domain;
+
   @Nullable
   private UniversityInfoDTO University;
-  @NotBlank @Nullable
+
+  @NotBlank(message = "The email is required")
   private String email;
+
   @Nullable
   private String profilePictureURL;
 }
