@@ -1,8 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
-import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -24,6 +22,9 @@ public class UniversityCurrent {
   @EmbeddedId
   private UserUniversityKey id;
 
+  @Column
+  private boolean current;
+
 
   @ManyToOne
   @MapsId("user_id")
@@ -37,19 +38,4 @@ public class UniversityCurrent {
   private UniversityEntity university;
 
 
-
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @Embeddable
-  static class UserUniversityKey implements Serializable {
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "university_id")
-    private Long universityId;
-
-
-  }
 }

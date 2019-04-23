@@ -2,7 +2,9 @@
   <section class="register">
     <form novalidate class="md-layout" @submit.prevent="validateUser">
       <md-card class="md-layout-item md-small-size-100">
-        <!-- -->
+        <md-card-header>
+          <div class="md-body-1">To unlock full features</div>
+        </md-card-header>
 
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -18,7 +20,7 @@
                 />
 
                 <span class="md-error" v-if="!$v.form.firstName.required">The first name is required</span>
-                <span class="md-error" v-if="!$v.form.firstName.minLength">Invalid first name</span>
+                <span class="md-error" v-else-if="!$v.form.firstName.minLength">Invalid first name</span>
               </md-field>
             </div>
 
@@ -33,14 +35,12 @@
                   :disabled="sending"
                 />
                 <span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-                <span class="md-error" v-if="!$v.form.lastName.minLength">Invalid last name</span>
+                <span class="md-error" v-else-if="!$v.form.lastName.minLength">Invalid last name</span>
               </md-field>
             </div>
           </div>
 
-          <md-field
-            :class="[getValidationClass('email'), {'md-invalid': invalid['email'] != null}]"
-          >
+          <md-field :class="getValidationClass('email')">
             <label for="email">Email</label>
             <md-input
               type="email"
@@ -51,13 +51,10 @@
               :disabled="sending"
             />
             <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-if="!$v.form.email.email">Invalid email</span>
-            <span class="md-error" v-if="invalid['email']">{{invalid['email']}}</span>
+            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
           </md-field>
 
-          <md-field
-            :class="[getValidationClass('username'), {'md-invalid': invalid['username'] != null}]"
-          >
+          <md-field :class="getValidationClass('username')">
             <label for="username">Username</label>
             <md-input
               type="text"
@@ -68,13 +65,10 @@
               :disabled="sending"
             />
             <span class="md-error" v-if="!$v.form.username.required">The username is required</span>
-            <span class="md-error" v-if="!$v.form.username.minLength">Invalid first name</span>
-            <span class="md-error" v-if="invalid['username']">{{invalid['username']}}</span>
+            <span class="md-error" v-else-if="!$v.form.username.minLength">Invalid first name</span>
           </md-field>
           <!-- <password-strength-meter :password="form.password"></password-strength-meter> -->
-          <md-field
-            :class="[getValidationClass('password'), {'md-invalid': invalid['password'] != null}]"
-          >
+          <md-field :class="getValidationClass('password')">
             <label for="password">Password</label>
             <md-input
               type="password"
@@ -85,9 +79,7 @@
               v-model.lazy.trim="form.password"
               :disabled="sending"
             />
-            <span
-              :class="[{'md-helper-text':!invalid['password']}, {'md-error':invalid['password']} ]"
-            >
+            <span class="md-helper-text">
               Use 8 to 30 characters with a mix of
               <b>UPPER</b>, lowercase and numbers
             </span>
@@ -96,11 +88,11 @@
             <span class="md-error" v-if="!$v.form.password.minLength">At least 8 characters</span>
             <span
               class="md-error"
-              v-if="!$v.form.password.sameAsEmail"
+              v-else-if="!$v.form.password.sameAsEmail"
             >Cannot be the same as the email</span>
             <span
               class="md-error"
-              v-if="!$v.form.password.sameAsUsername"
+              v-else-if="!$v.form.password.sameAsUsername"
             >Cannot be the same as the username</span>
           </md-field>
         </md-card-content>
@@ -112,11 +104,15 @@
         <!-- <pre>{{ $v.form.$invalid  }}</pre> -->
         <md-card-actions>
           <!-- <md-button block type="submit" variant="outline-primary">Create user</md-button> -->
-          <b-button block type="submit" variant="primary" :disabled="sending">Create account</b-button>
+          <b-button block type="submit" variant="primary">Create user</b-button>
 
           <!-- <md-button type="submit" class="md-primary" :disabled="$v.form.$invalid">Create user</md-button> -->
         </md-card-actions>
       </md-card>
+
+      <md-snackbar md-position="center" :md-active.sync="showSnackbar" md-persistent>
+        <span>{{msg}}</span>
+      </md-snackbar>
     </form>
   </section>
 </template>
@@ -133,12 +129,15 @@ import {
 } from "vuelidate/lib/validators";
 // import PasswordStrengthMeter  from "./PasswordStrengthMeter.vue";
 import { postSignin } from "@/services/api-user";
-
 export default {
   name: "Signin",
-  components: {},
+  components: {
+    // PasswordStrengthMeter
+  },
   mixins: [validationMixin],
-  props: {},
+  props: {
+    savedUser: Boolean
+  },
   data: function() {
     return {
       form: {
@@ -149,7 +148,8 @@ export default {
         password: null
       },
       sending: false,
-      invalid: {}
+      msg: null,
+      showSnackbar: false
     };
   },
   validations: {
@@ -199,10 +199,7 @@ export default {
     validateUser() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.invalid = {};
         this.saveUser();
-      } else {
-        this.$emit("error", "Invalid data - Please correct your input");
       }
     },
     saveUser() {
@@ -212,21 +209,20 @@ export default {
           console.log(res);
           this.sending = false;
           this.clearForm();
-          this.$emit("success");
+          // TODO Close the MDialog
+          this.$emit("close");
         })
         .catch(err => {
           if (err.status == 400) {
             this.msg = "Registration denied - Please correct your input";
-            this.invalid = Object.assign({}, err.body["validation"]);
+            // TODO Show the uncorrect field in the form
           }
           if (err.status == 409) {
             this.msg = "Registration denied - " + err.body["error"];
-          } else {
-            this.msg = "Internal API Error";
           }
           console.error(err);
           this.sending = false;
-          this.$emit("error", this.msg);
+          this.showSnackbar = true;
         });
     }
   }

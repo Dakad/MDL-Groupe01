@@ -3,11 +3,7 @@ import Router from 'vue-router';
 
 import NotFound from './pages/NotFound.vue';
 import Accueil from './pages/Accueil.vue';
-import About from './pages/About.vue';
-import Resultat from './pages/Resultat.vue';
-import Article from './pages/Article';
-import Sota from './pages/Sota';
-import Profil from './pages/Profil';
+// import Resultat from './pages/Resultat.vue';
 
 Vue.use(Router);
 
@@ -17,17 +13,9 @@ export default new Router({
   routes: [
     { name: 'accueil', path: '/', component: Accueil },
 
-    { name: 'about', path: '/about', component: About },
-
-    { name: 'resultat', path: '/result', component: Resultat },
+    // { name: 'resultat', path: '/result', component: Resultat },
 
     { name: '404', path: '/404', component: NotFound },
-
-    { name: 'articleDetails', path: '/article/:reference', component: Article },
-
-    { name: 'sota', path: '/sota', component: Sota },
-
-    { name: 'profil', path: '/profil', component: Profil },
 
     { name: '', path: '*', redirect: '/404' }
   ]
