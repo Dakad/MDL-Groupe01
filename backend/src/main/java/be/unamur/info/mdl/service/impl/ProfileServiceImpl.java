@@ -8,13 +8,13 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.querydsl.QSort;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
@@ -62,7 +62,7 @@ public class ProfileServiceImpl implements ProfileService {
     if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
     Sort sort = Sort.by("createdAt").descending();
     Page<ArticleEntity> articles = bookmarkRepository.findByUser(userRepository.findByUsername(username), new PageRequest(page,50, sort));
-    List<Pair<Long,String>> articlesInfo = new ArrayList();
+    List<org.springframework.data.util.Pair<Long,String>> articlesInfo = new ArrayList();
     articles.forEach(a -> articlesInfo.add(a.toInfoDTO()));
     return articlesInfo;
   }
