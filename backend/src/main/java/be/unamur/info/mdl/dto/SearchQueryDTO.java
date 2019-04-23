@@ -1,15 +1,21 @@
 package be.unamur.info.mdl.dto;
 
+import io.swagger.annotations.ApiModel;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
-@Data@NoArgsConstructor@AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "SearchQuery", description = "Model representing an user's profile basic information")
 public class SearchQueryDTO {
-  @NotBlank
-  private String keyword;
+
+  @NotBlank(message = "The search term is required")
+  @Min(value = 3, message = "The search term must be at least 3 characters long")
+  private String searchTerm;
 
   private String tag;
 

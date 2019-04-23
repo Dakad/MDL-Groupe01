@@ -1,6 +1,40 @@
 <template>
   <header class="navappregister">
     <div>
+      <!--The main navigation bar-->
+      <md-toolbar class="md=accent" md-elevation="1">
+        <router-link
+          to="/"
+          :class="[!searchBar.show ? 'flex': '', 'md-title','app-name']"
+        >Froggosaur</router-link>
+        <search
+          v-show="searchBar.show"
+          :mode="searchBar.mode"
+          :term="searchBar.input"
+          id="search"
+          class="flex"
+        ></search>
+
+        <!-- <div class="search">
+          <form class="form-inline my-2 my-lg-0 ml-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
+          </form>
+        </div>-->
+        <div class="buttons" style="float: right">
+          <div v-if="isAuthenticated">
+            <md-button class="md-icon-button md-dense md-primary" @click="logout()">
+              <md-icon>person</md-icon>
+            </md-button>
+          </div>
+          <div v-else>
+            <!--Login button open the login dialog-->
+            <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+            <!--Register button refer to the register page (RegisterVue)-->
+            <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+          </div>
+        </div>
+      </md-toolbar>
       <!-- Create the login dialog -->
       <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
         <md-dialog-title>
@@ -20,23 +54,6 @@
           @success="handleSuccess('signin',$event)"
         />
       </md-dialog>
-
-      <!--The main navigation bar-->
-      <md-toolbar class="md=accent" md-elevation="1">
-        <!--SiteName refer to AccueilVue-->
-        <a class="md-title" style="flex: 1" href="/">Froggosaur</a>
-        <div v-if="isAuthenticated">
-          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-            <md-icon>person</md-icon>
-          </md-button>
-        </div>
-        <div v-else>
-          <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
-          <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
-        </div>
-      </md-toolbar>
     </div>
     <md-snackbar
       md-position="center"
@@ -55,6 +72,18 @@
 .signin-dialog {
   width: 55%;
 }
+.app-name {
+  text-decoration: none !important;
+}
+.flex {
+  flex: 1;
+}
+.search {
+  margin: 0 40px;
+}
+// .buttons {
+//   align-content: right;
+// }
 // .md-dialog {
 //   widows: 100%;
 // }
@@ -64,14 +93,20 @@
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
-import { ping } from "@/services/api";
+import { ping as sendPing } from "@/services/api";
+import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
 import { isLogged, logout } from "@/services/api-user";
 
 export default {
   name: "Navbar",
-  components: { Login, Register },
+  components: { Login, Register, Search },
   data: function() {
     return {
+      searchBar: {
+        mode: MODE_NAVBAR,
+        show: true,
+        input: this.$route.query["search"]
+      },
       showLoginDialog: false,
       showRegisterDialog: false,
       isAuthenticated: false,
@@ -82,12 +117,21 @@ export default {
       snackbarTime: 5000
     };
   },
+  watch: {
+    "$route.name"(route) {
+      this.searchBar.show = route != "accueil";
+      this.searchBar.input = this.$route.query["search"];
+    }
+  },
   mounted() {
-    ping().catch(err => {
+    this.searchBar.show = this.$route.name != "accueil";
+
+    sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
       this.showSnackbar = true;
     });
   },
+
   methods: {
     handleError(component, error) {
       switch (component) {
