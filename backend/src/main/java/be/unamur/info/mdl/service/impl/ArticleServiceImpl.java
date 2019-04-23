@@ -12,6 +12,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,21 @@ public class ArticleServiceImpl implements ArticleService {
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
     this.authorRepository = authorRepository;
+  }
+
+
+  @Override
+  public ArticleDTO getArticleByReference(String reference) throws ArticleNotFoundException {
+    if(reference == null){
+      throw new IllegalArgumentException("The reference must be defined");
+    }
+    Optional<ArticleEntity> dbArticle = this.articleRepository.findByReference(reference);
+    if(!dbArticle.isPresent()){
+      throw new ArticleNotFoundException("The referenced article was not found");
+    } else {
+      return dbArticle.get().toDTO();
+    }
+
   }
 
   @Override

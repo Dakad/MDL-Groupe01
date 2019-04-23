@@ -11,7 +11,6 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

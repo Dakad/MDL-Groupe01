@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.repository;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import be.unamur.info.mdl.dal.entity.UserEntity;
@@ -14,7 +15,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   ArticleEntity findByTitle(String title);
 
-  ArticleEntity findByReference(String reference);
+  Optional<ArticleEntity> findByReference(String reference);
 
   boolean existsByTitle(String title);
 
