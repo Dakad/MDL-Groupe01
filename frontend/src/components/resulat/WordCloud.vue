@@ -12,7 +12,7 @@ export default {
   name: "WordCloud",
   props: {
     tags: {
-      type: Array,
+      type: Object,
       required: true,
       default: () => []
     }
@@ -25,9 +25,9 @@ export default {
   },
   computed: {
     list: function() {
-      return this.tags.map(t => ({
-        text: t,
-        value: Math.floor(Math.random() * 150000) + 5000
+      return Object.values(this.tags).map(tag => ({
+        text: Math.pow(10, tag["occur"] - 1) + " - " + tag["name"],
+        value: Math.floor(Math.pow(10, tag["occur"] - 1) * 1500) + 500
       }));
     }
     // text: function() {
