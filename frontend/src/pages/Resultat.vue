@@ -1,85 +1,225 @@
 <template>
-    <section class='Research'>
-            <div class ='tabs'>
-            <md-tabs>
-                <md-tab id="sota" md-label="State Of The Art">
-                  <!--Todo : Make a list of state art-->
-                  <sota title="Action Movies" date="28-03-2019" v-bind:authors="['Jean-claude Van Damme', 'Bruce Willis']"/>
-                  <sota title="Computer Sciences" date="20-06-1945" v-bind:authors="['Von neuman', 'Alan Turing', 'Ada Lovelace']"/>
-                  <sota title="Complot" date="11-09-2001" v-bind:authors="['Georges Bush', 'Al Gore']"/>
-                </md-tab>
-                <md-tab id="article" md-label="Article">
-                  <!--Todo : make a list of article-->
-                  <articles title="La visualisation des ovnis" date="01-01-2019" v-bind:authors="['Bruno Dumas']"/>
-                  <articles title="Le réchauffement climatique en musique" date="27-09-2005" v-bind:authors="['Joe Duplantier',' Mario Duplantier', ' Christian Andreu', 'Jean-Michel Labadie', 'Alexandre Cornillon']"/>
-                  <articles title="Machine Learning : visualisation quality" date="08-12-2018" v-bind:authors="['Benoit Frenay','Adrien Bibal']"/>
-                  <articles title="Global warming: Creation of china " date="01-04-2019" v-bind:authors="['Donald Trump']"/>
-                </md-tab>
-                <md-tab id="author" md-label="Author">
-                  <author/>
-                </md-tab>
-                <md-tab id="graphics" md-label="Graphics">
-                  <graphics/>
-                </md-tab>
-            </md-tabs>
-        </div>
+  <section class="results">
+    <div class="first">
+      <h2>Sort by :</h2>
+      <md-radio v-model="sortBy" value="name" @change="updateSearchURL('sort', $event)">Name</md-radio>
+      <md-radio v-model="sortBy" value="title" @change="updateSearchURL('sort', $event)">Title</md-radio>
+      <md-radio v-model="sortBy" value="date" @change="updateSearchURL('sort', $event)">Date</md-radio>
 
+      <!--
+      <md-radio v-model="sortBy" value="domain">Domain of Research</md-radio>
+      <md-radio v-model="sortBy" value="date">Date</md-radio>
+      <md-radio v-model="sortBy" value="views">Views</md-radio>
+      <md-radio v-model="sortBy" value="ref">References</md-radio>
+      -->
+    </div>
+    <hr>
+    <div class="second">
+      <h2>Order by :</h2>
+      <md-radio v-model="orderBy" value="asc" @change="updateSearchURL('order', $event)">Ascending</md-radio>
+      <md-radio v-model="orderBy" value="desc" @change="updateSearchURL('order', $event)">Descending</md-radio>
+      <small>{{ sortBy }} + {{ orderBy }}</small>
+    </div>
 
-
-          <div class="first">
-            <h2>Sort by :</h2>
-            <md-radio v-model="radio1" value="domain">Domain of Research</md-radio>
-            <md-radio v-model="radio1" value="date">Date</md-radio>
-            <md-radio v-model="radio1" value="views">Views</md-radio>
-            <md-radio v-model="radio1" value="ref">References</md-radio>
-          </div>
-          <div class="second">
-            <md-radio v-model="radio2" value="asc">Ascending</md-radio>
-            <md-radio v-model="radio2" value="des">Descending</md-radio>
-            <small>{{ radio1 }} + {{ radio2 }} </small>
-          </div>
-
-    </section>
+    <div class="tabs">
+      <div class="loading-search-results" v-if="loading">
+        <md-progress-bar md-mode="indeterminate"/>
+      </div>
+      <md-tabs md-alignment="fixed" :md-active-tab="activeTab" @md-changed="activeTab = $event">
+        <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
+          <sota-list v-show="!loading" :list="results.sotas"></sota-list>
+          <md-empty-state
+            v-if="!results.sotas || results.sotas.length == 0"
+            md-icon="view_module"
+            md-label="No states of the art found"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
+        </md-tab>
+        <md-tab id="articles" md-label="Articles" md-icon="description">
+          <article-list v-show="!loading" :list="results.articles"></article-list>
+          <md-empty-state
+            v-if="!results.articles || results.articles.length == 0"
+            md-icon="description"
+            md-label="No articles found"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
+        </md-tab>
+        <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+          <author-list v-show="!loading" :list="results.authors"></author-list>
+          <md-empty-state
+            v-if="!results.authors || results.authors.length == 0"
+            md-icon="people"
+            md-label="No states of the art found"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
+        </md-tab>
+        <md-tab id="graphics" md-label="Graphics" md-icon="share" v-if="articlesTitles.length != 0">
+          <md-empty-state
+            v-if="articlesTitles.length == 0"
+            md-icon="share"
+            md-label="No graphics to display"
+            md-description="Try another search"
+          ></md-empty-state>
+          <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
+        </md-tab>
+      </md-tabs>
+    </div>
+  </section>
 </template>
 
 <script>
-import sota from '@/components/result/Sota'
-import author from '@/components/result/Author'
-import graphics from '@/components/result/Graphics'
-import articles from '@/components/result/Article'
-export default {
-    components :{
-       sota, author, graphics, articles
+import sotaList from "@/components/resulat/SotaList";
+import authorList from "@/components/resulat/AuthorList";
+import articleList from "@/components/resulat/ArticleList";
+import graphics from "@/components/resulat/Graphics";
 
+import { getSearchResults } from "@/services/api";
+
+export default {
+  name: "Resultat",
+  components: {
+    sotaList,
+    authorList,
+    articleList,
+    graphics
+  },
+  data() {
+    return {
+      loading: false,
+      searchTerm: null,
+      sortBy: this.$route.query["sort"] || "name",
+      orderBy: this.$route.query["order"] || "asc",
+      activeTab: "articles",
+      page: 0,
+      results: {},
+      articlesTitles: [],
+      relatedArticles: []
+    };
+  },
+  created() {
+    // fetch the data when the view is created
+    // and the data is already being observed
+    const { search, order, sort } = this.$route.query;
+
+    this.fetchSearchResult();
+  },
+  watch: {
+    // call it again the method if the route changes
+    $route: "fetchSearchResult",
+    sortBy: by => updateSearchURL("sort", by),
+    orderBy: by => updateSearchURL("order", by)
+  },
+  methods: {
+    updateSearchURL(type, by) {
+      const query = { ...this.$route.query };
+      query[type] = by;
+      this.$router.push({ query });
     },
-    data: () => ({
-      radio1: "domain",
-      radio2: "asc",
-    })
-}
+    fetchSearchResult() {
+      this.loading = true;
+      this.searchTerm = this.$route.query["search"];
+
+      const searchQuery = {
+        st: this.searchTerm,
+        s: this.sortBy,
+        o: this.orderBy,
+        p: this.page
+      };
+
+      setTimeout(() => {
+        return getSearchResults(searchQuery)
+          .then(res => {
+            this.loading = false;
+            this.$set(this.results, "articles", res["articles"]);
+            this.$set(this.results, "authors", res["authors"]);
+            this.$set(this.results, "sotas", res["sotas"]);
+            this.$set(this.results, "users", res["users"]);
+            this.articlesTitles = res["articles"].map(a => a.title);
+            this.groupArticleByKeywords();
+            // this.$set(this.$data, "results", res);
+            // Object.keys(res).forEach(type => {
+            //   this.$set(this.results, type, res[type]);
+            // });
+          })
+          .catch(console.error);
+      }, 3 * 1000);
+    },
+    /**
+     * Group articles based on common keywords among them.
+     */
+    groupArticleByKeywords() {
+      this.relatedArticles = [];
+      const { articles } = this.results;
+      for (let i = 0; i < articles.length; i++) {
+        let keywords = articles[i].keywords;
+        for (let j = i + 1; j < articles.length; j++) {
+          let commonKeyword = "";
+          let commonArticle = [];
+          let alreadyIn = false;
+          for (let k = 0; k < keywords.length; k++) {
+            let keywordName = keywords[k].name;
+            for (let l = 0; l < articles[j].keywords.length; l++) {
+              if (keywordName === articles[j].keywords[l].name) {
+                commonKeyword += keywordName;
+                if (alreadyIn === false) {
+                  alreadyIn = true;
+                  commonArticle.push(articles[i].title);
+                  commonArticle.push(articles[j].title);
+                }
+              }
+            }
+          }
+          commonArticle.push(commonKeyword);
+          if (commonArticle.length > 1) {
+            this.relatedArticles.push(commonArticle);
+          }
+        }
+      }
+    },
+    getEmptyStateLabel(type) {},
+    getEmptyStateDescription(type) {
+      switch (type) {
+        case "value":
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
-.tabs{
-    position: absolute;
-    top: 15%;
-    left:25%;
+.loading-search-results > md-progress-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
 }
 
-.first{
-    position: relative;
-    top: 15%;
-    left: 5%;
+.tabs {
+  position: absolute;
+  top: 15%;
+  left: 25%;
+  width: 75%;
 }
-  
-.second{
-    position: relative;
-    top: 60%;
-    left: 5%;
+
+.first {
+  position: relative;
+  top: 15%;
+  left: 5%;
+  width: 20%;
+}
+
+.second {
+  position: relative;
+  top: 60%;
+  left: 5%;
+  width: 20%;
 }
 .md-radio {
-    display: flex;
-  }
-
+  display: flex;
+}
 </style>
 

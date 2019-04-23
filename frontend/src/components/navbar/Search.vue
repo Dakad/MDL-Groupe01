@@ -1,13 +1,16 @@
 <template>
   <div class="search">
     <div class="searchText">
-      <md-field>
+      <md-field :md-inline="isInModeNavbar">
         <label>Type your search here</label>
-        <md-input v-model="searchInput"></md-input>
-        <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
+        <md-input v-model="searchInput" @keyup.enter="searchIt"></md-input>
+        <span v-if="!isInModeNavbar" class="md-helper-text">{{helperText}}</span>
+        <md-button class="md-icon-button" @click="searchIt()">
+          <md-icon>search</md-icon>
+        </md-button>
       </md-field>
     </div>
-    <div class="searchbutton">
+    <div v-if="!isInModeNavbar" class="searchbutton">
       <md-button class="md-raised" v-on:click="searchIt()">search</md-button>
     </div>
   </div>
@@ -15,32 +18,50 @@
 
 
 <style lang="scss" scoped>
-.signin-dialog {
-  width: 55%;
-}
-// .md-dialog {
-//   widows: 100%;
-// }
 </style>
 
 
 <script>
+export const MODE_NAVBAR = "in_navbar";
+
 export default {
   name: "Search",
+  props: ["mode", "term"],
   data: function() {
     return {
-      searchInput: null
+      helperText: "Think well about your search and don't forget our filter",
+      searchInput: this.term
     };
   },
+  mounted() {},
+  watch: {
+    term: function(value) {
+      this.searchInput = value;
+    }
+  },
+
+  computed: {
+    isInModeNavbar() {
+      return this.mode == MODE_NAVBAR;
+    },
+    placeholder() {
+      if (this.isInModeNavbar) {
+        return this.helperText.split(" and ")[0];
+      } else {
+        return null;
+      }
+    }
+  },
   methods: {
-    searchIt(){
-      this.$router.push({name:'resultat', query:{searchQuery:this.searchInput}})
+    searchIt() {
+      this.$router.push({
+        name: "resultat",
+        query: { search: this.searchInput }
+      });
     }
   }
 };
 </script>
 
 <style>
-
-
 </style>
