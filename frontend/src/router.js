@@ -8,6 +8,7 @@ import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
 import Sota from './pages/Sota';
 import Profil from './pages/Profil';
+import Wordcloud from './components/resulat/WordCloud'
 
 Vue.use(Router);
 
@@ -29,6 +30,7 @@ export default new Router({
 
     { name: 'profil', path: '/profil', component: Profil },
 
-    { name: '', path: '*', redirect: '/404' }
+    { name: '', path: '*', redirect: '/404' },
+
   ]
 });
