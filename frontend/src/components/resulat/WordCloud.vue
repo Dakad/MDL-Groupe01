@@ -14,16 +14,14 @@ export default {
     tags: {
       type: Array,
       required: true,
-      default: []
+      default: () => []
     }
   },
   components: {
     Cloud
   },
   data() {
-    return {
-      articles: json.results.articles
-    };
+    return {};
   },
   computed: {
     list: function() {
@@ -46,12 +44,13 @@ export default {
     //       }
     //     }
     //   }
+    //   console.log(wordList);
     //   return wordList;
     // }
   },
   methods: {
     fontSizeMapper(word) {
-      return word => Math.log2(word.value) * 4;
+      return Math.log2(word.value) * 4;
     }
   }
 };
