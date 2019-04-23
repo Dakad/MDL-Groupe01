@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/article")
-@Api(value = "Article endpoints", description = "Operations related to an Artcle such as add, get, ...")
+@Api(value = "Article endpoints", description = "Operations related to an Article such as add, get, delete ...")
 public class ArticleController extends APIBaseController {
 
   @Autowired
