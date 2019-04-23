@@ -1,21 +1,33 @@
 server:
   port: 8088
 spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   jpa:
     show-sql: true
     hibernate:
+      # ddl-auto: none
       ddl-auto: create
   datasource:
+    # initializationMode: always
     driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:local_db?createDB
-    username:
+    url: jdbc:h2:mem:local_db?DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    username: sa
     password:
-    validationQuery: SELECT 1
+    # schema: classpath:db/schema.h2.sql
+    # data: classpath:db/data.h2.sql
+app:
+  auth:
+    secret: 1j3@BeV!ltA&_SecretKeyToGenJWTs_m$O6Qz3qj
+    tokenExpirationInMs: 8460000000  # 100 days
+    prefix: "Bearer "
+    header: Authorization
+    secureEndpoints:
+      - /api/team
 
-lombok:
-  accessors:
-    fluent: true
-    chain: true
+
 ---
 
 spring:
@@ -28,23 +40,10 @@ spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/mdl_prod?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true
-    username: mdl-std
-    password: WeeB3ahl
+    username: mdl-global-user
+    password: mdl-global-password
     testWhileIdle: true
     validationQuery: SELECT 1
+    # schema: /db/schema.sql
+    # data: /db/data.sql
 
-
-
----
-
-spring:
-	profiles: test
-server:
-	port: 9001
-
----
-
-spring:
-	profiles: prod
-server:
-	port: 0
