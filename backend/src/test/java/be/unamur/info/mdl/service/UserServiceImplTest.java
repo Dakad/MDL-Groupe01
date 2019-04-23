@@ -39,10 +39,10 @@ public class UserServiceImplTest {
   private PasswordEncoder pwdEncoder;
 
 
-  private static final UserEntity MOCK_USER_1 = UserEntity.builder().id(123L).username("user1")
+  public static final UserEntity MOCK_USER_1 = UserEntity.builder().id(123L).username("user1")
     .password("user1_pwd").email("user1@email.dom").build();
 
-  private static final UserEntity MOCK_USER_2 = UserEntity.builder().id(456L).username("user2")
+  public static final UserEntity MOCK_USER_2 = UserEntity.builder().id(456L).username("user2")
     .password("$2a$10$HSIgcJ/ZSd6mIhAOB/6gGuZS6soHxCO6/FGboVGGoXsBwyq8Dq0Le")
     .email("user2@email.dom").build();
 

@@ -7,6 +7,7 @@ import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +72,8 @@ public class UserEntity {
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
-  private UserProfilEntity userProfile;
+  private UserProfileEntity userProfile;
+
 
 
 
