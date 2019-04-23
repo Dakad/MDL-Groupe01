@@ -7,7 +7,7 @@
     <div class="tabs">
     <md-tabs>
       <md-tab id="profile" md-label="My profile">
-        <MyProfile :infoPro="infoPro"></MyProfile>
+       <!-- <MyProfile :infoPro="infoPro"></MyProfile> -->
       </md-tab>
       <md-tab id="Sota" md-label="State Of The Art">
         <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
@@ -32,13 +32,13 @@
 
       </md-tab>
       <md-tab id="Bookmarks" md-label="Bookmarks">
-        <sota-list v-show="!loading" :list="bookmarkList"></sota-list>
+        <!--<sota-list v-show="!loading" :list="bookmarkList"></sota-list>
         <md-empty-state
           v-if="!bookmarkList || bookmarkList == 0"
           md-icon="view_module"
           md-label="No bookmark found"
           md-description="Search for article to bookmark them."
-        ></md-empty-state>
+        ></md-empty-state>-->
       </md-tab>
     </md-tabs>
     </div>
@@ -47,7 +47,7 @@
 
 <script>
   import InfoBase from "@/components/profil/Info-base";
-  import {getProfileBase, getBookmark, getProfileInfoPro} from "../services/api-user";
+  import {getProfileBase, getBookmark, getProfileInfoPro, getProfileSota} from "../services/api-user";
   import MyProfile from "../components/profil/MyProfile";
 
 
@@ -56,41 +56,45 @@
       components: {MyProfile, InfoBase},
       data() {
         return{
-          profil: null,
-          bookmarkList: null,
-          sotaList: null,
-          infoPro: null
+          profil: {},
+          bookmarkList: {},
+          sotaList: {},
+          infoPro: {},
+          username: {},
+          loading: false
         }
       },
       created() {
+        this.username = this.$route.params["username"]
         this.fetchProfile()
-        this.fetchBookmark()
-        this.fetchSota()
-        this.fetchDataPro()
+        //this.fetchBookmark()
+        //this.fetchSota()
+        //this.fetchDataPro()
       },
       methods: {
         fetchProfile(){
-          getProfileBase(username).then(function(data){
+          console.log(this.username);
+          getProfileBase(this.username).then(data =>{
             this.profil = data;
-            console.log(profil);
+            console.log(this.profil);
           })
         },
         fetchBookmark(){
-          getBookmark(username).then(function(data){
+          getBookmark(this.username).then(function(data){
             this.bookmarkList = data;
-            console.log(bookmarkList);
+            console.log(this.bookmarkList);
           })
         },
         fetchSota(){
-          getProfileSota(username).then(function(data){
+          getProfileSota(this.username).then(function(data){
             this.sotaList = data;
-            console.log(sotaList);
+            console.log(this.sotaList);
           })
         },
         fetchDataPro(){
-          getProfileInfoPro(username).then(function(data){
+          getProfileInfoPro(this.username).then(function(data){
             this.infoPro = data;
-            console.log(infoPro);
+            console.log(this.infoPro);
           })
         }
       }
