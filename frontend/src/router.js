@@ -29,6 +29,8 @@ export default new Router({
 
     { name: 'profile', path: '/profile', component: Profil },
 
+    { name: 'profile', path: '/profile/:username', component: Profil },
+
     { name: '', path: '*', redirect: '/404' }
   ]
 });
