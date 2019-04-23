@@ -1,6 +1,6 @@
 <template>
   <div class="author">
-    <ul v-for="(author, index) in list" :key="index">
+    <ul v-for="(author, index) in authors" :key="index">
       <router-link :to="{name: 'authorDetails', params : {slug : author.slug}}">{{author.name}}</router-link>
       <!-- <router-link :to="{name: 'profil', params : {slug : user.username}}">{{author.username}}</router-link> -->
     </ul>
