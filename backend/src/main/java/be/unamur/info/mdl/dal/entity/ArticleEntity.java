@@ -23,12 +23,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.PositiveOrZero;
 
-import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.util.Pair;
 
 @Entity
 @Data
@@ -200,8 +200,8 @@ public class ArticleEntity {
     return entity.build();
   }
 
-  public Pair<Long, String> toInfoDTO(){
-    return new Pair<>(id, title);
+  public org.springframework.data.util.Pair<Long, String> toInfoDTO(){
+    return Pair.of(id, title);
   }
 
 }

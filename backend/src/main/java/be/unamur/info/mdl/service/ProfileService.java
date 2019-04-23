@@ -5,7 +5,7 @@ import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.micrometer.core.lang.Nullable;
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 import java.util.List;
 
