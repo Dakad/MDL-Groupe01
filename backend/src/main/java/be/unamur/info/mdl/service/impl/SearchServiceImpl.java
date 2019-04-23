@@ -66,7 +66,7 @@ public class SearchServiceImpl implements SearchService {
     searchResultDTO.setArticles(articleDTOList);
 
     //SOTA
-    List<StateOfTheArtEntity> sotaList = stateOfTheArtRepository.findDistinctByNameLike(keywords,pageable);
+    List<StateOfTheArtEntity> sotaList = stateOfTheArtRepository.findDistinctByNameLike(keywords);
     List<StateOfTheArtDTO> sotaDTOList = new ArrayList();
     sotaList.forEach(s -> sotaDTOList.add(s.toDTO()));
     searchResultDTO.setStatesOfTheArt(sotaDTOList);
