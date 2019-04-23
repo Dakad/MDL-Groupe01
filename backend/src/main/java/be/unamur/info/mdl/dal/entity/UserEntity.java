@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
@@ -109,7 +110,15 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<UserEntity> followers;
+  private List<UserEntity> followers;
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "user_follower",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "following_id")})
+  private List<UserEntity> follows;
 
 
   @ManyToMany(cascade = {
@@ -157,6 +166,37 @@ public class UserEntity {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }
     return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
+  }
+
+  public ProfileSocialInfoDTO toProfileSocialInfoDTO(){
+    if(userProfil == null) return new ProfileSocialInfoDTO("This user hasn't added a bio.",
+      follows.size(),followers.size(),null, null, null);
+    return new ProfileSocialInfoDTO(userProfil.getDescription(),follows.size(),followers.size(),userProfil.getFacebookURL(),
+      userProfil.getTwitterURL(),userProfil.getLinkedInURL());
+  }
+
+  //TODO : test unitaire sur des listes de followers de tailles variées
+  public List<UserDTO> getFollowersDTO(int page){
+    int leftBound = page * 20;
+    int rightBound = page *20 + 20;
+    if(followers.size() <= leftBound) return null;
+    else if (followers.size() <= rightBound) rightBound = followers.size();
+    List<UserEntity> subList = followers.subList(leftBound, rightBound);
+    List<UserDTO> dtoList = new ArrayList();
+    subList.forEach(e -> dtoList.add(e.toDTO()));
+    return dtoList;
+  }
+
+  //TODO : test unitaire sur des listes de followers de tailles variées
+  public List<UserDTO> getFollowsDTO(int page){
+    int leftBound = page * 20;
+    int rightBound = page *20 + 20;
+    if(follows.size() <= leftBound) return null;
+    else if (follows.size() <= rightBound) rightBound = follows.size();
+    List<UserEntity> subList = follows.subList(leftBound, rightBound);
+    List<UserDTO> dtoList = new ArrayList();
+    subList.forEach(e -> dtoList.add(e.toDTO()));
+    return dtoList;
   }
 
 }
