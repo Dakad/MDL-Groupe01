@@ -62,6 +62,15 @@
           ></md-empty-state>
           <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
         </md-tab>
+        <md-tab id="wordcloud" md-label="WordCloud" md-icon="cloud">
+          <md-empty-state
+            v-if="articlesTitles.length == 0"
+            md-icon="cloud"
+            md-label="No word cloud to display"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
+          <word-cloud v-else :tags="articlesTags"></word-cloud>
+        </md-tab>
       </md-tabs>
     </div>
   </section>
@@ -72,8 +81,10 @@ import sotaList from "@/components/resulat/SotaList";
 import authorList from "@/components/resulat/AuthorList";
 import articleList from "@/components/resulat/ArticleList";
 import graphics from "@/components/resulat/Graphics";
+import WordCloud from "@/components/resulat/WordCloud";
 
 import { getSearchResults } from "@/services/api";
+import { debug } from "util";
 
 export default {
   name: "Resultat",
@@ -81,7 +92,8 @@ export default {
     sotaList,
     authorList,
     articleList,
-    graphics
+    graphics,
+    WordCloud
   },
   data() {
     return {
@@ -92,6 +104,7 @@ export default {
       activeTab: "articles",
       page: 0,
       results: {},
+      articlesTags: {},
       articlesTitles: [],
       relatedArticles: []
     };
@@ -99,8 +112,6 @@ export default {
   created() {
     // fetch the data when the view is created
     // and the data is already being observed
-    const { search, order, sort } = this.$route.query;
-
     this.fetchSearchResult();
   },
   watch: {
@@ -126,23 +137,30 @@ export default {
         p: this.page
       };
 
-      setTimeout(() => {
-        return getSearchResults(searchQuery)
-          .then(res => {
-            this.loading = false;
-            this.$set(this.results, "articles", res["articles"]);
-            this.$set(this.results, "authors", res["authors"]);
-            this.$set(this.results, "sotas", res["sotas"]);
-            this.$set(this.results, "users", res["users"]);
-            this.articlesTitles = res["articles"].map(a => a.title);
-            this.groupArticleByKeywords();
-            // this.$set(this.$data, "results", res);
-            // Object.keys(res).forEach(type => {
-            //   this.$set(this.results, type, res[type]);
-            // });
-          })
-          .catch(console.error);
-      }, 3 * 1000);
+      return getSearchResults(searchQuery)
+        .then(res => {
+          this.loading = false;
+
+          this.$set(this.results, "articles", res["articles"]);
+          this.$set(this.results, "authors", res["authors"]);
+          this.$set(this.results, "sotas", res["sotas"]);
+          this.$set(this.results, "users", res["users"]);
+
+          this.articlesTitles = [];
+
+          this.articlesTags = res["articles"].reduce((acc, article) => {
+            // As the same time, push the article title
+            this.articlesTitles.push(article.title);
+            article.keywords.forEach(({ name, slug }) => {
+              const nb = acc[slug] ? acc[slug]["occur"] : 0;
+              acc[slug] = { name, occur: nb + 1 };
+            });
+            return acc;
+          }, {});
+
+          this.groupArticleByKeywords();
+        })
+        .catch(console.error);
     },
     /**
      * Group articles based on common keywords among them.
@@ -176,6 +194,7 @@ export default {
         }
       }
     },
+    groupyTags() {},
     getEmptyStateLabel(type) {},
     getEmptyStateDescription(type) {
       switch (type) {
