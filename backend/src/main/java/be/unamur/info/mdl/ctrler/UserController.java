@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -57,7 +57,7 @@ public class UserController extends APIBaseController {
   @ApiOperation(value = "Retrieve the basic profile information", response = ResponseEntity.class)
   @ApiResponses(value = {
     @ApiResponse(code = 200, message = "The profile data", response = ProfileBasicInfoDTO.class),
-    @ApiResponse(code = 409, message = "The provided username is  not found")
+    @ApiResponse(code = 404, message = "The provided username does not exist")
   })
   @RequestMapping(path = "/{username}/profile/base", method = RequestMethod.GET)
   public ResponseEntity getBasicInfo(
@@ -66,10 +66,63 @@ public class UserController extends APIBaseController {
     try {
       ProfileBasicInfoDTO dto = profileService.getBasicInfo(username);
       return ResponseEntity.status(HttpStatus.OK).body(dto);
-    }catch(UsernameNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
     }
+  }
 
+
+  @ApiOperation(value = "Retrieve the social profile information", response = ResponseEntity.class)
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "The profile social data", response = ProfileBasicInfoDTO.class),
+    @ApiResponse(code = 404, message = "The provided username does not exist")
+  })
+  @RequestMapping(path = "/{username}/profile/social", method = RequestMethod.GET)
+  public ResponseEntity getSocialInfo(
+    @ApiParam(value = "Username of the profile owner", required = true)
+    @PathVariable String username) {
+    try {
+      ProfileSocialInfoDTO dto = profileService.getSocialInfo(username);
+      return ResponseEntity.status(HttpStatus.OK).body(dto);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+
+  @ApiOperation(value = "Retrieve the user followers", response = ResponseEntity.class)
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "The following users", response = ProfileBasicInfoDTO.class),
+    @ApiResponse(code = 404, message = "The provided username does not exist")
+  })
+  @RequestMapping(path = "/{username}/profile/followers", method = RequestMethod.GET)
+  public ResponseEntity getFollowers(@PathVariable String username,
+    @ApiParam(value = "Pagination")
+    @RequestParam(defaultValue = "0", name = "page") int p) {
+    try {
+      List<UserDTO> userDTOS = profileService.getFollowers(username, p);
+      return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+
+  @ApiOperation(value = "Retrieve the users followed by an user", response = ResponseEntity.class)
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "The followed users", response = ProfileBasicInfoDTO.class),
+    @ApiResponse(code = 404, message = "The provided username does not exist")
+  })
+  @RequestMapping(path = "/{username}/profile/follows", method = RequestMethod.GET)
+  public ResponseEntity getFollows(@PathVariable String username,
+    @ApiParam(value = "Pagination")
+    @RequestParam(defaultValue = "0", name ="page") int p) {
+    try {
+      List<UserDTO> userDTOS = profileService.getFollows(username, p);
+      return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
   }
 
 }
