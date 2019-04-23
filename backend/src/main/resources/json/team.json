@@ -1,0 +1,38 @@
+[
+  {
+    "avatar": "https://i.imgur.com/d6WbeIR.jpg",
+    "name": "Christelle Trinon",
+    "role": "Product Owner",
+    "descr": "Description"
+  },
+  {
+    "avatar": "https://i.imgur.com/mx1XCPt.jpg",
+    "name": "Guillaume Maître",
+    "role": "Scrum Master",
+    "descr": "Description"
+  },
+  {
+    "avatar": "https://i.imgur.com/7S3khts.jpg",
+    "name": "Bastien Müllers",
+    "role": "Infrastructure Manager",
+    "descr": "Description"
+  },
+  {
+    "avatar": "https://i.imgur.com/eZfkWLC.jpg",
+    "name": "David Adegnon",
+    "role": "Team Member",
+    "descr": "Description"
+  },
+  {
+    "avatar": "https://i.imgur.com/JxdQlye.jpg",
+    "name": "William Turatsinze",
+    "role": "Team Member",
+    "descr": "Description"
+  },
+  {
+    "avatar": "https://i.imgur.com/SkXJBa7.jpg",
+    "name": "Ludovic Wasterlain",
+    "role": "Team Member",
+    "descr": "Description"
+  }
+]
