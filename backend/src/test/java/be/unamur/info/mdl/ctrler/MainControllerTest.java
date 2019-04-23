@@ -1,25 +1,19 @@
 package be.unamur.info.mdl.ctrler;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
-import be.unamur.info.mdl.service.impl.SearchServiceImpl;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -38,20 +32,14 @@ public class  MainControllerTest {
 
   @MockBean
   private UserServiceImpl userService;
-
-  @MockBean
-  private SearchServiceImpl searchService;
-
-  private final String EMPTY = "";
-
-  private final String SPACE = " ";
+//
+//  @MockBean
+//  private UserRepository userDAO;
 
 
   private static final String LOGIN_URL = "/api/login";
 
   private static final String SIGNIN_URL = "/api/signin";
-
-  private static final String SEARCH_URL = "/api/search";
 
 
   @Test
@@ -203,7 +191,6 @@ public class  MainControllerTest {
     ;
   }
 
-
   @Test
   public void register_with_credentials() throws Exception {
     JSONObject credential = new JSONObject();
@@ -297,7 +284,6 @@ public class  MainControllerTest {
     ;
   }
 
-
   @Test
   public void login_with_credentials() throws Exception {
     JSONObject credential = new JSONObject();
@@ -307,135 +293,13 @@ public class  MainControllerTest {
     when(userService.login(any())).thenReturn("JWT_TEST_TOKEN");
 
     api.perform(MockMvcRequestBuilders.post(LOGIN_URL)
-      .content(credential.toString())
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-      .andExpect(header().exists("Authorization"))
-      .andExpect(jsonPath("$.auth_token").exists())
-      .andExpect(jsonPath("$.auth_token").value("JWT_TEST_TOKEN"))
-      .andExpect(jsonPath("$.auth_header").exists())
-      .andExpect(jsonPath("$.auth_header").isString())
-      .andExpect(jsonPath("$.auth_token_type").exists())
-      .andExpect(jsonPath("$.auth_token_type").isString())
-    ;
-  }
-
-
-  @Test
-  public void search_with_no_params_will_throws_exception() throws Exception {
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
+        .content(credential.toString())
         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.auth_token").exists())
+        .andExpect(jsonPath("$.auth_token").value("JWT_TEST_TOKEN"))
     ;
   }
-
-  @Test
-  public void search_with_empty_keywords_will_be_ok() throws Exception {
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "")
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-  }
-
-
-  @Test
-  public void search_with_invalid_params_page_will_return_ok() throws Exception{
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("p", EMPTY)
-      .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("p", SPACE)
-      .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-  }
-
-
-  @Test
-  public void search_with_empty_params_will_be_ok() throws Exception {
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("o", EMPTY)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("o", SPACE)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("o", EMPTY)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("o", SPACE)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("p", EMPTY)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("p", "0")
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("p", "-1")
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("s", EMPTY)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("s", EMPTY)
-      .param("o", EMPTY)
-      .param("p", EMPTY)
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-
-    api.perform(MockMvcRequestBuilders.get(SEARCH_URL)
-      .param("k", "my_keywords")
-      .param("s", SPACE)
-      .param("o", SPACE)
-      .param("p", "1")
-      .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-    ;
-  }
-
 
 
 

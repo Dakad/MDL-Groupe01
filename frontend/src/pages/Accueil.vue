@@ -3,87 +3,57 @@
     <div class="central">
       <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
       <div class="title">
-        <h1>Froggosaur</h1>
+        <h1>No Assigned Name</h1>
       </div>
 
       <!-- place the searched words in var searchwords and the action to
       script the search is searchIt-->
-
-      <search id="search"></search>
+      <div class="searchText">
+        <md-field>
+          <label>Type your search here</label>
+          <md-input v-model="searchInput"></md-input>
+          <span class="md-helper-text">Think well about your keywords and don't forget our filter</span>
+        </md-field>
+      </div>
+      <div class="searchbutton">
+        <md-button class="md-raised" v-on:click="searchIt()" href="/result">search</md-button>
+      </div>
 
       <div class="filter"></div>
     </div>
-
-  <!--<div class="recommended">
+    <!--
+    <div class="recommended">
       <p>recommended</p>
-      <div class="switch-news">
-        <md-button class="md-raised" v-on:click="switcher">What might interest you</md-button>
+
+      <div class="recoNews">
+        <md-button class="md-raised" v-on:click="switcher">recommanded</md-button>
       </div>
       <div id="slider">
-        <carousel autoplay=true>
+        <carousel :autoplay=true>
           <slide>
             <span class="label">1</span>
           </slide>
         </carousel>
       </div>
     </div>-->
-    <div class="recommended">
-    <carousel :autoplayLoop="true" :autoplay="true" :autoplayTimeout="3000" :per-page="2">
-    <slide class="slide">
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-  </carousel>
-  </div>
   </section>
 </template>
 
 
 
 <script>
-import { Carousel, Slide } from "vue-carousel";
-
-import Search from '@/components/navbar/Search';
+// import { Carousel, Slide } from "vue-carousel";
 
 export default {
   name: "Accueil",
   components: {
-    Carousel,
-    Slide,
-    Search
+    // Carousel,
+    // Slide,
   },
   data() {
     return {
       searchInput: null,
-      //carrouselAutoplay: true
+      carrouselAutoplay: true
     };
   },
   methods: {
@@ -98,6 +68,11 @@ export default {
   searchIt() {}
 };
 </script>
+
+
+
+
+
 
 <style scoped>
 img {
@@ -132,10 +107,6 @@ h1 {
   margin-top: 35px;
 }
 
-#search {
-  margin-top: 150px;
-}
-
 p {
   margin-left: 15px;
   width: 20%;
@@ -150,21 +121,23 @@ p {
   transform: translate(-50%, -50%);
   width: 75%;
   height: 40%;
-  /*border: 3px solid gray;*/
+  border: 3px solid gray;
   overflow: auto;
+  z-index: -1;
 }
 
-/*.switch-news {
+.recoNews {
   float: right;
   margin-right: 50px;
   position: absolute;
   top: 5%;
   left: 85%;
-}*/
+}
 
 .searchText {
   height: 20%;
   width: 87%;
+
   position: absolute;
   top: 70%;
 }
@@ -177,7 +150,7 @@ p {
   top: 75%;
 }
 
-/*.VueCarousel-slide {
+.VueCarousel-slide {
   position: relative;
   background: #42b983;
   color: #fff;
@@ -185,7 +158,7 @@ p {
   font-size: 24px;
   text-align: center;
   min-height: 50px;
-}*/
+}
 
 .label {
   position: absolute;
@@ -194,11 +167,11 @@ p {
   transform: translate(-50%, -50%);
 }
 
-/*#slider {
+#slider {
   width: 80%;
   height: 70%;
   position: absolute;
   top: 20%;
   left: 10%;
-}*/
+}
 </style>

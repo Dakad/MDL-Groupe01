@@ -1,9 +1,8 @@
 package be.unamur.info.mdl.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Tag", description = "Model representing an Tag or Category")
-public class CredentialDTO {
+public class CredentialDTO implements Serializable {
 
   @NotBlank(message = "The username is required")
   private String username;
@@ -21,9 +19,8 @@ public class CredentialDTO {
 
   @NotBlank(message = "The password is required")
   @Pattern(
-    regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#&+-_@=£$!%*\\^\\?]?).{8,30}$",
-    message = "The password must be at least 8 characters long, containing 1 uppercase and number"
+      regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#&+-_@=£$!%*\\^\\?]?).{8,30}$",
+      message = "The password must be at least 8 characters long, containing 1 uppercase and number"
   )
-  @JsonProperty(value = "password", access = Access.WRITE_ONLY)
   private String password;
 }

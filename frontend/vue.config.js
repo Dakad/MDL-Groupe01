@@ -1,6 +1,5 @@
 // vue.config.js
-var path = require('path');
-console.log();
+var path = require('path')
 module.exports = {
   // proxy all webpack dev-server requests starting with /api
   // to our Spring Boot backend (localhost:8088) using http-proxy-middleware
@@ -18,5 +17,5 @@ module.exports = {
   // see https://cli.vuejs.org/config/
   outputDir: 'target/dist',
   assetsDir: 'static',
-  publicPath: process.env.NODE_ENV != 'production' ? '/' : '/latest-release/'
-};
+  publicPath : '/latest-release/'
+}
