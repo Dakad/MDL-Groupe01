@@ -27,6 +27,7 @@
         stroke="black"
         stroke-width="1"
         @mousedown="currentMove = {x: $event.screenX, y: $event.screenY, node: node}"
+        @click="clicked(i)"
       ></circle>
 
       <text
@@ -38,6 +39,7 @@
         class="labelNode"
         stroke-width="1"
         color="black"
+        @click="clicked(i)"
       >{{node.name.substring(0,11)}}</text>
 
       <text
@@ -168,140 +170,14 @@ export default {
         .force("link", d3.forceLink(this.graph.links))
         .force("x", d3.forceX())
         .force("y", d3.forceY());
+    },
+
+    clicked(index){
+      console.log(this.graph.nodes[index].name);
+      window.location.assign("http://localhost:8080/article/"+this.graph.nodes[index].name);
     }
 
-    /*drag(e) {
-        if (this.currentMove) {
-          this.currentMove.node.fx = this.currentMove.node.x - (this.currentMove.x - e.screenX) * (this.bounds.maxX - this.bounds.minX) / (this.width - 2 * this.padding)
-          this.currentMove.node.fy = this.currentMove.node.y - (this.currentMove.y - e.screenY) * (this.bounds.maxY - this.bounds.minY) / (this.height - 2 * this.padding)
-          this.currentMove.x = e.screenX
-          this.currentMove.y = e.screenY
-        }
-      },
-      drop() {
-        delete this.currentMove.node.fx
-        delete this.currentMove.node.fy
-        this.currentMove = null
-        this.simulation.alpha(1)
-        this.simulation.restart()
-      }, */
-    /*AIM to create a array with all the link possible between each one
-     *  take the tags of one article and test it on all the following articles
-     *  if similarities are found between two articles the tag is added + the two article
-     * */
   }
-
-  /*   props:{
-      data : Object
-    },
-    components: {
-    },
-    data() {
-      return {
-        node: this.nodeCreator(dummy),
-        link: this.linker(dummy),
-        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-        height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 40,
-        padding: 20,
-        simulation: null,
-        currentMove: null
-      };
-
-    },
-
-    computed: {
-      bounds() {
-        return {
-          minX: Math.min(...this.nodes.map(n => n.x)),
-          maxX: Math.max(...this.nodes.map(n => n.x)),
-          minY: Math.min(...this.nodes.map(n => n.y)),
-          maxY: Math.max(...this.nodes.map(n => n.y))
-        }
-      },
-      coords() {
-        return this.nodes.map(node => {
-          return {
-            x: this.padding + (node.x - this.bounds.minX) * (this.width - 2*this.padding) / (this.bounds.maxX - this.bounds.minX),
-            y: this.padding + (node.y - this.bounds.minY) * (this.height - 2*this.padding) / (this.bounds.maxY - this.bounds.minY)
-          }
-        })
-      }
-    },
-    created(){
-      this.simulation = d3.forceSimulation(this.nodes)
-        .force('charge', d3.forceManyBody().strength(d => -100))
-        .force('link', d3.forceLink(this.links))
-        .force('x', d3.forceX())
-        .force('y', d3.forceY())
-    },
-    methods: {
-      drag(e) {
-        if (this.currentMove) {
-          this.currentMove.node.fx = this.currentMove.node.x - (this.currentMove.x - e.screenX) * (this.bounds.maxX - this.bounds.minX) / (this.width - 2 * this.padding)
-          this.currentMove.node.fy = this.currentMove.node.y -(this.currentMove.y - e.screenY) * (this.bounds.maxY - this.bounds.minY) / (this.height - 2 * this.padding)
-          this.currentMove.x = e.screenX
-          this.currentMove.y = e.screenY
-        }
-      },
-      drop(){
-        delete this.currentMove.node.fx
-        delete this.currentMove.node.fy
-        this.currentMove = null
-        this.simulation.alpha(1)
-        this.simulation.restart()
-      },
-       */
-
-  /*AIM to create a array with all the link possible between each one
-   *  take the tags of one article and test it on all the following articles
-   *  if similarities are found between two articles the tag is added + the two article
-   * */
-
-  /*
-      linker() {
-        let i;
-        let motherTab = [];
-        for (i = 0; i < dummy.articles.length; i++) {
-          let toTest = dummy.articles[i].keywords;
-          let j;
-          for (j=i+1; j <  dummy.articles.length; j++){
-            let childTab = "";
-            let container = [];
-            let test = false;
-            let k;
-            for (k=0; k < toTest.length; k++){
-              let nameToTest = toTest[k].name;
-              let l;
-              for (l=0; l < dummy.articles[j].keywords.length; l++) {
-                if (nameToTest === dummy.articles[j].keywords[l].name) {
-                  childTab += nameToTest;
-                  if (test === false) {
-                    test = true;
-                    container.push(dummy.articles[i].title);
-                    container.push(dummy.articles[j].title);
-                  }
-                }
-              }
-            }
-          container.push(childTab);
-            if (container.length > 1){
-              motherTab.push(container);
-            }
-          }
-        }
-        return motherTab;
-      },
-
-      nodeCreator() {
-        let i;
-        let nodes = [];
-        for (i = 0; i < dummy.articles.length; i++){
-          nodes.push(dummy.articles[i].title)
-        }
-        return nodes;
-      }
-
-    }, */
 };
 </script>
 
