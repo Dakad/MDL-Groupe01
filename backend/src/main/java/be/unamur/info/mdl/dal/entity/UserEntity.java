@@ -85,7 +85,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
@@ -111,6 +111,7 @@ public class UserEntity {
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
   private List<UserEntity> followers;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
