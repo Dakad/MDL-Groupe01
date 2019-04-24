@@ -178,11 +178,11 @@ export default {
             let keywordName = keywords[k].name;
             for (let l = 0; l < articles[j].keywords.length; l++) {
               if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += keywordName;
+                commonKeyword += (keywordName + ", ");
                 if (alreadyIn === false) {
                   alreadyIn = true;
-                  commonArticle.push(articles[i].title);
-                  commonArticle.push(articles[j].title);
+                  commonArticle.push(i);
+                  commonArticle.push(j);
                 }
               }
             }
@@ -190,6 +190,7 @@ export default {
           commonArticle.push(commonKeyword);
           if (commonArticle.length > 1) {
             this.relatedArticles.push(commonArticle);
+            console.log(this.relatedArticles);
           }
         }
       }

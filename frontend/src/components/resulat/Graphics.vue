@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
   <div class="graphics">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +23,7 @@
         :key="'node_'+i"
         :cx="coords[i].x"
         :cy="coords[i].y"
-        :r="50"
+        :r="40"
         :fill="'#fff'"
         stroke="black"
         stroke-width="1"
@@ -62,7 +63,12 @@
         class="labelLink"
         color="black"
       >{{link.tag}}</text>
+
     </svg>
+  </div>
+  <div class="legend">
+
+  </div>
   </div>
 </template>
 
@@ -159,8 +165,8 @@ export default {
           name: this.articlesTitles[i]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
-          source: Math.floor(Math.sqrt(i)),
-          target: i + 1,
+          source: this.linkedArticles[i][0],
+          target: this.linkedArticles[i][1],
           tag: this.linkedArticles[i][2]
         }))
       };
@@ -173,7 +179,6 @@ export default {
     },
 
     clicked(index){
-      console.log(this.graph.nodes[index].name);
       window.location.assign("http://localhost:8080/article/"+this.graph.nodes[index].name);
     }
 
@@ -183,4 +188,12 @@ export default {
 
 
 <style>
+  .graphics{
+    float: left;
+    width: 80%;
+  }
+  .legend{
+    float: left;
+    width: 20%;
+  }
 </style>
