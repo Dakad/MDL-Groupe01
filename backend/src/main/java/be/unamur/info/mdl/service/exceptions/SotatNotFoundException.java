@@ -1,8 +1,8 @@
 package be.unamur.info.mdl.service.exceptions;
 
-public class NoSotaException extends Exception{
+public class SotatNotFoundException extends Exception{
 
-  public NoSotaException (String e){
+  public SotatNotFoundException(String e){
 
     super(e);
   }

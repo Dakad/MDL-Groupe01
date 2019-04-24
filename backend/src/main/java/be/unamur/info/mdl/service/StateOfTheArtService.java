@@ -1,15 +1,19 @@
 package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
-import be.unamur.info.mdl.service.exceptions.NoSotaException;
+import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
 
 public interface StateOfTheArtService {
 
-  //methode getStateofTheArt renvoie un state of the artDTO ->go dans repository faire findbyod, lransformer en dto
 
-  public StateOfTheArtDTO getStateOfTheArt (String reference) throws NoSotaException;
-
-
+  /**
+   * Retrieve a SOTA specified by the provided reference
+   * @param reference The provided reference
+   * @return The data of the matching SOTA.
+   * @throws IllegalArgumentException if the provided reference is null.
+   * @throws SotatNotFoundException The referenced SOTA is not found in persistence.
+   */
+  StateOfTheArtDTO getSotaByReference(String reference) throws SotatNotFoundException;
 
 
 }
