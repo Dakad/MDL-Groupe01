@@ -23,7 +23,7 @@
         :key="'node_'+i"
         :cx="coords[i].x"
         :cy="coords[i].y"
-        :r="40"
+        :r="45"
         :fill="choseColor(i)"
         :opacity="choseOpacity(i)"
         stroke="black"
@@ -68,7 +68,12 @@
     </svg>
   </div>
   <div class="legend">
+      <li v-for="item in legendMaker()">
+        <p :style="{ color: item[1] }">{{item[0]}}</p>
+      </li>
 
+    <h5>Opacity: </h5>
+    <p>From {{lowestYear()}} at 40% <br /> to {{highestYear()}} at 100%</p>
   </div>
   </div>
 </template>
@@ -198,6 +203,17 @@ export default {
       return this.colors[colorNumber]
     },
 
+    /*creatTabYear(){
+      let arrayYear = []
+      for (let i=0; i < this.graph.nodes.length; i++){
+        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
+          arrayYear.push(this.graph.nodes[i].year)
+        }
+      }
+      arrayYear.sort();
+      return arrayYear
+    },*/
+
     choseOpacity(j){
       let arrayYear = []
       for (let i=0; i < this.graph.nodes.length; i++){
@@ -207,8 +223,47 @@ export default {
       }
       arrayYear.sort();
       let delta = arrayYear[arrayYear.length-1] - arrayYear[0]
-      let opacityVar = (( (arrayYear[arrayYear.length-1]+1) - this.graph.nodes[j].year) / delta)
+      let opacityVar = (( (arrayYear[arrayYear.length-1]+4) - this.graph.nodes[j].year) / delta)
       return opacityVar
+    },
+
+    legendMaker(){
+      let arrayDom = [];
+      for (let i=0; i < this.graph.nodes.length; i++){
+        if (!(arrayDom.includes(this.graph.nodes[i].domain))) {
+          arrayDom.push(this.graph.nodes[i].domain)
+        }
+      }
+      let colorLegend = [];
+      for (let i=0; i < arrayDom.length; i++){
+        let mapper = [];
+        mapper.push(this.graph.nodes[i].domain);
+        mapper.push(this.colors[i]);
+        colorLegend.push(mapper)
+      }
+      return colorLegend
+    },
+
+    lowestYear(){
+      let arrayYear = []
+      for (let i=0; i < this.graph.nodes.length; i++){
+        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
+          arrayYear.push(this.graph.nodes[i].year)
+        }
+      }
+      arrayYear.sort();
+      return arrayYear[0]
+    },
+
+    highestYear(){
+      let arrayYear = []
+      for (let i=0; i < this.graph.nodes.length; i++){
+        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
+          arrayYear.push(this.graph.nodes[i].year)
+        }
+      }
+      arrayYear.sort();
+      return  arrayYear[arrayYear.length-1]
     }
 
   }
@@ -224,5 +279,9 @@ export default {
   .legend{
     float: left;
     width: 20%;
+  }
+
+  p{
+    font-size: 9pt;
   }
 </style>
