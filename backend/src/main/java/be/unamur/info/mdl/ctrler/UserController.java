@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -143,7 +144,7 @@ public class UserController extends APIBaseController {
   public ResponseEntity getBookmarks(@PathVariable String username,
     @RequestParam(defaultValue = "0") int p) {
     try {
-      List<Pair<Long, String>> bookmarks = profileService.getBookmarks(username, p);
+      Map<String, String> bookmarks = profileService.getBookmarks(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
     } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
