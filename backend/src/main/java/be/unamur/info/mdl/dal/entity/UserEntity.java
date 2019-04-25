@@ -70,9 +70,8 @@ public class UserEntity {
 
 
   @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
+  @JoinColumn(name = "profile_id", referencedColumnName = "id", unique = true)
   private UserProfileEntity userProfile;
-
 
 
   @OneToMany(
@@ -194,7 +193,7 @@ public class UserEntity {
   private List<UserDTO> getFollowers(int page, List<UserEntity> followers) {
     int leftBound = page * 20;
     if (followers.size() <= leftBound) {
-      return null;
+      return new ArrayList();
     }
     int rightBound = (page * 20) + 20;
     if (followers.size() <= rightBound) {
