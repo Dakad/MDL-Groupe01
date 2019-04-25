@@ -14,7 +14,6 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,7 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     List<String> researchGroup = new ArrayList<>(2);
     if (user.getResearchGroup() != null) {
-      researchGroup.add( user.getResearchGroup().getName());
+      researchGroup.add(user.getResearchGroup().getName());
       researchGroup.add(user.getResearchGroup().getLink());
     }
 
