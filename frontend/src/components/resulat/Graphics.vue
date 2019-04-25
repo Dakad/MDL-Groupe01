@@ -28,7 +28,7 @@
         :opacity="choseOpacity(i)"
         stroke="black"
         stroke-width="1"
-        @mousedown="currentMove = {x: $event.screenX, y: $event.screenY, node: node}"
+        @mouseover="showInfo(node, i)"
         @click="clicked(i)"
       ></circle>
 
@@ -266,6 +266,21 @@ export default {
       }
       arrayYear.sort();
       return  arrayYear[arrayYear.length-1]
+    },
+
+    showInfo(d, i){
+      console.log(this.graph.nodes[i].name)
+      console.log(this.graph.nodes[i].domain)
+      console.log(this.graph.nodes[i].year)
+
+      this.svg.append("text").attr({
+        id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+        x: function() { return xScale(d.x) - 30; },
+        y: function() { return yScale(d.y) - 15; }
+      })
+        .text(function() {
+          return [this.graph.nodes[i].name,this.graph.nodes[i].domain, this.graph.nodes[i].year];  // Value of the text
+        });
     }
 
   }
