@@ -129,7 +129,7 @@ public class UserController extends APIBaseController {
   }
 
   @RequestMapping(path="/{username}/follow", method = RequestMethod.POST)
-  public ResponseEntity folow(@PathVariable String username, Principal authUser){
+  public ResponseEntity follow(@PathVariable String username, Principal authUser){
     try{
       String user = authUser.getName();
       if(username.equals(user)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A user cannot follow themselves");
@@ -138,6 +138,19 @@ public class UserController extends APIBaseController {
       else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already followed");
     }catch(UsernameNotFoundException e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
+    }
+  }
+
+  @RequestMapping(path="/{username}/unfollow", method = RequestMethod.POST)
+  public ResponseEntity unfollow(@PathVariable String username, Principal authUser){
+    try{
+      String user= authUser.getName();
+      if(username.equals(user)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A user cannot unfollow themselves");
+      boolean response = userService.unfollow(username,user);
+      if(response) return ResponseEntity.status(HttpStatus.OK).body("User now unfollowed");
+      else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already not followed");
+    }catch (UsernameNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
     }
   }
 }

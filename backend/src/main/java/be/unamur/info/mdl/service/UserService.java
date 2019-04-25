@@ -26,6 +26,20 @@ public interface UserService extends UserDetailsService {
 
   public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO);
 
-  public boolean follow(String username, String follower) throws UsernameNotFoundException;
+  /**
+   * @param username the username of the user to be followed
+   * @param follower the username of the connected user
+   * @return false if the user is already followed, else true
+   * @throws UsernameNotFoundException
+   */
+  boolean follow(String username, String follower) throws UsernameNotFoundException;
+
+  /**
+   * @param username the username of the user to be unfollowed
+   * @param follower the username of the connected user
+   * @return false if the user was not followed, else true
+   * @throws UsernameNotFoundException
+   */
+  boolean unfollow(String username, String follower) throws UsernameNotFoundException;
 
 }
