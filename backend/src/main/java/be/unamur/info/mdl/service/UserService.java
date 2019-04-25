@@ -6,7 +6,11 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import javax.validation.Valid;
+
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.security.Principal;
 
 public interface UserService extends UserDetailsService {
 
@@ -21,5 +25,7 @@ public interface UserService extends UserDetailsService {
   public String login(@Valid CredentialDTO user) throws InvalidCredentialException;
 
   public boolean changePassword(String username, PasswordChangeDTO passwordChangeDTO);
+
+  public boolean follow(String username, String follower) throws UsernameNotFoundException;
 
 }

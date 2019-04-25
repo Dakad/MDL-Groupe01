@@ -11,10 +11,11 @@ import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import java.util.Collections;
 import javax.validation.Valid;
+
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,9 +63,9 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String username) throws org.springframework.security.core.userdetails.UsernameNotFoundException {
     if (this.userRepository.existsByUsername(username)){
-      throw new UsernameNotFoundException(username);
+      throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
     }
     CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
     return new User(credential.getUsername(), credential.getPassword(), Collections.EMPTY_LIST);
@@ -92,6 +93,19 @@ public class UserServiceImpl implements UserService {
     UserEntity user = userRepository.findByUsername(username);
     if (this.passwordEncoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword())) {
       user.setPassword(passwordChangeDTO.getNewPassword());
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean follow(String username, String follower) throws UsernameNotFoundException {
+    if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    UserEntity userfollower = userRepository.findByUsername(follower);
+    UserEntity userfollowed = userRepository.findByUsername(username);
+    if(!userfollower.getFollows().contains(userfollowed)) {
+      userfollower.getFollows().add(userfollowed);
+      userRepository.save(userfollower);
       return true;
     }
     return false;
