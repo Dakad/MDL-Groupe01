@@ -24,7 +24,7 @@
         :cx="coords[i].x"
         :cy="coords[i].y"
         :r="40"
-        :fill="'#fff'"
+        :fill="choseColor(i)"
         stroke="black"
         stroke-width="1"
         @mousedown="currentMove = {x: $event.screenX, y: $event.screenY, node: node}"
@@ -182,7 +182,21 @@ export default {
     },
 
     clicked(index){
-      window.location.assign("http://localhost:8080/article/"+this.graph.nodes[index].name);
+      window.location.assign("http://localhost:8080/article/"+this.graph.nodes[index].ref);
+    },
+
+    choseColor(j){
+      let arrayDom = [];
+      console.log(this.graph.nodes.length)
+      for (let i=0; i < this.graph.nodes.length; i++){
+
+        if (!(arrayDom.includes(this.graph.nodes[i].domain))) {
+          arrayDom.push(this.graph.nodes[i].domain)
+        }
+      }
+      console.log("gsdgsgs");
+      let colorNumber = arrayDom.indexOf(this.graph.nodes[j].domain);
+      return this.colors[colorNumber]
     }
 
   }
