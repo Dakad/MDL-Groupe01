@@ -164,9 +164,9 @@ export default {
           x: null,
           y: null,
           name: this.articlesTitles[i][0],
-          domain: this.articlesTitles[i][3],
-          ref: this.articlesTitles[i][2],
-          year: this.articlesTitles[i][4]
+          domain: this.articlesTitles[i][2],
+          ref: this.articlesTitles[i][1],
+          year: this.articlesTitles[i][3]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
           source: this.linkedArticles[i][0],
@@ -206,11 +206,8 @@ export default {
         }
       }
       arrayYear.sort();
-      console.log(arrayYear)
       let delta = arrayYear[arrayYear.length-1] - arrayYear[0]
-      console.log(arrayYear[arrayYear.length-1]);
-      let opacityVar = (( (arrayYear[arrayYear.length-1]) - this.graph.nodes[j].year) / delta)
-      console.log(opacityVar);
+      let opacityVar = (( (arrayYear[arrayYear.length-1]+1) - this.graph.nodes[j].year) / delta)
       return opacityVar
     }
 
