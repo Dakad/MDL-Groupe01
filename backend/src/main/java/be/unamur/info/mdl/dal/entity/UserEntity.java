@@ -176,8 +176,8 @@ public class UserEntity {
 
     if (this.userProfile != null) {
       dto.bio(userProfile.getDescription());
-      dto.facebook(this.userProfile.getFacebookURL()).linkedin(this.userProfile.getLinkedInURL())
-        .twitter(this.userProfile.getTwitterURL());
+      dto.facebookURL(this.userProfile.getFacebookURL()).linkedinURL(this.userProfile.getLinkedInURL())
+        .twitterURL(this.userProfile.getTwitterURL());
     }
     return dto.build();
   }

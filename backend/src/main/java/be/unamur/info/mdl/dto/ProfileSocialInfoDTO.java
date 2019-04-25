@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "Model representing an user's profile social information")
@@ -23,11 +24,11 @@ public class ProfileSocialInfoDTO {
   private int numFollowers;
 
   @JsonAlias("facebook_url")
-  private String facebook;
+  private String facebookURL;
 
   @JsonAlias("twitter_url")
-  private String twitter;
+  private String twitterURL;
 
   @JsonAlias("linkedin_url")
-  private String linkedin;
+  private String linkedinURL;
 }
