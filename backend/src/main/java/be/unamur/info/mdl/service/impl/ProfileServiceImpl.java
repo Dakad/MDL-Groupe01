@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
+import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
@@ -43,6 +44,14 @@ public class ProfileServiceImpl implements ProfileService {
   public List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException{
     if (!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
     return userRepository.findByUsername(username).getFollowsDTO(page);
+  }
+
+  @Override
+  public boolean isFollowed(String username, String user) throws UsernameNotFoundException{
+    UserEntity currentUser = userRepository.findByUsername(user);
+    if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    UserEntity visitedUser = userRepository.findByUsername(username);
+    return currentUser.getFollows().contains(visitedUser);
   }
 
 
