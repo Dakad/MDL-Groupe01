@@ -70,7 +70,7 @@ public class ProfileServiceImpl implements ProfileService {
       .collect(Collectors.toMap(ArticleEntity::getReference, ArticleEntity::getTitle));
 
     Map<Long, String> sotas = stateOfTheArtRepository
-      .findDistinctByUser(user, pagination)
+      .findDistinctByCreator(user, pagination)
       .collect(Collectors.toMap(StateOfTheArtEntity::getId, StateOfTheArtEntity::getTitle));
 
     List<String> researchGroup = new ArrayList<>(2);
