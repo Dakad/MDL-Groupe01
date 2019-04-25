@@ -112,6 +112,7 @@ public class UserEntity {
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
   private List<UserEntity> followers;
 
+
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
