@@ -2,6 +2,7 @@ package be.unamur.info.mdl.ctrler;
 
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ProfileService;
@@ -15,13 +16,10 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import javax.validation.Valid;
-
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import javax.validation.constraints.NotBlank;
-import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,6 +75,16 @@ public class UserController extends APIBaseController {
     }
   }
 
+  @RequestMapping(path = "/{username}/profile/pro", method = RequestMethod.GET)
+  public ResponseEntity getProInfo(@PathVariable String username) {
+    try {
+      ProfileProInfoDTO dto = profileService.getProInfo(username);
+      return ResponseEntity.status(HttpStatus.OK).body(dto);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
+    }
+  }
+
 
   @ApiOperation(value = "Retrieve the social profile information", response = ResponseEntity.class)
   @ApiResponses(value = {
@@ -122,7 +130,7 @@ public class UserController extends APIBaseController {
   @RequestMapping(path = "/{username}/profile/follows", method = RequestMethod.GET)
   public ResponseEntity getFollows(@PathVariable String username,
     @ApiParam(value = "Pagination")
-    @RequestParam(defaultValue = "0", name ="page") int p) {
+    @RequestParam(defaultValue = "0", name = "page") int p) {
     try {
       List<UserDTO> userDTOS = profileService.getFollows(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
@@ -131,12 +139,13 @@ public class UserController extends APIBaseController {
     }
   }
 
-  @RequestMapping(path = "/{username}/profile/bookmarks",method = RequestMethod.GET)
-  public ResponseEntity getBookmarks(@PathVariable String username, @RequestParam(defaultValue = "0") int p){
-    try{
-      List<Pair<Long,String>> bookmarks = profileService.getBookmarks(username, p);
+  @RequestMapping(path = "/{username}/profile/bookmarks", method = RequestMethod.GET)
+  public ResponseEntity getBookmarks(@PathVariable String username,
+    @RequestParam(defaultValue = "0") int p) {
+    try {
+      List<Pair<Long, String>> bookmarks = profileService.getBookmarks(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
-    }catch (UsernameNotFoundException e){
+    } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
     }
   }
