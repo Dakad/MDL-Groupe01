@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> {
 
-  Page<ArticleEntity> findByUser(UserEntity user, Pageable p);
+  Page<ArticleEntity> findByCreator(UserEntity creator, Pageable p);
 }

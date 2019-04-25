@@ -126,7 +126,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
     Sort sort = Sort.by("createdAt").descending();
     Page<ArticleEntity> articles = bookmarkRepository
-      .findByUser(userRepository.findByUsername(username), PageRequest.of(page, 50, sort));
+      .findByCreator(userRepository.findByUsername(username), PageRequest.of(page, 50, sort));
+
     List<Pair<Long, String>> articlesInfo = new ArrayList<>();
     articles.forEach(a -> articlesInfo.add(a.toInfoDTO()));
     return articlesInfo;
