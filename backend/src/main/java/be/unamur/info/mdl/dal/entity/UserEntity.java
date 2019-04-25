@@ -64,7 +64,7 @@ public class UserEntity {
 
 
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = true)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "current_univerty_id")
   private UniversityEntity currentUniversity;
 
@@ -85,7 +85,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
