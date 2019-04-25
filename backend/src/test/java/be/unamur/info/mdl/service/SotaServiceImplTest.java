@@ -43,31 +43,34 @@ public class SotaServiceImplTest {
 
   public static StateOfTheArtEntity MOCK_SOTA_2;
 
-/*
+
 
   @BeforeClass
   public static void startup() throws IOException {
     ObjectMapper mapper= new ObjectMapper()
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    TypeReference<List<ArticleDTO>> articleTypeReference = new TypeReference<List<ArticleDTO>>() {
+    TypeReference<List<ArticleDTO>> sotaTypeReference = new TypeReference<List<ArticleDTO>>() {
     };
     InputStream inputStream = TypeReference.class
       .getResourceAsStream("/json/sotas.data.json");
-    List<ArticleDTO> articles = mapper.readValue(inputStream, articleTypeReference);
+    List<StateOfTheArtDTO> sotas = mapper.readValue(inputStream, sotaTypeReference);
 
-    ArticleDTO articleData = articles.get(0);
-    MOCK_SOTA_1 = ArticleEntity.of(articleData);
-    TagEntity category = TagEntity.builder().name(articleData.getCategory()).build();
+    StateOfTheArtDTO sotaData = sotas.get(0);
+    System.out.println(sotaData);
+
+    MOCK_SOTA_1 = StateOfTheArtEntity.of(sotaData);
+    // TagEntity category = TagEntity.builder().name(sotaData.getCategory()).build();
 
     MOCK_SOTA_1.setCreator(UserServiceImplTest.MOCK_USER_1);
-
-    articleData = articles.get(1);
-    MOCK_SOTA_2 = ArticleEntity.of(articleData);
-    category = TagEntity.builder().name(articleData.getCategory()).build();
+/*
+    sotaData = sotas.get(1);
+    MOCK_SOTA_2 = ArticleEntity.of(sotaData);
+    category = TagEntity.builder().name(sotaData.getCategory()).build();
     MOCK_SOTA_2.setCategory(category);
     MOCK_SOTA_2.setCategory(new TagEntity());
     MOCK_SOTA_2.setCreator(UserServiceImplTest.MOCK_USER_2);
+    */
   }
 
 
@@ -76,12 +79,13 @@ public class SotaServiceImplTest {
     MockitoAnnotations.initMocks(this);
 
     when(sotaRepository.findByReference("")).thenReturn(Optional.empty());
-    when(sotaRepository.findByReference("article123")).thenReturn(Optional.empty());
-    when(sotaRepository.findByReference("rebolj1999gis")).thenReturn(Optional.of(MOCK_SOTA_1));
+    when(sotaRepository.findByReference("azerty")).thenReturn(Optional.empty());
+    when(sotaRepository.findByReference("sota123")).thenReturn(Optional.of(MOCK_SOTA_1));
+    when(sotaRepository.findByReference("sota456")).thenReturn(Optional.of(MOCK_SOTA_1));
 
   }
 
-
+/*
   @Test(expected = IllegalArgumentException.class)
   public void when_getNullReference_then_throwsException() {
     sotaService.getSotaByReference(null);
