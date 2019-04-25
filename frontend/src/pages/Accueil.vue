@@ -27,20 +27,57 @@
         </carousel>
       </div>
     </div>-->
+    <div class="recommended">
+    <carousel :autoplayLoop="true" :autoplay="true" :autoplayTimeout="3000" :per-page="2">
+    <slide class="slide">
+      <h3>Titre</h3>
+      <h5>Auteur(s)</h5>
+      <h5>Domaine(s), date</h5><br>
+      <br>
+      <h6>Vues: ...     Citations: ...</h6><br>
+      <h7>Keywords</h7>
+    </slide>
+    <slide>
+      <h3>Titre</h3>
+      <h5>Auteur(s)</h5>
+      <h5>Domaine(s), date</h5><br>
+      <br>
+      <h6>Vues: ...     Citations: ...</h6><br>
+      <h7>Keywords</h7>
+    </slide>
+    <slide>
+      <h3>Titre</h3>
+      <h5>Auteur(s)</h5>
+      <h5>Domaine(s), date</h5><br>
+      <br>
+      <h6>Vues: ...     Citations: ...</h6><br>
+      <h7>Keywords</h7>
+    </slide>
+    <slide>
+      <h3>Titre</h3>
+      <h5>Auteur(s)</h5>
+      <h5>Domaine(s), date</h5><br>
+      <br>
+      <h6>Vues: ...     Citations: ...</h6><br>
+      <h7>Keywords</h7>
+    </slide>
+  </carousel>
+  </div>
   </section>
 </template>
 
 
 
 <script>
-//import { Carousel, Slide } from "vue-carousel";
+import { Carousel, Slide } from "vue-carousel";
+
 import Search from '@/components/navbar/Search';
 
 export default {
   name: "Accueil",
   components: {
-    //Carousel,
-    //Slide,
+    Carousel,
+    Slide,
     Search
   },
   data() {
@@ -61,11 +98,6 @@ export default {
   searchIt() {}
 };
 </script>
-
-
-
-
-
 
 <style scoped>
 img {
@@ -109,7 +141,7 @@ p {
   width: 20%;
 }
 
-/*.recommended {
+.recommended {
   margin: 0;
   position: absolute;
   top: 75%;
@@ -118,12 +150,11 @@ p {
   transform: translate(-50%, -50%);
   width: 75%;
   height: 40%;
-  border: 3px solid gray;
+  /*border: 3px solid gray;*/
   overflow: auto;
-  z-index: -1;
 }
 
-.switch-news {
+/*.switch-news {
   float: right;
   margin-right: 50px;
   position: absolute;
