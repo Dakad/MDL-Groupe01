@@ -68,6 +68,8 @@
     </svg>
   </div>
   <div class="legend">
+    <h5>legend</h5>
+    <p>Main domain of the article</p>
       <li v-for="item in legendMaker()">
         <p :style="{ color: item[1] }">{{item[0]}}</p>
       </li>
