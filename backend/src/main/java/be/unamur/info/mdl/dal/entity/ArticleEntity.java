@@ -200,8 +200,4 @@ public class ArticleEntity {
     return entity.build();
   }
 
-  public org.springframework.data.util.Pair<Long, String> toInfoDTO(){
-    return Pair.of(id, title);
-  }
-
 }

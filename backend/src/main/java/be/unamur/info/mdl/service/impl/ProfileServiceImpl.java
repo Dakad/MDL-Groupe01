@@ -7,6 +7,7 @@ import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.BookmarkRepository;
 import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service("profileService")
@@ -119,18 +119,19 @@ public class ProfileServiceImpl implements ProfileService {
   }
 
   @Override
-  public List<Pair<Long, String>> getBookmarks(String username, int page)
+  public Map<String, String> getBookmarks(String username, int page)
     throws UsernameNotFoundException {
     if (!userRepository.existsByUsername(username)) {
       throw new UsernameNotFoundException();
     }
-    Sort sort = Sort.by("createdAt").descending();
-    Page<ArticleEntity> articles = bookmarkRepository
-      .findByCreator(userRepository.findByUsername(username), PageRequest.of(page, 50, sort));
 
-    List<Pair<Long, String>> articlesInfo = new ArrayList<>();
-    articles.forEach(a -> articlesInfo.add(a.toInfoDTO()));
-    return articlesInfo;
+    Sort sort = Sort.by("createdAt").descending();
+    UserEntity creator = userRepository.findByUsername(username);
+    Page<ArticleEntity> articles = bookmarkRepository
+      .findByCreator(creator, PageRequest.of(page, 50, sort));
+
+    return articles.stream().map(a -> a.toDTO())
+      .collect(Collectors.toMap(ArticleDTO::getReference, ArticleDTO::getTitle));
   }
 
 }
