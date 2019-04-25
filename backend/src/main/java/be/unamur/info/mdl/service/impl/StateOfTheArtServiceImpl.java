@@ -72,7 +72,9 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     // Create a newDTO with the data sent (title, reference, ...)
     StateOfTheArtEntity newSota = StateOfTheArtEntity.of(sotaData);
 
-    newSota.setReference(this.generateReference(sotaData.getTitle()));
+    if(sotaData.getReference() == null || sotaData.getReference().isEmpty()){
+      newSota.setReference(this.generateReference(sotaData.getTitle()));
+    }
 
     UserEntity creator = userRepository.findByUsername(currentUser.getUsername());
     newSota.setCreator(creator);
