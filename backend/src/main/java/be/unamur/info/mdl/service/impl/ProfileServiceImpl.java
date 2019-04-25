@@ -130,7 +130,7 @@ public class ProfileServiceImpl implements ProfileService {
     Page<ArticleEntity> articles = bookmarkRepository
       .findByCreator(creator, PageRequest.of(page, 50, sort));
 
-    return articles.stream().map(a -> a.toDTO())
+    return articles.stream().map(a -> a.toBookmarkInfoDTO())
       .collect(Collectors.toMap(ArticleDTO::getReference, ArticleDTO::getTitle));
   }
 
