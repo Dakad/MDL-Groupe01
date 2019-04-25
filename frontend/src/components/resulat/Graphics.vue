@@ -25,6 +25,7 @@
         :cy="coords[i].y"
         :r="40"
         :fill="choseColor(i)"
+        :opacity="choseOpacity(i)"
         stroke="black"
         stroke-width="1"
         @mousedown="currentMove = {x: $event.screenX, y: $event.screenY, node: node}"
@@ -187,16 +188,30 @@ export default {
 
     choseColor(j){
       let arrayDom = [];
-      console.log(this.graph.nodes.length)
       for (let i=0; i < this.graph.nodes.length; i++){
 
         if (!(arrayDom.includes(this.graph.nodes[i].domain))) {
           arrayDom.push(this.graph.nodes[i].domain)
         }
       }
-      console.log("gsdgsgs");
       let colorNumber = arrayDom.indexOf(this.graph.nodes[j].domain);
       return this.colors[colorNumber]
+    },
+
+    choseOpacity(j){
+      let arrayYear = []
+      for (let i=0; i < this.graph.nodes.length; i++){
+        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
+          arrayYear.push(this.graph.nodes[i].year)
+        }
+      }
+      arrayYear.sort();
+      console.log(arrayYear)
+      let delta = arrayYear[arrayYear.length-1] - arrayYear[0]
+      console.log(arrayYear[arrayYear.length-1]);
+      let opacityVar = (( (arrayYear[arrayYear.length-1]) - this.graph.nodes[j].year) / delta)
+      console.log(opacityVar);
+      return opacityVar
     }
 
   }
