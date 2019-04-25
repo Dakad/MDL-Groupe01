@@ -10,6 +10,7 @@ import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import java.util.Collections;
+import javax.jws.soap.SOAPBinding;
 import javax.validation.Valid;
 
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
@@ -101,14 +102,26 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean follow(String username, String follower) throws UsernameNotFoundException {
     if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
-    UserEntity userfollower = userRepository.findByUsername(follower);
-    UserEntity userfollowed = userRepository.findByUsername(username);
-    if(!userfollower.getFollows().contains(userfollowed)) {
-      userfollower.getFollows().add(userfollowed);
-      userRepository.save(userfollower);
+    UserEntity userFollower = userRepository.findByUsername(follower);
+    UserEntity userFollowed = userRepository.findByUsername(username);
+    if(!userFollower.getFollows().contains(userFollowed)) {
+      userFollower.getFollows().add(userFollowed);
+      userRepository.save(userFollower);
       return true;
     }
     return false;
   }
 
+  @Override
+  public boolean unfollow(String username, String follower) throws UsernameNotFoundException {
+    if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
+    UserEntity userFollower = userRepository.findByUsername(follower);
+    UserEntity userFollowed = userRepository.findByUsername(username);
+    if(userFollower.getFollows().contains(userFollowed)) {
+      userFollower.getFollows().remove(userFollowed);
+      userRepository.save(userFollowed);
+      return true;
+    }
+    return false;
+  }
 }
