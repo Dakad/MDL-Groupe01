@@ -14,7 +14,7 @@ public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEnti
   Stream<StateOfTheArtEntity> findDistinctByTitleContainingIgnoreCase(String title,
     Pageable pageable);
 
-  Stream<StateOfTheArtEntity> findDistinctByUser(UserEntity user, Pageable pageable);
+  Stream<StateOfTheArtEntity> findDistinctByCreator(UserEntity user, Pageable pageable);
 
   Optional<StateOfTheArtEntity> findByReference(String reference);
 
