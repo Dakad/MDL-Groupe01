@@ -64,7 +64,8 @@ public class UserEntity {
   private String domain;
 
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "current_univerty_id")
   private UniversityEntity currentUniversity;
 
@@ -84,7 +85,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
@@ -110,6 +111,7 @@ public class UserEntity {
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
   private List<UserEntity> followers;
+
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,

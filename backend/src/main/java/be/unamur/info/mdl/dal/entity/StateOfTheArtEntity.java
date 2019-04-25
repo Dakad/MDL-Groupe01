@@ -1,9 +1,11 @@
 package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.StateOfTheArtDTO.StateOfTheArtDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,15 +19,16 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name = "state_of_the_art")
 public class StateOfTheArtEntity {
 
@@ -33,48 +36,72 @@ public class StateOfTheArtEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(unique = true, nullable = false)
-  private String name;
+  @Column(name = "title", unique = true, nullable = false)
+  private String title;
 
-  @Column(nullable = false)
-  private String subject;
+  @Column(name = "reference", unique = true, nullable = false)
+  private String reference;
 
-  @Column(nullable = false)
-  @PastOrPresent
-  private LocalDate date;
+  @Column(name = "description")
+  private String description;
 
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
 
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", unique = true)
-  private UserEntity user;
+  @JoinColumn(name = "user_id")
+  private UserEntity creator;
 
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE
   })
-  @JoinTable(name = "article_in_state",
-    joinColumns = @JoinColumn(name = "state_of_the_art_id"),
+  @JoinTable(name = "state_of_the_art_articles",
+    joinColumns = @JoinColumn(name = "sota_id"),
     inverseJoinColumns = @JoinColumn(name = "article_id")
   )
-  private Set<ArticleEntity> articles;
+  @Builder.Default
+  private List<ArticleEntity> articles = new LinkedList<>();
 
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
-  @JoinTable(name = "tag_states_of_theart",
-    joinColumns = {@JoinColumn(name = "state_of_the_art_id")},
+  @JoinTable(name = "state_of_the_art_tags",
+    joinColumns = {@JoinColumn(name = "sota_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags;
+  @Builder.Default
+  private List<TagEntity> keywords = new LinkedList<>();
+
+
+
+  public static StateOfTheArtEntity of(StateOfTheArtDTO data) {
+    List<TagEntity> listOfTags = data.getKeywords().stream().map(t -> TagEntity.of(t)).collect(
+      Collectors.toList());
+    List<ArticleEntity> listOfArticles = data.getArticles().stream().map(a -> ArticleEntity.of(a))
+      .collect(Collectors.toList());
+
+    StateOfTheArtEntityBuilder entity = StateOfTheArtEntity.builder();
+    entity.id(data.getId()).reference(data.getReference());
+    entity.title(data.getTitle()).description(data.getDescription());
+    entity.createdAt(data.getCreatedAt());
+    entity.keywords(listOfTags).articles(listOfArticles);
+
+    return entity.build();
+  }
 
 
   public StateOfTheArtDTO toDTO() {
-    Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
-    return new StateOfTheArtDTO(id, name, subject, date, user.toDTO(), listOfTags);
+    List<TagDTO> listOfTags = keywords.stream().map(t -> t.toDTO()).collect(Collectors.toList());
+
+    StateOfTheArtDTOBuilder dto = StateOfTheArtDTO.builder();
+    dto.id(id).title(title).reference(reference).description(description);
+    dto.createdAt(createdAt).creator(creator.toDTO());
+    dto.keywords(listOfTags);
+
+    return dto.build();
   }
 
 }
