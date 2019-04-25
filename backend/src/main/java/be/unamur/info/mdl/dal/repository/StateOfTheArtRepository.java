@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEntity, Long> {
 
-  Stream<StateOfTheArtEntity> findDistinctByNameContainingIgnoreCase(String title,
+  Stream<StateOfTheArtEntity> findDistinctByTitleContainingIgnoreCase(String title,
     Pageable pageable);
 
   Optional<StateOfTheArtEntity> findByReference(String reference);
 
+  boolean existsByReference(String reference);
 }
