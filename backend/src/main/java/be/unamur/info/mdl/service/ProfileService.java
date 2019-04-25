@@ -27,4 +27,6 @@ public interface ProfileService{
   List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException;
 
   List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException;
+
+  boolean isFollowed(String username, String user) throws UsernameNotFoundException;
 }
