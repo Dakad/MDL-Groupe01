@@ -2,10 +2,12 @@ package be.unamur.info.mdl.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.swagger.annotations.ApiModel;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,27 +24,31 @@ public class StateOfTheArtDTO {
   @JsonIgnoreProperties
   private Long id;
 
-  @NotBlank(message = "The name is required")
-  private String name;
+  @NotBlank(message = "The title is required")
+  private String title;
 
-  @NotBlank(message = "The reference is required")
   private String reference;
 
-  @NotBlank(message = "The subject is required")
-  private String subject;
+  private String description;
 
 
-  private LocalDate date;
-
-
-  @JsonAlias("creatd_at")
+  @JsonAlias("created_at")
   private LocalDate createdAt;
 
 
   private UserDTO creator;
 
+  @JsonProperty(value = "keywords", access = Access.WRITE_ONLY)
+  private List<@NotBlank(message = "The keywords(s) must be defined") String> keywordList = new LinkedList<>();
 
-  private List<TagDTO> tags;
+  @JsonProperty(value = "keywords", access = Access.READ_ONLY)
+  private List<TagDTO> keywords = new LinkedList<>();
 
+
+  @JsonProperty(value = "articles", access = Access.WRITE_ONLY)
+  private List<@NotBlank(message = "The article reference(s) must be defined") String> articleList = new LinkedList<>();
+
+  @JsonProperty(value = "articles", access = Access.READ_ONLY)
+  private List<ArticleDTO> articles = new LinkedList<>();
 
 }
