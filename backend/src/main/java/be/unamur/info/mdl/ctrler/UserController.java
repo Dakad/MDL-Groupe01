@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,16 +75,15 @@ public class UserController extends APIBaseController {
     }
   }
 
-  @RequestMapping(path="/{username}/profile/pro", method = RequestMethod.GET)
-  public ResponseEntity getProInfo(@PathVariable String username){
-    try{
+  @RequestMapping(path = "/{username}/profile/pro", method = RequestMethod.GET)
+  public ResponseEntity getProInfo(@PathVariable String username) {
+    try {
       ProfileProInfoDTO dto = profileService.getProInfo(username);
       return ResponseEntity.status(HttpStatus.OK).body(dto);
-    }catch(UsernameNotFoundException e){
+    } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found");
     }
   }
-
 
 
   @ApiOperation(value = "Retrieve the social profile information", response = ResponseEntity.class)
@@ -130,10 +130,21 @@ public class UserController extends APIBaseController {
   @RequestMapping(path = "/{username}/profile/follows", method = RequestMethod.GET)
   public ResponseEntity getFollows(@PathVariable String username,
     @ApiParam(value = "Pagination")
-    @RequestParam(defaultValue = "0", name ="page") int p) {
+    @RequestParam(defaultValue = "0", name = "page") int p) {
     try {
       List<UserDTO> userDTOS = profileService.getFollows(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(userDTOS);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+  @RequestMapping(path = "/{username}/profile/bookmarks", method = RequestMethod.GET)
+  public ResponseEntity getBookmarks(@PathVariable String username,
+    @RequestParam(defaultValue = "0") int p) {
+    try {
+      Map<String, String> bookmarks = profileService.getBookmarks(username, p);
+      return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
     } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
     }

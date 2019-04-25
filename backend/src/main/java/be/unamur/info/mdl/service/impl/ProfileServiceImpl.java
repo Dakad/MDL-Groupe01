@@ -4,8 +4,10 @@ import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
+import be.unamur.info.mdl.dal.repository.BookmarkRepository;
 import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,13 +32,16 @@ public class ProfileServiceImpl implements ProfileService {
   private UserRepository userRepository;
   private ArticleRepository articleRepository;
   private StateOfTheArtRepository stateOfTheArtRepository;
+  private BookmarkRepository bookmarkRepository;
 
   @Autowired
   public ProfileServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-    StateOfTheArtRepository stateOfTheArtRepository) {
+    StateOfTheArtRepository stateOfTheArtRepository, BookmarkRepository bookmarkRepository) {
     this.userRepository = userRepository;
     this.articleRepository = articleRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
+    this.bookmarkRepository = bookmarkRepository;
+
   }
 
   @Override
@@ -61,7 +67,7 @@ public class ProfileServiceImpl implements ProfileService {
       bound = user.getUniversities().size();
     }
 
-    List<UniversityInfoDTO> universities = new ArrayList();
+    List<UniversityInfoDTO> universities = new ArrayList<>();
     user.getUniversities().subList(0, bound)
       .forEach(u -> universities.add(u.getUniversity().toInfoDTO()));
 
@@ -112,5 +118,20 @@ public class ProfileServiceImpl implements ProfileService {
     return userRepository.findByUsername(username).getFollowsDTO(page);
   }
 
+  @Override
+  public Map<String, String> getBookmarks(String username, int page)
+    throws UsernameNotFoundException {
+    if (!userRepository.existsByUsername(username)) {
+      throw new UsernameNotFoundException();
+    }
+
+    Sort sort = Sort.by("createdAt").descending();
+    UserEntity creator = userRepository.findByUsername(username);
+    Page<ArticleEntity> articles = bookmarkRepository
+      .findByCreator(creator, PageRequest.of(page, 50, sort));
+
+    return articles.stream().map(a -> a.toBookmarkInfoDTO())
+      .collect(Collectors.toMap(ArticleDTO::getReference, ArticleDTO::getTitle));
+  }
 
 }
