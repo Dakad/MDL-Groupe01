@@ -59,7 +59,7 @@ public class ArticleServiceImplTest {
 
   @BeforeClass
   public static void startup() throws IOException {
-    ObjectMapper mapper= new ObjectMapper()
+    ObjectMapper mapper = new ObjectMapper()
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     TypeReference<List<ArticleDTO>> articleTypeReference = new TypeReference<List<ArticleDTO>>() {
@@ -89,7 +89,8 @@ public class ArticleServiceImplTest {
 
     when(articleRepository.findByReference("")).thenReturn(Optional.empty());
     when(articleRepository.findByReference("article123")).thenReturn(Optional.empty());
-    when(articleRepository.findByReference("rebolj1999gis")).thenReturn(Optional.of(MOCK_ARTICLE_1));
+    when(articleRepository.findByReference("rebolj1999gis"))
+      .thenReturn(Optional.of(MOCK_ARTICLE_1));
 
   }
 
@@ -115,7 +116,8 @@ public class ArticleServiceImplTest {
     ArticleDTO article = articleService.getArticleByReference("rebolj1999gis");
 
     Assert.assertNotNull("The article should not be null", article);
-    Assert.assertSame("The reference should match", article.getReference(), MOCK_ARTICLE_1.getReference());
+    Assert.assertSame("The reference should match", article.getReference(),
+      MOCK_ARTICLE_1.getReference());
   }
 
 
