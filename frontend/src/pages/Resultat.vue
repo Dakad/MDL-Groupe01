@@ -195,7 +195,6 @@ export default {
           commonArticle.push(commonKeyword);
           if (commonArticle.length > 1) {
             this.relatedArticles.push(commonArticle);
-            console.log(this.relatedArticles);
           }
         }
       }
