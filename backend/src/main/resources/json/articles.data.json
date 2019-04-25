@@ -309,10 +309,9 @@
   },
   {
     "title": "The Sweet Smell of Success Pooper-Scooper Cam",
-    "editor": "Dan Selakovich",
     "booktitle": "Killer Camera Rigs That You Can Build (Third Edition)",
     "publisher": "Focal Press",
-    "edition": "Third Edition",
+    "volume": "Third Edition",
     "address": "Boston",
     "pages": "158 - 167",
     "year": 2010,
@@ -623,7 +622,7 @@
     ],
     "content": "Artificial intelligence (AI) and data science are rapidly developing in healthcare, as is their translation into laboratory medicine. Our review article presents an overview of the data science domain while discussing the reasons for its emergence. We also present several perspectives of its applications in clinical laboratories, along with potential ethical challenges related to AI and data science.",
     "reference": "GRUSON2019",
-    "category": "Computer science",
+    "category": "I.A.",
     "authors": [
       "Damien Gruson",
       "Thibault Helleputte",
@@ -686,8 +685,7 @@
   },
   {
     "title": "Appendix A A Guide for Newcomers to Agent-Based Modeling in the Social Sciences",
-    "editor": "L. Tesfatsion and K.L. Judd",
-    "series": "Handbook of Computational Economics",
+    "booktitle": "Handbook of Computational Economics",
     "publisher": "Elsevier",
     "volume": "2",
     "pages": "1647 - 1659",
@@ -718,8 +716,6 @@
   },
   {
     "title": "Course 2 Modern coding theory: The statistical mechanics and computer science point of view",
-    "editor": "Jean-Philippe Bouchaud and Marc Mézard and Jean Dalibard",
-    "series": "Les Houches",
     "publisher": "Elsevier",
     "volume": "85",
     "pages": "67 - 130",
@@ -1082,7 +1078,7 @@
     "issn": "1389-1286",
     "doi": "https://doi.org/10.1016/j.comnet.2019.03.008",
     "url": "http://www.sciencedirect.com/science/article/pii/S1389128618302603",
-    "author": "Yingya Guo, Zhiliang Wang, Zhifeng Liu, Xia Yin, Xingang Shi, Jianping Wu, Yang Xu, H. Jonathan Chao",
+    "author": "YGligoricingya Guo, Zhiliang Wang, Zhifeng Liu, Xia Yin, Xingang Shi, Jianping Wu, Yang Xu, H. Jonathan Chao",
     "keywords": [
       "Hybrid SDN",
       "Maximum link utilization",
@@ -1102,6 +1098,208 @@
       "Jianping Wu",
       "Yang Xu",
       "H. Jonathan Chao"
+    ]
+  },
+  {
+    "author": "Kuhrmann, Marco, O'Connor, Rory V., Houston, Dan, Hebig, Regina, Raffo, David",
+    "title": "Summary of the International Conference on Software and System Processes (ICSSP 2018)",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "October 2018",
+    "volume": "43",
+    "number": "4",
+    "month": "jan",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "54--54",
+    "numpages": "1",
+    "url": "http://doi.acm.org/10.1145/3282517.3282534",
+    "doi": "10.1145/3282517.3282534",
+    "acmid": "3302415",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "keywords": [
+      "agile methods",
+      "continuous development",
+      "data science",
+      "deployment",
+      "hybrid systems development",
+      "product quality",
+      "project management"
+    ],
+    "content": "Summary of the International Conference on Software and System Processes (ICSSP 2018)",
+    "reference": "Kuhrmann:2019:SIC:3282517.3302415",
+    "category": "Computer science",
+    "authors": [
+      "Kuhrmann",
+      "Marco",
+      "O'Connor",
+      "Rory V.",
+      "Houston",
+      "Dan",
+      "Hebig",
+      "Regina",
+      "Raffo",
+      "David"
+    ]
+  },
+  {
+    "author": "Neumann, Peter G.",
+    "title": "Risks to the Public",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "January 2019",
+    "volume": "44",
+    "number": "1",
+    "month": "mar",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "11--17",
+    "numpages": "7",
+    "url": "http://doi.acm.org/10.1145/3310013.3310021",
+    "doi": "10.1145/3310013.3310021",
+    "acmid": "3322174",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "content": "Risks to the Public",
+    "keywords": [
+      ""
+    ],
+    "reference": "Neumann:2019:RP:3310013.3322174",
+    "category": "Computer science",
+    "authors": [
+      "Neumann",
+      "Peter G."
+    ]
+  },
+  {
+    "author": "Bultan, Tevfik",
+    "title": "Side-Channel Analysis via Symbolic Execution and Model Counting",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "October 2018",
+    "volume": "43",
+    "number": "4",
+    "month": "jan",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "55--55",
+    "numpages": "1",
+    "url": "http://doi.acm.org/10.1145/3282517.3302416",
+    "doi": "10.1145/3282517.3302416",
+    "acmid": "3302416",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "content": "Side-Channel Analysis via Symbolic Execution and Model Counting",
+    "keywords": [
+      ""
+    ],
+    "reference": "Bultan:2019:SAV:3282517.3302416",
+    "category": "Computer science",
+    "authors": [
+      "Bultan",
+      "Tevfik"
+    ]
+  },
+  {
+    "author": "Saha, Seemanta, Kadron, Ismet Burak, Eiers, William, Bang, Lucas, Bultan, Tevfik",
+    "title": "Attack Synthesis for Strings Using Meta-Heuristics",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "October 2018",
+    "volume": "43",
+    "number": "4",
+    "month": "jan",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "56--56",
+    "numpages": "1",
+    "url": "http://doi.acm.org/10.1145/3282517.3282527",
+    "doi": "10.1145/3282517.3282527",
+    "acmid": "3302422",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "content": "Attack Synthesis for Strings Using Meta-Heuristics",
+    "keywords": [
+      ""
+    ],
+    "reference": "Saha:2019:ASS:3282517.3302422",
+    "category": "Computer science",
+    "authors": [
+      "Saha",
+      "Seemanta",
+      "Kadron",
+      "Ismet Burak",
+      "Eiers",
+      "William",
+      "Bang",
+      "Lucas",
+      "Bultan",
+      "Tevfik"
+    ]
+  },
+  {
+    "author": "Mascardi, Viviana, Weyns, Danny, Ricci, Alessandro",
+    "title": "Engineering Multi-Agent Systems: State of Affairs and the Road Ahead",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "January 2019",
+    "volume": "44",
+    "number": "1",
+    "month": "mar",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "35--35",
+    "numpages": "1",
+    "url": "http://doi.acm.org/10.1145/3310013.3310035",
+    "doi": "10.1145/3310013.3310035",
+    "acmid": "3322181",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "content": "Engineering Multi-Agent Systems: State of Affairs and the Road Ahead",
+    "keywords": [
+      ""
+    ],
+    "reference": "Mascardi:2019:EMS:3310013.3322181",
+    "category": "Computer science",
+    "authors": [
+      "Mascardi",
+      "Viviana",
+      "Weyns",
+      "Danny",
+      "Ricci",
+      "Alessandro"
+    ]
+  },
+  {
+    "author": "Wang, Kaiyuan, Converse, Hayes, Gligoric, Milos, Misailovic, Sasa, Khurshid, Sarfraz",
+    "title": "A Progress Bar for the JPF Search Using Program Executions",
+    "journal": "SIGSOFT Softw. Eng. Notes",
+    "issue_date": "October 2018",
+    "volume": "43",
+    "number": "4",
+    "month": "jan",
+    "year": 2019,
+    "issn": "0163-5948",
+    "pages": "55--55",
+    "numpages": "1",
+    "url": "http://doi.acm.org/10.1145/3282517.3282525",
+    "doi": "10.1145/3282517.3282525",
+    "acmid": "3302419",
+    "publisher": "ACM",
+    "address": "New York, NY, USA",
+    "content": "A Progress Bar for the JPF Search Using Program Executions",
+    "keywords": [
+      ""
+    ],
+    "reference": "Wang:2019:PBJ:3282517.3302419",
+    "category": "Computer science",
+    "authors": [
+      "Wang",
+      "Kaiyuan",
+      "Converse",
+      "Hayes",
+      "Gligoric",
+      "Milos",
+      "Misailovic",
+      "Sasa",
+      "Khurshid",
+      "Sarfraz"
     ]
   }
 ]
