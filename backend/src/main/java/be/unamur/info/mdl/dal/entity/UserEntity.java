@@ -48,7 +48,7 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @Column(name = "email")
+  @Column(name = "email", unique = true)
   private String email;
 
   @Column(name = "first_name")
@@ -65,7 +65,7 @@ public class UserEntity {
 
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "current_univerty_id")
+  @JoinColumn(name = "current_university_id")
   private UniversityEntity currentUniversity;
 
 
@@ -92,7 +92,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
