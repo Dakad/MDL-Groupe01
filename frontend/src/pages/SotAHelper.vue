@@ -3,7 +3,7 @@
       <div class="title"><h2>State of the Art Helper</h2></div>
 
       <div class="tabs">
-        <md-tabs md-alignment="fixed" :md-active-tab="activeTab" @md-changed="activeTab = $event">
+        <md-tabs md-alignment="fixed">
           <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
 
           </md-tab>
