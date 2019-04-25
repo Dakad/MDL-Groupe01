@@ -25,10 +25,6 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
   @Override
   public StateOfTheArtDTO getSotaByReference(String reference) throws SotatNotFoundException {
-    if (reference == null) {
-      throw new IllegalArgumentException("The reference must be defined");
-    }
-
     Optional<StateOfTheArtEntity> dbSota = this.sotaRepository.findByReference(reference);
     if (!dbSota.isPresent()) {
       throw new SotatNotFoundException("The referenced article was not found");
