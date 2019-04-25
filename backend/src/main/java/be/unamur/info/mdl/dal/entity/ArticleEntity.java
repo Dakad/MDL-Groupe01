@@ -27,7 +27,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.util.Pair;
 
 @Entity
 @Data
@@ -181,6 +180,11 @@ public class ArticleEntity {
   }
 
 
+  public ArticleDTO toBookmarkInfoDTO(){
+    return ArticleDTO.builder().reference(this.reference).title(this.title).build();
+  }
+
+
   public static ArticleEntity of(ArticleDTO dto) {
     ArticleEntityBuilder entity = ArticleEntity.builder();
 
@@ -198,6 +202,5 @@ public class ArticleEntity {
 
     return entity.build();
   }
-
 
 }

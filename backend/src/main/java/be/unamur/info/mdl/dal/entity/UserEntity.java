@@ -48,7 +48,7 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @Column(name = "email")
+  @Column(name = "email", unique = true)
   private String email;
 
   @Column(name = "first_name")
@@ -64,9 +64,8 @@ public class UserEntity {
   private String domain;
 
 
-
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "current_univerty_id")
+  @JoinColumn(name = "current_university_id")
   private UniversityEntity currentUniversity;
 
 
@@ -93,7 +92,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
@@ -176,7 +175,8 @@ public class UserEntity {
 
     if (this.userProfile != null) {
       dto.bio(userProfile.getDescription());
-      dto.facebookURL(this.userProfile.getFacebookURL()).linkedinURL(this.userProfile.getLinkedInURL())
+      dto.facebookURL(this.userProfile.getFacebookURL())
+        .linkedinURL(this.userProfile.getLinkedInURL())
         .twitterURL(this.userProfile.getTwitterURL());
     }
     return dto.build();
@@ -195,14 +195,14 @@ public class UserEntity {
   private List<UserDTO> getFollowers(int page, List<UserEntity> followers) {
     int leftBound = page * 20;
     if (followers.size() <= leftBound) {
-      return new ArrayList();
+      return new ArrayList<>();
     }
     int rightBound = (page * 20) + 20;
     if (followers.size() <= rightBound) {
       rightBound = followers.size();
     }
     List<UserEntity> subList = followers.subList(leftBound, rightBound);
-    List<UserDTO> dtoList = new ArrayList(subList.size());
+    List<UserDTO> dtoList = new ArrayList<>(subList.size());
     subList.forEach(e -> dtoList.add(e.toDTO()));
     return dtoList;
   }
