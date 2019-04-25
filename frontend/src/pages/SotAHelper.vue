@@ -14,7 +14,7 @@
 
           </md-tab>
           <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="view_module">
-
+            <create-sot-a></create-sot-a>
           </md-tab>
         </md-tabs>
       </div>
@@ -22,8 +22,10 @@
 </template>
 
 <script>
+    import CreateSotA from "../components/sotaHelper/CreateSotA";
     export default {
-        name: "SotAHelper"
+        name: "SotAHelper",
+      components: {CreateSotA}
     }
 </script>
 
