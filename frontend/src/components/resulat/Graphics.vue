@@ -162,7 +162,10 @@ export default {
           index: i,
           x: null,
           y: null,
-          name: this.articlesTitles[i]
+          name: this.articlesTitles[i][0],
+          domain: this.articlesTitles[i][3],
+          ref: this.articlesTitles[i][2],
+          year: this.articlesTitles[i][4]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
           source: this.linkedArticles[i][0],

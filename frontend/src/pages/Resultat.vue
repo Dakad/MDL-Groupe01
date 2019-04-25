@@ -150,7 +150,12 @@ export default {
 
           this.articlesTags = res["articles"].reduce((acc, article) => {
             // As the same time, push the article title
-            this.articlesTitles.push(article.title);
+            let infoTab = [];
+            infoTab.push(article.title);
+            infoTab.push(article.reference);
+            infoTab.push(article.category);
+            infoTab.push(article.year);
+            this.articlesTitles.push(infoTab);
             article.keywords.forEach(({ name, slug }) => {
               const nb = acc[slug] ? acc[slug]["occur"] : 0;
               acc[slug] = { name, occur: nb + 1 };
