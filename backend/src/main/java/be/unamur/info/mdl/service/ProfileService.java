@@ -5,9 +5,8 @@ import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
-import java.util.Map;
-import org.springframework.data.util.Pair;
 import java.util.List;
+import java.util.Map;
 
 public interface ProfileService {
 
