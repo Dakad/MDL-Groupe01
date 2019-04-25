@@ -1,8 +1,10 @@
 package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.StateOfTheArtDTO.StateOfTheArtDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
@@ -36,6 +38,9 @@ public class StateOfTheArtEntity {
   @Column(unique = true, nullable = false)
   private String name;
 
+  @Column(unique = true, nullable = false)
+  private String reference;
+
   @Column(nullable = false)
   private String subject;
 
@@ -49,32 +54,37 @@ public class StateOfTheArtEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", unique = true)
-  private UserEntity user;
+  private UserEntity creator;
 
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE
   })
-  @JoinTable(name = "article_in_state",
-    joinColumns = @JoinColumn(name = "state_of_the_art_id"),
+  @JoinTable(name = "state_of_the_art_articles",
+    joinColumns = @JoinColumn(name = "sota_id"),
     inverseJoinColumns = @JoinColumn(name = "article_id")
   )
-  private Set<ArticleEntity> articles;
+  private List<ArticleEntity> articles;
 
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
-  @JoinTable(name = "tag_states_of_theart",
-    joinColumns = {@JoinColumn(name = "state_of_the_art_id")},
+  @JoinTable(name = "state_of_the_art_tags",
+    joinColumns = {@JoinColumn(name = "sota_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags;
-
+  private List<TagEntity> tags;
 
 
   public StateOfTheArtDTO toDTO() {
-    Set<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toSet());
-    return new StateOfTheArtDTO(id, name, subject, date, user.toDTO(), listOfTags);
+    List<TagDTO> listOfTags = tags.stream().map(t -> t.toDTO()).collect(Collectors.toList());
+
+    StateOfTheArtDTOBuilder dto = StateOfTheArtDTO.builder();
+    dto.id(id).name(name).reference(reference).subject(subject).date(date);
+    dto.createdAt(createdAt).creator(creator.toDTO());
+    dto.tags(listOfTags);
+
+    return dto.build();
   }
 }
