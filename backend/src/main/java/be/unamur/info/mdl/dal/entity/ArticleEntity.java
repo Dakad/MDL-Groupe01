@@ -27,6 +27,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.util.Pair;
 
 @Entity
 @Data
@@ -197,5 +198,6 @@ public class ArticleEntity {
 
     return entity.build();
   }
+
 
 }
