@@ -210,7 +210,7 @@ export default {
     clicked(node) {
       this.$router.push({
         name: "articleDetails",
-        params: { reference: node.reference }
+        params: { reference: node.ref }
       });
     },
 
@@ -300,6 +300,21 @@ export default {
 .legend {
   float: left;
   width: 20%;
+}
+
+.node-container,
+.node-label,
+.link-line,
+.link-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node-container:hover,
+.node-label:hover {
+  cursor: pointer;
 }
 
 p {
