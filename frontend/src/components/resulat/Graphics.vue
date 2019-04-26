@@ -1,82 +1,85 @@
 <template>
   <div class="container">
-  <div class="graphics">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      v-if="bounds.minX"
-      :width="width+'px'"
-      :height="height+'px'"
-    >
-      <line
-        v-for="(link,i) in graph.links"
-        :key="'link_'+i"
-        :x1="coords[link.source.index].x"
-        :y1="coords[link.source.index].y"
-        :x2="coords[link.target.index].x"
-        :y2="coords[link.target.index].y"
-        stroke="black"
-        stroke-width="2"
-      ></line>
+    <div class="graphics">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        v-if="bounds.minX"
+        :width="width+'px'"
+        :height="height+'px'"
+      >
+        <line
+          v-for="(link,i) in graph.links"
+          :key="'link_'+i"
+          :x1="coords[link.source.index].x"
+          :y1="coords[link.source.index].y"
+          :x2="coords[link.target.index].x"
+          :y2="coords[link.target.index].y"
+          stroke="black"
+          stroke-width="2"
+        ></line>
 
-      <circle
-        v-for="(node, i) in graph.nodes"
-        :key="'node_'+i"
-        :cx="coords[i].x"
-        :cy="coords[i].y"
-        :r="45"
-        :fill="choseColor(i)"
-        :opacity="choseOpacity(i)"
-        stroke="black"
-        stroke-width="1"
-        @mouseover="showInfo(node, i)"
-        @click="clicked(i)"
-      ></circle>
+        <circle
+          v-for="(node, i) in graph.nodes"
+          :key="'node_'+i"
+          :cx="coords[i].x"
+          :cy="coords[i].y"
+          :r="45"
+          :fill="choseColor(node.domain)"
+          :opacity="choseOpacity(i)"
+          stroke="black"
+          stroke-width="1"
+          @mouseover="showInfo(node, i)"
+          @click="clicked(node)"
+        ></circle>
 
-      <text
-        v-for="(node, i) in graph.nodes"
-        :key="'text_1_'+i"
-        :x="coords[i].x"
-        :y="coords[i].y"
-        text-anchor="middle"
-        class="labelNode"
-        stroke-width="1"
-        color="black"
-        @click="clicked(i)"
-      >{{node.name.substring(0,11)}}</text>
+        <text
+          v-for="(node, i) in graph.nodes"
+          :key="'text_1_'+i"
+          :x="coords[i].x"
+          :y="coords[i].y"
+          text-anchor="middle"
+          class="labelNode"
+          stroke-width="1"
+          color="black"
+          @click="clicked(node)"
+        >{{node.name.substring(0,11)}}</text>
 
-      <text
-        v-for="(node, i) in graph.nodes"
-        :key="'text_2_'+i"
-        :x="coords[i].x"
-        :y="coords[i].y + 15"
-        text-anchor="middle"
-        class="labelNode"
-        stroke-width="1"
-        color="black"
-      >{{node.name.substring(12,22) + "..."}}</text>
+        <text
+          v-for="(node, i) in graph.nodes"
+          :key="'text_2_'+i"
+          :x="coords[i].x"
+          :y="coords[i].y + 15"
+          text-anchor="middle"
+          class="labelNode"
+          stroke-width="1"
+          color="black"
+        >{{node.name.substring(12,22) + "..."}}</text>
 
-      <text
-        v-for="(link,i) in graph.links"
-        :key="'text_3_'+i"
-        :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-        :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-        text-anchor="middle"
-        class="labelLink"
-        color="black"
-      >{{link.tag}}</text>
-
-    </svg>
-  </div>
-  <div class="legend">
-    <h5>legend</h5>
-    <p>Main domain of the article</p>
-      <li v-for="item in legendMaker()">
-        <p :style="{ color: item[1] }">{{item[0]}}</p>
+        <text
+          v-for="(link,i) in graph.links"
+          :key="'text_3_'+i"
+          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+          text-anchor="middle"
+          class="labelLink"
+          color="black"
+        >{{link.tag}}</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <h5>legend</h5>
+      <p>Main domain of the article</p>
+      <li v-for="(item, i) in legendMaker" :key="i">
+        <p :style="{ color: item['color'] }">{{item['domain']}}</p>
       </li>
 
-    <h5>Opacity: </h5>
-    <p>From {{lowestYear()}} at 40% <br /> to {{highestYear()}} at 100%</p>
-  </div>
+      <h5>Opacity:</h5>
+      <p>
+        From {{lowestYear}} at 40%
+        <br>
+        to {{highestYear}} at 100%
+      </p>
+    </div>
   </div>
 </template>
 
@@ -160,6 +163,33 @@ export default {
               (this.bounds.maxY - this.bounds.minY)
         };
       });
+    },
+
+    lowestYear() {
+      return this.graph.nodes
+        .map(n => n.year)
+        .sort()
+        .slice(0, 1);
+    },
+
+    highestYear() {
+      return this.graph.nodes
+        .map(n => n.year)
+        .sort()
+        .slice(-1);
+    },
+
+    legendMaker() {
+      const domains = new Set(this.graph.nodes.map(n => n.domain));
+      const colorLegend = Array.from(domains).reduce((acc, domain, i) => {
+        acc.push({
+          domain,
+          color: this.colors[i]
+        });
+        return acc;
+      }, []);
+
+      return colorLegend;
     }
   },
 
@@ -189,20 +219,18 @@ export default {
         .force("y", d3.forceY());
     },
 
-    clicked(index){
-      window.location.assign("http://localhost:8080/article/"+this.graph.nodes[index].ref);
+    clicked(node) {
+      this.$router.push({
+        name: "articleDetails",
+        params: { reference: node.reference }
+      });
     },
 
-    choseColor(j){
-      let arrayDom = [];
-      for (let i=0; i < this.graph.nodes.length; i++){
-
-        if (!(arrayDom.includes(this.graph.nodes[i].domain))) {
-          arrayDom.push(this.graph.nodes[i].domain)
-        }
-      }
-      let colorNumber = arrayDom.indexOf(this.graph.nodes[j].domain);
-      return this.colors[colorNumber]
+    choseColor(domain) {
+      const allDomain = this.graph.nodes.map(n => n.domain);
+      const arrayDom = Array.from(new Set(allDomain));
+      const colorNumber = arrayDom.indexOf(domain);
+      return this.colors[colorNumber];
     },
 
     /*creatTabYear(){
@@ -216,89 +244,61 @@ export default {
       return arrayYear
     },*/
 
-    choseOpacity(j){
-      let arrayYear = []
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
-          arrayYear.push(this.graph.nodes[i].year)
+    choseOpacity(j) {
+      let arrayYear = [];
+      for (let i = 0; i < this.graph.nodes.length; i++) {
+        if (!arrayYear.includes(this.graph.nodes[i].year)) {
+          arrayYear.push(this.graph.nodes[i].year);
         }
       }
       arrayYear.sort();
-      let delta = arrayYear[arrayYear.length-1] - arrayYear[0]
-      let opacityVar = (( (arrayYear[arrayYear.length-1]+4) - this.graph.nodes[j].year) / delta)
-      return opacityVar
+      let delta = arrayYear[arrayYear.length - 1] - arrayYear[0];
+      let opacityVar =
+        (arrayYear[arrayYear.length - 1] + 4 - this.graph.nodes[j].year) /
+        delta;
+      return opacityVar;
     },
 
-    legendMaker(){
-      let arrayDom = [];
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayDom.includes(this.graph.nodes[i].domain))) {
-          arrayDom.push(this.graph.nodes[i].domain)
-        }
-      }
-      let colorLegend = [];
-      for (let i=0; i < arrayDom.length; i++){
-        let mapper = [];
-        mapper.push(this.graph.nodes[i].domain);
-        mapper.push(this.colors[i]);
-        colorLegend.push(mapper)
-      }
-      return colorLegend
-    },
+    showInfo(d, i) {
+      console.log(this.graph.nodes[i].name);
+      console.log(this.graph.nodes[i].domain);
+      console.log(this.graph.nodes[i].year);
 
-    lowestYear(){
-      let arrayYear = []
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
-          arrayYear.push(this.graph.nodes[i].year)
-        }
-      }
-      arrayYear.sort();
-      return arrayYear[0]
-    },
-
-    highestYear(){
-      let arrayYear = []
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
-          arrayYear.push(this.graph.nodes[i].year)
-        }
-      }
-      arrayYear.sort();
-      return  arrayYear[arrayYear.length-1]
-    },
-
-    showInfo(d, i){
-      console.log(this.graph.nodes[i].name)
-      console.log(this.graph.nodes[i].domain)
-      console.log(this.graph.nodes[i].year)
-
-      this.svg.append("text").attr({
-        id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-        x: function() { return xScale(d.x) - 30; },
-        y: function() { return yScale(d.y) - 15; }
-      })
-        .text(function() {
-          return [this.graph.nodes[i].name,this.graph.nodes[i].domain, this.graph.nodes[i].year];  // Value of the text
-        });
+      // this.svg
+      //   .append("text")
+      //   .attr({
+      //     id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+      //     x: function() {
+      //       return xScale(d.x) - 30;
+      //     },
+      //     y: function() {
+      //       return yScale(d.y) - 15;
+      //     }
+      //   })
+      //   .text(function() {
+      //     return [
+      //       this.graph.nodes[i].name,
+      //       this.graph.nodes[i].domain,
+      //       this.graph.nodes[i].year
+      //     ]; // Value of the text
+      //   });
     }
-
   }
 };
 </script>
 
 
 <style>
-  .graphics{
-    float: left;
-    width: 80%;
-  }
-  .legend{
-    float: left;
-    width: 20%;
-  }
+.graphics {
+  float: left;
+  width: 80%;
+}
+.legend {
+  float: left;
+  width: 20%;
+}
 
-  p{
-    font-size: 9pt;
-  }
+p {
+  font-size: 9pt;
+}
 </style>
