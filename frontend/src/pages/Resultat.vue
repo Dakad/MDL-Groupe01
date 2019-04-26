@@ -57,7 +57,12 @@
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
-        <md-tab id="graphics" md-label="Graphics" md-icon="share" v-if="articlesTitles.length != 0">
+        <md-tab
+          id="graphics"
+          md-label="Graphics"
+          md-icon="share"
+          :md-disabled="articlesTitles.length == 0"
+        >
           <md-empty-state
             v-if="articlesTitles.length == 0"
             md-icon="share"
@@ -66,9 +71,14 @@
           ></md-empty-state>
           <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
         </md-tab>
-        <md-tab id="wordcloud" md-label="WordCloud" md-icon="cloud">
+        <md-tab
+          id="wordcloud"
+          md-label="WordCloud"
+          :md-icon="isEmptyArticlesTags ? 'cloud_off' : 'cloud'"
+          :md-disabled="isEmptyArticlesTags"
+        >
           <md-empty-state
-            v-if="articlesTitles.length == 0"
+            v-if="isEmptyArticlesTags"
             md-icon="cloud"
             md-label="No word cloud to display"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
@@ -124,6 +134,11 @@ export default {
     sortBy: by => updateSearchURL("sort", by),
     orderBy: by => updateSearchURL("order", by),
     activeTab: newTab => updateSearchURL("tab", newTab)
+  },
+  computed: {
+    isEmptyArticlesTags() {
+      return Object.keys(this.articlesTags).length == 0;
+    }
   },
   methods: {
     updateSearchURL(type, by) {
