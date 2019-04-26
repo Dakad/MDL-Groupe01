@@ -224,7 +224,7 @@ export default {
     clicked(node) {
       this.$router.push({
         name: "articleDetails",
-        params: { reference: node.reference }
+        params: { reference: node.ref }
       });
     },
 
