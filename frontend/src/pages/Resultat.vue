@@ -25,7 +25,11 @@
       <div class="loading-search-results" v-if="loading">
         <md-progress-bar md-mode="indeterminate"/>
       </div>
-      <md-tabs md-alignment="fixed" :md-active-tab="activeTab" @md-changed="activeTab = $event">
+      <md-tabs
+        md-alignment="fixed"
+        :md-active-tab="activeTab"
+        @md-changed="updateSearchURL('tab', $event)"
+      >
         <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
           <sota-list v-show="!loading" :list="results.sotas"></sota-list>
           <md-empty-state
@@ -84,7 +88,6 @@ import graphics from "@/components/resulat/Graphics";
 import WordCloud from "@/components/resulat/WordCloud";
 
 import { getSearchResults } from "@/services/api";
-import { debug } from "util";
 
 export default {
   name: "Resultat",
@@ -98,10 +101,11 @@ export default {
   data() {
     return {
       loading: false,
+      changingTab: false,
       searchTerm: null,
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
-      activeTab: "articles",
+      activeTab: this.$route.query["tab"] || "articles",
       page: 0,
       results: {},
       articlesTags: {},
@@ -118,15 +122,23 @@ export default {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
     sortBy: by => updateSearchURL("sort", by),
-    orderBy: by => updateSearchURL("order", by)
+    orderBy: by => updateSearchURL("order", by),
+    activeTab: newTab => updateSearchURL("tab", newTab)
   },
   methods: {
     updateSearchURL(type, by) {
+      if (type == "tab") {
+        this.changingTab = true;
+      }
       const query = { ...this.$route.query };
       query[type] = by;
       this.$router.push({ query });
     },
     fetchSearchResult() {
+      if (this.changingTab) {
+        this.changingTab = false;
+        return;
+      }
       this.loading = true;
       this.searchTerm = this.$route.query["search"];
 
