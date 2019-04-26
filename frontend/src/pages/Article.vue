@@ -1,29 +1,40 @@
 <template>
-  <div class="article">
-    <div class="leftContainer">
-      <h1>{{ article.title }}</h1>
-      <div class="menuBo">
-        <menuArticle :articleId="article.reference"></menuArticle>
-      </div>
-      <div class="abstract">
-        <p>{{ article.content }}</p>
+  <div class="md-layout md-gutter md-alignment-center-space-around">
+    <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
+      <div class="article-container">
+        <h1 class="article-title md-display-2">{{ article.title }}</h1>
+
+        <div class="article-actions md-layout md-gutter md-alignment-center-right">
+          <menu-article :articleId="article.reference"></menu-article>
+        </div>
+        <div class="article-abstract">
+          <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
+        </div>
       </div>
     </div>
-    <div class="rightContainer">
-      <infoNav :tags="article.keywords" :refs="article.refs" :info="article.sotas"></infoNav>
+
+    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100">
+      <div class="info-container">
+        <info-nav :tags="article.keywords" :refs="article.refs" :info="article.sotas"></info-nav>
+      </div>
     </div>
   </div>
+
+  <!-- <div class="container">
+
+
+
+  </div>-->
 </template>
 
 <script>
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
-import json from "@/assets/dummy-Article.json";
 import { getArticleByReference } from "@/services/api";
 
 export default {
   name: "Article",
-  props: ["reference", "data"],
+  props: ["reference"],
   components: {
     InfoNav,
     MenuArticle
@@ -33,14 +44,22 @@ export default {
       article: {}
     };
   },
+  watch: {
+    $route: "fetchArticle"
+  },
   created() {
     // fetch the data when the view is created
-    // and the data is already being observed
-    this.fetchArticle(this.$route.params["reference"]);
+    this.fetchArticle();
+  },
+
+  computed: {
+    abstract() {
+      return this.article.content.split("\n");
+    }
   },
   methods: {
-    fetchArticle(reference) {
-      return getArticleByReference(reference).then(
+    fetchArticle() {
+      return getArticleByReference(this.reference).then(
         data => (this.article = data)
       );
     }
@@ -48,44 +67,22 @@ export default {
 };
 </script>
 
-<style scoped>
-h1 {
-  position: absolute;
-  left: 10%;
-  width: 70%;
-  top: 10%;
+<style  lang="scss" scoped>
+.article-container {
+  .article-title {
+    margin: 3vh 0;
+  }
+
+  .article-actions {
+    // float: right;
+  }
+
+  .article-abstract {
+    margin: 15px 0;
+  }
 }
 
-.menuBo {
-  padding-top: 15%;
-  padding-left: 10%;
-  width: 25%;
-  float: right;
-}
-
-.abstract {
-  float: bottom;
-  padding-top: 10%;
-  padding-left: 15%;
-  width: 80%;
-}
-
-infoNav {
-  padding-top: 10%;
-  padding: 10%;
-}
-
-.leftContainer {
-  position: relative;
-  float: left;
-  width: 60%;
-  height: 80%;
-}
-
-.rightContainer {
-  padding-right: 5px;
-  padding-top: 5%;
-  float: right;
+.info-container {
 }
 </style>
 
