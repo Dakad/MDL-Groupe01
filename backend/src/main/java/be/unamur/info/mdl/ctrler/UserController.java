@@ -177,6 +177,22 @@ public class UserController extends APIBaseController {
     }
   }
 
+
+  @RequestMapping(path = "/{username}/profile/isfollowed", method = RequestMethod.GET)
+  public ResponseEntity isFollowed(@PathVariable String username, Principal authUser) {
+    try {
+      if (username.equals(authUser.getName())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("If you followed yourself, you'd be walking in circles.");
+      }
+      boolean response = userService.isFollowed(username, authUser.getName());
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+
   @RequestMapping(path = "/{username}/profile/bookmarks", method = RequestMethod.GET)
   public ResponseEntity getBookmarks(@PathVariable String username,
     @RequestParam(defaultValue = "0") int p) {
@@ -188,18 +204,5 @@ public class UserController extends APIBaseController {
     }
   }
 
-  @RequestMapping(path = "/{username}/profile/isfollowed", method = RequestMethod.GET)
-  public ResponseEntity isFollowed(@PathVariable String username, Principal authUser) {
-    try {
-      if (username.equals(authUser.getName())) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("If you followed yourself, you'd be walking in circles.");
-      }
-      boolean response = profileService.isFollowed(username, authUser.getName());
-      return ResponseEntity.status(HttpStatus.OK).body(response);
-    } catch (UsernameNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
-    }
-  }
 }
 

@@ -118,16 +118,8 @@ public class ProfileServiceImpl implements ProfileService {
     return userRepository.findByUsername(username).getFollowsDTO(page);
   }
 
-  @Override
-  public boolean isFollowed(String username, String user) throws UsernameNotFoundException {
-    if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
-    }
-    UserEntity currentUser = userRepository.findByUsername(user);
-    UserEntity visitedUser = userRepository.findByUsername(username);
-    return currentUser.getFollows().contains(visitedUser);
-  }
 
+  @Override
   public Map<String, String> getBookmarks(String username, int page)
     throws UsernameNotFoundException {
     if (!userRepository.existsByUsername(username)) {
