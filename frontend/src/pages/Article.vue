@@ -5,7 +5,7 @@
         <h1 class="article-title md-display-2">{{ article.title }}</h1>
 
         <div class="article-actions md-layout md-gutter md-alignment-center-right">
-          <menu-article :articleId="article.reference"></menu-article>
+          <menu-article :article-reference="article.reference"></menu-article>
         </div>
         <div class="article-abstract">
           <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
@@ -15,7 +15,7 @@
 
     <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100">
       <div class="info-container">
-        <info-nav :tags="article.keywords" :refs="article.refs" :info="article.sotas"></info-nav>
+        <info-nav :info="info" :tags="article.keywords" :refs="article.refs"></info-nav>
       </div>
     </div>
   </div>
@@ -54,7 +54,35 @@ export default {
 
   computed: {
     abstract() {
+      if (!this.article.content) {
+        return [];
+      }
       return this.article.content.split("\n");
+    },
+    info() {
+      const {
+        created_at,
+        category,
+        nb_citations,
+        nb_views,
+        year,
+        month,
+        pages,
+        url
+      } = this.article;
+      return Object.assign(
+        {},
+        {
+          created_at,
+          category,
+          nb_citations,
+          nb_views,
+          year,
+          month,
+          pages,
+          link: url
+        }
+      );
     }
   },
   methods: {
