@@ -1,25 +1,11 @@
 <template>
   <section class="results">
-    <div class="first">
-      <h2>Sort by :</h2>
-      <md-radio v-model="sortBy" value="name" @change="updateSearchURL('sort', $event)">Name</md-radio>
-      <md-radio v-model="sortBy" value="title" @change="updateSearchURL('sort', $event)">Title</md-radio>
-      <md-radio v-model="sortBy" value="date" @change="updateSearchURL('sort', $event)">Date</md-radio>
-
-      <!--
-      <md-radio v-model="sortBy" value="domain">Domain of Research</md-radio>
-      <md-radio v-model="sortBy" value="date">Date</md-radio>
-      <md-radio v-model="sortBy" value="views">Views</md-radio>
-      <md-radio v-model="sortBy" value="ref">References</md-radio>
-      -->
-    </div>
-    <hr>
-    <div class="second">
-      <h2>Order by :</h2>
-      <md-radio v-model="orderBy" value="asc" @change="updateSearchURL('order', $event)">Ascending</md-radio>
-      <md-radio v-model="orderBy" value="desc" @change="updateSearchURL('order', $event)">Descending</md-radio>
-      <small>{{ sortBy }} + {{ orderBy }}</small>
-    </div>
+    <result-sort
+      :sort="sortBy"
+      :order="orderBy"
+      @change:sort="updateSearchURL('sort', $event)"
+      @change:order="onChangeOrder($event)"
+    ></result-sort>
 
     <div class="tabs">
       <div class="loading-search-results" v-if="loading">
@@ -91,21 +77,23 @@
 </template>
 
 <script>
-import sotaList from "@/components/resulat/SotaList";
-import authorList from "@/components/resulat/AuthorList";
-import articleList from "@/components/resulat/ArticleList";
-import graphics from "@/components/resulat/Graphics";
-import WordCloud from "@/components/resulat/WordCloud";
+import ResultSort from "@/components/resultat/ResultSort";
+import SotaList from "@/components/resultat/SotaList";
+import AuthorList from "@/components/resultat/AuthorList";
+import ArticleList from "@/components/resultat/ArticleList";
+import Graphics from "@/components/resultat/Graphics";
+import WordCloud from "@/components/resultat/WordCloud";
 
 import { getSearchResults } from "@/services/api";
 
 export default {
   name: "Resultat",
   components: {
-    sotaList,
-    authorList,
-    articleList,
-    graphics,
+    ResultSort,
+    SotaList,
+    AuthorList,
+    ArticleList,
+    Graphics,
     WordCloud
   },
   data() {
@@ -131,8 +119,12 @@ export default {
   watch: {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
-    sortBy: by => updateSearchURL("sort", by),
-    orderBy: by => updateSearchURL("order", by),
+    sortBy: function(by) {
+      return updateSearchURL("sort", by);
+    },
+    orderBy: function(by) {
+      return updateSearchURL("order", by);
+    },
     activeTab: newTab => updateSearchURL("tab", newTab)
   },
   computed: {
@@ -141,6 +133,12 @@ export default {
     }
   },
   methods: {
+    onChangeSort(by) {
+      this.sortBy = by;
+    },
+    onChangeOrder(by) {
+      this.orderBy = by;
+    },
     updateSearchURL(type, by) {
       if (type == "tab") {
         this.changingTab = true;
