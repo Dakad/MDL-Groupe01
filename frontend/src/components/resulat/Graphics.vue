@@ -34,28 +34,6 @@
           @click="clicked(node)"
         ></circle>
 
-        <!-- <text
-          v-for="(node, i) in graph.nodes"
-          :key="'text_1_'+i"
-          :x="coords[i].x"
-          :y="coords[i].y"
-          text-anchor="middle"
-          class="node-label"
-          stroke-width="1"
-          color="black"
-          @click="clicked(node)"
-        >{{node.name.substring(0,11)}}</text> -->
-
-        <!-- <text
-          v-for="(node, i) in graph.nodes"
-          :key="'text_2_'+i"
-          :x="coords[i].x"
-          :y="coords[i].y + 15"
-          text-anchor="middle"
-          class="node-label"
-          stroke-width="1"
-          color="black"
-        >{{node.name.substring(12,22) + "..."}}</text> -->
 
         <text
           v-for="(link,i) in graph.links"
@@ -235,17 +213,6 @@ export default {
       const colorNumber = arrayDom.indexOf(domain);
       return this.colors[colorNumber];
     },
-
-    /*creatTabYear(){
-      let arrayYear = []
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
-          arrayYear.push(this.graph.nodes[i].year)
-        }
-      }
-      arrayYear.sort();
-      return arrayYear
-    },*/
 
     choseOpacity(j) {
       let arrayYear = [];
