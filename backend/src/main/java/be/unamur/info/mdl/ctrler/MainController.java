@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
-@Api(value = "Main endpoints", description = "Operations of unrelated to specific ... ")
+@Api(value = "Main endpoints", description = "Operations unrelated to specific actions ")
 public class MainController extends APIBaseController {
 
   @Autowired
@@ -89,7 +89,7 @@ public class MainController extends APIBaseController {
     try {
       this.userService.signin(userData);
       response.put("success", "New user registered");
-      return new ResponseEntity(response, HttpStatus.CREATED);
+      return ResponseEntity.status(HttpStatus.CREATED).body(response);
     } catch (RegistrationException ex) {
       response.put("error", ex.getMessage());
       return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
