@@ -4,7 +4,7 @@
       <svg
         xmlns="http://www.w3.org/2000/svg"
         v-if="bounds.minX"
-        :width="width+'px'"
+        :width="width+'%'"
         :height="height+'px'"
       >
         <line
@@ -24,7 +24,7 @@
           :key="'node_'+i"
           :cx="coords[i].x"
           :cy="coords[i].y"
-          :r="45"
+          :r="7"
           :fill="choseColor(node.domain)"
           :opacity="choseOpacity(i)"
           class="node-container"
@@ -34,7 +34,7 @@
           @click="clicked(node)"
         ></circle>
 
-        <text
+        <!-- <text
           v-for="(node, i) in graph.nodes"
           :key="'text_1_'+i"
           :x="coords[i].x"
@@ -44,9 +44,9 @@
           stroke-width="1"
           color="black"
           @click="clicked(node)"
-        >{{node.name.substring(0,11)}}</text>
+        >{{node.name.substring(0,11)}}</text> -->
 
-        <text
+        <!-- <text
           v-for="(node, i) in graph.nodes"
           :key="'text_2_'+i"
           :x="coords[i].x"
@@ -55,7 +55,7 @@
           class="node-label"
           stroke-width="1"
           color="black"
-        >{{node.name.substring(12,22) + "..."}}</text>
+        >{{node.name.substring(12,22) + "..."}}</text> -->
 
         <text
           v-for="(link,i) in graph.links"
@@ -116,7 +116,7 @@ export default {
     return {
       // link: this.linker(dummy),
       graph: {},
-      width: 700,
+      width: 100,
       height: 550,
       padding: 60,
       colors: [
@@ -153,11 +153,12 @@ export default {
       };
     },
     coords() {
+      var clientWidth = document.getElementById('graphics').clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (this.width - 2 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 6 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
@@ -292,8 +293,9 @@ export default {
 
 <style scoped>
 .graphics {
+  position: relative;
   float: left;
-  width: 80%;
+  width: 75%;
 }
 .legend {
   float: left;
