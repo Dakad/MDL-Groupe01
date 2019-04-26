@@ -4,7 +4,7 @@
       :sort="sortBy"
       :order="orderBy"
       @change:sort="updateSearchURL('sort', $event)"
-      @change:order="onChangeOrder($event)"
+      @change:order="updateSearchURL('order', $event)"
     ></result-sort>
 
     <div class="tabs">
@@ -119,12 +119,7 @@ export default {
   watch: {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
-    sortBy: function(by) {
-      return updateSearchURL("sort", by);
-    },
-    orderBy: function(by) {
-      return updateSearchURL("order", by);
-    },
+
     activeTab: newTab => updateSearchURL("tab", newTab)
   },
   computed: {
@@ -133,12 +128,6 @@ export default {
     }
   },
   methods: {
-    onChangeSort(by) {
-      this.sortBy = by;
-    },
-    onChangeOrder(by) {
-      this.orderBy = by;
-    },
     updateSearchURL(type, by) {
       if (type == "tab") {
         this.changingTab = true;
