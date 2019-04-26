@@ -14,6 +14,7 @@
           :y1="coords[link.source.index].y"
           :x2="coords[link.target.index].x"
           :y2="coords[link.target.index].y"
+          class="link-line"
           stroke="black"
           stroke-width="2"
         ></line>
@@ -26,6 +27,7 @@
           :r="45"
           :fill="choseColor(node.domain)"
           :opacity="choseOpacity(i)"
+          class="node-container"
           stroke="black"
           stroke-width="1"
           @mouseover="showInfo(node, i)"
@@ -38,7 +40,7 @@
           :x="coords[i].x"
           :y="coords[i].y"
           text-anchor="middle"
-          class="labelNode"
+          class="node-label"
           stroke-width="1"
           color="black"
           @click="clicked(node)"
@@ -50,7 +52,7 @@
           :x="coords[i].x"
           :y="coords[i].y + 15"
           text-anchor="middle"
-          class="labelNode"
+          class="node-label"
           stroke-width="1"
           color="black"
         >{{node.name.substring(12,22) + "..."}}</text>
@@ -61,7 +63,7 @@
           :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
           :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
           text-anchor="middle"
-          class="labelLink"
+          class="link-label"
           color="black"
         >{{link.tag}}</text>
       </svg>
@@ -288,7 +290,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .graphics {
   float: left;
   width: 80%;
@@ -296,6 +298,21 @@ export default {
 .legend {
   float: left;
   width: 20%;
+}
+
+.node-container,
+.node-label,
+.link-line,
+.link-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node-container:hover,
+.node-label:hover {
+  cursor: pointer;
 }
 
 p {
