@@ -48,9 +48,13 @@
   }
 
   .tabs{
-    position: relative;
-    width: 100%;
-    height: 80%;
+    width: 99%;
+    height: 85%;
     margin-top: 3%;
+  }
+
+  #uploadOne{
+    width: 100%;
+    height: 550px;
   }
 </style>
