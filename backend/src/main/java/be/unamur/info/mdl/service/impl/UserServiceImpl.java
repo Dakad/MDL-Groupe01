@@ -9,11 +9,9 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
 import be.unamur.info.mdl.service.exceptions.RegistrationException;
-import java.util.Collections;
-import javax.jws.soap.SOAPBinding;
-import javax.validation.Valid;
-
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import java.util.Collections;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,8 +62,9 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws org.springframework.security.core.userdetails.UsernameNotFoundException {
-    if (this.userRepository.existsByUsername(username)){
+  public UserDetails loadUserByUsername(String username)
+    throws org.springframework.security.core.userdetails.UsernameNotFoundException {
+    if (this.userRepository.existsByUsername(username)) {
       throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
     }
     CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
@@ -75,8 +74,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String login(@Valid CredentialDTO credential) throws InvalidCredentialException {
-    if (this.userRepository.existsByUsername(credential.getUsername())){
-      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername()).toDTO();
+    if (this.userRepository.existsByUsername(credential.getUsername())) {
+      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername())
+        .toDTO();
       if (checkPassword(credential, userCredential)) {
         return SecurityUtils.generateToken(userCredential.getUsername());
       }
@@ -101,25 +101,40 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean follow(String username, String follower) throws UsernameNotFoundException {
-    if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
-    UserEntity userFollower = userRepository.findByUsername(follower);
-    UserEntity userFollowed = userRepository.findByUsername(username);
-    if(!userFollower.getFollows().contains(userFollowed)) {
+    if (!this.isFollowed(username, follower)) {
+      UserEntity userFollower = userRepository.findByUsername(follower);
+      UserEntity userFollowed = userRepository.findByUsername(username);
+
       userFollower.getFollows().add(userFollowed);
+      userFollowed.getFollowers().add(userFollower);
+
       userRepository.save(userFollower);
       return true;
     }
     return false;
   }
 
+
+  @Override
+  public boolean isFollowed(String username, String user) throws UsernameNotFoundException {
+    if (!userRepository.existsByUsername(username)) {
+      throw new UsernameNotFoundException();
+    }
+    UserEntity currentUser = userRepository.findByUsername(user);
+    UserEntity visitedUser = userRepository.findByUsername(username);
+    return currentUser.getFollows().contains(visitedUser);
+  }
+
   @Override
   public boolean unfollow(String username, String follower) throws UsernameNotFoundException {
-    if(!userRepository.existsByUsername(username)) throw new UsernameNotFoundException();
-    UserEntity userFollower = userRepository.findByUsername(follower);
-    UserEntity userFollowed = userRepository.findByUsername(username);
-    if(userFollower.getFollows().contains(userFollowed)) {
+    if (this.isFollowed(username, follower)) {
+      UserEntity userFollower = userRepository.findByUsername(follower);
+      UserEntity userFollowed = userRepository.findByUsername(username);
+
+      userFollowed.getFollowers().remove(userFollower);
       userFollower.getFollows().remove(userFollowed);
-      userRepository.save(userFollowed);
+
+      userRepository.save(userFollower);
       return true;
     }
     return false;
