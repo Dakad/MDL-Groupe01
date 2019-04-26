@@ -7,63 +7,63 @@
         :width="width+'px'"
         :height="height+'px'"
       >
-        <line
-          v-for="(link,i) in graph.links"
-          :key="'link_'+i"
-          :x1="coords[link.source.index].x"
-          :y1="coords[link.source.index].y"
-          :x2="coords[link.target.index].x"
-          :y2="coords[link.target.index].y"
-          stroke="black"
-          stroke-width="2"
-        ></line>
+        <template v-for="(node, i) in graph.nodes">
+          <circle
+            :key="'node_'+i"
+            :cx="coords[i].x"
+            :cy="coords[i].y"
+            :r="45"
+            :fill="choseColor(node.domain)"
+            :opacity="choseOpacity(i)"
+            class="node-container"
+            stroke="black"
+            stroke-width="1"
+            @mouseover="showInfo(node, i)"
+            @click="clicked(node)"
+          ></circle>
 
-        <circle
-          v-for="(node, i) in graph.nodes"
-          :key="'node_'+i"
-          :cx="coords[i].x"
-          :cy="coords[i].y"
-          :r="45"
-          :fill="choseColor(node.domain)"
-          :opacity="choseOpacity(i)"
-          stroke="black"
-          stroke-width="1"
-          @mouseover="showInfo(node, i)"
-          @click="clicked(node)"
-        ></circle>
+          <text
+            :key="'text_1_'+i"
+            :x="coords[i].x"
+            :y="coords[i].y"
+            text-anchor="middle"
+            class="node-label"
+            stroke-width="1"
+            color="black"
+            @click="clicked(node)"
+          >{{node.name.substring(0,11)}}</text>
 
-        <text
-          v-for="(node, i) in graph.nodes"
-          :key="'text_1_'+i"
-          :x="coords[i].x"
-          :y="coords[i].y"
-          text-anchor="middle"
-          class="labelNode"
-          stroke-width="1"
-          color="black"
-          @click="clicked(node)"
-        >{{node.name.substring(0,11)}}</text>
+          <text
+            :key="'text_2_'+i"
+            :x="coords[i].x"
+            :y="coords[i].y + 15"
+            text-anchor="middle"
+            class="node-label"
+            stroke-width="1"
+            color="black"
+          >{{node.name.substring(11,22) + "..."}}</text>
+        </template>
 
-        <text
-          v-for="(node, i) in graph.nodes"
-          :key="'text_2_'+i"
-          :x="coords[i].x"
-          :y="coords[i].y + 15"
-          text-anchor="middle"
-          class="labelNode"
-          stroke-width="1"
-          color="black"
-        >{{node.name.substring(12,22) + "..."}}</text>
-
-        <text
-          v-for="(link,i) in graph.links"
-          :key="'text_3_'+i"
-          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-          text-anchor="middle"
-          class="labelLink"
-          color="black"
-        >{{link.tag}}</text>
+        <template v-for="(link,i) in graph.links">
+          <line
+            :key="'link_'+i"
+            :x1="coords[link.source.index].x"
+            :y1="coords[link.source.index].y"
+            :x2="coords[link.target.index].x"
+            :y2="coords[link.target.index].y"
+            class="link-line"
+            stroke="black"
+            stroke-width="2"
+          ></line>
+          <text
+            :key="'text_3_'+i"
+            :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+            :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+            text-anchor="middle"
+            class="link-label"
+            color="black"
+          >{{link.tag}}</text>
+        </template>
       </svg>
     </div>
     <div class="legend">
@@ -84,19 +84,8 @@
 </template>
 
 <script>
-import dummy from "@/services/dummy.json";
 import * as d3 from "d3";
 
-function nodeCreator() {
-  console.log("enter node creator");
-  let i;
-  let nodes = [];
-  for (i = 0; i < dummy.articles.length; i++) {
-    nodes.push(dummy.articles[i].title);
-  }
-  console.log(nodes);
-  return nodes;
-}
 export default {
   name: "Graphics",
   props: {
@@ -112,7 +101,6 @@ export default {
   },
   data() {
     return {
-      // link: this.linker(dummy),
       graph: {},
       width: 700,
       height: 550,
@@ -288,11 +276,27 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .graphics {
   float: left;
   width: 80%;
 }
+
+.node-container,
+.node-label,
+.link-line,
+.link-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node-container:hover,
+.node-label:hover {
+  cursor: pointer;
+}
+
 .legend {
   float: left;
   width: 20%;
