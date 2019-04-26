@@ -35,7 +35,7 @@
           </md-field>
       </div>
       <div class="bottom">
-
+        <b-button size="lg" variant="outline-info" @click="showAcceptMessage = true">UPLOAD THE SotA</b-button>
       </div>
     </div>
 </template>
@@ -86,7 +86,7 @@
     width: 99%;
     height: 9%;
     float: bottom;
-
+    padding-left: 40%;
   }
 
 
