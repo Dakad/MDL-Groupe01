@@ -136,7 +136,7 @@ export default {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (clientWidth - 6 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 7 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
@@ -285,6 +285,6 @@ export default {
 }
 
 p {
-  font-size: 9pt;
+  font-size: 10pt;
 }
 </style>
