@@ -31,6 +31,7 @@
           stroke="black"
           stroke-width="1"
           @mouseover="showInfo(node, i)"
+          @mouseout="nullInfo()"
           @click="clicked(node)"
         ></circle>
 
@@ -47,6 +48,10 @@
       </svg>
     </div>
     <div class="legend">
+      <h5>More Info</h5>
+      <p>Name: {{nameHolder}}</p>
+      <p>Domain: {{domainHolder}}</p>
+      <p>year of publication: {{yearHolder}}</p>
       <h5>legend</h5>
       <p>Main domain of the article</p>
       <li v-for="(item, i) in legendMaker" :key="i">
@@ -111,7 +116,10 @@ export default {
         "#9C27B0"
       ],
       simulation: null,
-      currentMove: null
+      currentMove: null,
+      nameHolder: " ",
+      domainHolder: " ",
+      yearHolder: " "
     };
   },
   watch: {
@@ -233,7 +241,9 @@ export default {
       console.log(this.graph.nodes[i].name);
       console.log(this.graph.nodes[i].domain);
       console.log(this.graph.nodes[i].year);
-
+      this.nameHolder = this.graph.nodes[i].name
+      this.domainHolder = this.graph.nodes[i].domain
+      this.yearHolder = this.graph.nodes[i].year
       // this.svg
       //   .append("text")
       //   .attr({
@@ -252,6 +262,12 @@ export default {
       //       this.graph.nodes[i].year
       //     ]; // Value of the text
       //   });
+    },
+
+    nullInfo(){
+      this.nameHolder = " "
+      this.domainHolder = " "
+      this.yearHolder = " "
     }
   }
 };
