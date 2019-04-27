@@ -38,7 +38,7 @@ public class BookmarkEntity {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
-  private UserEntity user;
+  private UserEntity creator;
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
