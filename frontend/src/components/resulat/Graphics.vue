@@ -35,7 +35,6 @@
           @click="clicked(node)"
         ></circle>
 
-
         <text
           v-for="(link,i) in graph.links"
           :key="'text_3_'+i"
@@ -48,22 +47,40 @@
       </svg>
     </div>
     <div class="legend">
-      <h5>More Info</h5>
-      <p>Name: {{nameHolder}}</p>
-      <p>Domain: {{domainHolder}}</p>
-      <p>year of publication: {{yearHolder}}</p>
-      <h5>legend</h5>
-      <p>Main domain of the article</p>
-      <li v-for="(item, i) in legendMaker" :key="i">
-        <p :style="{ color: item['color'] }">{{item['domain']}}</p>
-      </li>
+      <div class="more-info">
+        <h5 class>More Info</h5>
+        <div>
+          <label>Title</label> :
+          <span class="holder name">{{nameHolder}}</span>
+          <br>
+          <label>Domain</label> :
+          <span class="holder domain">{{domainHolder}}</span>
+          <br>
+          <label>Year of publication</label> :
+          <span class="holder year">{{yearHolder}}</span>
+        </div>
+      </div>
 
-      <h5>Opacity:</h5>
-      <p>
-        From {{lowestYear}} at 40%
-        <br>
-        to {{highestYear}} at 100%
-      </p>
+      <hr>
+
+      <div class="legend-color-info">
+        <h5>Legend</h5>
+        <p>Main domain of the article</p>
+        <li v-for="(item, i) in legendMaker" :key="i">
+          <p :style="{ color: item['color'] }">{{item['domain']}}</p>
+        </li>
+      </div>
+
+      <hr>
+
+      <div class="opacity-info">
+        <h5>Opacity:</h5>
+        <p>
+          From {{lowestYear}} at 40%
+          <br>
+          to {{highestYear}} at 100%
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -139,7 +156,7 @@ export default {
       };
     },
     coords() {
-      var clientWidth = document.getElementById('graphics').clientWidth;
+      var clientWidth = document.getElementById("graphics").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
@@ -237,44 +254,23 @@ export default {
       return opacityVar;
     },
 
-    showInfo(d, i) {
-      console.log(this.graph.nodes[i].name);
-      console.log(this.graph.nodes[i].domain);
-      console.log(this.graph.nodes[i].year);
-      this.nameHolder = this.graph.nodes[i].name
-      this.domainHolder = this.graph.nodes[i].domain
-      this.yearHolder = this.graph.nodes[i].year
-      // this.svg
-      //   .append("text")
-      //   .attr({
-      //     id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
-      //     x: function() {
-      //       return xScale(d.x) - 30;
-      //     },
-      //     y: function() {
-      //       return yScale(d.y) - 15;
-      //     }
-      //   })
-      //   .text(function() {
-      //     return [
-      //       this.graph.nodes[i].name,
-      //       this.graph.nodes[i].domain,
-      //       this.graph.nodes[i].year
-      //     ]; // Value of the text
-      //   });
+    showInfo(node) {
+      this.nameHolder = node.name;
+      this.domainHolder = node.domain;
+      this.yearHolder = node.year;
     },
 
-    nullInfo(){
-      this.nameHolder = " "
-      this.domainHolder = " "
-      this.yearHolder = " "
+    nullInfo() {
+      this.nameHolder = "";
+      this.domainHolder = "";
+      this.yearHolder = "";
     }
   }
 };
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 .graphics {
   position: relative;
   float: left;
@@ -283,6 +279,15 @@ export default {
 .legend {
   float: left;
   width: 20%;
+  .more-info {
+    label {
+      font-weight: bold;
+      // margin-bottom: 5px;
+      text-decoration: underline;
+    }
+    .holder {
+    }
+  }
 }
 
 .node-container,
