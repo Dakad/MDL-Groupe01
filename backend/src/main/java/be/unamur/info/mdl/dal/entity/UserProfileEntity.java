@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -15,10 +13,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "user_profil")
+@Table(name = "user_profile")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfilEntity {
+public class UserProfileEntity {
 
   @Id
   private Long id;
@@ -28,11 +26,19 @@ public class UserProfilEntity {
 
   @Enumerated(EnumType.STRING)
   @Column
-  private Status status;
+  private UserStatus status;
 
   @Column(name = "avatar_url")
   private String profilePictureURL;
 
+  @Column(name="facebook_url")
+  private String facebookURL;
+
+  @Column(name="twitter_url")
+  private String twitterURL;
+
+  @Column(name = "linkedin_url")
+  private String linkedInURL;
 
   @OneToOne
   private UserEntity user;
