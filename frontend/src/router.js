@@ -49,11 +49,10 @@ appRouter.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to accueil page.
-    debugger;
     if (!isLogged()) {
       next({
         name: 'accueil',
-        query: { redirect: to.fullPath, action: 'login' }
+        query: { action: 'login',redirect: to.fullPath }
       });
     } else {
       next();
