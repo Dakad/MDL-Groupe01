@@ -81,12 +81,6 @@
 .search {
   margin: 0 40px;
 }
-// .buttons {
-//   align-content: right;
-// }
-// .md-dialog {
-//   widows: 100%;
-// }
 </style>
 
 
@@ -118,13 +112,24 @@ export default {
     };
   },
   watch: {
-    "$route.name"(route) {
+    "$route.name": function(route) {
       this.searchBar.show = route != "accueil";
       this.searchBar.input = this.$route.query["search"];
-    }
+    },
+    "$route.query": function(route) {}
   },
+  created() {},
+
   mounted() {
     this.searchBar.show = this.$route.name != "accueil";
+    switch (this.$route.query["action"]) {
+      case "login":
+        this.showLoginDialog = true;
+        break;
+
+      default:
+        break;
+    }
 
     sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
@@ -154,6 +159,9 @@ export default {
           this.showLoginDialog = false;
           msg = `Hello ${msg} ! Welcome BACK :-D !!`;
           this.isAuthenticated = true;
+          if (this.$route.query["redirect"]) {
+            this.$router.replace(this.$route.query["redirect"]);
+          }
           break;
         case "register":
         case "signin":
