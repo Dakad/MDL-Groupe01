@@ -10,6 +10,7 @@ import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
 import Sota from './pages/Sota';
 import Profil from './pages/Profil';
+import SotAHelper from './pages/SotAHelper';
 
 Vue.use(Router);
 
@@ -24,7 +25,9 @@ const routes = [
 
   { name: 'articleDetails', path: '/article/:reference', component: Article },
 
-  { name: 'sota', path: '/sota', component: Sota },
+  { name: 'sotaDetails', path: '/sota/:reference', component: Sota },
+
+  { name: 'sotaHelper', path: '/sotahelper', component: SotAHelper },
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
@@ -52,7 +55,7 @@ appRouter.beforeEach((to, from, next) => {
     if (!isLogged()) {
       next({
         name: 'accueil',
-        query: { action: 'login',redirect: to.fullPath }
+        query: { action: 'login', redirect: to.fullPath }
       });
     } else {
       next();

@@ -2,11 +2,14 @@ package be.unamur.info.mdl.dal.entity;
 
 
 import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO.ProfileSocialInfoDTOBuilder;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,7 +48,7 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @Column(name = "email")
+  @Column(name = "email", unique = true)
   private String email;
 
   @Column(name = "first_name")
@@ -61,16 +64,14 @@ public class UserEntity {
   private String domain;
 
 
-
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,optional = true)
-  @JoinColumn(name = "current_univerty_id")
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "current_university_id")
   private UniversityEntity currentUniversity;
 
 
   @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "profil_id", referencedColumnName = "id", unique = true)
-  private UserProfilEntity userProfil;
-
+  @JoinColumn(name = "profile_id", referencedColumnName = "id", unique = true)
+  private UserProfileEntity userProfile;
 
 
   @OneToMany(
@@ -83,7 +84,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
@@ -91,7 +92,7 @@ public class UserEntity {
 
 
   @OneToMany(
-    mappedBy = "user",
+    mappedBy = "creator",
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
@@ -99,7 +100,7 @@ public class UserEntity {
 
 
   @OneToMany(mappedBy = "user")
-  private Set<UniversityCurrent> universities;
+  private List<UniversityCurrent> universities;
 
 
   @ManyToMany(cascade = {
@@ -108,16 +109,25 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private Set<UserEntity> followers;
+  private List<UserEntity> followers;
 
 
   @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
+  @JoinTable(name = "user_follower",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "following_id")})
+  private List<UserEntity> follows;
+
+
+  @ManyToOne(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private Set<ResearchGroupEntity> research_group;
+  private ResearchGroupEntity researchGroup;
 
 
   @ManyToMany(cascade = {
@@ -127,7 +137,6 @@ public class UserEntity {
     joinColumns = {@JoinColumn(name = "follower_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<TagEntity> tags;
-
 
 
   public static UserEntity of(UserDTO dto) {
@@ -145,17 +154,58 @@ public class UserEntity {
 
   public ProfileBasicInfoDTO toProfileBasicInfoDTO() {
     UniversityInfoDTO universityInfoDTO = null;
-    if(this.currentUniversity != null){
+    if (this.currentUniversity != null) {
       universityInfoDTO = this.currentUniversity.toInfoDTO();
     }
 
     String avatar;
-    if (userProfil != null) {
-      avatar = userProfil.getProfilePictureURL();
+    if (userProfile != null) {
+      avatar = userProfile.getProfilePictureURL();
     } else {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }
     return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
   }
+
+
+  public ProfileSocialInfoDTO toProfileSocialInfoDTO() {
+    ProfileSocialInfoDTOBuilder dto = ProfileSocialInfoDTO.builder();
+
+    dto.numFollowers(this.followers.size()).numFollows(this.follows.size());
+
+    if (this.userProfile != null) {
+      dto.bio(userProfile.getDescription());
+      dto.facebookURL(this.userProfile.getFacebookURL())
+        .linkedinURL(this.userProfile.getLinkedInURL())
+        .twitterURL(this.userProfile.getTwitterURL());
+    }
+    return dto.build();
+  }
+
+  //TODO : test unitaire sur des listes de followers de tailles variées
+  public List<UserDTO> getFollowersDTO(int page) {
+    return getFollowers(page, this.followers);
+  }
+
+  //TODO : test unitaire sur des listes de follows de tailles variées
+  public List<UserDTO> getFollowsDTO(int page) {
+    return getFollowers(page, this.follows);
+  }
+
+  private List<UserDTO> getFollowers(int page, List<UserEntity> followers) {
+    int leftBound = page * 20;
+    if (followers.size() <= leftBound) {
+      return new ArrayList<>();
+    }
+    int rightBound = (page * 20) + 20;
+    if (followers.size() <= rightBound) {
+      rightBound = followers.size();
+    }
+    List<UserEntity> subList = followers.subList(leftBound, rightBound);
+    List<UserDTO> dtoList = new ArrayList<>(subList.size());
+    subList.forEach(e -> dtoList.add(e.toDTO()));
+    return dtoList;
+  }
+
 
 }
