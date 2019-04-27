@@ -86,19 +86,8 @@
 </template>
 
 <script>
-import dummy from "@/services/dummy.json";
 import * as d3 from "d3";
 
-function nodeCreator() {
-  console.log("enter node creator");
-  let i;
-  let nodes = [];
-  for (i = 0; i < dummy.articles.length; i++) {
-    nodes.push(dummy.articles[i].title);
-  }
-  console.log(nodes);
-  return nodes;
-}
 export default {
   name: "Graphics",
   props: {
@@ -114,7 +103,6 @@ export default {
   },
   data() {
     return {
-      // link: this.linker(dummy),
       graph: {},
       width: 100,
       height: 550,
@@ -134,9 +122,9 @@ export default {
       ],
       simulation: null,
       currentMove: null,
-      nameHolder: " ",
-      domainHolder: " ",
-      yearHolder: " "
+      nameHolder: "",
+      domainHolder: "",
+      yearHolder: ""
     };
   },
   watch: {
@@ -254,7 +242,7 @@ export default {
       return opacityVar;
     },
 
-    showInfo(node) {
+    showInfo(node, i) {
       this.nameHolder = node.name;
       this.domainHolder = node.domain;
       this.yearHolder = node.year;
