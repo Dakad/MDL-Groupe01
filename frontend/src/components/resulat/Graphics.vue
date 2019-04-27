@@ -4,7 +4,7 @@
       <svg
         xmlns="http://www.w3.org/2000/svg"
         v-if="bounds.minX"
-        :width="width+'px'"
+        :width="width+'%'"
         :height="height+'px'"
       >
         <template v-for="(node, i) in graph.nodes">
@@ -22,63 +22,67 @@
             @click="clicked(node)"
           ></circle>
 
-          <text
-            :key="'text_1_'+i"
-            :x="coords[i].x"
-            :y="coords[i].y"
-            text-anchor="middle"
-            class="node-label"
-            stroke-width="1"
-            color="black"
-            @click="clicked(node)"
-          >{{node.name.substring(0,11)}}</text>
-
-          <text
-            :key="'text_2_'+i"
-            :x="coords[i].x"
-            :y="coords[i].y + 15"
-            text-anchor="middle"
-            class="node-label"
-            stroke-width="1"
-            color="black"
-          >{{node.name.substring(11,22) + "..."}}</text>
-        </template>
-
-        <template v-for="(link,i) in graph.links">
-          <line
-            :key="'link_'+i"
-            :x1="coords[link.source.index].x"
-            :y1="coords[link.source.index].y"
-            :x2="coords[link.target.index].x"
-            :y2="coords[link.target.index].y"
-            class="link-line"
+          <circle
+            :key="'node_'+i"
+            :cx="coords[i].x"
+            :cy="coords[i].y"
+            :r="7"
+            :fill="choseColor(node.domain)"
+            :opacity="choseOpacity(i)"
+            class="node-container"
             stroke="black"
-            stroke-width="2"
-          ></line>
-          <text
-            :key="'text_3_'+i"
-            :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-            :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-            text-anchor="middle"
-            class="link-label"
-            color="black"
-          >{{link.tag}}</text>
+            stroke-width="1"
+            @mouseover="showInfo(node, i)"
+            @click="clicked(node)"
+          ></circle>
         </template>
+
+        <text
+          v-for="(link,i) in graph.links"
+          :key="'text_3_'+i"
+          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+          text-anchor="middle"
+          class="link-label"
+          color="black"
+        >{{link.tag}}</text>
       </svg>
     </div>
     <div class="legend">
-      <h5>legend</h5>
-      <p>Main domain of the article</p>
-      <li v-for="(item, i) in legendMaker" :key="i">
-        <p :style="{ color: item['color'] }">{{item['domain']}}</p>
-      </li>
+      <div class="more-info">
+        <h5 class>More Info</h5>
+        <div>
+          <label>Title</label> :
+          <span class="holder name">{{nameHolder}}</span>
+          <br>
+          <label>Domain</label> :
+          <span class="holder domain">{{domainHolder}}</span>
+          <br>
+          <label>Year of publication</label> :
+          <span class="holder year">{{yearHolder}}</span>
+        </div>
+      </div>
 
-      <h5>Opacity:</h5>
-      <p>
-        From {{lowestYear}} at 40%
-        <br>
-        to {{highestYear}} at 100%
-      </p>
+      <hr>
+
+      <div class="legend-color-info">
+        <h5>Legend</h5>
+        <p>Main domain of the article</p>
+        <li v-for="(item, i) in legendMaker" :key="i">
+          <p :style="{ color: item['color'] }">{{item['domain']}}</p>
+        </li>
+      </div>
+
+      <hr>
+
+      <div class="opacity-info">
+        <h5>Opacity:</h5>
+        <p>
+          From {{lowestYear}} at 40%
+          <br>
+          to {{highestYear}} at 100%
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -102,7 +106,7 @@ export default {
   data() {
     return {
       graph: {},
-      width: 700,
+      width: 100,
       height: 550,
       padding: 60,
       colors: [
@@ -119,7 +123,10 @@ export default {
         "#9C27B0"
       ],
       simulation: null,
-      currentMove: null
+      currentMove: null,
+      nameHolder: "",
+      domainHolder: "",
+      yearHolder: ""
     };
   },
   watch: {
@@ -139,11 +146,12 @@ export default {
       };
     },
     coords() {
+      var clientWidth = document.getElementById("graphics").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (this.width - 2 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 7 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
@@ -221,17 +229,6 @@ export default {
       return this.colors[colorNumber];
     },
 
-    /*creatTabYear(){
-      let arrayYear = []
-      for (let i=0; i < this.graph.nodes.length; i++){
-        if (!(arrayYear.includes(this.graph.nodes[i].year))) {
-          arrayYear.push(this.graph.nodes[i].year)
-        }
-      }
-      arrayYear.sort();
-      return arrayYear
-    },*/
-
     choseOpacity(j) {
       let arrayYear = [];
       for (let i = 0; i < this.graph.nodes.length; i++) {
@@ -247,39 +244,27 @@ export default {
       return opacityVar;
     },
 
-    showInfo(d, i) {
-      console.log(this.graph.nodes[i].name);
-      console.log(this.graph.nodes[i].domain);
-      console.log(this.graph.nodes[i].year);
+    showInfo(node, i) {
+      this.nameHolder = node.name;
+      this.domainHolder = node.domain;
+      this.yearHolder = node.year;
+    },
 
-      // this.svg
-      //   .append("text")
-      //   .attr({
-      //     id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
-      //     x: function() {
-      //       return xScale(d.x) - 30;
-      //     },
-      //     y: function() {
-      //       return yScale(d.y) - 15;
-      //     }
-      //   })
-      //   .text(function() {
-      //     return [
-      //       this.graph.nodes[i].name,
-      //       this.graph.nodes[i].domain,
-      //       this.graph.nodes[i].year
-      //     ]; // Value of the text
-      //   });
+    nullInfo() {
+      this.nameHolder = "";
+      this.domainHolder = "";
+      this.yearHolder = "";
     }
   }
 };
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 .graphics {
+  position: relative;
   float: left;
-  width: 80%;
+  width: 75%;
 }
 
 .node-container,
@@ -300,6 +285,15 @@ export default {
 .legend {
   float: left;
   width: 20%;
+  .more-info {
+    label {
+      font-weight: bold;
+      // margin-bottom: 5px;
+      text-decoration: underline;
+    }
+    .holder {
+    }
+  }
 }
 
 .node-container,
@@ -318,6 +312,6 @@ export default {
 }
 
 p {
-  font-size: 9pt;
+  font-size: 10pt;
 }
 </style>
