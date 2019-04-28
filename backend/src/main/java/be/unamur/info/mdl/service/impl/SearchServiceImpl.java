@@ -12,7 +12,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.AuthorDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO;
-import be.unamur.info.mdl.dto.SearchResultDTO.Meta;
+import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO.MetaField;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
@@ -71,7 +71,7 @@ public class SearchServiceImpl implements SearchService {
     String searchTerm = searchQuery.getSearchTerm();
     Sort pageSort = this.getSort(sort, searchQuery.getOrder());
     Pageable pageable = PageRequest.of(page, 20, pageSort);
-    Meta resultMeta = new Meta();
+    SearchResultMetaDTO resultMeta = new SearchResultMetaDTO();
 
     // USERS
 
@@ -127,7 +127,7 @@ public class SearchServiceImpl implements SearchService {
     resultMeta.setSotasMeta(this.createMeta(sotas, pageSort));
 
 
-    searchResult.meta(resultMeta);
+    searchResult.metas(resultMeta);
 
     return searchResult.build();
   }
