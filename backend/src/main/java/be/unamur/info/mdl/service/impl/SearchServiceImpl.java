@@ -98,7 +98,7 @@ public class SearchServiceImpl implements SearchService {
     pageable = PageRequest.of(page, 20, pageSort);
 
     List<StateOfTheArtDTO> sotaList = stateOfTheArtRepository
-      .findDistinctByNameContainingIgnoreCase(searchTerm, pageable)
+      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable)
       .map(s -> s.toDTO())
       .collect(Collectors.toList());
 

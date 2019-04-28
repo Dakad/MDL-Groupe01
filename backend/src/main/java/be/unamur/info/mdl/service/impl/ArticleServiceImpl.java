@@ -12,6 +12,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -42,6 +43,21 @@ public class ArticleServiceImpl implements ArticleService {
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
     this.authorRepository = authorRepository;
+  }
+
+
+  @Override
+  public ArticleDTO getArticleByReference(String reference) throws ArticleNotFoundException {
+    if(reference == null){
+      throw new IllegalArgumentException("The reference must be defined");
+    }
+    Optional<ArticleEntity> dbArticle = this.articleRepository.findByReference(reference);
+    if(!dbArticle.isPresent()){
+      throw new ArticleNotFoundException("The referenced article was not found");
+    } else {
+      return dbArticle.get().toDTO();
+    }
+
   }
 
   @Override
@@ -82,28 +98,12 @@ public class ArticleServiceImpl implements ArticleService {
    * @param categoryName - The category name
    */
   private void attachCategory(ArticleEntity newArticle, String categoryName) {
-    TagEntity category = this.getOrCreateTag(categoryName);
+    TagEntity category = ServiceUtils.getOrCreateTag(categoryName, this.tagRepository);
     category.getArticlesByCategory().add(newArticle);
     newArticle.setCategory(category);
   }
 
-  /**
-   * Get the matching tag from the repository or create a new one.
-   * @param tagName  The tag name
-   * @return the persisted or created Tag
-   */
-  private TagEntity getOrCreateTag(String tagName) {
-    String slug = this.slugify.slugify(tagName);
-    Optional<TagEntity> dbTag = this.tagRepository.findBySlug(slug);
 
-    TagEntity tag;
-    if (dbTag.isPresent()) {
-      tag = dbTag.get();
-    } else {
-      tag = TagEntity.builder().name(tagName.trim()).slug(slug).build();
-    }
-    return tag;
-  }
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
@@ -125,14 +125,14 @@ public class ArticleServiceImpl implements ArticleService {
   /**
    * Attach the corresponding Author(created or persisted) to the new article
    * @param newArticle - The new Article being created
-   * @param keywords - The author's name list.
+   * @param keywords - The keyword's name list.
    */
   private void attachKeywords(ArticleEntity newArticle, Set<String> keywords) {
     Set<TagEntity> list = new LinkedHashSet<>(keywords.size());
     TagEntity keyword;
 
     for (String keywordName : keywords) {
-      keyword = getOrCreateTag(keywordName);
+      keyword = ServiceUtils.getOrCreateTag(keywordName, this.tagRepository);
       keyword.getArticlesByKeyword().add(newArticle);
       list.add(keyword);
     }
