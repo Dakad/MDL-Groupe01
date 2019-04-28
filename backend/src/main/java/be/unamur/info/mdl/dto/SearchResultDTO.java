@@ -37,13 +37,17 @@ public class SearchResultDTO {
   @Getter @Setter
   public static class Meta {
 
-    EnumMap<MetaField, Object> articles;
+    @JsonProperty("articles")
+    EnumMap<MetaField, Object> articlesMeta;
 
-    EnumMap<MetaField, Object> sotas;
+    @JsonProperty("sotas")
+    EnumMap<MetaField, Object> sotasMeta;
 
-    EnumMap<MetaField, Object> authors;
+    @JsonProperty("authors")
+    EnumMap<MetaField, Object> authorsMeta;
 
-    EnumMap<MetaField, Object> users;
+    @JsonProperty("users")
+    EnumMap<MetaField, Object> usersMeta;
   }
 
   @JsonFormat(shape = Shape.STRING)
