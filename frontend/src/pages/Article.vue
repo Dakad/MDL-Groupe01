@@ -5,18 +5,33 @@
         <md-card-header>
           <h1 class="article-title md-display-2">{{ article.title }}</h1>
           <div class="article-authors md-subhead">
+            <md-icon title="Authors">{{ article.authors.length > 1 ? 'people' : "person" }}</md-icon>&nbsp;
             <!-- <label >By</label>: -->
-            <md-button class="md-primary" v-for="(author, i) in article.authors" :key="i">{{author}}</md-button>
+            <md-button
+              class="md-primary"
+              v-for="(author, i) in article.authors"
+              :key="i"
+              :md-ripple="false"
+            >{{author}}</md-button>
           </div>
+
+          <div class="article-journal md-subhead">
+            <md-icon title="Journal">import_contacts</md-icon>&nbsp;
+            <!-- <span class>Journal :</span>&nbsp; -->
+            <span>{{article.journal}}</span> &nbsp;
+            <span v-show="article.volume" title="Journal Volume">- {{article.volume}}</span>
+          </div>
+
           <div class="article-keywords">
             <!-- <label>Keywords</label>: -->
-            <md-chip class="md-accent" title="Category : ">{{article.category}}</md-chip>
+            <md-chip :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
             <md-chip v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
           </div>
         </md-card-header>
         <md-card-media-actions>
           <md-card-area>
             <md-content class="article-abstract">
+              <!-- <p>{{ article.content}}</p> -->
               <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
             </md-content>
           </md-card-area>
@@ -26,12 +41,16 @@
               <md-icon>playlist_add</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" title="Bookmark it">
-              <md-icon>bookmark</md-icon>
+            <md-button
+              class="md-icon-button"
+              title="Bookmark it"
+              @click="isBookmarked = !isBookmarked"
+            >
+              <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" title="Go the article URL">
-              <md-icon>get_app</md-icon>
+            <md-button class="md-icon-button" title="Go the article source">
+              <md-icon>launch</md-icon>
             </md-button>
           </md-card-actions>
         </md-card-media-actions>
@@ -47,9 +66,12 @@
 </template>
 
 <script>
+import ColorHash from "color-hash";
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
 import { getArticleByReference } from "@/services/api";
+
+const colorHash = new ColorHash();
 
 export default {
   name: "Article",
@@ -60,7 +82,8 @@ export default {
   },
   data() {
     return {
-      article: {}
+      article: {},
+      isBookmarked: false
     };
   },
   watch: {
@@ -72,6 +95,11 @@ export default {
   },
 
   computed: {
+    colorCategory() {
+      return {
+        "background-color": colorHash.hex(this.article.category)
+      };
+    },
     abstract() {
       if (!this.article.content) {
         return [];
