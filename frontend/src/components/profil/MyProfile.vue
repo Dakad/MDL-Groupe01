@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-      <!-- TODO pourquoi le tableau apparait pas en entier mais coupé -->
       <div class="left">
         <h5>Research Groups:</h5>
         <li v-for="item in infoPro.ResearchGroup">
