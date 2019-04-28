@@ -7,45 +7,41 @@
         :width="width+'%'"
         :height="height+'px'"
       >
-        <template v-for="(node, i) in graph.nodes">
-          <circle
-            :key="'node_'+i"
-            :cx="coords[i].x"
-            :cy="coords[i].y"
-            :r="45"
-            :fill="choseColor(node.domain)"
-            :opacity="choseOpacity(i)"
-            class="node-container"
-            stroke="black"
-            stroke-width="1"
-            @mouseover="showInfo(node, i)"
-            @click="clicked(node)"
-          ></circle>
+        <circle
+          v-for="(node, i) in graph.nodes"
+          :key="'node_'+i"
+          :cx="coords[i].x"
+          :cy="coords[i].y"
+          :r="7"
+          :fill="choseColor(node.domain)"
+          :opacity="choseOpacity(i)"
+          class="node-container"
+          stroke="black"
+          stroke-width="1"
+          @mouseover="showInfo(node, i)"
+          @click="clicked(node)"
+        ></circle>
 
-          <circle
-            :key="'node_'+i"
-            :cx="coords[i].x"
-            :cy="coords[i].y"
-            :r="7"
-            :fill="choseColor(node.domain)"
-            :opacity="choseOpacity(i)"
-            class="node-container"
+        <template v-for="(link, i) in graph.links">
+          <line
+            :key="'link_'+i"
+            :x1="coords[link.source.index].x"
+            :y1="coords[link.source.index].y"
+            :x2="coords[link.target.index].x"
+            :y2="coords[link.target.index].y"
+            class="link-line"
             stroke="black"
-            stroke-width="1"
-            @mouseover="showInfo(node, i)"
-            @click="clicked(node)"
-          ></circle>
+            stroke-width="2"
+          ></line>
+          <text
+            :key="'text_3_'+i"
+            :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+            :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+            text-anchor="middle"
+            class="link-label"
+            color="black"
+          >{{link.tag}}</text>
         </template>
-
-        <text
-          v-for="(link,i) in graph.links"
-          :key="'text_3_'+i"
-          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-          text-anchor="middle"
-          class="link-label"
-          color="black"
-        >{{link.tag}}</text>
       </svg>
     </div>
     <div class="legend">
@@ -68,7 +64,7 @@
       <div class="legend-color-info">
         <h5>Legend</h5>
         <p>Main domain of the article</p>
-        <li v-for="(item, i) in legendMaker" :key="i">
+        <li class="colors-info" v-for="(item, i) in legendMaker" :key="i">
           <p :style="{ color: item['color'] }">{{item['domain']}}</p>
         </li>
       </div>
@@ -293,6 +289,10 @@ export default {
     }
     .holder {
     }
+  }
+
+  .colors-info {
+    list-style: none;
   }
 }
 
