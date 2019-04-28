@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -19,7 +17,7 @@ import lombok.Setter;
 @ApiModel(value = "SearchResult", description = "Model representing a result of successful search")
 public class SearchResultDTO {
 
-  private Meta meta;
+  private SearchResultMetaDTO metas;
 
   private List<ArticleDTO> articles;
 
@@ -35,7 +33,7 @@ public class SearchResultDTO {
   @ApiModel(description = "Model representing meta data about the successful search results")
   @NoArgsConstructor
   @Getter @Setter
-  public static class Meta {
+  public static class SearchResultMetaDTO {
 
     @JsonProperty("articles")
     EnumMap<MetaField, Object> articlesMeta;
