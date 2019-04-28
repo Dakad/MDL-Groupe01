@@ -120,4 +120,8 @@
     height: 60%;
     width: 100%;
   }
+
+  #profile{
+    height: 370px;
+  }
 </style>
