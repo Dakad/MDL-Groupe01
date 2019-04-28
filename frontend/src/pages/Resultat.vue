@@ -28,7 +28,12 @@
             ></md-empty-state>
           </md-tab>
           <md-tab id="articles" md-label="Articles" md-icon="description">
-            <article-list v-show="!loading" :list="results.articles"></article-list>
+            <article-list
+              v-show="!loading"
+              :list="results.articles"
+              :meta="metas['articles']"
+              @pagination="pages['article'] = $event"
+            ></article-list>
             <md-empty-state
               v-if="!results.articles || results.articles.length == 0"
               md-icon="description"
@@ -108,7 +113,9 @@ export default {
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
       page: 0,
+      metas: {},
       results: {},
+      pages: {},
       articlesTags: {},
       articlesTitles: [],
       relatedArticles: []
@@ -158,10 +165,15 @@ export default {
         .then(res => {
           this.loading = false;
 
-          this.$set(this.results, "articles", res["articles"]);
-          this.$set(this.results, "authors", res["authors"]);
-          this.$set(this.results, "sotas", res["sotas"]);
-          this.$set(this.results, "users", res["users"]);
+          Object.keys(res["metas"]).forEach(type => {
+            this.$set(this.metas, type, res["metas"][type]);
+            this.$set(this.results, type, res[type]);
+          });
+
+          // this.$set(this.results, "articles", res["articles"]);
+          // this.$set(this.results, "authors", res["authors"]);
+          // this.$set(this.results, "sotas", res["sotas"]);
+          // this.$set(this.results, "users", res["users"]);
 
           this.articlesTitles = [];
 
