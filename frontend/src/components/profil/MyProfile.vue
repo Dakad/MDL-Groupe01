@@ -43,35 +43,28 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    border: 3px solid grey;
   }
   .left{
     position: relative;
     float: left;
     margin-right: 5%;
-    margin-top: 5%;
-    height: 90%;
+    height: 95%;
     width: 30%;
-    border: 2px solid lightgrey;
   }
 
   .center{
     position: relative;
     float: left;
-    margin-top: 5%;
-    height: 90%;
+    height: 95%;
     width: 30%;
-    border: 2px solid lightgrey;
   }
 
   .right{
     position: relative;
     float: left;
-    margin-top: 5%;
     margin-left: 5%;
-    height: 90%;
+    height: 95%;
     width: 30%;
-    border: 2px solid lightgrey;
   }
 
 </style>
