@@ -38,8 +38,6 @@
         <span class="md-list-item-text">Descending</span>
       </md-list-item>
     </md-list>
-
-    <small>{{ sortBy }} + {{ orderBy }}</small>
   </div>
 </template>
 
