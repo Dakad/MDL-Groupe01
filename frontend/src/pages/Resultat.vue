@@ -1,77 +1,80 @@
 <template>
-  <section class="results">
-    <result-sort
-      :sort="sortBy"
-      :order="orderBy"
-      @change:sort="updateSearchURL('sort', $event)"
-      @change:order="updateSearchURL('order', $event)"
-    ></result-sort>
-
-    <div class="tabs">
-      <div class="loading-search-results" v-if="loading">
-        <md-progress-bar md-mode="indeterminate"/>
-      </div>
-      <md-tabs
-        md-alignment="fixed"
-        :md-active-tab="activeTab"
-        @md-changed="updateSearchURL('tab', $event)"
-      >
-        <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
-          <sota-list v-show="!loading" :list="results.sotas"></sota-list>
-          <md-empty-state
-            v-if="!results.sotas || results.sotas.length == 0"
-            md-icon="view_module"
-            md-label="No states of the art found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab id="articles" md-label="Articles" md-icon="description">
-          <article-list v-show="!loading" :list="results.articles"></article-list>
-          <md-empty-state
-            v-if="!results.articles || results.articles.length == 0"
-            md-icon="description"
-            md-label="No articles found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab id="authors" md-label="Authors/Users" md-icon="people">
-          <author-list v-show="!loading" :list="results.authors"></author-list>
-          <md-empty-state
-            v-if="!results.authors || results.authors.length == 0"
-            md-icon="people"
-            md-label="No states of the art found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab
-          id="graphics"
-          md-label="Graphics"
-          md-icon="share"
-          :md-disabled="articlesTitles.length == 0"
+  <section class="md-layout md-gutter md-alignment-center-space-around">
+    <div class="loading-search-results" v-if="loading">
+      <md-progress-bar md-mode="indeterminate"/>
+    </div>
+    <div class="md-layout-item md-size-25">
+      <result-sort
+        :sort="sortBy"
+        :order="orderBy"
+        @change:sort="updateSearchURL('sort', $event)"
+        @change:order="updateSearchURL('order', $event)"
+      ></result-sort>
+    </div>
+    <div class="md-layout-item md-size-66">
+      <div class="results-container">
+        <md-tabs
+          md-alignment="fixed"
+          :md-active-tab="activeTab"
+          @md-changed="updateSearchURL('tab', $event)"
         >
-          <md-empty-state
-            v-if="articlesTitles.length == 0"
+          <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
+            <sota-list v-show="!loading" :list="results.sotas"></sota-list>
+            <md-empty-state
+              v-if="!results.sotas || results.sotas.length == 0"
+              md-icon="view_module"
+              md-label="No states of the art found"
+              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+            ></md-empty-state>
+          </md-tab>
+          <md-tab id="articles" md-label="Articles" md-icon="description">
+            <article-list v-show="!loading" :list="results.articles"></article-list>
+            <md-empty-state
+              v-if="!results.articles || results.articles.length == 0"
+              md-icon="description"
+              md-label="No articles found"
+              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+            ></md-empty-state>
+          </md-tab>
+          <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+            <author-list v-show="!loading" :list="results.authors"></author-list>
+            <md-empty-state
+              v-if="!results.authors || results.authors.length == 0"
+              md-icon="people"
+              md-label="No states of the art found"
+              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+            ></md-empty-state>
+          </md-tab>
+          <md-tab
+            id="graphics"
+            md-label="Graphics"
             md-icon="share"
-            md-label="No graphics to display"
-            md-description="Try another search"
-          ></md-empty-state>
-          <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
-        </md-tab>
-        <md-tab
-          id="wordcloud"
-          md-label="WordCloud"
-          :md-icon="isEmptyArticlesTags ? 'cloud_off' : 'cloud'"
-          :md-disabled="isEmptyArticlesTags"
-        >
-          <md-empty-state
-            v-if="isEmptyArticlesTags"
-            md-icon="cloud"
-            md-label="No word cloud to display"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-          <word-cloud v-else :tags="articlesTags"></word-cloud>
-        </md-tab>
-      </md-tabs>
+            :md-disabled="articlesTitles.length == 0"
+          >
+            <md-empty-state
+              v-if="articlesTitles.length == 0"
+              md-icon="share"
+              md-label="No graphics to display"
+              md-description="Try another search"
+            ></md-empty-state>
+            <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
+          </md-tab>
+          <md-tab
+            id="wordcloud"
+            md-label="WordCloud"
+            :md-icon="isEmptyArticlesTags ? 'cloud_off' : 'cloud'"
+            :md-disabled="isEmptyArticlesTags"
+          >
+            <md-empty-state
+              v-if="isEmptyArticlesTags"
+              md-icon="cloud"
+              md-label="No word cloud to display"
+              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+            ></md-empty-state>
+            <word-cloud v-else :tags="articlesTags"></word-cloud>
+          </md-tab>
+        </md-tabs>
+      </div>
     </div>
   </section>
 </template>
@@ -197,7 +200,7 @@ export default {
             let keywordName = keywords[k].name;
             for (let l = 0; l < articles[j].keywords.length; l++) {
               if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += (keywordName + ", ");
+                commonKeyword += keywordName + ", ";
                 if (alreadyIn === false) {
                   alreadyIn = true;
                   commonArticle.push(i);
@@ -229,33 +232,20 @@ export default {
 </script>
 
 <style scoped>
-.loading-search-results > md-progress-bar {
-  position: absolute;
+.loading-search-results {
+  position: relative;
+  width: 100%;
   top: 0;
-  right: 0;
-  left: 0;
+  margin-left: 40px;
 }
 
-.tabs {
+/* .tabs {
   position: absolute;
   top: 15%;
   left: 25%;
   width: 75%;
-}
+} */
 
-.first {
-  position: relative;
-  top: 15%;
-  left: 5%;
-  width: 20%;
-}
-
-.second {
-  position: relative;
-  top: 60%;
-  left: 5%;
-  width: 20%;
-}
 .md-radio {
   display: flex;
 }
