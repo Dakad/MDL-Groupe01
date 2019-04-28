@@ -1,83 +1,93 @@
 <template>
-  <div class="graphics">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      v-if="bounds.minX"
-      :width="width+'px'"
-      :height="height+'px'"
-    >
-      <line
-        v-for="(link,i) in graph.links"
-        :key="'link_'+i"
-        :x1="coords[link.source.index].x"
-        :y1="coords[link.source.index].y"
-        :x2="coords[link.target.index].x"
-        :y2="coords[link.target.index].y"
-        stroke="black"
-        stroke-width="2"
-      ></line>
+  <div class="container">
+    <div class="graphics">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        v-if="bounds.minX"
+        :width="width+'%'"
+        :height="height+'px'"
+      >
+        <line
+          v-for="(link,i) in graph.links"
+          :key="'link_'+i"
+          :x1="coords[link.source.index].x"
+          :y1="coords[link.source.index].y"
+          :x2="coords[link.target.index].x"
+          :y2="coords[link.target.index].y"
+          class="link-line"
+          stroke="black"
+          stroke-width="2"
+        ></line>
 
-      <circle
-        v-for="(node, i) in graph.nodes"
-        :key="'node_'+i"
-        :cx="coords[i].x"
-        :cy="coords[i].y"
-        :r="50"
-        :fill="'#fff'"
-        stroke="black"
-        stroke-width="1"
-        @mousedown="currentMove = {x: $event.screenX, y: $event.screenY, node: node}"
-      ></circle>
+        <circle
+          v-for="(node, i) in graph.nodes"
+          :key="'node_'+i"
+          :cx="coords[i].x"
+          :cy="coords[i].y"
+          :r="7"
+          :fill="choseColor(node.domain)"
+          :opacity="choseOpacity(i)"
+          class="node-container"
+          stroke="black"
+          stroke-width="1"
+          @mouseover="showInfo(node, i)"
+          @mouseout="nullInfo()"
+          @click="clicked(node)"
+        ></circle>
 
-      <text
-        v-for="(node, i) in graph.nodes"
-        :key="'text_1_'+i"
-        :x="coords[i].x"
-        :y="coords[i].y"
-        text-anchor="middle"
-        class="labelNode"
-        stroke-width="1"
-        color="black"
-      >{{node.name.substring(0,11)}}</text>
+        <text
+          v-for="(link,i) in graph.links"
+          :key="'text_3_'+i"
+          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+          text-anchor="middle"
+          class="link-label"
+          color="black"
+        >{{link.tag}}</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="more-info">
+        <h5 class>More Info</h5>
+        <div>
+          <label>Title</label> :
+          <span class="holder name">{{nameHolder}}</span>
+          <br>
+          <label>Domain</label> :
+          <span class="holder domain">{{domainHolder}}</span>
+          <br>
+          <label>Year of publication</label> :
+          <span class="holder year">{{yearHolder}}</span>
+        </div>
+      </div>
 
-      <text
-        v-for="(node, i) in graph.nodes"
-        :key="'text_2_'+i"
-        :x="coords[i].x"
-        :y="coords[i].y + 15"
-        text-anchor="middle"
-        class="labelNode"
-        stroke-width="1"
-        color="black"
-      >{{node.name.substring(12,22) + "..."}}</text>
+      <hr>
 
-      <text
-        v-for="(link,i) in graph.links"
-        :key="'text_3_'+i"
-        :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-        :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-        text-anchor="middle"
-        class="labelLink"
-        color="black"
-      >{{link.tag}}</text>
-    </svg>
+      <div class="legend-color-info">
+        <h5>Legend</h5>
+        <p>Main domain of the article</p>
+        <li v-for="(item, i) in legendMaker" :key="i">
+          <p :style="{ color: item['color'] }">{{item['domain']}}</p>
+        </li>
+      </div>
+
+      <hr>
+
+      <div class="opacity-info">
+        <h5>Opacity:</h5>
+        <p>
+          From {{lowestYear}} at 40%
+          <br>
+          to {{highestYear}} at 100%
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import dummy from "@/services/dummy.json";
 import * as d3 from "d3";
 
-function nodeCreator() {
-  console.log("enter node creator");
-  let i;
-  let nodes = [];
-  for (i = 0; i < dummy.articles.length; i++) {
-    nodes.push(dummy.articles[i].title);
-  }
-  console.log(nodes);
-  return nodes;
-}
 export default {
   name: "Graphics",
   props: {
@@ -93,9 +103,8 @@ export default {
   },
   data() {
     return {
-      // link: this.linker(dummy),
       graph: {},
-      width: 700,
+      width: 100,
       height: 550,
       padding: 60,
       colors: [
@@ -112,7 +121,10 @@ export default {
         "#9C27B0"
       ],
       simulation: null,
-      currentMove: null
+      currentMove: null,
+      nameHolder: "",
+      domainHolder: "",
+      yearHolder: ""
     };
   },
   watch: {
@@ -132,11 +144,12 @@ export default {
       };
     },
     coords() {
+      var clientWidth = document.getElementById("graphics").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (this.width - 2 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 7 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
@@ -144,6 +157,33 @@ export default {
               (this.bounds.maxY - this.bounds.minY)
         };
       });
+    },
+
+    lowestYear() {
+      return this.graph.nodes
+        .map(n => n.year)
+        .sort()
+        .slice(0, 1);
+    },
+
+    highestYear() {
+      return this.graph.nodes
+        .map(n => n.year)
+        .sort()
+        .slice(-1);
+    },
+
+    legendMaker() {
+      const domains = new Set(this.graph.nodes.map(n => n.domain));
+      const colorLegend = Array.from(domains).reduce((acc, domain, i) => {
+        acc.push({
+          domain,
+          color: this.colors[i]
+        });
+        return acc;
+      }, []);
+
+      return colorLegend;
     }
   },
 
@@ -154,11 +194,14 @@ export default {
           index: i,
           x: null,
           y: null,
-          name: this.articlesTitles[i]
+          name: this.articlesTitles[i][0],
+          domain: this.articlesTitles[i][2],
+          ref: this.articlesTitles[i][1],
+          year: this.articlesTitles[i][3]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
-          source: Math.floor(Math.sqrt(i)),
-          target: i + 1,
+          source: this.linkedArticles[i][0],
+          target: this.linkedArticles[i][1],
           tag: this.linkedArticles[i][2]
         }))
       };
@@ -168,143 +211,89 @@ export default {
         .force("link", d3.forceLink(this.graph.links))
         .force("x", d3.forceX())
         .force("y", d3.forceY());
+    },
+
+    clicked(node) {
+      this.$router.push({
+        name: "articleDetails",
+        params: { reference: node.ref }
+      });
+    },
+
+    choseColor(domain) {
+      const allDomain = this.graph.nodes.map(n => n.domain);
+      const arrayDom = Array.from(new Set(allDomain));
+      const colorNumber = arrayDom.indexOf(domain);
+      return this.colors[colorNumber];
+    },
+
+    choseOpacity(j) {
+      let arrayYear = [];
+      for (let i = 0; i < this.graph.nodes.length; i++) {
+        if (!arrayYear.includes(this.graph.nodes[i].year)) {
+          arrayYear.push(this.graph.nodes[i].year);
+        }
+      }
+      arrayYear.sort();
+      let delta = arrayYear[arrayYear.length - 1] - arrayYear[0];
+      let opacityVar =
+        (arrayYear[arrayYear.length - 1] + 4 - this.graph.nodes[j].year) /
+        delta;
+      return opacityVar;
+    },
+
+    showInfo(node, i) {
+      this.nameHolder = node.name;
+      this.domainHolder = node.domain;
+      this.yearHolder = node.year;
+    },
+
+    nullInfo() {
+      this.nameHolder = "";
+      this.domainHolder = "";
+      this.yearHolder = "";
     }
-
-    /*drag(e) {
-        if (this.currentMove) {
-          this.currentMove.node.fx = this.currentMove.node.x - (this.currentMove.x - e.screenX) * (this.bounds.maxX - this.bounds.minX) / (this.width - 2 * this.padding)
-          this.currentMove.node.fy = this.currentMove.node.y - (this.currentMove.y - e.screenY) * (this.bounds.maxY - this.bounds.minY) / (this.height - 2 * this.padding)
-          this.currentMove.x = e.screenX
-          this.currentMove.y = e.screenY
-        }
-      },
-      drop() {
-        delete this.currentMove.node.fx
-        delete this.currentMove.node.fy
-        this.currentMove = null
-        this.simulation.alpha(1)
-        this.simulation.restart()
-      }, */
-    /*AIM to create a array with all the link possible between each one
-     *  take the tags of one article and test it on all the following articles
-     *  if similarities are found between two articles the tag is added + the two article
-     * */
   }
-
-  /*   props:{
-      data : Object
-    },
-    components: {
-    },
-    data() {
-      return {
-        node: this.nodeCreator(dummy),
-        link: this.linker(dummy),
-        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-        height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 40,
-        padding: 20,
-        simulation: null,
-        currentMove: null
-      };
-
-    },
-
-    computed: {
-      bounds() {
-        return {
-          minX: Math.min(...this.nodes.map(n => n.x)),
-          maxX: Math.max(...this.nodes.map(n => n.x)),
-          minY: Math.min(...this.nodes.map(n => n.y)),
-          maxY: Math.max(...this.nodes.map(n => n.y))
-        }
-      },
-      coords() {
-        return this.nodes.map(node => {
-          return {
-            x: this.padding + (node.x - this.bounds.minX) * (this.width - 2*this.padding) / (this.bounds.maxX - this.bounds.minX),
-            y: this.padding + (node.y - this.bounds.minY) * (this.height - 2*this.padding) / (this.bounds.maxY - this.bounds.minY)
-          }
-        })
-      }
-    },
-    created(){
-      this.simulation = d3.forceSimulation(this.nodes)
-        .force('charge', d3.forceManyBody().strength(d => -100))
-        .force('link', d3.forceLink(this.links))
-        .force('x', d3.forceX())
-        .force('y', d3.forceY())
-    },
-    methods: {
-      drag(e) {
-        if (this.currentMove) {
-          this.currentMove.node.fx = this.currentMove.node.x - (this.currentMove.x - e.screenX) * (this.bounds.maxX - this.bounds.minX) / (this.width - 2 * this.padding)
-          this.currentMove.node.fy = this.currentMove.node.y -(this.currentMove.y - e.screenY) * (this.bounds.maxY - this.bounds.minY) / (this.height - 2 * this.padding)
-          this.currentMove.x = e.screenX
-          this.currentMove.y = e.screenY
-        }
-      },
-      drop(){
-        delete this.currentMove.node.fx
-        delete this.currentMove.node.fy
-        this.currentMove = null
-        this.simulation.alpha(1)
-        this.simulation.restart()
-      },
-       */
-
-  /*AIM to create a array with all the link possible between each one
-   *  take the tags of one article and test it on all the following articles
-   *  if similarities are found between two articles the tag is added + the two article
-   * */
-
-  /*
-      linker() {
-        let i;
-        let motherTab = [];
-        for (i = 0; i < dummy.articles.length; i++) {
-          let toTest = dummy.articles[i].keywords;
-          let j;
-          for (j=i+1; j <  dummy.articles.length; j++){
-            let childTab = "";
-            let container = [];
-            let test = false;
-            let k;
-            for (k=0; k < toTest.length; k++){
-              let nameToTest = toTest[k].name;
-              let l;
-              for (l=0; l < dummy.articles[j].keywords.length; l++) {
-                if (nameToTest === dummy.articles[j].keywords[l].name) {
-                  childTab += nameToTest;
-                  if (test === false) {
-                    test = true;
-                    container.push(dummy.articles[i].title);
-                    container.push(dummy.articles[j].title);
-                  }
-                }
-              }
-            }
-          container.push(childTab);
-            if (container.length > 1){
-              motherTab.push(container);
-            }
-          }
-        }
-        return motherTab;
-      },
-
-      nodeCreator() {
-        let i;
-        let nodes = [];
-        for (i = 0; i < dummy.articles.length; i++){
-          nodes.push(dummy.articles[i].title)
-        }
-        return nodes;
-      }
-
-    }, */
 };
 </script>
 
 
-<style>
+<style lang="scss" scoped>
+.graphics {
+  position: relative;
+  float: left;
+  width: 75%;
+}
+.legend {
+  float: left;
+  width: 20%;
+  .more-info {
+    label {
+      font-weight: bold;
+      // margin-bottom: 5px;
+      text-decoration: underline;
+    }
+    .holder {
+    }
+  }
+}
+
+.node-container,
+.node-label,
+.link-line,
+.link-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node-container:hover,
+.node-label:hover {
+  cursor: pointer;
+}
+
+p {
+  font-size: 10pt;
+}
 </style>
