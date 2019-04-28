@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class SearchServiceImpl implements SearchService {
 
+  public static final int PAGE_SIZE_MAX = 20;
   private final UserRepository userRepository;
   private final ArticleRepository articleRepository;
   private final StateOfTheArtRepository stateOfTheArtRepository;
@@ -54,38 +55,30 @@ public class SearchServiceImpl implements SearchService {
   public SearchResultDTO getSearchResults(SearchQueryDTO searchQuery) {
     SearchResultDTOBuilder searchResult = SearchResultDTO.builder();
 
-    // Replace the provided sort by the real Entities field
-    String sort = searchQuery.getSort();
-    switch (sort) {
-      case ("NAME"):
-        sort = "title";
-        break;
-      case ("DATE"):
-      default:
-        sort = "createdAt";
-        break;
-    }
-
     // PAGEABLE
     int page = searchQuery.getPage();
     String searchTerm = searchQuery.getSearchTerm();
-    Sort pageSort = this.getSort(sort, searchQuery.getOrder());
-    Pageable pageable = PageRequest.of(page, 20, pageSort);
     SearchResultMetaDTO resultMeta = new SearchResultMetaDTO();
+    Sort pageSort;
+    Pageable pageable;
 
     // USERS
 
-    Page<UserEntity> users = userRepository
-      .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm,
-        searchTerm, pageable);
-    List<UserDTO> userList = users.stream().map(u -> u.toDTO())
-      .collect(Collectors.toList());
-
-    searchResult.users(userList);
-    resultMeta.setUsersMeta(this.createMeta(users, pageSort));
+//    pageSort = this.getSortForUser(searchQuery.getSort(), searchQuery.getOrder());
+//    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+//    Page<UserEntity> users = userRepository
+//      .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm,
+//        searchTerm, pageable);
+//    List<UserDTO> userList = users.stream().map(u -> u.toDTO())
+//      .collect(Collectors.toList());
+//
+//    searchResult.users(userList);
+//    resultMeta.setUsersMeta(this.createMeta(users, pageSort));
 
     // AUTHORS
 
+    pageSort = this.getSortForAuthor(searchQuery.getSort(), searchQuery.getOrder());
+    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
     Page<AuthorEntity> authors = authorRepository
       .findDistinctByNameContainingIgnoreCase(searchTerm, pageable);
 
@@ -95,15 +88,13 @@ public class SearchServiceImpl implements SearchService {
     searchResult.authors(authorsList);
     resultMeta.setAuthorsMeta(this.createMeta(authors, pageSort));
 
-
     // ARTICLES
 
-    pageSort = this.getSort(sort, searchQuery.getOrder());
-    pageable = PageRequest.of(page, 20, pageSort);
+    pageSort = this.getSortForArticle(searchQuery.getSort(), searchQuery.getOrder());
+    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
 
     Page<ArticleEntity> articles = articleRepository
       .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
-
 
     List<ArticleDTO> articleList = articles.stream().map(a -> a.toDTO())
       .collect(Collectors.toList());
@@ -111,11 +102,10 @@ public class SearchServiceImpl implements SearchService {
     searchResult.articles(articleList);
     resultMeta.setArticlesMeta(this.createMeta(articles, pageSort));
 
-
     // SOTAS
 
-    pageSort = this.getSort(sort, searchQuery.getOrder());
-    pageable = PageRequest.of(page, 20, pageSort);
+    pageSort = this.getSortForSota(searchQuery.getSort(), searchQuery.getOrder());
+    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
 
     Page<StateOfTheArtEntity> sotas = stateOfTheArtRepository
       .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
@@ -126,39 +116,84 @@ public class SearchServiceImpl implements SearchService {
     searchResult.statesOfTheArt(sotaList);
     resultMeta.setSotasMeta(this.createMeta(sotas, pageSort));
 
-
     searchResult.metas(resultMeta);
 
     return searchResult.build();
   }
 
+  private Sort getSortForUser(final String sort, final String order) {
+    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title"))  {
+      if (order.equalsIgnoreCase("ASC")) {
+        return Sort.by("lastname", "firstname").ascending();
+      }
+      if (order.equalsIgnoreCase("DESC")) {
+        return Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
+      }
+    }
+    return this.getSort(sort, order);
+  }
+
+  private Sort getSortForAuthor(final String sort, final String order) {
+    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title")) {
+      if (order.equalsIgnoreCase("ASC")) {
+        return Sort.by("name").ascending();
+      }
+      if (order.equalsIgnoreCase("DESC")) {
+        return Sort.by("name").descending();
+      }
+    }
+    return this.getSort(sort, order);
+  }
+
+  private Sort getSortForArticle(final String sort, final String order) {
+    if (sort.equalsIgnoreCase("name")) {
+      return this.getSort("title", order);
+    }
+    return this.getSort(sort, order);
+  }
+
+
+  private Sort getSortForSota(final String sort, final String order) {
+    if (sort.equalsIgnoreCase("name")) {
+      return this.getSort("title", order);
+    }else{
+      return this.getSort(sort, order);
+    }
+
+  }
+
   /**
    * Get the correct Sort based on the sortedBy term and sortedOrder
+   *
    * @param searchSortedBy What to sort on
    * @param searchSortOrder Which order for the sort (ASC or DESC)
    * @return The correct Sort
    */
   private Sort getSort(String searchSortedBy, String searchSortOrder) {
-    Sort pageSort = Sort.unsorted();
-    switch (searchSortedBy) {
-      case "name":
+    Sort pageSort = null;
+    switch (searchSortedBy.toLowerCase()) {
       case "title":
-        if (searchSortOrder.equalsIgnoreCase("ASC")) {
-          pageSort = Sort.by("lastname", "firstname").ascending();
-        }
-        if (searchSortOrder.equalsIgnoreCase("DESC")) {
-          pageSort = Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
-        }
+        pageSort = Sort.by("title");
         break;
-      case "createdAt":
-        if (searchSortOrder.equalsIgnoreCase("ASC")) {
-          pageSort = Sort.by(searchSortedBy).ascending();
-        }
+      case "name":
+        break;
+      case "date":
+        pageSort = Sort.by("createdAt");
         break;
       default:
-        pageSort = Sort.unsorted();
+        break;
     }
 
+    if(pageSort == null) {
+      return Sort.unsorted();
+    }
+
+    if (searchSortOrder.equalsIgnoreCase("ASC")) {
+      return pageSort.ascending();
+    }
+    if (searchSortOrder.equalsIgnoreCase("DESC")) {
+      return pageSort.descending();
+    }
     return pageSort;
   }
 
@@ -169,7 +204,7 @@ public class SearchServiceImpl implements SearchService {
    * @param pageSort The Sort used with the Pageable
    * @return the {@link EnumMap} to store the specific meta
    */
-  private EnumMap<MetaField, Object> createMeta(Page<?> page, Sort pageSort){
+  private EnumMap<MetaField, Object> createMeta(Page<?> page, Sort pageSort) {
     EnumMap<MetaField, Object> meta = new EnumMap<>(MetaField.class);
 
     meta.put(MetaField.CURRENT_PAGE, page.getNumber() + 1);
