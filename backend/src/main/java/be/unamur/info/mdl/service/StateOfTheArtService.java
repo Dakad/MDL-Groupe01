@@ -5,6 +5,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 
 public interface StateOfTheArtService {
 
@@ -31,4 +32,8 @@ public interface StateOfTheArtService {
    */
   StateOfTheArtDTO create(StateOfTheArtDTO data, UserDTO creator)
     throws SotaAlreadyExistException, ArticleNotFoundException;
+
+  boolean delete (String reference, String creator)
+    throws SotatNotFoundException, UsernameNotFoundException;
 }
+
