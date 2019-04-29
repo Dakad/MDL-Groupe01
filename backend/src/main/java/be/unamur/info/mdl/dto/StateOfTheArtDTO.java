@@ -31,6 +31,9 @@ public class StateOfTheArtDTO {
 
   private String description;
 
+  @JsonProperty(value = "subject", access = Access.WRITE_ONLY)
+  private String category = "nknown";
+
 
   @JsonAlias("created_at")
   private LocalDate createdAt;
