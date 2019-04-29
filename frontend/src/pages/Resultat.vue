@@ -1,10 +1,11 @@
 <template>
-  <section class="md-layout md-gutter md-alignment-center-space-around">
+  <section class="md-layout md-alignment-center-space-around">
     <div class="loading-search-results" v-if="loading">
       <md-progress-bar md-mode="indeterminate"/>
     </div>
     <div class="md-layout-item md-size-25">
       <result-sort
+        class="sort-container"
         :sort="sortBy"
         :order="orderBy"
         @change:sort="updateSearchURL('sort', $event)"
@@ -249,6 +250,13 @@ export default {
   width: 100%;
   top: 0;
   margin-left: 40px;
+}
+
+.sort-container {
+  position: static;
+  top: 0;
+  left: 0;
+  margin-top: 75px;
 }
 
 /* .tabs {
