@@ -14,6 +14,7 @@ import be.unamur.info.mdl.service.StateOfTheArtService;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,6 +88,18 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     this.sotaRepository.save(newSota);
 
     return newSota.toDTO();
+  }
+
+  @Override
+  public boolean delete(String reference, String username) throws UsernameNotFoundException {
+    UserEntity usr = userRepository.findByUsername(username);
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (usr==null) throw new UsernameNotFoundException("The user is not found");
+    if (!sota.isPresent()) throw new SotatNotFoundException("The referenced article was not found");
+    if (!usr.getStateOfTheArts().contains(sota)) return false;
+    usr.getStateOfTheArts().remove(sota);
+
+    return true;
   }
 
   /**
