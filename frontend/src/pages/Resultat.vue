@@ -150,7 +150,12 @@ export default {
 
           this.articlesTags = res["articles"].reduce((acc, article) => {
             // As the same time, push the article title
-            this.articlesTitles.push(article.title);
+            let infoTab = [];
+            infoTab.push(article.title);
+            infoTab.push(article.reference);
+            infoTab.push(article.category);
+            infoTab.push(article.year);
+            this.articlesTitles.push(infoTab);
             article.keywords.forEach(({ name, slug }) => {
               const nb = acc[slug] ? acc[slug]["occur"] : 0;
               acc[slug] = { name, occur: nb + 1 };
@@ -178,11 +183,11 @@ export default {
             let keywordName = keywords[k].name;
             for (let l = 0; l < articles[j].keywords.length; l++) {
               if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += keywordName;
+                commonKeyword += (keywordName + ", ");
                 if (alreadyIn === false) {
                   alreadyIn = true;
-                  commonArticle.push(articles[i].title);
-                  commonArticle.push(articles[j].title);
+                  commonArticle.push(i);
+                  commonArticle.push(j);
                 }
               }
             }
