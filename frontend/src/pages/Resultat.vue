@@ -1,17 +1,18 @@
 <template>
-  <section class="md-layout md-gutter md-alignment-center-space-around">
-    <div class="loading-search-results" v-if="loading">
-      <md-progress-bar md-mode="indeterminate"/>
-    </div>
-    <div class="md-layout-item md-size-25">
+  <section class="md-layout">
+    <div class="md-layout-item">
       <result-sort
+        class="sort-container"
         :sort="sortBy"
         :order="orderBy"
         @change:sort="updateSearchURL('sort', $event)"
         @change:order="updateSearchURL('order', $event)"
       ></result-sort>
     </div>
-    <div class="md-layout-item md-size-66">
+    <div class="md-layout-item md-size-80">
+      <div class="loading-search-results" v-if="loading">
+        <md-progress-bar md-mode="indeterminate"/>
+      </div>
       <div class="results-container">
         <md-tabs
           md-alignment="fixed"
@@ -245,10 +246,17 @@ export default {
 
 <style scoped>
 .loading-search-results {
-  position: relative;
+  /* position: relative;
   width: 100%;
   top: 0;
-  margin-left: 40px;
+  margin-left: 40px; */
+}
+
+.sort-container {
+  position: fixed;
+  /* top: 0;
+  left: 0;
+  margin-top: 75px; */
 }
 
 /* .tabs {
