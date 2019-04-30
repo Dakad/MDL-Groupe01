@@ -14,62 +14,21 @@
       <div class="filter"></div>
     </div>
 
-  <!--<div class="recommended">
-      <p>recommended</p>
-      <div class="switch-news">
-        <md-button class="md-raised" v-on:click="switcher">What might interest you</md-button>
-      </div>
-      <div id="slider">
-        <carousel autoplay=true>
-          <slide>
-            <span class="label">1</span>
-          </slide>
-        </carousel>
-      </div>
-    </div>-->
     <div class="recommended">
-    <carousel :autoplayLoop="true" :autoplay="true" :autoplayTimeout="3000" :per-page="2">
-    <slide class="slide">
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-    <slide>
-      <h3>Titre</h3>
-      <h5>Auteur(s)</h5>
-      <h5>Domaine(s), date</h5><br>
-      <br>
-      <h6>Vues: ...     Citations: ...</h6><br>
-      <h7>Keywords</h7>
-    </slide>
-  </carousel>
-  </div>
+      <carousel :autoplayLoop="true" :autoplay="true" :autoplayTimeout="3000" :per-page="2">
+        <article-slide v-for="(recommanded,index) in list" :key="index" :title="recommanded.title" :authors="recommanded.authors" :domain="recommanded.category" :date="recommanded.created_at" :nb-views="recommanded.nb_views" :nb-quotes="recommanded.nb_citations" :keywords="recommanded.keywords">
+        </article-slide>
+      </carousel>
+    </div>
   </section>
 </template>
 
 
 
 <script>
-import { Carousel, Slide } from "vue-carousel";
+import { Carousel } from "vue-carousel";
+
+import ArticleSlide from "@/components/accueil/ArticleSlide";
 
 import Search from '@/components/navbar/Search';
 
@@ -77,8 +36,8 @@ export default {
   name: "Accueil",
   components: {
     Carousel,
-    Slide,
-    Search
+    Search,
+    ArticleSlide
   },
   data() {
     return {
