@@ -24,20 +24,48 @@
         </div>
       </md-card-content>
     </md-card>
+    <Pagination
+      v-if="page['total_size'] > 1"
+      v-model="currentPage"
+      :page-count="page['total_size']"
+    />
   </div>
 </template>
 
 <script>
+import { Pagination } from "@/components";
+
 export default {
+  name: "SotaList",
+  components: {
+    Pagination
+  },
   props: {
-    list: Array
+    list: {
+      type: Array,
+      default: _ => []
+    },
+    meta: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
-    return {};
+    return {
+      currentPage: 1
+    };
+  },
+  watch: {
+    currentPage: function() {
+      this.$emit("pagination", this.currentPage);
+    }
   },
   computed: {
     sotas() {
       return this.list;
+    },
+    page() {
+      return this.meta || {};
     }
   }
 };
