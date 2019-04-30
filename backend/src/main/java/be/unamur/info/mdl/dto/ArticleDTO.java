@@ -41,7 +41,7 @@ public class ArticleDTO {
   private String url;
 
   @NotBlank(message = "The publication medium is required ")
-  @JsonAlias({"booktitle"})
+  @JsonAlias({"booktitle", "series"})
   private String journal;
 
   private String volume;
