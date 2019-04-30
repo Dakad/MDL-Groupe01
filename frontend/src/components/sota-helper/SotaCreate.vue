@@ -2,18 +2,13 @@
   <div class="container">
     <div class="left">
       <md-field>
-        <label>Name of the Sota</label>
+        <label>Name of the SotA</label>
         <md-input v-model="sotAName"></md-input>
         <span class="md-helper-text">Helper text</span>
       </md-field>
       <md-field>
         <label>Main subject</label>
         <md-input v-model="domain"></md-input>
-        <span class="md-helper-text">Helper text</span>
-      </md-field>
-      <md-field>
-        <label>Date of the state of the art</label>
-        <md-input v-model="year"></md-input>
         <span class="md-helper-text">Helper text</span>
       </md-field>
       <md-field>
@@ -39,15 +34,23 @@
     </div>
 
     <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
-      <md-dialog-title>&nbsp;Are you sure you want to upload this SotA</md-dialog-title>
+      <md-dialog-title>
+        &nbsp;Are you sure you want to upload this SotA
+        <div class="bottom-acc">
+          <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
+          <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
+        </div>
+      </md-dialog-title>
       <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
     </md-dialog>
   </div>
 </template>
 
 <script>
+import { createSota } from "../../services/api-sota";
+
 export default {
-  name: "SotaCreate",
+  name: "CreateSotA",
   data: () => ({
     initial: "Initial Value",
     sotAName: null,
@@ -63,7 +66,25 @@ export default {
     tags: null,
     bibTex: null,
     showAcceptMessage: false
-  })
+  }),
+
+  methods: {
+    sendSota() {
+      let bibtexParse = require("bibtex-parse-js");
+      let articlesArray = {};
+      for (let i = 0; this.bibTex.length(); i++) {
+        articlesArray.append(bibtexParse(this.bibTex[i]));
+      }
+      let jsonSota = {
+        title: this.sotAName,
+        subject: this.domain,
+        authors: [this.author],
+        keywords: this.tags,
+        articles: articlesArray
+      };
+      createSota(jsonSota);
+    }
+  }
 };
 </script>
 

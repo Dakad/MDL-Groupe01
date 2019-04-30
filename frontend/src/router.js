@@ -6,9 +6,9 @@ import Accueil from './pages/Accueil.vue';
 import About from './pages/About.vue';
 import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
-import Sota from './pages/Sota';
+import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
-import SotAHelper from "./pages/SotAHelper";
+import SotaHelper from './pages/SotaHelper';
 
 Vue.use(Router);
 
@@ -26,11 +26,11 @@ export default new Router({
 
     { name: 'articleDetails', path: '/article/:reference', component: Article },
 
-    { name: 'sota', path: '/sota', component: Sota },
+    { name: 'sotaDetails', path: '/sota', component: SotaDetails },
 
     { name: 'profil', path: '/profil', component: Profil },
 
-    { name: 'sotaHelper', path: '/sotahelper', component: SotAHelper},
+    { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper },
 
     { name: '', path: '*', redirect: '/404' }
   ]
