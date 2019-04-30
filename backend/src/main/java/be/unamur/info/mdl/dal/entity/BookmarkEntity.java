@@ -2,18 +2,8 @@ package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +20,7 @@ public class BookmarkEntity {
   private Long id;
 
   @Column
-  private String name;
+  private String note;
 
 
   @Column(name = "created_at")
@@ -40,12 +30,13 @@ public class BookmarkEntity {
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private UserEntity creator;
 
-  @ManyToMany(cascade = {
+  @ManyToOne(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
-  @JoinTable(
-    name = "bookmark_article",
-    joinColumns = @JoinColumn(name = "bookmark_id"),
-    inverseJoinColumns = @JoinColumn(name = "article_id"))
-  private Set<ArticleEntity> articles;
+  private ArticleEntity article;
+
+  @ManyToOne(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  private ArticleEntity sota;
 }

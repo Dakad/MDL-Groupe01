@@ -5,10 +5,8 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+
 import java.security.Principal;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +60,18 @@ public class ArticleController extends APIBaseController {
       return new ResponseEntity<>(articleData, HttpStatus.OK);
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
+
+  @RequestMapping(path="/{reference}/bookmark-add", method = RequestMethod.POST)
+  public ResponseEntity addBookmark(
+    @Valid @PathVariable String reference,
+    Principal authUser,@ApiParam(name = "note", defaultValue = "No description added") @Valid @RequestBody String note) {
+    try{
+      if(articleService.addBookmark(reference, authUser.getName(),note)) return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
+      else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something, somewhere, has gone sideways.\nAnd basically, error...");
+    }catch (ArticleNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
     }
   }
 

@@ -1,9 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.AuthorEntity;
-import be.unamur.info.mdl.dal.entity.TagEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
+import be.unamur.info.mdl.dal.entity.*;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.AuthorRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
@@ -138,6 +135,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     newArticle.setKeywords(list);
+  }
+
+  @Override
+  public boolean addBookmark(String reference, String username, String note) throws ArticleNotFoundException{
+    if(!userRepository.existsByUsername(username)) return false;
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if(!article.isPresent()) throw new ArticleNotFoundException("");
+    UserEntity user = userRepository.findByUsername(username);
+    if(user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article))) return false;
+    BookmarkEntity bookmark = new BookmarkEntity();
+    bookmark.setArticle(article.get()); bookmark.setCreator(user); bookmark.setNote(note);
+    user.getBookmarks().add(bookmark);
+    article.get().getBookmarks().add(bookmark);
+    return true;
   }
 
 }
