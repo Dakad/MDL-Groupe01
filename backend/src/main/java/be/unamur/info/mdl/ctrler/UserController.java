@@ -178,7 +178,7 @@ public class UserController extends APIBaseController {
   }
 
 
-  @RequestMapping(path = "/{username}/profile/isfollowed", method = RequestMethod.GET)
+  @RequestMapping(path = "/{username}/followed", method = RequestMethod.GET)
   public ResponseEntity isFollowed(@PathVariable String username, Principal authUser) {
     try {
       if (username.equals(authUser.getName())) {
