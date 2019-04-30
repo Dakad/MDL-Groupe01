@@ -41,6 +41,10 @@
       <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
         <md-dialog-title>
           &nbsp;Are you sure you want to upload this SotA
+          <div class="bottom-acc">
+            <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
+            <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
+          </div>
         </md-dialog-title>
         <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
       </md-dialog>
@@ -67,6 +71,7 @@
         bibTex: null,
         showAcceptMessage: false
       })
+
     }
 </script>
 
