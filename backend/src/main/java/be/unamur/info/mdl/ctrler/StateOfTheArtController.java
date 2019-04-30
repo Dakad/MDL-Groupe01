@@ -5,7 +5,8 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
+import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +44,7 @@ public class StateOfTheArtController extends APIBaseController {
     try {
       StateOfTheArtDTO sota = sotaService.getSotaByReference(reference);
       return ResponseEntity.status(HttpStatus.OK).body(sota);
-    } catch (SotatNotFoundException e) {
+    } catch (SotaNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
@@ -70,4 +72,20 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
+  @DeleteMapping({"/{reference}"})
+public ResponseEntity delete (@PathVariable String reference, Principal authUser)
+    throws UsernameNotFoundException {
+    try {
+      sotaService.delete(reference, authUser.getName());
+      return ResponseEntity.noContent().build();
+
+    } catch (SotaNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+  }
 }
+
+
+
