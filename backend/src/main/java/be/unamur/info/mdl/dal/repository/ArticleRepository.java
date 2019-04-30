@@ -6,12 +6,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import be.unamur.info.mdl.dal.entity.UserEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
-  Stream<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
+  Page<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
 
   ArticleEntity findByTitle(String title);
 
