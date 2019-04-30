@@ -21,7 +21,7 @@
 import SotaCreate from "../components/sotaHelper/SotaCreate";
 export default {
   name: "SotaHelper",
-  components: { SotaCreate }
+  components: { "createSota" : SotaCreate }
 };
 </script>
 
