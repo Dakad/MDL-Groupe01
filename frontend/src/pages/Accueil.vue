@@ -15,7 +15,7 @@
     </div>
 
     <div class="recommended">
-      <carousel :autoplayLoop="true" :autoplay="true" :autoplayTimeout="3000" :per-page="2">
+      <carousel :loop="true" :autoplay="true" :autoplayTimeout="2000" :per-page="3" :navigationEnabled="true">
         <article-slide v-for="(recommanded,index) in list" :key="index" :title="recommanded.title" :authors="recommanded.authors" :domain="recommanded.category" :date="recommanded.created_at" :nb-views="recommanded.nb_views" :nb-quotes="recommanded.nb_citations" :keywords="recommanded.keywords">
         </article-slide>
       </carousel>
@@ -23,14 +23,14 @@
   </section>
 </template>
 
-
-
 <script>
-import { Carousel } from "vue-carousel";
+import { Carousel, Slide } from "vue-carousel";
 
 import ArticleSlide from "@/components/accueil/ArticleSlide";
 
 import Search from '@/components/navbar/Search';
+
+import dummy from "@/assets/dummy-Results.json";
 
 export default {
   name: "Accueil",
@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       searchInput: null,
+      list: dummy.results.articles,
       //carrouselAutoplay: true
     };
   },
