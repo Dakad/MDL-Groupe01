@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import sota from "@/components/resulat/SotaList";
+import sota from "@/components/resultat/SotaList";
 
 export default {
   components: {
