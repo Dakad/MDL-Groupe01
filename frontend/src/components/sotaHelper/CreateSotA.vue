@@ -12,11 +12,6 @@
           <span class="md-helper-text">Helper text</span>
         </md-field>
         <md-field>
-          <label>Date of the state of the art</label>
-          <md-input v-model="year"></md-input>
-          <span class="md-helper-text">Helper text</span>
-        </md-field>
-        <md-field>
           <label>Authors</label>
           <md-input v-model="author"></md-input>
           <span class="md-helper-text">Helper text</span>
