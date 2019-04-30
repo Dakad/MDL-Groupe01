@@ -53,6 +53,10 @@
 </template>
 
 <script>
+  import {createSota} from "../../services/api-sota";
+
+
+
     export default {
         name: "CreateSotA",
       data: () => ({
@@ -70,7 +74,19 @@
         tags: null,
         bibTex: null,
         showAcceptMessage: false
-      })
+      }),
+
+      methods: {
+          sendSota() {
+            let bibtexParse = require('bibtex-parse-js');
+            let articlesArray = {}
+            for (let i =0; this.bibTex.length(); i++){
+              articlesArray.append(bibtexParse(this.bibTex[i]))
+            }
+            let jsonSota = {title: this.sotAName, subject: this.domain, authors: [this.author], keywords: this.tags, articles: articlesArray}
+            createSota(jsonSota)
+          }
+      }
 
     }
 </script>
