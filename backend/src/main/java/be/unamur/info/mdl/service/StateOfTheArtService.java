@@ -4,7 +4,7 @@ import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
+import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 
 public interface StateOfTheArtService {
@@ -16,9 +16,9 @@ public interface StateOfTheArtService {
    * @param reference The provided reference
    * @return The data of the matching SoTA.
    * @throws IllegalArgumentException if the provided reference is null.
-   * @throws SotatNotFoundException The referenced SoTA is not found in persistence.
+   * @throws SotaNotFoundException The referenced SoTA is not found in persistence.
    */
-  StateOfTheArtDTO getSotaByReference(String reference) throws SotatNotFoundException;
+  StateOfTheArtDTO getSotaByReference(String reference) throws SotaNotFoundException;
 
 
   /**
@@ -33,7 +33,7 @@ public interface StateOfTheArtService {
   StateOfTheArtDTO create(StateOfTheArtDTO data, UserDTO creator)
     throws SotaAlreadyExistException, ArticleNotFoundException;
 
-  boolean delete (String reference, String creator)
-    throws SotatNotFoundException, UsernameNotFoundException;
+  boolean delete (String reference, String username)
+    throws  UsernameNotFoundException;
 }
 
