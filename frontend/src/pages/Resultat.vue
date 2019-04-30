@@ -259,13 +259,6 @@ export default {
   margin-top: 75px; */
 }
 
-.sort-container {
-  position: static;
-  top: 0;
-  left: 0;
-  margin-top: 75px;
-}
-
 /* .tabs {
   position: absolute;
   top: 15%;
