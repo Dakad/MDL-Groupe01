@@ -1,9 +1,6 @@
 <template>
-  <section class="md-layout md-alignment-center-space-around">
-    <div class="loading-search-results" v-if="loading">
-      <md-progress-bar md-mode="indeterminate"/>
-    </div>
-    <div class="md-layout-item md-size-25">
+  <section class="md-layout">
+    <div class="md-layout-item">
       <result-sort
         class="sort-container"
         :sort="sortBy"
@@ -12,7 +9,10 @@
         @change:order="updateSearchURL('order', $event)"
       ></result-sort>
     </div>
-    <div class="md-layout-item md-size-66">
+    <div class="md-layout-item md-size-80">
+      <div class="loading-search-results" v-if="loading">
+        <md-progress-bar md-mode="indeterminate"/>
+      </div>
       <div class="results-container">
         <md-tabs
           md-alignment="fixed"
@@ -23,10 +23,20 @@
             <sota-list v-show="!loading" :list="results.sotas"></sota-list>
             <md-empty-state
               v-if="!results.sotas || results.sotas.length == 0"
-              md-icon="view_module"
+              md-icon="sentiment_dissatisfied"
               md-label="No states of the art found"
-              md-description="Creating project, you'll be able to upload your design and collaborate with people."
-            ></md-empty-state>
+              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+            >
+              <div>If you want to try again,</div>
+              <ul>
+                <li>
+                  Check your spelling,
+                  <md-icon>insert_emoticon</md-icon>
+                </li>
+                <li>Use less specific term(s) for a wider result</li>
+                <li>Use differents words with the same meaning</li>
+              </ul>
+            </md-empty-state>
           </md-tab>
           <md-tab id="articles" md-label="Articles" md-icon="description">
             <article-list
@@ -39,7 +49,7 @@
               v-if="!results.articles || results.articles.length == 0"
               md-icon="description"
               md-label="No articles found"
-              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
@@ -47,8 +57,8 @@
             <md-empty-state
               v-if="!results.authors || results.authors.length == 0"
               md-icon="people"
-              md-label="No states of the art found"
-              md-description="Creating project, you'll be able to upload your design and collaborate with people."
+              md-label="No authors/users found"
+              :md-description="'Sorry, we didn\'t find any authors/users matching your search for \'\''+searchTerm+'\'\''"
             ></md-empty-state>
           </md-tab>
           <md-tab
@@ -75,7 +85,6 @@
               v-if="isEmptyArticlesTags"
               md-icon="cloud"
               md-label="No word cloud to display"
-              md-description="Creating project, you'll be able to upload your design and collaborate with people."
             ></md-empty-state>
             <word-cloud v-else :tags="articlesTags"></word-cloud>
           </md-tab>
@@ -180,12 +189,12 @@ export default {
 
           this.articlesTags = res["articles"].reduce((acc, article) => {
             // As the same time, push the article title
-            let infoTab = [];
-            infoTab.push(article.title);
-            infoTab.push(article.reference);
-            infoTab.push(article.category);
-            infoTab.push(article.year);
-            this.articlesTitles.push(infoTab);
+            this.articlesTitles.push({
+              title: article.title,
+              reference: article.reference,
+              year: article.year,
+              domain: article.category
+            });
             article.keywords.forEach(({ name, slug }) => {
               const nb = acc[slug] ? acc[slug]["occur"] : 0;
               acc[slug] = { name, occur: nb + 1 };
@@ -246,17 +255,17 @@ export default {
 
 <style scoped>
 .loading-search-results {
-  position: relative;
+  /* position: relative;
   width: 100%;
   top: 0;
-  margin-left: 40px;
+  margin-left: 40px; */
 }
 
 .sort-container {
-  position: static;
-  top: 0;
+  position: fixed;
+  /* top: 0;
   left: 0;
-  margin-top: 75px;
+  margin-top: 75px; */
 }
 
 /* .tabs {

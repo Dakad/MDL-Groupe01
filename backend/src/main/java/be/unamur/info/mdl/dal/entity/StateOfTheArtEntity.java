@@ -50,6 +50,11 @@ public class StateOfTheArtEntity {
   @Column(name = "description")
   private String description;
 
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "category_id", nullable = false)
+  private TagEntity category;
+
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
 
