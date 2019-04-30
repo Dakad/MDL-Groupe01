@@ -10,9 +10,9 @@
         </md-button>
       </md-field>
     </div>
-    <div v-if="!isInModeNavbar" class="searchbutton">
+    <!-- <div v-if="!isInModeNavbar" class="searchbutton">
       <md-button class="md-raised" v-on:click="searchIt()">search</md-button>
-    </div>
+    </div>-->
   </div>
 </template>
 

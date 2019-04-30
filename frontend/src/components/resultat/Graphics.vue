@@ -52,7 +52,7 @@
           <span class="holder name">{{nameHolder}}</span>
           <br>
           <label>Domain</label> :
-          <span class="holder domain">{{domainHolder}}</span>
+          <span class="holder domain">{{domainHolder | capitalize }}</span>
           <br>
           <label>Year of publication</label> :
           <span class="holder year">{{yearHolder}}</span>
@@ -65,7 +65,7 @@
         <h5>Legend</h5>
         <p>Main domain of the article</p>
         <li class="colors-info" v-for="(item, i) in legendMaker" :key="i">
-          <p :style="{ color: item['color'] }">{{item['domain']}}</p>
+          <p :style="{ color: item['color'] }">{{item['domain'] | capitalize }}</p>
         </li>
       </div>
 
@@ -142,7 +142,7 @@ export default {
       };
     },
     coords() {
-      var clientWidth = document.getElementById("graphics").clientWidth;
+      const clientWidth = document.getElementById("graphics").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
@@ -192,10 +192,10 @@ export default {
           index: i,
           x: null,
           y: null,
-          name: this.articlesTitles[i][0],
-          domain: this.articlesTitles[i][2],
-          ref: this.articlesTitles[i][1],
-          year: this.articlesTitles[i][3]
+          name: this.articlesTitles[i]["title"],
+          domain: this.articlesTitles[i]["domain"],
+          ref: this.articlesTitles[i]["reference"],
+          year: this.articlesTitles[i]["year"]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
           source: this.linkedArticles[i][0],
