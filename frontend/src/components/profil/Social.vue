@@ -3,6 +3,7 @@
         <div class ="column">
             <h2>Social Informations</h2>
             <ul class="social-icons">
+              <!--TODO : GET SOCIAL LINK FOR PROFILE-->
                 <li><a href="http://www.facebook.com"><img src="@/assets/Facebook_Logo.png" /></a></li>
                 <li><a href="http://www.twitter.com"><img src="@/assets/Twitter_Logo.png" /></a></li>
                 <li><a href="http://www.youtube.com"><img src="@/assets/Linkedin_logo.png" /></a></li>
@@ -19,11 +20,17 @@
 
         </div>
         <div class ="column">
-            <h2>Followed</h2>
-             <authorList :list="[12,2,3]"></authorList>
+            <h2>Followed : {{nbrFollowed}}</h2>
+            <!--TODO: Use authorList component-->
+              <ul id="Followed">
+                <li v-for="people in jsonFollow.Followed" :key="people">{{ people }}</li>
+              </ul>
         </div>
         <div class ="column">
-            <h2>Followers</h2>
+            <h2>Followers : {{nbrFollowers}}</h2>
+              <ul id="Follower">
+                <li v-for="people in jsonFollow.Follower" :key="people">{{ people }}</li>
+              </ul>
         </div>
     </div>
 </template>
@@ -36,12 +43,21 @@ export default {
   data(){
     return{
       jsonFollow,
-      loading:false
+      loading:false,
     }
-  }
+  },
+  computed:{
+      nbrFollowers:function(){
+        return this.jsonFollow.Follower.length
+      },
+      nbrFollowed:function(){
+        return this.jsonFollow.Followed.length
+
+      }
+    }
+}
   
     
-}
 </script>
 <style scoped>
 .column {
