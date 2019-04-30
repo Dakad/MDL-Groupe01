@@ -104,10 +104,9 @@ public class UserServiceImpl implements UserService {
     if (!this.isFollowed(username, follower)) {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
-
       userFollower.getFollows().add(userFollowed);
-      userFollowed.getFollowers().add(userFollower);
-
+      if(!userFollowed.getFollowers().contains(userFollower))userFollowed.getFollowers().add(userFollower);
+      userRepository.save(userFollower);
       userRepository.save(userFollower);
       return true;
     }
