@@ -4,8 +4,8 @@
       <h5 v-for="name in authors" :key="name">{{ name }}</h5>
       <h5>{{ domain }}, {{ date }}</h5><br>
       <br>
-      <h6>Views: {{ nbViews }}     Quotes: {{ nbQuotes }}</h6><br>
-      <h7 v-for="word in keywords" :key="word">{{ word }}</h7>
+      <h6>Views: {{ nbViews }}     Quotes: {{ nbQuotes }}</h6>
+      <md-chip v-for="(word,index) in keywords" :key="index">{{ word }}</md-chip>
     </slide>
 </template>
 
