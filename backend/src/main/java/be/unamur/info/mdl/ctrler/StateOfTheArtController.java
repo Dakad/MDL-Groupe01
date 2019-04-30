@@ -64,7 +64,7 @@ public class StateOfTheArtController extends APIBaseController {
       currentUser.setUsername(username);
 
       StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-      return ResponseEntity.status(HttpStatus.OK).body(sota);
+      return ResponseEntity.status(HttpStatus.CREATED).body(sota);
     } catch (SotaAlreadyExistException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     } catch (ArticleNotFoundException e) {
