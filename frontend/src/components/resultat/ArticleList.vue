@@ -26,9 +26,9 @@
       </md-card-content>
     </md-card>
     <Pagination
-      v-if="page['total_size'] > 1"
+      v-if="page['total_pages'] >= 1"
       v-model="currentPage"
-      :page-count="page['total_size']"
+      :page-count="page['total_pages']"
     />
   </div>
 </template>
