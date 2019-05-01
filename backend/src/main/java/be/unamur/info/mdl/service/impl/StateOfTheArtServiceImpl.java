@@ -79,9 +79,11 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
     UserEntity creator = userRepository.findByUsername(currentUser.getUsername());
     newSota.setCreator(creator);
-    newSota.setCreatedAt(LocalDate.now());
 
-    this.attachReference(newSota, sotaData.getArticleList());
+    // Set the category or create a new one
+    this.attachCategory(newSota, sotaData.getCategory());
+
+    this.attachArticles(newSota, sotaData.getArticleList());
 
     this.attachKeywords(newSota, sotaData.getKeywordList());
 
@@ -123,6 +125,19 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     return DigestUtils.md5DigestAsHex(titleBytes);
   }
 
+
+  /**
+   * Attach a new category or the one persisted in DB.
+   *
+   * @param newSota The new SoTA being created
+   * @param categoryName - The category name
+   */
+  private void attachCategory(StateOfTheArtEntity newSota, String categoryName) {
+    TagEntity category = ServiceUtils.getOrCreateTag(categoryName, this.tagRepository);
+    category.getStatesOfTheArts().add(newSota);
+    newSota.setCategory(category);
+  }
+
   /**
    * Attach the corresponding Article (persisted) to the new SoTA
    *
@@ -130,7 +145,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    * @param references The article's reference list
    * @throws ArticleNotFoundException The article reference is not in persistence.
    */
-  private void attachReference(StateOfTheArtEntity newSota, List<String> references)
+  private void attachArticles(StateOfTheArtEntity newSota, List<String> references)
     throws ArticleNotFoundException {
     List<ArticleEntity> list = new LinkedList<ArticleEntity>();
     Optional<ArticleEntity> entity;

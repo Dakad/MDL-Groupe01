@@ -71,12 +71,12 @@ public class DbDataLoaderRunner implements CommandLineRunner {
     TypeReference<List<String>> dtoTypeReference = new TypeReference<List<String>>() {
     };
     inputStream = TypeReference.class.getResourceAsStream("/json/categories.data.json");
-    List<String> list = mapper.readValue(inputStream, dtoTypeReference);
+    List<String> categories = mapper.readValue(inputStream, dtoTypeReference);
 
-    LOGGER.info("Saving " + list.size() + " categories into DB");
+    LOGGER.info("Saving " + categories.size() + " categories into DB");
 
     Slugify slugify = new Slugify();
-    for (String name : list) {
+    for (String name : categories) {
       try {
         String slug = slugify.slugify(name);
         TagEntity tag = TagEntity.builder().name(name).slug(slug).build();

@@ -2,7 +2,7 @@
   {
     "reference": "sota123",
     "title": "My first sota",
-    "description": "Lorem ipsum dolor sit amet, laoreet egestas justo et, lobortis quis non lorem congue arcu",
+    "subject": "Computer science",
     "articles": [
       "GARCIA201721",
       "AMPATZOGLOU2010888",
@@ -18,6 +18,7 @@
     "reference": "sota456",
     "title": "My second sota",
     "description" : "Lorem ipsum dolor sit amet non. Magna a sed lobortis libero curabitur montes urna egestas integer vitae sed justo litora pellentesque. Quis diam in. Praesent arcu nisl ad amet urna. Sagittis faucibus at orci sit amet quam erat sed quidem semper sed.",
+    "subject": "Unknown",
     "articles": [
       "Kaunang:2019:PSP:3306500.3306529",
       "Rorrer:2019:ILO:3287324.3293848",

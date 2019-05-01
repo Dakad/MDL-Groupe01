@@ -29,10 +29,9 @@ public class StateOfTheArtDTO {
 
   private String reference;
 
-  private String description;
 
   @JsonProperty(value = "subject", access = Access.WRITE_ONLY)
-  private String category = "nknown";
+  private String category = "unknown";
 
 
   @JsonAlias("created_at")
