@@ -1,15 +1,13 @@
 package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dal.entity.*;
-import be.unamur.info.mdl.dal.repository.ArticleRepository;
-import be.unamur.info.mdl.dal.repository.AuthorRepository;
-import be.unamur.info.mdl.dal.repository.TagRepository;
-import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -28,6 +26,7 @@ public class ArticleServiceImpl implements ArticleService {
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
   private final AuthorRepository authorRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   private final Slugify slugify = new Slugify();
 
@@ -35,11 +34,12 @@ public class ArticleServiceImpl implements ArticleService {
   @Autowired
   public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository,
     TagRepository tagRepository,
-    AuthorRepository authorRepository) {
+    AuthorRepository authorRepository,BookmarkRepository bookmarkRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
     this.authorRepository = authorRepository;
+    this.bookmarkRepository = bookmarkRepository;
   }
 
 
@@ -143,11 +143,27 @@ public class ArticleServiceImpl implements ArticleService {
     Optional<ArticleEntity> article = articleRepository.findByReference(reference);
     if(!article.isPresent()) throw new ArticleNotFoundException("");
     UserEntity user = userRepository.findByUsername(username);
-    if(user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article))) return false;
+    if(user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) return false;
     BookmarkEntity bookmark = new BookmarkEntity();
     bookmark.setArticle(article.get()); bookmark.setCreator(user); bookmark.setNote(note);
     user.getBookmarks().add(bookmark);
     article.get().getBookmarks().add(bookmark);
+    return true;
+  }
+
+  @Override
+  public boolean removeBookmark(String reference, String username) throws ArticleNotFoundException, BookmarkNotFoundException {
+    if(!userRepository.existsByUsername(username)) return false;
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if(!article.isPresent()) throw new ArticleNotFoundException("");
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository.findByCreatorAndArticle(user, article.get());
+    if(!bookmark.isPresent()) throw new BookmarkNotFoundException();
+    user.getBookmarks().remove(bookmark.get());
+    article.get().getBookmarks().remove(bookmark.get());
+    userRepository.save(user);
+    articleRepository.save(article.get());
+    bookmarkRepository.delete(bookmark.get());
     return true;
   }
 

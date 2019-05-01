@@ -4,6 +4,7 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 
 public interface ArticleService {
 
@@ -24,4 +25,14 @@ public interface ArticleService {
    * @throws ArticleNotFoundException if the reference corresponds to no article
    */
   boolean addBookmark(String reference, String username, String note) throws ArticleNotFoundException;
+
+  /**
+   * Removes a bookmarked article from a user's list of bookmarked articles
+   * @param reference the reference to the article
+   * @param username the user's username
+   * @return true if the removal succeeded and false else
+   * @throws ArticleNotFoundException if the reference corresponds to no article
+   */
+  boolean removeBookmark(String reference, String username) throws ArticleNotFoundException, BookmarkNotFoundException;
+
 }

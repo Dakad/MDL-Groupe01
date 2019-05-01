@@ -5,6 +5,8 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.swagger.annotations.*;
 
 import java.security.Principal;
@@ -66,12 +68,25 @@ public class ArticleController extends APIBaseController {
   @RequestMapping(path="/{reference}/bookmark-add", method = RequestMethod.POST)
   public ResponseEntity addBookmark(
     @Valid @PathVariable String reference,
-    Principal authUser,@ApiParam(name = "note", defaultValue = "No description added") @Valid @RequestBody String note) {
+    Principal authUser,
+    @ApiParam(name = "note", defaultValue = "No description added") @Valid @RequestBody String note) {
     try{
       if(articleService.addBookmark(reference, authUser.getName(),note)) return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
       else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something, somewhere, has gone sideways.\nAnd basically, error...");
     }catch (ArticleNotFoundException e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
+    }
+  }
+
+  @RequestMapping(path="/{reference}/bookmark-remove", method = RequestMethod.DELETE)
+  public ResponseEntity removeBookmark(@Valid @PathVariable String reference, Principal authUser){
+    try {
+      if(articleService.removeBookmark(reference,authUser.getName())) return ResponseEntity.status(HttpStatus.OK).body("Bookmark removed");
+      else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+    }catch (ArticleNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article reference does not exist");
+    }catch (BookmarkNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This bookmark does not exist");
     }
   }
 
