@@ -47,20 +47,18 @@ public class StateOfTheArtEntity {
   @EqualsAndHashCode.Include
   private String reference;
 
-  @Column(name = "description")
-  private String description;
-
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "category_id", nullable = false)
   private TagEntity category;
 
   @Column(name = "created_at")
+  @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity creator;
 
 
@@ -94,9 +92,7 @@ public class StateOfTheArtEntity {
       .collect(Collectors.toList());
 
     StateOfTheArtEntityBuilder entity = StateOfTheArtEntity.builder();
-    entity.id(data.getId()).reference(data.getReference());
-    entity.title(data.getTitle()).description(data.getDescription());
-    entity.createdAt(data.getCreatedAt());
+    entity.id(data.getId()).reference(data.getReference()).title(data.getTitle());
     entity.keywords(listOfTags).articles(listOfArticles);
 
     return entity.build();
@@ -107,7 +103,7 @@ public class StateOfTheArtEntity {
     List<TagDTO> listOfTags = keywords.stream().map(t -> t.toDTO()).collect(Collectors.toList());
 
     StateOfTheArtDTOBuilder dto = StateOfTheArtDTO.builder();
-    dto.id(id).title(title).reference(reference).description(description);
+    dto.id(id).title(title).reference(reference).category(category.getName());
     dto.createdAt(createdAt).creator(creator.toDTO());
     dto.keywords(listOfTags);
 
