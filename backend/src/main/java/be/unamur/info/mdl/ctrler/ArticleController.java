@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,16 +73,27 @@ public class ArticleController extends APIBaseController {
 
   @ApiOperation(value = "Retrieve a list of article by their references")
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully retrieved", response = ArticleDTO[].class),
+    @ApiResponse(code = 200, message = "List of the matching articles", response = ArticleDTO[].class),
     @ApiResponse(code = 400, message = "The list of provided references is empty"),
     @ApiResponse(code = 404, message = "The provided reference doesn't exist")
   })
-  @GetMapping(path = "/")
-  public ResponseEntity listByReferences(
-    @RequestParam(name = "ref") List<@NotBlank(message = "The reference must be defined") String> references) {
-    List<ArticleDTO> list = articleService.listArticleByReferences(references);
-    return new ResponseEntity(list, HttpStatus.OK);
+  @GetMapping(name = "GET_articles_by_references", path = "", params = "reference")
+  public List<ArticleDTO> listByReferences(
+    @RequestParam(name = "reference") List<@NotBlank(message = "The reference must be defined") String> references) {
+    return articleService.listArticleByReferences(references);
   }
 
+
+  @ApiOperation(value = "Retrieve a list of article by their categories")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of the matching articles"),
+  })
+  @GetMapping(name = "GET_articles_by_categories",path = "", params = "category")
+  public Map<String, List<ArticleDTO>> listByCategories(
+    @RequestParam(name = "category") List<String> categories) {
+    Map<String, List<ArticleDTO>> articles = articleService
+      .listArticleByCategories(categories);
+    return articles;
+  }
 
 }
