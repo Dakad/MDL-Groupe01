@@ -1,60 +1,52 @@
 <template>
   <header class="navappregister">
-    <div>
-      <!--The main navigation bar-->
-      <md-toolbar class="md=accent" md-elevation="1">
-        <router-link
-          to="/"
-          :class="[!searchBar.show ? 'flex': '', 'md-title','app-name']"
-        >Froggosaur</router-link>
-        <search
-          v-show="searchBar.show"
-          :mode="searchBar.mode"
-          :term="searchBar.input"
-          id="search"
-          class="flex"
-        ></search>
+    <!--The main navigation bar-->
+    <md-toolbar class="md=accent" md-elevation="1">
+      <router-link to="/" :class="[!searchBar.show ? 'flex': '', 'md-title','app-name']">Froggosaur</router-link>
+      <search
+        v-show="searchBar.show"
+        :mode="searchBar.mode"
+        :term="searchBar.input"
+        id="search"
+        class="flex"
+      ></search>
 
-        <!-- <div class="search">
+      <!-- <div class="search">
           <form class="form-inline my-2 my-lg-0 ml-auto">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
           </form>
-        </div>-->
-        <div class="buttons" style="float: right">
-          <div v-if="isAuthenticated">
-            <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-              <md-icon>person</md-icon>
-            </md-button>
-          </div>
-          <div v-else>
-            <!--Login button open the login dialog-->
-            <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
-            <!--Register button refer to the register page (RegisterVue)-->
-            <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
-          </div>
+      </div>-->
+      <div class="buttons" style="float: right">
+        <div v-if="isAuthenticated">
+          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
+            <md-icon>person</md-icon>
+          </md-button>
         </div>
-      </md-toolbar>
-      <!-- Create the login dialog -->
-      <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
-        <md-dialog-title>
-          <md-icon :class="['md-size-2x', {'text-danger':loginFailed}]">security</md-icon>&nbsp; Login
-        </md-dialog-title>
-        <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
-      </md-dialog>
+        <div v-else>
+          <!--Login button open the login dialog-->
+          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+          <!--Register button refer to the register page (RegisterVue)-->
+          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+        </div>
+      </div>
+    </md-toolbar>
+    <!-- Create the login dialog -->
+    <md-dialog class="login-dialog" :md-active.sync="showLoginDialog">
+      <md-dialog-title>
+        <md-icon :class="['md-size-2x', {'text-danger':loginFailed}]">security</md-icon>&nbsp; Login
+      </md-dialog-title>
+      <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
+    </md-dialog>
 
-      <!--Create the register dialog-->
-      <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
-        <md-dialog-title>
-          <md-icon :class="[ 'md-size-2x',{'text-danger':signinFailed }]">account_box</md-icon>&nbsp;
-          <span>Create account</span>
-        </md-dialog-title>
-        <register
-          @error="handleError('register', $event)"
-          @success="handleSuccess('signin',$event)"
-        />
-      </md-dialog>
-    </div>
+    <!--Create the register dialog-->
+    <md-dialog class="signin-dialog" :md-active.sync="showRegisterDialog">
+      <md-dialog-title>
+        <md-icon :class="[ 'md-size-2x',{'text-danger':signinFailed }]">account_box</md-icon>&nbsp;
+        <span>Create account</span>
+      </md-dialog-title>
+      <register @error="handleError('register', $event)" @success="handleSuccess('signin',$event)"/>
+    </md-dialog>
     <md-snackbar
       md-position="center"
       :md-duration="snackbarTime"
@@ -81,12 +73,6 @@
 .search {
   margin: 0 40px;
 }
-// .buttons {
-//   align-content: right;
-// }
-// .md-dialog {
-//   widows: 100%;
-// }
 </style>
 
 
@@ -118,13 +104,24 @@ export default {
     };
   },
   watch: {
-    "$route.name"(route) {
+    "$route.name": function(route) {
       this.searchBar.show = route != "accueil";
       this.searchBar.input = this.$route.query["search"];
-    }
+    },
+    "$route.query": function(route) {}
   },
+  created() {},
+
   mounted() {
     this.searchBar.show = this.$route.name != "accueil";
+    switch (this.$route.query["action"]) {
+      case "login":
+        this.showLoginDialog = true;
+        break;
+
+      default:
+        break;
+    }
 
     sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
@@ -154,6 +151,9 @@ export default {
           this.showLoginDialog = false;
           msg = `Hello ${msg} ! Welcome BACK :-D !!`;
           this.isAuthenticated = true;
+          if (this.$route.query["redirect"]) {
+            this.$router.replace(this.$route.query["redirect"]);
+          }
           break;
         case "register":
         case "signin":
