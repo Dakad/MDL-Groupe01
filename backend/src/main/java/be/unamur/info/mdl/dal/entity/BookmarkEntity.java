@@ -6,10 +6,11 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @Table(name = "bookmark")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +18,7 @@ public class BookmarkEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column
@@ -38,5 +40,5 @@ public class BookmarkEntity {
   @ManyToOne(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
-  private ArticleEntity sota;
+  private StateOfTheArtEntity sota;
 }
