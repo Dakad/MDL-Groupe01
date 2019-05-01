@@ -25,25 +25,48 @@
         </div>
       </md-card-content>
     </md-card>
+    <Pagination
+      v-if="page['total_pages'] >= 1"
+      v-model="currentPage"
+      :page-count="page['total_pages']"
+    />
   </div>
 </template>
 
 <script>
+import { Pagination } from "@/components";
+
 export default {
+  name: "ArticleList",
+  components: {
+    Pagination
+  },
   props: {
     list: {
       type: Array,
       default: _ => []
+    },
+    meta: {
+      type: Object,
+      default: () => {}
     }
   },
-
   data() {
-    return {};
+    return {
+      currentPage: 1
+    };
   },
-
+  watch: {
+    currentPage: function() {
+      this.$emit("pagination", this.currentPage);
+    }
+  },
   computed: {
     articles() {
       return this.list;
+    },
+    page() {
+      return this.meta || {};
     }
   },
   methods: {}

@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -100,28 +98,12 @@ public class ArticleServiceImpl implements ArticleService {
    * @param categoryName - The category name
    */
   private void attachCategory(ArticleEntity newArticle, String categoryName) {
-    TagEntity category = this.getOrCreateTag(categoryName);
+    TagEntity category = ServiceUtils.getOrCreateTag(categoryName, this.tagRepository);
     category.getArticlesByCategory().add(newArticle);
     newArticle.setCategory(category);
   }
 
-  /**
-   * Get the matching tag from the repository or create a new one.
-   * @param tagName  The tag name
-   * @return the persisted or created Tag
-   */
-  private TagEntity getOrCreateTag(String tagName) {
-    String slug = this.slugify.slugify(tagName);
-    Optional<TagEntity> dbTag = this.tagRepository.findBySlug(slug);
 
-    TagEntity tag;
-    if (dbTag.isPresent()) {
-      tag = dbTag.get();
-    } else {
-      tag = TagEntity.builder().name(tagName.trim()).slug(slug).build();
-    }
-    return tag;
-  }
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
@@ -143,14 +125,14 @@ public class ArticleServiceImpl implements ArticleService {
   /**
    * Attach the corresponding Author(created or persisted) to the new article
    * @param newArticle - The new Article being created
-   * @param keywords - The author's name list.
+   * @param keywords - The keyword's name list.
    */
   private void attachKeywords(ArticleEntity newArticle, Set<String> keywords) {
     Set<TagEntity> list = new LinkedHashSet<>(keywords.size());
     TagEntity keyword;
 
     for (String keywordName : keywords) {
-      keyword = getOrCreateTag(keywordName);
+      keyword = ServiceUtils.getOrCreateTag(keywordName, this.tagRepository);
       keyword.getArticlesByKeyword().add(newArticle);
       list.add(keyword);
     }
