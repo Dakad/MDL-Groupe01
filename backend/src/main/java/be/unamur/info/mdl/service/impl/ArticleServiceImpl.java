@@ -19,8 +19,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service("articleService")
@@ -57,7 +59,14 @@ public class ArticleServiceImpl implements ArticleService {
     } else {
       return dbArticle.get().toDTO();
     }
+  }
 
+
+  @Override
+  public List<ArticleDTO> listArticleByReferences(List<String> references) {
+    Sort sortByViews = Sort.by("nb_views");
+    return this.articleRepository.findDistinctFirstByReferenceIsIn(references, sortByViews).map(a -> a.toDTO()).collect(
+      Collectors.toList());
   }
 
   @Override
