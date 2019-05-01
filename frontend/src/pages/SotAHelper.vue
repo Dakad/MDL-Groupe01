@@ -5,7 +5,7 @@
       <div class="tabs">
         <md-tabs md-alignment="fixed">
           <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
-
+            <GestionSota/>
           </md-tab>
           <md-tab id="visualisation" md-label="Visualisation" md-icon="view_module">
 
@@ -23,9 +23,10 @@
 
 <script>
     import CreateSotA from "../components/sotaHelper/CreateSotA";
+    import GestionSota from "../components/sotaHelper/GestionSota";
     export default {
         name: "SotAHelper",
-      components: {CreateSotA}
+      components: {CreateSotA, GestionSota}
     }
 </script>
 
