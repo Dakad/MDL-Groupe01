@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import SotaCreate from "../components/sotaHelper/SotaCreate";
+import SotaCreate from "../components/sota-helper/SotaCreate";
 export default {
   name: "SotaHelper",
-  components: { "createSota" : SotaCreate }
+  components: { createSota: SotaCreate }
 };
 </script>
 
