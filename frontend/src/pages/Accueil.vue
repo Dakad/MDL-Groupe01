@@ -15,9 +15,10 @@
     </div>
 
     <div class="recommended">
-      <carousel :loop="true" :autoplay="true" :autoplayTimeout="2000" :per-page="3" :navigationEnabled="true">
-        <article-slide v-for="(recommanded,index) in list" :key="index" :title="recommanded.title" :authors="recommanded.authors" :domain="recommanded.category" :date="recommanded.created_at" :nb-views="recommanded.nb_views" :nb-quotes="recommanded.nb_citations" :keywords="recommanded.keywords">
-        </article-slide>
+      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000">
+        <slide class="slides" v-for="(recommended,index) in list" :key="index">
+          <article-slide :title="recommended.title" :authors="recommended.authors" :domain="recommended.category" :date="recommended.created_at" :nb-views="recommended.nb_views" :nb-quotes="recommended.nb_citations" :keywords="recommended.keywords"></article-slide>
+        </slide>
       </carousel>
     </div>
   </section>
@@ -36,24 +37,15 @@ export default {
   name: "Accueil",
   components: {
     Carousel,
+    Slide,
+    ArticleSlide,
     Search,
-    ArticleSlide
   },
   data() {
     return {
       searchInput: null,
       list: dummy.results.articles,
-      //carrouselAutoplay: true
     };
-  },
-  methods: {
-    // buildSlideMarkup(count) {
-    //   let slideMarkup = "";
-    //   for (var i = 1; i <= count; i++) {
-    //     slideMarkup += '<slide><span class="label">' + i + "</span></slide>";
-    //   }
-    //   return slideMarkup;
-    // }
   },
   searchIt() {}
 };
@@ -93,7 +85,7 @@ h1 {
 }
 
 #search {
-  margin-top: 150px;
+  margin-top: 140px;
 }
 
 p {
@@ -109,9 +101,14 @@ p {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   width: 75%;
-  height: 40%;
-  /*border: 3px solid gray;*/
+  height: 47%;
   overflow: auto;
+}
+
+.slides {
+  border: 1px solid gray;
+  margin: 1%;
+  padding: 1%;
 }
 
 /*.switch-news {
@@ -137,28 +134,10 @@ p {
   top: 75%;
 }
 
-/*.VueCarousel-slide {
-  position: relative;
-  background: #42b983;
-  color: #fff;
-  font-family: Arial;
-  font-size: 24px;
-  text-align: center;
-  min-height: 50px;
-}*/
-
 .label {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-/*#slider {
-  width: 80%;
-  height: 70%;
-  position: absolute;
-  top: 20%;
-  left: 10%;
-}*/
 </style>
