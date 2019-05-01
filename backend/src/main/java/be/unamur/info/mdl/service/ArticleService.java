@@ -35,4 +35,6 @@ public interface ArticleService {
    */
   boolean removeBookmark(String reference, String username) throws ArticleNotFoundException, BookmarkNotFoundException;
 
+  boolean isBookmarked(String reference, String username) throws ArticleNotFoundException;
+
 }

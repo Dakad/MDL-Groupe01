@@ -167,4 +167,13 @@ public class ArticleServiceImpl implements ArticleService {
     return true;
   }
 
+  @Override
+  public boolean isBookmarked(String reference, String username) throws ArticleNotFoundException{
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if(!article.isPresent()) throw new ArticleNotFoundException("");
+    if(!userRepository.existsByUsername(username)) return false;
+    UserEntity user = userRepository.findByUsername(username);
+    return bookmarkRepository.existsByCreatorAndArticle(user, article.get());
+  }
+
 }
