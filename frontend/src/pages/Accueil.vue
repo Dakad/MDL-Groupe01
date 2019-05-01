@@ -15,7 +15,7 @@
     </div>
 
     <div class="recommended">
-      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000">
+      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000" :navigationEnabled="true">
         <slide class="slides" v-for="(recommended,index) in list" :key="index">
           <article-slide :title="recommended.title" :authors="recommended.authors" :domain="recommended.category" :date="recommended.created_at" :nb-views="recommended.nb_views" :nb-quotes="recommended.nb_citations" :keywords="recommended.keywords"></article-slide>
         </slide>
@@ -102,7 +102,6 @@ p {
   transform: translate(-50%, -50%);
   width: 75%;
   height: 47%;
-  overflow: auto;
 }
 
 .slides {
