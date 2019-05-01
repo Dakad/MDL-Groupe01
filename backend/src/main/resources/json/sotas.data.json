@@ -1,6 +1,6 @@
 [
   {
-    "reference": "sota123",
+    "reference": "my-sota-123",
     "title": "My first sota",
     "subject": "Computer science",
     "articles": [
@@ -15,7 +15,6 @@
     ]
   },
   {
-    "reference": "sota456",
     "title": "My second sota",
     "description" : "Lorem ipsum dolor sit amet non. Magna a sed lobortis libero curabitur montes urna egestas integer vitae sed justo litora pellentesque. Quis diam in. Praesent arcu nisl ad amet urna. Sagittis faucibus at orci sit amet quam erat sed quidem semper sed.",
     "subject": "Unknown",

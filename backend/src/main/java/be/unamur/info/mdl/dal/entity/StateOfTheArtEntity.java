@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO.StateOfTheArtDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
@@ -101,11 +102,13 @@ public class StateOfTheArtEntity {
 
   public StateOfTheArtDTO toDTO() {
     List<TagDTO> listOfTags = keywords.stream().map(t -> t.toDTO()).collect(Collectors.toList());
+    List<ArticleDTO> listOfArticles = articles.stream().map(a -> a.toDTO()).collect(Collectors.toList());
 
     StateOfTheArtDTOBuilder dto = StateOfTheArtDTO.builder();
     dto.id(id).title(title).reference(reference).category(category.getName());
     dto.createdAt(createdAt).creator(creator.toDTO());
     dto.keywords(listOfTags);
+    dto.articles(listOfArticles);
 
     return dto.build();
   }
