@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "SOTA", description = "Model representing a State Of The Art")
 public class StateOfTheArtDTO {
 
-  @JsonIgnoreProperties
+  @JsonIgnore
   private Long id;
 
   @NotBlank(message = "The title is required")
@@ -30,11 +31,11 @@ public class StateOfTheArtDTO {
   private String reference;
 
 
-  @JsonProperty(value = "subject", access = Access.WRITE_ONLY)
+  @JsonProperty(value = "subject")
   private String category = "unknown";
 
 
-  @JsonAlias("created_at")
+  @JsonProperty("created_at")
   private LocalDate createdAt;
 
 

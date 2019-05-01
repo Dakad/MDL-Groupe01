@@ -155,6 +155,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
       if (!entity.isPresent()) {
         throw new ArticleNotFoundException("The referenced article was not found : " + reference);
       } else {
+        entity.get().getSotas().add(newSota);
         list.add(entity.get());
       }
     }
