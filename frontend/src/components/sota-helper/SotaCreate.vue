@@ -26,7 +26,7 @@
     <div class="right">
       <md-field>
         <label>Import bibtex file</label>
-        <md-file v-model="bibTex" multiple accept=".bibtex"/>
+        <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
       </md-field>
     </div>
     <div class="bottom">
@@ -41,16 +41,17 @@
           <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
         </div>
       </md-dialog-title>
-      <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/>
+      <!-- <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/> -->
     </md-dialog>
   </div>
 </template>
 
 <script>
 import { createSota } from "../../services/api-sota";
+import { parse as bibParser } from "@/services/bibtex-parse";
 
 export default {
-  name: "CreateSotA",
+  name: "CreateSota",
   data: () => ({
     initial: "Initial Value",
     sotAName: null,
@@ -64,25 +65,37 @@ export default {
     year: null,
     author: null,
     tags: null,
-    bibTex: null,
+    articlesUploaded: [],
     showAcceptMessage: false
   }),
 
   methods: {
-    sendSota() {
-      let bibtexParse = require("bibtex-parse-js");
-      let articlesArray = {};
-      for (let i = 0; this.bibTex.length(); i++) {
-        articlesArray.append(bibtexParse(this.bibTex[i]));
-      }
-      let jsonSota = {
-        title: this.sotAName,
-        subject: this.domain,
-        authors: [this.author],
-        keywords: this.tags,
-        articles: articlesArray
+    onFileUpload(event) {
+      const reader = new FileReader();
+
+      reader.onload = e => {
+        this.bibtex.push(e.target.result);
+        this.articlesUploaded = this.articlesUploaded.concat(
+          bibParser(e.target.result)
+        );
       };
-      createSota(jsonSota);
+      reader.readAsText(event.item(0));
+    },
+
+    sendSota() {
+      let articlesArray = {};
+      console.log(this.articlesUploaded);
+
+      // TODO Create an api-article.js to create and get an article
+
+      // TODO For each uploaded articles, create new Article via API call
+      this.articlesUploaded.forEach(article => {
+        // TODO Get the reference of the new article created
+        //  TODO Add this ref to the new Sota being created.
+        // createArticle(article).then()
+      });
+
+      // TODO Send an API call to create the new SoTA
     }
   }
 };
