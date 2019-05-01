@@ -1,16 +1,10 @@
 <template>
     <div class="social">
         <div class ="column">
-            <h2>Social Informations</h2>
-            <ul class="social-icons">
-              <!--TODO : GET SOCIAL LINK FOR PROFILE-->
-                <li><a href="http://www.facebook.com"><img src="@/assets/Facebook_Logo.png" /></a></li>
-                <li><a href="http://www.twitter.com"><img src="@/assets/Twitter_Logo.png" /></a></li>
-                <li><a href="http://www.youtube.com"><img src="@/assets/Linkedin_logo.png" /></a></li>
-            </ul>
+            <h2>Biography</h2>
             <md-card>
                 <md-card-header>
-                    <div class="md-title">Biography</div>
+                    <div class="md-title"></div>
                 </md-card-header>
 
                 <md-card-content>
@@ -66,20 +60,6 @@ export default {
   padding: 5px;
 }
 
-.social-icons li {
-  display:inline-block;
-  list-style-type:none;
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  }
-.social-icons li a {
-  border-bottom: none;
-  }
-.social-icons li img {
-  width:70px;
-  height:70px;
-  margin-right: 20px;
-}
 </style>
 
 

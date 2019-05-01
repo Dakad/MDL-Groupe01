@@ -2,8 +2,15 @@
 
   <div class="info">
     
+    <div class="right">
+      
+    </div>
     <div class="infotop">
     <InfoBase :profil="profil"></InfoBase>
+    </div>
+
+    <div class="stats">
+      <StatsLink/>
     </div>
 
     <div class="tabs">
@@ -52,11 +59,12 @@
   import {getProfileBase, getBookmark, getProfileInfoPro, getProfileSota} from "../services/api-user";
   import MyProfile from "../components/profil/MyProfile";
   import Social from "../components/profil/Social";
+  import StatsLink from "../components/profil/StatsLink";
 
 
   export default {
       name: "profil",
-      components: {MyProfile, InfoBase, Social},
+      components: {MyProfile, InfoBase, Social, StatsLink},
       data() {
         return{
           profil: {},
@@ -116,6 +124,13 @@
     position: relative;
     height: 30%;
     width: 100%;
+  }
+  .stats{
+    position: relative;
+    left: 40%;
+    bottom: 28%;
+    width: 40%;
+    height: 15%;
   }
 
   .tabs{
