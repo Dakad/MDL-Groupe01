@@ -15,4 +15,6 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
   Page<ArticleEntity> findByCreator(UserEntity creator, Pageable p);
 
   Optional<BookmarkEntity> findByCreatorAndArticle(UserEntity creator, ArticleEntity article);
+
+  boolean existsByCreatorAndArticle(UserEntity creator, ArticleEntity article);
 }

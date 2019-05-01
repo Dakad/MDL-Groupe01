@@ -90,6 +90,15 @@ public class ArticleController extends APIBaseController {
     }
   }
 
+  @RequestMapping(path ="/{reference}/bookmarked", method = RequestMethod.GET)
+  public ResponseEntity isBookmarked(@Valid @PathVariable String reference, Principal authUser){
+    try {
+      return ResponseEntity.status(HttpStatus.OK).body(articleService.isBookmarked(reference, authUser.getName()));
+    }catch (ArticleNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article reference does not exist");
+    }
+  }
+
 
 
 
