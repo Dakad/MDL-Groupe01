@@ -15,16 +15,12 @@ import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service("articleService")
@@ -52,11 +48,11 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleDTO getArticleByReference(String reference) throws ArticleNotFoundException {
-    if (reference == null) {
+    if(reference == null){
       throw new IllegalArgumentException("The reference must be defined");
     }
     Optional<ArticleEntity> dbArticle = this.articleRepository.findByReference(reference);
-    if (!dbArticle.isPresent()) {
+    if(!dbArticle.isPresent()){
       throw new ArticleNotFoundException("The referenced article was not found");
     } else {
       ArticleEntity article = dbArticle.get();
@@ -64,37 +60,7 @@ public class ArticleServiceImpl implements ArticleService {
       this.articleRepository.save(article);
       return article.toDTO();
     }
-  }
 
-
-  @Override
-  public List<ArticleDTO> listArticleByReferences(List<String> references) {
-    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
-    return this.articleRepository.findDistinctFirst5ByReferenceIsIn(references, sortByViews)
-      .map(a -> a.toDTO()).collect(
-        Collectors.toList());
-  }
-
-  @Override
-  public Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categoryNames) {
-    Map<String, List<ArticleDTO>> articlesByCategory = new HashMap<>();
-    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
-
-    // First, find all categories provided
-    List<TagEntity> categories = this.tagRepository.findByNameOrSlugIn(categoryNames);
-
-
-    categories.forEach(category -> {
-      // Find the article by category and transform to DTO
-      List<ArticleDTO> articles = this.articleRepository
-        .findDistinctFirst5ByCategory(category, sortByViews)
-        .map(a -> a.toDTO())
-        .collect(Collectors.toList());
-
-      articlesByCategory.put(category.getName(), articles);
-    });
-
-    return articlesByCategory;
   }
 
   @Override
@@ -131,7 +97,6 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach a new category or the one persisted in DB.
-   *
    * @param newArticle - The new Article being created
    * @param categoryName - The category name
    */
@@ -142,11 +107,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
 
+
   /**
    * Attach the corresponding Author(created or persisted) to the new article
-   *
-   * @param newArticle The new Article being created
-   * @param authors The author's name list.
+   * @param newArticle  The new Article being created
+   * @param authors     The author's name list.
    */
   private void attachAuthors(ArticleEntity newArticle, List<String> authors) {
     Set<AuthorEntity> list = new LinkedHashSet<>(authors.size());
@@ -162,7 +127,6 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
-   *
    * @param newArticle - The new Article being created
    * @param keywords - The keyword's name list.
    */
