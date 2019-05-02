@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,6 +85,13 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
     }catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+  }
+
+  @PutMapping({"/{reference}"})
+  public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
+    throws UsernameNotFoundException {
+    sotaService.put(reference, authUser.getName(),data);
+    return ResponseEntity.status(HttpStatus.OK).body(data);
   }
 }
 

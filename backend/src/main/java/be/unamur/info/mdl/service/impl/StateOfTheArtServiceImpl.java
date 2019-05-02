@@ -112,6 +112,29 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     return true;
   }
 
+  @Override
+  public  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data) throws UsernameNotFoundException{
+    Optional<StateOfTheArtEntity> dbSota = sotaRepository.findByReference(reference);
+    StateOfTheArtEntity sota;
+    if (!dbSota.isPresent()) {
+      throw new SotaNotFoundException("The referenced article was not found");
+    } else {
+      sota = dbSota.get();
+    }
+    if (!sota.getCreator().getUsername().equals(username)) {
+      throw new UsernameNotFoundException("The user is not the owner of the sota");
+    }
+
+    StateOfTheArtEntity sodto =sota;
+
+    sodto.setArticles(sotaRepository.findByReference(data.getReference()).get().getArticles());
+    sodto.setDescription(data.getDescription());
+    sodto.setTitle(data.getTitle());
+    sota.setKeywords(sotaRepository.findByReference(data.getReference()).get().getKeywords());
+    this.sotaRepository.save(sodto);
+    return sodto.toDTO();
+  }
+
   /**
    * Generate a MD5 Hash based on the provided string
    *
