@@ -55,7 +55,10 @@ public class ArticleServiceImpl implements ArticleService {
     if(!dbArticle.isPresent()){
       throw new ArticleNotFoundException("The referenced article was not found");
     } else {
-      return dbArticle.get().toDTO();
+      ArticleEntity article = dbArticle.get();
+      article.setNbViews(article.getNbViews() + 1);
+      this.articleRepository.save(article);
+      return article.toDTO();
     }
 
   }

@@ -23,9 +23,10 @@ const routes = [
 
   { name: '404', path: '/404', component: NotFound },
 
-  { name: 'articleDetails', path: '/article/:reference', component: Article },
+  { name: 'sotaDetails', path: '/sota/:reference', component: Sota },
 
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails },
+  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
+
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
