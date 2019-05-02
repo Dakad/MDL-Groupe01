@@ -22,9 +22,12 @@ public interface ProfileService {
    */
   ProfileSocialInfoDTO getSocialInfo(String username) throws UsernameNotFoundException;
 
+
   List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException;
+
 
   List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException;
 
   List<BookmarkDTO> getBookmarks(String username, int page) throws UsernameNotFoundException;
+
 }

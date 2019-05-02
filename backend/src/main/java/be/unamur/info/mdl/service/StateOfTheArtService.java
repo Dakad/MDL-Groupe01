@@ -5,7 +5,8 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
+import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
+import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 
 public interface StateOfTheArtService {
 
@@ -16,9 +17,9 @@ public interface StateOfTheArtService {
    * @param reference The provided reference
    * @return The data of the matching SoTA.
    * @throws IllegalArgumentException if the provided reference is null.
-   * @throws SotatNotFoundException The referenced SoTA is not found in persistence.
+   * @throws SotaNotFoundException The referenced SoTA is not found in persistence.
    */
-  StateOfTheArtDTO getSotaByReference(String reference) throws SotatNotFoundException;
+  StateOfTheArtDTO getSotaByReference(String reference) throws SotaNotFoundException;
 
 
   /**
@@ -39,10 +40,10 @@ public interface StateOfTheArtService {
    * @param reference the reference to the state of the art
    * @param username the username of the connected user
    * @return true if the state of the art has successfully been added to the user's bookmark list, else false
-   * @throws SotatNotFoundException if the reference corresponds to no state of the art
+   * @throws SotaNotFoundException if the reference corresponds to no state of the art
    */
   boolean addBookmark(String reference, String username, String note)
-    throws SotatNotFoundException;
+    throws SotaNotFoundException;
 
   /**
    * Removes a bookmarked state of the art from a user's list of bookmarked articles
@@ -50,11 +51,15 @@ public interface StateOfTheArtService {
    * @param reference the reference to the state of the art
    * @param username the user's username
    * @return true if the removal succeeded and false else
-   * @throws SotatNotFoundException if the reference corresponds to no article
+   * @throws SotaNotFoundException if the reference corresponds to no article
    * @throws BookmarkNotFoundException if the bookmark is not found
    */
   boolean removeBookmark(String reference, String username)
-    throws SotatNotFoundException, BookmarkNotFoundException;
+    throws SotaNotFoundException, BookmarkNotFoundException;
 
-  boolean isBookmarked(String reference, String username) throws SotatNotFoundException;
+  boolean isBookmarked(String reference, String username) throws SotaNotFoundException;
+
+  boolean delete (String reference, String username)
+    throws  UsernameNotFoundException;
 }
+

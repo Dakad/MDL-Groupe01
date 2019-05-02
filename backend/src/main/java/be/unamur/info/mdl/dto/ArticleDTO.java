@@ -35,6 +35,7 @@ public class ArticleDTO {
   private String content;
 
   @PastOrPresent(message = "The publication date cannot be in the future")
+  @JsonProperty(value = "publication_date")
   private LocalDate publicationDate;
 
   @NotBlank(message = "The URL is required")

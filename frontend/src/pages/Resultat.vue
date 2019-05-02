@@ -1,109 +1,131 @@
 <template>
-  <section class="results">
-    <div class="first">
-      <h2>Sort by :</h2>
-      <md-radio v-model="sortBy" value="name" @change="updateSearchURL('sort', $event)">Name</md-radio>
-      <md-radio v-model="sortBy" value="title" @change="updateSearchURL('sort', $event)">Title</md-radio>
-      <md-radio v-model="sortBy" value="date" @change="updateSearchURL('sort', $event)">Date</md-radio>
-
-      <!--
-      <md-radio v-model="sortBy" value="domain">Domain of Research</md-radio>
-      <md-radio v-model="sortBy" value="date">Date</md-radio>
-      <md-radio v-model="sortBy" value="views">Views</md-radio>
-      <md-radio v-model="sortBy" value="ref">References</md-radio>
-      -->
+  <section class="md-layout">
+    <div class="md-layout-item">
+      <result-sort
+        class="sort-container"
+        :sort="sortBy"
+        :order="orderBy"
+        @change:sort="updateSearchURL('sort', $event)"
+        @change:order="updateSearchURL('order', $event)"
+      ></result-sort>
     </div>
-    <hr>
-    <div class="second">
-      <h2>Order by :</h2>
-      <md-radio v-model="orderBy" value="asc" @change="updateSearchURL('order', $event)">Ascending</md-radio>
-      <md-radio v-model="orderBy" value="desc" @change="updateSearchURL('order', $event)">Descending</md-radio>
-      <small>{{ sortBy }} + {{ orderBy }}</small>
-    </div>
-
-    <div class="tabs">
+    <div class="md-layout-item md-size-80">
       <div class="loading-search-results" v-if="loading">
         <md-progress-bar md-mode="indeterminate"/>
       </div>
-      <md-tabs md-alignment="fixed" :md-active-tab="activeTab" @md-changed="activeTab = $event">
-        <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
-          <sota-list v-show="!loading" :list="results.sotas"></sota-list>
-          <md-empty-state
-            v-if="!results.sotas || results.sotas.length == 0"
-            md-icon="view_module"
-            md-label="No states of the art found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab id="articles" md-label="Articles" md-icon="description">
-          <article-list v-show="!loading" :list="results.articles"></article-list>
-          <md-empty-state
-            v-if="!results.articles || results.articles.length == 0"
-            md-icon="description"
-            md-label="No articles found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab id="authors" md-label="Authors/Users" md-icon="people">
-          <author-list v-show="!loading" :list="results.authors"></author-list>
-          <md-empty-state
-            v-if="!results.authors || results.authors.length == 0"
-            md-icon="people"
-            md-label="No states of the art found"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-        </md-tab>
-        <md-tab id="graphics" md-label="Graphics" md-icon="share" v-if="articlesTitles.length != 0">
-          <md-empty-state
-            v-if="articlesTitles.length == 0"
+      <div class="results-container">
+        <md-tabs
+          md-alignment="fixed"
+          :md-active-tab="activeTab"
+          @md-changed="updateSearchURL('tab', $event)"
+        >
+          <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
+            <sota-list v-show="!loading" :list="results.sotas"></sota-list>
+            <md-empty-state
+              v-if="!results.sotas || results.sotas.length == 0"
+              md-icon="sentiment_dissatisfied"
+              md-label="No states of the art found"
+              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+            >
+              <div>If you want to try again,</div>
+              <ul>
+                <li>
+                  Check your spelling,
+                  <md-icon>insert_emoticon</md-icon>
+                </li>
+                <li>Use less specific term(s) for a wider result</li>
+                <li>Use differents words with the same meaning</li>
+              </ul>
+            </md-empty-state>
+          </md-tab>
+          <md-tab id="articles" md-label="Articles" md-icon="description">
+            <article-list
+              v-show="!loading"
+              :list="results.articles"
+              :meta="metas['articles']"
+              @pagination="pages['article'] = $event"
+            ></article-list>
+            <md-empty-state
+              v-if="!results.articles || results.articles.length == 0"
+              md-icon="description"
+              md-label="No articles found"
+              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+            ></md-empty-state>
+          </md-tab>
+          <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+            <author-list v-show="!loading" :list="results.authors"></author-list>
+            <md-empty-state
+              v-if="!results.authors || results.authors.length == 0"
+              md-icon="people"
+              md-label="No authors/users found"
+              :md-description="'Sorry, we didn\'t find any authors/users matching your search for \'\''+searchTerm+'\'\''"
+            ></md-empty-state>
+          </md-tab>
+          <md-tab
+            id="graphics"
+            md-label="Graphics"
             md-icon="share"
-            md-label="No graphics to display"
-            md-description="Try another search"
-          ></md-empty-state>
-          <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
-        </md-tab>
-        <md-tab id="wordcloud" md-label="WordCloud" md-icon="cloud">
-          <md-empty-state
-            v-if="articlesTitles.length == 0"
-            md-icon="cloud"
-            md-label="No word cloud to display"
-            md-description="Creating project, you'll be able to upload your design and collaborate with people."
-          ></md-empty-state>
-          <word-cloud v-else :tags="articlesTags"></word-cloud>
-        </md-tab>
-      </md-tabs>
+            :md-disabled="articlesTitles.length == 0"
+          >
+            <md-empty-state
+              v-if="articlesTitles.length == 0"
+              md-icon="share"
+              md-label="No graphics to display"
+              md-description="Try another search"
+            ></md-empty-state>
+            <graphics v-else :articles-titles="articlesTitles" :linked-articles="relatedArticles"/>
+          </md-tab>
+          <md-tab
+            id="wordcloud"
+            md-label="WordCloud"
+            :md-icon="isEmptyArticlesTags ? 'cloud_off' : 'cloud'"
+            :md-disabled="isEmptyArticlesTags"
+          >
+            <md-empty-state
+              v-if="isEmptyArticlesTags"
+              md-icon="cloud"
+              md-label="No word cloud to display"
+            ></md-empty-state>
+            <word-cloud v-else :tags="articlesTags"></word-cloud>
+          </md-tab>
+        </md-tabs>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import sotaList from "@/components/resulat/SotaList";
-import authorList from "@/components/resulat/AuthorList";
-import articleList from "@/components/resulat/ArticleList";
-import graphics from "@/components/resulat/Graphics";
-import WordCloud from "@/components/resulat/WordCloud";
+import ResultSort from "@/components/resultat/ResultSort";
+import SotaList from "@/components/resultat/SotaList";
+import AuthorList from "@/components/resultat/AuthorList";
+import ArticleList from "@/components/resultat/ArticleList";
+import Graphics from "@/components/resultat/Graphics";
+import WordCloud from "@/components/resultat/WordCloud";
 
 import { getSearchResults } from "@/services/api";
-import { debug } from "util";
 
 export default {
   name: "Resultat",
   components: {
-    sotaList,
-    authorList,
-    articleList,
-    graphics,
+    ResultSort,
+    SotaList,
+    AuthorList,
+    ArticleList,
+    Graphics,
     WordCloud
   },
   data() {
     return {
       loading: false,
+      changingTab: false,
       searchTerm: null,
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
-      activeTab: "articles",
+      activeTab: this.$route.query["tab"] || "articles",
       page: 0,
+      metas: {},
       results: {},
+      pages: {},
       articlesTags: {},
       articlesTitles: [],
       relatedArticles: []
@@ -117,16 +139,28 @@ export default {
   watch: {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
-    sortBy: by => updateSearchURL("sort", by),
-    orderBy: by => updateSearchURL("order", by)
+
+    activeTab: newTab => updateSearchURL("tab", newTab)
+  },
+  computed: {
+    isEmptyArticlesTags() {
+      return Object.keys(this.articlesTags).length == 0;
+    }
   },
   methods: {
     updateSearchURL(type, by) {
+      if (type == "tab") {
+        this.changingTab = true;
+      }
       const query = { ...this.$route.query };
       query[type] = by;
       this.$router.push({ query });
     },
     fetchSearchResult() {
+      if (this.changingTab) {
+        this.changingTab = false;
+        return;
+      }
       this.loading = true;
       this.searchTerm = this.$route.query["search"];
 
@@ -141,21 +175,26 @@ export default {
         .then(res => {
           this.loading = false;
 
-          this.$set(this.results, "articles", res["articles"]);
-          this.$set(this.results, "authors", res["authors"]);
-          this.$set(this.results, "sotas", res["sotas"]);
-          this.$set(this.results, "users", res["users"]);
+          Object.keys(res["metas"]).forEach(type => {
+            this.$set(this.metas, type, res["metas"][type]);
+            this.$set(this.results, type, res[type]);
+          });
+
+          // this.$set(this.results, "articles", res["articles"]);
+          // this.$set(this.results, "authors", res["authors"]);
+          // this.$set(this.results, "sotas", res["sotas"]);
+          // this.$set(this.results, "users", res["users"]);
 
           this.articlesTitles = [];
 
           this.articlesTags = res["articles"].reduce((acc, article) => {
             // As the same time, push the article title
-            let infoTab = [];
-            infoTab.push(article.title);
-            infoTab.push(article.reference);
-            infoTab.push(article.category);
-            infoTab.push(article.year);
-            this.articlesTitles.push(infoTab);
+            this.articlesTitles.push({
+              title: article.title,
+              reference: article.reference,
+              year: article.year,
+              domain: article.category
+            });
             article.keywords.forEach(({ name, slug }) => {
               const nb = acc[slug] ? acc[slug]["occur"] : 0;
               acc[slug] = { name, occur: nb + 1 };
@@ -183,7 +222,7 @@ export default {
             let keywordName = keywords[k].name;
             for (let l = 0; l < articles[j].keywords.length; l++) {
               if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += (keywordName + ", ");
+                commonKeyword += keywordName + ", ";
                 if (alreadyIn === false) {
                   alreadyIn = true;
                   commonArticle.push(i);
@@ -215,33 +254,27 @@ export default {
 </script>
 
 <style scoped>
-.loading-search-results > md-progress-bar {
-  position: absolute;
+.loading-search-results {
+  /* position: relative;
+  width: 100%;
   top: 0;
-  right: 0;
-  left: 0;
+  margin-left: 40px; */
 }
 
-.tabs {
+.sort-container {
+  position: fixed;
+  /* top: 0;
+  left: 0;
+  margin-top: 75px; */
+}
+
+/* .tabs {
   position: absolute;
   top: 15%;
   left: 25%;
   width: 75%;
-}
+} */
 
-.first {
-  position: relative;
-  top: 15%;
-  left: 5%;
-  width: 20%;
-}
-
-.second {
-  position: relative;
-  top: 60%;
-  left: 5%;
-  width: 20%;
-}
 .md-radio {
   display: flex;
 }

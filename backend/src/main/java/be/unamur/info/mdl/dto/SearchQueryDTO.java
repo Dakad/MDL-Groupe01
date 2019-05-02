@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class SearchQueryDTO {
 
   @NotBlank(message = "The search term is required")
-  @Min(value = 3, message = "The search term must be at least 3 characters long")
+  @Min(value = 2, message = "The search term must be at least 3 characters long")
   private String searchTerm;
 
   private String tag;

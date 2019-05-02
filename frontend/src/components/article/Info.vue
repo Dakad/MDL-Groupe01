@@ -1,32 +1,38 @@
 <template>
   <div>
-    <p>Date of publication : {{ datePublication }}</p>
-    <p>Date of creation : {{ dateCreation }}</p>
+    <p>Date of publication : {{ publicationDate }}</p>
+    <p>Date of creation : {{ info.created_at }}</p>
     <p>
       Link :
-      <a :href="link">{{ link }}</a>
+      <a :href="info.link" target="_blank">{{ info.link }}</a>
     </p>
-    <p>Number of citation : {{ nbCitation }}</p>
-    <p>Number of page : {{nbPage}}</p>
-    <p>Number of views : {{ nbVue }}</p>
+    <p>Number of citation : {{ info.nb_citations }}</p>
+    <p>Number of page : {{info.pages}}</p>
+    <p>Number of views : {{ info.nb_views }}</p>
   </div>
 </template>
 
 <script>
-import json from "@/assets/dummy-Article.json";
 export default {
   name: "Info",
-  props: ["info"],
+  props: {
+    info: {
+      type: Object,
+      required: true,
+      default: () => {}
+    }
+  },
   data() {
-    return {
-      json,
-      datePublication: json.published_at,
-      dateCreation: json.created_at,
-      link: json.link,
-      nbCitation: json.nb_citations,
-      nbPage: json.nb_pages,
-      nbVue: json.nb_views
-    };
+    return {};
+  },
+  computed: {
+    publicationDate() {
+      let str = this.info.year;
+      if (this.info.month) {
+        str += "-" + this.info.month;
+      }
+      return str;
+    }
   }
 };
 </script>

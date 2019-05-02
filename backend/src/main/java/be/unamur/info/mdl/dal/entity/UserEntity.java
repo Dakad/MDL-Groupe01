@@ -9,6 +9,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -114,7 +115,8 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private List<UserEntity> followers;
+  @Builder.Default
+  private List<UserEntity> followers = new LinkedList<>();
 
 
   @ManyToMany(cascade = {
@@ -123,7 +125,8 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private List<UserEntity> follows;
+  @Builder.Default
+  private List<UserEntity> follows = new LinkedList<>();
 
 
   @ManyToOne(cascade = {
