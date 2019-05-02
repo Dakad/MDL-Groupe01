@@ -127,10 +127,10 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
     StateOfTheArtEntity sodto =sota;
 
-    sodto.setArticles(sotaRepository.findByReference(data.getReference()).get().getArticles());
+    sodto.setArticles(dbSota.get().getArticles());
     sodto.setDescription(data.getDescription());
     sodto.setTitle(data.getTitle());
-    sota.setKeywords(sotaRepository.findByReference(data.getReference()).get().getKeywords());
+    sota.setKeywords(dbSota.get().getKeywords());
     this.sotaRepository.save(sodto);
     return sodto.toDTO();
   }
