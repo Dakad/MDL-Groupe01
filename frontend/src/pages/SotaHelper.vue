@@ -5,11 +5,13 @@
     </div>
 
     <div class="tabs">
-      <md-tabs md-alignment="fixed">
+      <md-tabs md-alignment="fixed" md-active-tab="visu">
         <md-tab id="gestion" md-label="Gestion" md-icon="view_module"></md-tab>
-        <md-tab id="visualisation" md-label="Visualisation" md-icon="view_module"></md-tab>
-        <md-tab id="recommanded" md-label="Recommanded" md-icon="view_module"></md-tab>
-        <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="view_module">
+        <md-tab id="visu" md-label="Visualisation" md-icon="share">
+          <sota-graphic/>
+        </md-tab>
+        <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up"></md-tab>
+        <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
       </md-tabs>
@@ -19,19 +21,21 @@
 
 <script>
 import SotaCreate from "../components/sota-helper/SotaCreate";
+import SotaGraphic from "@/components/sota-helper/SotaGraphic";
+
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate }
+  components: { createSota: SotaCreate, SotaGraphic }
 };
 </script>
 
 <style scoped>
 .container {
-  position: absolute;
+  /* position: absolute;
   width: 100%;
   height: 86%;
   max-width: 1900px;
-  margin-top: 1%;
+  margin-top: 1%; */
 }
 
 .title {
