@@ -11,10 +11,7 @@
     "url": "https://www.sciencedirect.com/science/article/pii/S1364815299000171",
     "category": "Computer science",
     "keywords": [],
-    "authors": [
-      "Rebolj Danijel",
-      "Sturm Peter J"
-    ],
+    "authors": ["Rebolj Danijel", "Sturm Peter J"],
     "reference": "rebolj1999gis"
   },
   {
@@ -34,11 +31,7 @@
       "road network"
     ],
     "content": "Given a set of spatial objects O, the search radius r and the submodular function f are specified by the user. The best region search (BRS) is to find an optimal area with fixed range size, in which the object set has the maximum submodular function value. The BRS problem has long been studied because of its wide application in spatial data mining, facility locating and so on. However, most of the existing work focus on either Euclidean space or motionless objects, which is not applicable in many real-life cases. In this paper, we propose the best region monitoring problem in the spatial data streams in road networks (MBRS). Many real life applications can obtain benefit from MBRS problem, such as monitoring traffic and tracking in ecology. We first propose an efficient algorithm to the static BRS problem in road networks, and extend the solution to a naive method to solve the MBRS problem. Then, we put forward effective pruning strategies and branch-and-bound algorithm GER on the basis of the preprocessing to monitor best region at different times. Finally, a large number of experiments verify the efficiency of the proposed method.",
-    "authors": [
-      "Zijun Chen",
-      "Qin Yuan",
-      "Wenyuan Liu"
-    ],
+    "authors": ["Zijun Chen", "Qin Yuan", "Wenyuan Liu"],
     "reference": "CHEN2019100"
   },
   {
@@ -89,10 +82,7 @@
       "predictive analytics"
     ],
     "content": "Size is the first, and at times, the only dimension that leaps out at the mention of big data. This paper attempts to offer a broader definition of big data that captures its other unique and defining characteristics. The rapid evolution and adoption of big data by industry has leapfrogged the discourse to popular outlets, forcing the academic press to catch up. Academic journals in numerous disciplines, which will benefit from a relevant discussion of big data, have yet to cover the topic. This paper presents a consolidated description of big data by integrating definitions from practitioners and academics. The paper's primary focus is on the analytic methods used for big data. A particular distinguishing feature of this paper is its focus on analytics related to unstructured data, which constitute 95% of big data. This paper highlights the need to develop appropriate and efficient analytical methods to leverage massive volumes of heterogeneous data in unstructured text, audio, and video formats. This paper also reinforces the need to devise new tools for predictive analytics for structured big data. The statistical methods in practice were devised to infer from sample data. The heterogeneity, noise, and the massive size of structured big data calls for developing computationally efficient algorithms that may avoid big data pitfalls, such as spurious correlation.",
-    "authors": [
-      "Amir Gandomi",
-      "Murtaza Haider"
-    ],
+    "authors": ["Amir Gandomi", "Murtaza Haider"],
     "reference": "GANDOMI2015137"
   },
   {
@@ -104,9 +94,7 @@
     "content": "Dynamo: a public interactive surface supporting the cooperative sharing and exchange of media",
     "url": "http://doi.acm.org/10.1145/964696.964714",
     "category": "Public interface",
-    "keywords": [
-      "public interface"
-    ],
+    "keywords": ["public interface"],
     "authors": [
       "Izadi Shahram",
       "Brignull Harry",
@@ -174,10 +162,7 @@
       "ubicomp"
     ],
     "content": "Interactive Public Ambient Displays: Transitioning from Implicit to Explicit, Public to Personal, Interaction with Multiple Users",
-    "authors": [
-      "Vogel Daniel",
-      "Balakrishnan Ravin"
-    ],
+    "authors": ["Vogel Daniel", "Balakrishnan Ravin"],
     "reference": "Vogel:2004:IPA:1029632.1029656"
   },
   {
@@ -195,9 +180,7 @@
     "keywords": [],
     "reference": "SMITH199939",
     "category": "poop",
-    "authors": [
-      "Sarah C. Smith"
-    ]
+    "authors": ["Sarah C. Smith"]
   },
   {
     "title": "The animal with an anus that disappears",
@@ -214,9 +197,7 @@
     "keywords": [],
     "reference": "LEPAGE20198",
     "category": "poop",
-    "authors": [
-      "Michael Le Page"
-    ]
+    "authors": ["Michael Le Page"]
   },
   {
     "title": "Unearthing human pathogens at the agricultural–environment interface: A review of current methods for the detection of Escherichia coli O157 in freshwater ecosystems",
@@ -263,9 +244,7 @@
     "keywords": [],
     "reference": "RICCI200150",
     "category": "poop",
-    "authors": [
-      "Corinne A. Ricci"
-    ]
+    "authors": ["Corinne A. Ricci"]
   },
   {
     "title": "To Poop or Not to Poop: A Multi-Sensory Learning Experience in Constipation Management (FR482D)",
@@ -282,9 +261,7 @@
     "keywords": [],
     "reference": "NICHOLS2019438",
     "category": "poop",
-    "authors": [
-      "Ashley Nichols"
-    ]
+    "authors": ["Ashley Nichols"]
   },
   {
     "title": "Poop in the Pericardium: A Review and Case Report of Colopericardial Fistulas",
@@ -301,11 +278,7 @@
     "keywords": [],
     "reference": "COTTON201241A",
     "category": "poop",
-    "authors": [
-      "Travis Cotton",
-      "Benjamin Haithcock",
-      "Mark Joseph"
-    ]
+    "authors": ["Travis Cotton", "Benjamin Haithcock", "Mark Joseph"]
   },
   {
     "title": "The Sweet Smell of Success Pooper-Scooper Cam",
@@ -323,9 +296,7 @@
     "keywords": [],
     "reference": "SELAKOVICH2010158",
     "category": "poop",
-    "authors": [
-      "Dan Selakovich"
-    ]
+    "authors": ["Dan Selakovich"]
   },
   {
     "title": "The cell cycle hypothesis of Alzheimer's disease: Suggestions for drug development",
@@ -347,11 +318,7 @@
     ],
     "content": "The cell cycle of hypothesis of neural dysfunction in chronic neurodegenerative conditions such as Alzheimer's disease (AD) offers a unified approach to understanding both existing and novel strategies for drug development. At the present time, a ligand based approach is a pragmatic solution for identifying new chemical leads on which to base future discovery and optimisation. We have pursued a ligand based approach on the basis of public domain data to identify existing compounds capable of abrogating the cell cycle at the G0–G1 interface. Selected on this basis, irrespective of the tissue under study, we identified several classes of compounds as potential chemical leads. Of these compounds, at least ten have already been shown to be neuroprotective in animal models of acute neurodegeneration. Such compounds could form the basis of a screening exercise after development of suitable screening tools. Progressing of chemical leads through such an approach will be more efficient if future leads display relevant “drug-like” properties. Further, drug development in this arena should take account of the special concerns raised by targeting an elderly population. This will involve accounting for frequent polypharmacy in the aging population, and age-related alterations in physiology.",
     "reference": "WOODS2007503",
-    "authors": [
-      "Jack Woods",
-      "Mike Snape",
-      "Mark A. Smith"
-    ]
+    "authors": ["Jack Woods", "Mike Snape", "Mark A. Smith"]
   },
   {
     "title": "The cubic fecal conundrum",
@@ -364,13 +331,9 @@
     "url": "http://www.sciencedirect.com/science/article/pii/S1369702118313294",
     "author": "David Bradley",
     "content": "The cubic fecal conundrum",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "BRADLEY20197",
-    "authors": [
-      "David Bradley"
-    ]
+    "authors": ["David Bradley"]
   },
   {
     "title": "Mechanism of formation and transformation of hydroperoxide groups during the oxidation of carbon chain polymers",
@@ -384,14 +347,9 @@
     "url": "http://www.sciencedirect.com/science/article/pii/003239507790274X",
     "author": "Yu.B. Shilov, Ye.T. Denisov",
     "content": "A study has been made of the decomposition of hydroperoxide groups POOH in oxidized PP and PE in an inert atmosphere and under conditions of oxidation at 92 and 114°C. The inhibitor method has been used to measure the rate of initiation by benzoyl peroxide and POOH groups. POOP peroxide groups are formed in addition to POOH during the oxidation of PP and PE at a rate corresponding to the number of chain terminations. Depending on the conditions of oxidation, the quantity of POOH and POOP groups formed is equal to or less than the amount of O2 absorbed. Two kinds of POOH are formed in PP: groups in blocks that decompose rapidly and individual groups that decompose slowly. It is shown that POOH in PP is induced to decompose under the action of alkyl macroradicals both in an inert atmosphere and also under conditions of oxidation. Quantitative characteristics have been obtained for the thermal and induced decomposition of POOH. The yield of radicals into the volume during the decomposition of block POOH in PP is equal to 0·12 (92, 114°C).",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "SHILOV19771435",
-    "authors": [
-      "Yu.B. Shilov",
-      "Ye.T. Denisov"
-    ]
+    "authors": ["Yu.B. Shilov", "Ye.T. Denisov"]
   },
   {
     "title": "Validity of the WHIPLASHED as a tool to identify bipolar disorder in women",
@@ -444,10 +402,7 @@
     ],
     "content": "Grafting of acrylic acid on polytetrafluoroethylene has been performed using films of the polymer gamma-irradiated in air and then treated with aqueous acrylic acid. It is concluded that the initiating centres are peroxides POOP′, where P′ is a small perfluorinated fragment, and also trapped peroxy radicals PO2· which undergo deoxygenation. Homopolymerization is suppressed by polymerization inhibitors.",
     "reference": "BOZZI1987255",
-    "authors": [
-      "Annick Bozzi",
-      "Adolphe Chapiro"
-    ]
+    "authors": ["Annick Bozzi", "Adolphe Chapiro"]
   },
   {
     "title": "Initial development and validation of a fecal incontinence-specific quality of life measure",
@@ -507,12 +462,7 @@
     ],
     "content": "An Investigation of Learning Outcomes Between Two Teaching Modalities to Improve Student Learning in Online Courses",
     "reference": "Rorrer:2019:ILO:3287324.3293848",
-    "authors": [
-      "Rorrer",
-      "Audrey",
-      "Baham'on",
-      "Julio César"
-    ]
+    "authors": ["Rorrer", "Audrey", "Baham'on", "Julio César"]
   },
   {
     "author": "Kaunang, Sumenge Tangkawarouw Godion, Pertiwi, Junita Maja",
@@ -651,11 +601,7 @@
     "content": "Introduction\nAspects of radiopharmaceutical development are illustrated through preclinical studies of [125I]-(E)-1-(2-(2,3-dihydrobenzofuran-5-yl)ethyl)-4-(iodoallyl)piperazine ([125I]-E-IA-BF-PE-PIPZE), a radioligand for sigma-1 (σ1) receptors, coupled with examples from the recent literature. Findings are compared to those previously observed for [125I]-(E)-1-(2-(2,3-dimethoxy-5-yl)ethyl)-4-(iodoallyl)piperazine ([125I]-E-IA-DM-PE-PIPZE).\nMethods\nSyntheses of E-IA-BF-PE-PIPZE and [125I]-E-IA-BF-PE-PIPZE were accomplished by standard methods. In vitro receptor binding studies and autoradiography were performed, and binding potential was predicted. Measurements of lipophilicity and protein binding were obtained. In vivo studies were conducted in mice to evaluate radioligand stability, as well as specific binding to σ1 sites in brain, brain regions and peripheral organs in the presence and absence of potential blockers.\nResults\nE-IA-BF-PE-PIPZE exhibited high affinity and selectivity for σ1 receptors (Ki = 0.43 ± 0.03 nM, σ2/σ1 = 173). [125I]-E-IA-BF-PE-PIPZE was prepared in good yield and purity, with high specific activity. Radioligand binding provided dissociation (koff) and association (kon) rate constants, along with a measured Kd of 0.24 ± 0.01 nM and Bmax of 472 ± 13 fmol/mg protein. The radioligand proved suitable for quantitative autoradiography in vitro using brain sections. Moderate lipophilicity, Log D7.4 2.69 ± 0.28, was determined, and protein binding was 71 ± 0.3%. In vivo, high initial whole brain uptake, >6% injected dose/g, cleared slowly over 24 h. Specific binding represented 75% to 93% of total binding from 15 min to 24 h. Findings were confirmed and extended by regional brain biodistribution. Radiometabolites were not observed in brain (1%).\nConclusions\nSubstitution of dihydrobenzofuranylethyl for dimethoxyphenethyl increased radioligand affinity for σ1 receptors by 16-fold. While high specific binding to σ1 receptors was observed for both radioligands in vivo, [125I]-E-IA-BF-PE-PIPZE displayed much slower clearance kinetics than [125I]-E-IA-DM-PE-PIPZE. Thus, minor structural modifications of σ1 receptor radioligands lead to major differences in binding properties in vitro and in vivo.",
     "reference": "LEVER20174",
     "category": "Computer science",
-    "authors": [
-      "Susan Z. Lever",
-      "Kuo-Hsien Fan",
-      "John R. Lever"
-    ]
+    "authors": ["Susan Z. Lever", "Kuo-Hsien Fan", "John R. Lever"]
   },
   {
     "title": "Dynamical approaches to cognitive science",
@@ -679,9 +625,7 @@
     "content": "Dynamical ideas are beginning to have a major impact on cognitive science, from foundational debates to daily practice. In this article, I review three contrasting examples of work in this area that address the lexical and grammatical structure of language, Piaget’s classic ‘A-not-B’ error, and active categorical perception in an embodied, situated agent. From these three examples, I then attempt to articulate the major differences between dynamical approaches and more traditional symbolic and connectionist approaches. Although the three models reviewed here vary considerably in their details, they share a focus on the unfolding trajectory of a system’s state and the internal and external forces that shape this trajectory, rather than the representational content of its constituent states or the underlying physical mechanisms that instantiate the dynamics. In some work, this dynamical viewpoint is augmented with a situated and embodied perspective on cognition, forming a promising unified theoretical framework for cognitive science broadly construed.",
     "reference": "BEER200091",
     "category": "Computer science",
-    "authors": [
-      "Randall D. Beer"
-    ]
+    "authors": ["Randall D. Beer"]
   },
   {
     "title": "Appendix A A Guide for Newcomers to Agent-Based Modeling in the Social Sciences",
@@ -709,10 +653,7 @@
     "content": "This guide provides pointers to introductory readings, software, and other materials to help newcomers become acquainted with agent-based modeling in the social sciences.",
     "reference": "AXELROD20061647",
     "category": "Computer science",
-    "authors": [
-      "Robert Axelrod",
-      "Leigh Tesfatsion"
-    ]
+    "authors": ["Robert Axelrod", "Leigh Tesfatsion"]
   },
   {
     "title": "Course 2 Modern coding theory: The statistical mechanics and computer science point of view",
@@ -726,15 +667,10 @@
     "url": "http://www.sciencedirect.com/science/article/pii/S0924809907800096",
     "author": "Andrea Montanari, Rüdiger Urbanke",
     "content": "Publisher Summary\nThe chapter discusses the modern coding theory. The central problem of communications is how to transmit information reliably through a noisy and thus, an unreliable communication channel. Coding theory aims at accomplishing this task by adding a properly designed redundancy to the transmitted message. This redundancy is then used at the receiver to reconstruct the original message despite the noise introduced by the channel. The chapter gives a brief outline of the (channel coding) problem. This allows introducing the standard definitions and terminology used in this field. It introduces ensembles of codes defined by sparse random graphs and discusses their most basic property – the weight distribution. The decoding problem phrased as an inference problem on a graph, and the performance of the efficient (albeit in general suboptimal) message-passing decoder is considered. The chapter shows the performance of such a combination (sparse graph code and message-passing decoding) analyzed and discussed, with respect to the relationship of the performance under message-passing decoding to the performance of the optimal decoder.",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "MONTANARI200767",
     "category": "Computer science",
-    "authors": [
-      "Andrea Montanari",
-      "Rüdiger Urbanke"
-    ]
+    "authors": ["Andrea Montanari", "Rüdiger Urbanke"]
   },
   {
     "title": "Evidence-Based Cognitive Rehabilitation: Systematic Review of the Literature From 2009 Through 2014",
@@ -811,15 +747,10 @@
     "url": "http://www.sciencedirect.com/science/article/pii/S0029549313000587",
     "author": "Guian Qian, Markus Niffenegger",
     "content": "The reactor pressure vessel (RPV), as one of the most important safety barriers of light water reactors, is exposed to neutron irradiation at elevated temperatures, which results in embrittlement of the RPV steel. One potential challenge to the structural integrity of the RPV in a pressurized water reactor is posed by pressurized thermal shock (PTS). Therefore, the safety of the RPV with regard to neutron embrittlement has to be analyzed. In this paper, the procedure and method for the structural integrity analysis of RPV subjected to PTS are presented. FAVOR and PASCAL, two computer codes widely used for the probabilistic analysis of RPV subjected to PTS, are briefly reviewed and compared. By using FAVOR, a benchmark example is presented to show the procedure and method for the integrity analysis. The influence of warm prestressing (WPS), fracture toughness and constraint effect on the integrity analysis of RPV is discussed. The Master Curve method is more realistic than the ASME model to consider the analysis of fracture toughness and thus is recommended. In order to transfer the fracture toughness data from test specimen to the RPV, local approach provides a probabilistic method.",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "QIAN201335",
     "category": "Computer science",
-    "authors": [
-      "Guian Qian",
-      "Markus Niffenegger"
-    ]
+    "authors": ["Guian Qian", "Markus Niffenegger"]
   },
   {
     "title": "Inter-core crosstalk aware greedy algorithm for spectrum and core assignment in space division multiplexed elastic optical networks",
@@ -934,14 +865,10 @@
     "url": "http://www.sciencedirect.com/science/article/pii/0924224496100285",
     "author": "Sundaram Gunasekaran",
     "content": "Computer vision systems are being used increasingly in the food industry for quality assurance purposes. Essentially, such systems replace human inspectors for the evaluation of a variety of quality attributes of raw and prepared foods. Over the past few years, the explosive growth in both computer hardware and software has led to many significant advances in computer vision technology. Computer vision applications range from routine inspection to complex vision-guided robotic controls. Computer vision technology provides a high level of flexibility and repeatability at relatively low cost. It also permits fairly high plant throughput without compromising accuracy. Currently, computer vision systems are being developed as an integral part of food processing plants for on-line, real-time quality evaluation and quality control.",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "GUNASEKARAN1996245",
     "category": "Computer science",
-    "authors": [
-      "Sundaram Gunasekaran"
-    ]
+    "authors": ["Sundaram Gunasekaran"]
   },
   {
     "title": "Establishing a basis for new software engineering principles",
@@ -963,11 +890,7 @@
     "content": "Over the last years, computer applications have moved away from the single-core, local execution that they were originally intended for. Modern applications have to run distributed, in parallel, on heterogeneous environments, share distributed data etc. Not surprisingly the standard ways of programming do not hold anymore and modern software engineers struggle with the growing complexity. New software engineering need to move away from the traditional execution models and reconsider the principles from ground up - focusing on the three primary “building criteria” of modern applications, namely to process information, to adhere to quality and performance criteria, and to follow business incentives. This paper shows that these three criteria are sufficient to specify the full functional behaviour of an application and thereby implicitly its potential instantiations. Since no single algorithm is bound to the specification, transformation between instances, and thus between different execution attributes is easily possible using mathematical transformations.",
     "reference": "SCHUBERT2018187",
     "category": "Computer science",
-    "authors": [
-      "Lutz Schubert",
-      "Athanasios Tsitsipas",
-      "Keith Jeffery"
-    ]
+    "authors": ["Lutz Schubert", "Athanasios Tsitsipas", "Keith Jeffery"]
   },
   {
     "title": "A framework for gamification in software engineering",
@@ -1014,10 +937,7 @@
     "content": "Suitable software languages are crucial to tackling the ever-increasing complexity of software engineering processes and software products. They model, specify, and test products, describe processes and interactions with services and serve many other purposes. Meanwhile, engineering suitable modeling languages with useful tooling also has become a challenging endeavor - and far too often, new languages are developed from scratch. We shed light on the advances of modeling language engineering that facilitate reuse, modularity, compositionality, and derivation of new languages based on language components. To this end, we discuss ways to design, combine, and derive modeling languages in all their relevant aspects. We illustrate the application of advanced language engineering throughout the paper, which culminates in the example of deriving complete domain-specific transformations language from existing language components.",
     "reference": "HOLLDOBLER2018386",
     "category": "Computer science",
-    "authors": [
-      "Katrin Hölldobler",
-      "Bernhard Rumpe,,reas Wortmann"
-    ]
+    "authors": ["Katrin Hölldobler", "Bernhard Rumpe,,reas Wortmann"]
   },
   {
     "title": "Software engineering research for computer games: A systematic review",
@@ -1030,18 +950,11 @@
     "doi": "https://doi.org/10.1016/j.infsof.2010.05.004",
     "url": "http://www.sciencedirect.com/science/article/pii/S0950584910000820",
     "author": "Apostolos Ampatzoglou, Ioannis Stamelos",
-    "keywords": [
-      "Software engineering",
-      "Computer games",
-      "Systematic review"
-    ],
+    "keywords": ["Software engineering", "Computer games", "Systematic review"],
     "content": "Context\nCurrently, computer game development is one of the fastest growing industries in the worldwide economy. In addition to that, computer games are rapidly evolving in the sense that newer game versions arrive in a very short interval. Thus, software engineering techniques are needed for game development in order to achieve greater flexibility and maintainability, less cost and effort, better design, etc. In addition, games present several characteristics that differentiate their development from classical software development.\nObjective\nThis study aims to assess the state of the art on research concerning software engineering for computer games and discuss possible important areas for future research.\nMethod\nWe employed a standard methodology for systematic literature reviews using four well known digital libraries.\nResults\nSoftware engineering for computer games is a research domain that has doubled its research activity during the last 5years. The dominant research topic has proven to be requirements engineering, while topics such as software verification and maintenance have been neglected up to now.\nConclusion\nThe results of the study suggest that software engineering for computer games is a field that embraces many techniques and methods from conventional software engineering and adapts them so as to fit the specific requirements of game development. In addition to that, the study proposes the employment of more elaborate empirical methods, i.e. controlled experiments and case studies, in game software engineering research, which, have not been extensively used up to now.",
     "reference": "AMPATZOGLOU2010888",
     "category": "Computer science",
-    "authors": [
-      "Apostolos Ampatzoglou",
-      "Ioannis Stamelos"
-    ]
+    "authors": ["Apostolos Ampatzoglou", "Ioannis Stamelos"]
   },
   {
     "title": "Kanban in software engineering: A systematic mapping study",
@@ -1160,15 +1073,10 @@
     "publisher": "ACM",
     "address": "New York, NY, USA",
     "content": "Risks to the Public",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "Neumann:2019:RP:3310013.3322174",
     "category": "Computer science",
-    "authors": [
-      "Neumann",
-      "Peter G."
-    ]
+    "authors": ["Neumann", "Peter G."]
   },
   {
     "author": "Bultan, Tevfik",
@@ -1188,15 +1096,10 @@
     "publisher": "ACM",
     "address": "New York, NY, USA",
     "content": "Side-Channel Analysis via Symbolic Execution and Model Counting",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "Bultan:2019:SAV:3282517.3302416",
     "category": "Computer science",
-    "authors": [
-      "Bultan",
-      "Tevfik"
-    ]
+    "authors": ["Bultan", "Tevfik"]
   },
   {
     "author": "Saha, Seemanta, Kadron, Ismet Burak, Eiers, William, Bang, Lucas, Bultan, Tevfik",
@@ -1216,9 +1119,7 @@
     "publisher": "ACM",
     "address": "New York, NY, USA",
     "content": "Attack Synthesis for Strings Using Meta-Heuristics",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "Saha:2019:ASS:3282517.3302422",
     "category": "Computer science",
     "authors": [
@@ -1252,19 +1153,10 @@
     "publisher": "ACM",
     "address": "New York, NY, USA",
     "content": "Engineering Multi-Agent Systems: State of Affairs and the Road Ahead",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "Mascardi:2019:EMS:3310013.3322181",
     "category": "Computer science",
-    "authors": [
-      "Mascardi",
-      "Viviana",
-      "Weyns",
-      "Danny",
-      "Ricci",
-      "Alessandro"
-    ]
+    "authors": ["Mascardi", "Viviana", "Weyns", "Danny", "Ricci", "Alessandro"]
   },
   {
     "author": "Wang, Kaiyuan, Converse, Hayes, Gligoric, Milos, Misailovic, Sasa, Khurshid, Sarfraz",
@@ -1284,9 +1176,7 @@
     "publisher": "ACM",
     "address": "New York, NY, USA",
     "content": "A Progress Bar for the JPF Search Using Program Executions",
-    "keywords": [
-      ""
-    ],
+    "keywords": [],
     "reference": "Wang:2019:PBJ:3282517.3302419",
     "category": "Computer science",
     "authors": [
