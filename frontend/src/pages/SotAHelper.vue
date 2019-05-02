@@ -11,7 +11,13 @@
 
         </md-tab>
         <md-tab id="recommended" md-label="Recommended" md-icon="view_module">
-          
+          <article-list v-show="!loading" :list="results.articles"></article-list>
+          <md-empty-state
+            v-if="!results.articles || results.articles.length == 0"
+            md-icon="description"
+            md-label="No articles found"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
         </md-tab>
         <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="view_module">
 
@@ -29,12 +35,22 @@ import articleList from "@/components/resulat/ArticleList";
   
 export default {
   name: "SotAHelper",
-  // components: {
-  //   articleList,
-  // },
+  components: {
+    articleList,
+  },
   data() {
     return {
       list: dummy.results.articles,
+      loading: false,
+      searchTerm: null,
+      sortBy: this.$route.query["sort"] || "name",
+      orderBy: this.$route.query["order"] || "asc",
+      activeTab: "articles",
+      page: 0,
+      results: {},
+      articlesTags: {},
+      articlesTitles: [],
+      relatedArticles: []
     };
   },
 }
