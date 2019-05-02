@@ -25,8 +25,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
@@ -43,12 +46,14 @@ public class UserEntity {
   private Long id;
 
   @Column(unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String username;
 
   @Column(nullable = false)
   private String password;
 
   @Column(name = "email", unique = true)
+  @EqualsAndHashCode.Include
   private String email;
 
   @Column(name = "first_name")

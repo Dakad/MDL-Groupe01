@@ -1,7 +1,15 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.*;
-import be.unamur.info.mdl.dal.repository.*;
+import be.unamur.info.mdl.dal.entity.ArticleEntity;
+import be.unamur.info.mdl.dal.entity.AuthorEntity;
+import be.unamur.info.mdl.dal.entity.BookmarkEntity;
+import be.unamur.info.mdl.dal.entity.TagEntity;
+import be.unamur.info.mdl.dal.entity.UserEntity;
+import be.unamur.info.mdl.dal.repository.ArticleRepository;
+import be.unamur.info.mdl.dal.repository.AuthorRepository;
+import be.unamur.info.mdl.dal.repository.BookmarkRepository;
+import be.unamur.info.mdl.dal.repository.TagRepository;
+import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
@@ -34,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Autowired
   public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository,
     TagRepository tagRepository,
-    AuthorRepository authorRepository,BookmarkRepository bookmarkRepository) {
+    AuthorRepository authorRepository, BookmarkRepository bookmarkRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
@@ -45,11 +53,11 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleDTO getArticleByReference(String reference) throws ArticleNotFoundException {
-    if(reference == null){
+    if (reference == null) {
       throw new IllegalArgumentException("The reference must be defined");
     }
     Optional<ArticleEntity> dbArticle = this.articleRepository.findByReference(reference);
-    if(!dbArticle.isPresent()){
+    if (!dbArticle.isPresent()) {
       throw new ArticleNotFoundException("The referenced article was not found");
     } else {
       return dbArticle.get().toDTO();
@@ -91,6 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach a new category or the one persisted in DB.
+   *
    * @param newArticle - The new Article being created
    * @param categoryName - The category name
    */
@@ -101,11 +110,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
 
-
   /**
    * Attach the corresponding Author(created or persisted) to the new article
-   * @param newArticle  The new Article being created
-   * @param authors     The author's name list.
+   *
+   * @param newArticle The new Article being created
+   * @param authors The author's name list.
    */
   private void attachAuthors(ArticleEntity newArticle, List<String> authors) {
     Set<AuthorEntity> list = new LinkedHashSet<>(authors.size());
@@ -121,6 +130,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
+   *
    * @param newArticle - The new Article being created
    * @param keywords - The keyword's name list.
    */
@@ -138,42 +148,66 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public boolean addBookmark(String reference, String username, String note) throws ArticleNotFoundException{
-    if(!userRepository.existsByUsername(username)) return false;
+  public boolean addBookmark(String reference, String username, String note)
+    throws ArticleNotFoundException {
+
     Optional<ArticleEntity> article = articleRepository.findByReference(reference);
-    if(!article.isPresent()) throw new ArticleNotFoundException("");
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
+    //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if(user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) return false;
+    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+      return false;
+    }
+
     BookmarkEntity bookmark = new BookmarkEntity();
-    bookmark.setArticle(article.get()); bookmark.setCreator(user); bookmark.setNote(note);
+    bookmark.setArticle(article.get());
+    bookmark.setCreator(user);
+    bookmark.setNote(note);
     user.getBookmarks().add(bookmark);
     article.get().getBookmarks().add(bookmark);
+
+    userRepository.save(user);
+    articleRepository.save(article.get());
+    bookmarkRepository.save(bookmark);
     return true;
   }
 
+
   @Override
-  public boolean removeBookmark(String reference, String username) throws ArticleNotFoundException, BookmarkNotFoundException {
-    if(!userRepository.existsByUsername(username)) return false;
+  public boolean isBookmarked(String reference, String username) throws ArticleNotFoundException {
     Optional<ArticleEntity> article = articleRepository.findByReference(reference);
-    if(!article.isPresent()) throw new ArticleNotFoundException("");
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
     UserEntity user = userRepository.findByUsername(username);
-    Optional<BookmarkEntity> bookmark = bookmarkRepository.findByCreatorAndArticle(user, article.get());
-    if(!bookmark.isPresent()) throw new BookmarkNotFoundException();
+    return bookmarkRepository.existsByCreatorAndArticle(user, article.get());
+  }
+
+
+  @Override
+  public boolean removeBookmark(String reference, String username)
+    throws ArticleNotFoundException, BookmarkNotFoundException {
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository
+      .findByCreatorAndArticle(user, article.get());
+    if (!bookmark.isPresent()) {
+      throw new BookmarkNotFoundException("The request article was not present in the bookmarks");
+    }
+
     user.getBookmarks().remove(bookmark.get());
     article.get().getBookmarks().remove(bookmark.get());
+
     userRepository.save(user);
     articleRepository.save(article.get());
     bookmarkRepository.delete(bookmark.get());
     return true;
   }
 
-  @Override
-  public boolean isBookmarked(String reference, String username) throws ArticleNotFoundException{
-    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
-    if(!article.isPresent()) throw new ArticleNotFoundException("");
-    if(!userRepository.existsByUsername(username)) return false;
-    UserEntity user = userRepository.findByUsername(username);
-    return bookmarkRepository.existsByCreatorAndArticle(user, article.get());
-  }
 
 }

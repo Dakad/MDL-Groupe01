@@ -6,9 +6,11 @@ import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
-import io.swagger.annotations.*;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class ArticleController extends APIBaseController {
     @ApiResponse(code = 409, message = "If the article already exists", response = String.class)
   })
   @RequestMapping(path = {"", "/add"}, method = RequestMethod.POST)
-  public ResponseEntity<?> create(@Valid @RequestBody ArticleDTO articleData, Principal authUser) {
+  public ResponseEntity create(@Valid @RequestBody ArticleDTO articleData, Principal authUser) {
     try {
       String username = authUser.getName();
       UserDTO currentUser = new UserDTO();
@@ -52,54 +54,72 @@ public class ArticleController extends APIBaseController {
   @ApiOperation(value = "Retrieve a specific article by it reference")
   @ApiResponses(value = {
     @ApiResponse(code = 200, message = "Successfully registered", response = ArticleDTO.class),
-    @ApiResponse(code = 400, message = "The article reference is missing "),
     @ApiResponse(code = 404, message = "The provided reference doesn't exist")
   })
   @RequestMapping(path = "/{reference}", method = RequestMethod.GET)
-  public ResponseEntity<?> get(@Valid @PathVariable String reference) {
+  public ResponseEntity get(@PathVariable String reference) {
     try {
       ArticleDTO articleData = articleService.getArticleByReference(reference);
-      return new ResponseEntity<>(articleData, HttpStatus.OK);
+      return new ResponseEntity(articleData, HttpStatus.OK);
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
 
-  @RequestMapping(path="/{reference}/bookmark-add", method = RequestMethod.POST)
-  public ResponseEntity addBookmark(
-    @Valid @PathVariable String reference,
-    Principal authUser,
-    @ApiParam(name = "note", defaultValue = "No description added") @Valid @RequestBody String note) {
-    try{
-      if(articleService.addBookmark(reference, authUser.getName(),note)) return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
-      else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something, somewhere, has gone sideways.\nAnd basically, error...");
-    }catch (ArticleNotFoundException e){
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not found");
-    }
-  }
-
-  @RequestMapping(path="/{reference}/bookmark-remove", method = RequestMethod.DELETE)
-  public ResponseEntity removeBookmark(@Valid @PathVariable String reference, Principal authUser){
+  @ApiOperation(value = "Create a new bookmark on an article")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist")
+  })
+  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.POST)
+  public ResponseEntity addBookmark(@PathVariable String reference, Principal authUser,
+    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
     try {
-      if(articleService.removeBookmark(reference,authUser.getName())) return ResponseEntity.status(HttpStatus.OK).body("Bookmark removed");
-      else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
-    }catch (ArticleNotFoundException e){
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article reference does not exist");
-    }catch (BookmarkNotFoundException e){
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This bookmark does not exist");
+      if (articleService.addBookmark(reference, authUser.getName(), note)) {
+        return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
+      } else {
+        //TODO Add more explicit error message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
+      }
+    } catch (ArticleNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
 
-  @RequestMapping(path ="/{reference}/bookmarked", method = RequestMethod.GET)
-  public ResponseEntity isBookmarked(@Valid @PathVariable String reference, Principal authUser){
+  @ApiOperation(value = "Remove a bookmark on an article")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist"),
+    @ApiResponse(code = 404, message = "The specified article is not bookmarked")
+  })
+  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.DELETE)
+  public ResponseEntity removeBookmark(
+    @ApiParam(name = "reference", defaultValue = "The article reference")
+    @PathVariable String reference,
+    Principal authUser) {
     try {
-      return ResponseEntity.status(HttpStatus.OK).body(articleService.isBookmarked(reference, authUser.getName()));
-    }catch (ArticleNotFoundException e){
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article reference does not exist");
+      if (articleService.removeBookmark(reference, authUser.getName())) {
+        return ResponseEntity.status(HttpStatus.OK).body("Bookmark removed");
+      } else {
+        //TODO Add more explicit error message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+      }
+    } catch (ArticleNotFoundException | BookmarkNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
 
 
+  @RequestMapping(path = "/{reference}/bookmarked", method = RequestMethod.GET)
+  public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK)
+        .body(articleService.isBookmarked(reference, authUser.getName()));
+    } catch (ArticleNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
 
 
 }

@@ -12,6 +12,7 @@ public interface ArticleService {
 
   /**
    * Retrieve a specific article
+   *
    * @param reference The reference of wanted article
    * @return The referenced article
    */
@@ -19,21 +20,26 @@ public interface ArticleService {
 
   /**
    * Adds an article to the connected user's bookmark list.
+   *
    * @param reference the reference to the article
    * @param username the username of the connected user
    * @return true if the article has successfully been added to the user's bookmark list, else false
    * @throws ArticleNotFoundException if the reference corresponds to no article
    */
-  boolean addBookmark(String reference, String username, String note) throws ArticleNotFoundException;
+  boolean addBookmark(String reference, String username, String note)
+    throws ArticleNotFoundException;
 
   /**
    * Removes a bookmarked article from a user's list of bookmarked articles
+   *
    * @param reference the reference to the article
    * @param username the user's username
    * @return true if the removal succeeded and false else
    * @throws ArticleNotFoundException if the reference corresponds to no article
+   * @throws BookmarkNotFoundException if the bookmark is not found
    */
-  boolean removeBookmark(String reference, String username) throws ArticleNotFoundException, BookmarkNotFoundException;
+  boolean removeBookmark(String reference, String username)
+    throws ArticleNotFoundException, BookmarkNotFoundException;
 
   boolean isBookmarked(String reference, String username) throws ArticleNotFoundException;
 
