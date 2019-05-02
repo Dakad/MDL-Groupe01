@@ -10,7 +10,7 @@
 export default {
   name: "MenuArticle",
   props: {
-    articleId: Number
+    articleReference: String
   },
   methods: {
     downloadRef() {
