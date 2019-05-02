@@ -1,6 +1,6 @@
 <template>
   <div class="sota">
-    <md-card v-for="sota in sotas" :key="sota.reference">
+    <md-card v-for="sota in list" :key="sota.reference">
       <md-card-header>
         <div class="title">
           <h1>
@@ -24,20 +24,48 @@
         </div>
       </md-card-content>
     </md-card>
+    <Pagination
+      v-if="page['total_pages'] >= 1"
+      v-model="currentPage"
+      :page-count="page['total_pages']"
+    />
   </div>
 </template>
 
 <script>
+import { Pagination } from "@/components";
+
 export default {
+  name: "SotaList",
+  components: {
+    Pagination
+  },
   props: {
-    list: Array
+    list: {
+      type: Array,
+      default: _ => []
+    },
+    meta: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
-    return {};
+    return {
+      currentPage: 1
+    };
+  },
+  watch: {
+    currentPage: function() {
+      this.$emit("pagination", this.currentPage);
+    }
   },
   computed: {
     sotas() {
       return this.list;
+    },
+    page() {
+      return this.meta || {};
     }
   }
 };

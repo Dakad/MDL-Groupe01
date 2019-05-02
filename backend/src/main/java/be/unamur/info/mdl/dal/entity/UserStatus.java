@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
-public enum Status {
+public enum UserStatus {
   Student,
   Searcher,
   Professor,
