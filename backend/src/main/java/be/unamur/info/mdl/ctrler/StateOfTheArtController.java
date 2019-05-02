@@ -49,6 +49,7 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
+
   @ApiOperation(value = "Create a new SoTA")
   @ApiResponses(value = {
     @ApiResponse(code = 201, message = "Successfully created"),
@@ -72,6 +73,7 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
+
   @DeleteMapping({"/{reference}"})
 public ResponseEntity delete (@PathVariable String reference, Principal authUser)
     throws UsernameNotFoundException {
@@ -85,6 +87,7 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
   }
+
 }
 
 
