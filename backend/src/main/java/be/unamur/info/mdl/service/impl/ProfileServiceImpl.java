@@ -1,18 +1,14 @@
 package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
+import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.BookmarkRepository;
 import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
-import be.unamur.info.mdl.dto.ArticleDTO;
-import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
-import be.unamur.info.mdl.dto.ProfileProInfoDTO;
-import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
-import be.unamur.info.mdl.dto.UniversityInfoDTO;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import java.util.ArrayList;
@@ -119,7 +115,7 @@ public class ProfileServiceImpl implements ProfileService {
   }
 
   @Override
-  public Map<String, String> getBookmarks(String username, int page)
+  public List<BookmarkDTO> getBookmarks(String username, int page)
     throws UsernameNotFoundException {
     if (!userRepository.existsByUsername(username)) {
       throw new UsernameNotFoundException();
@@ -127,11 +123,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     Sort sort = Sort.by("createdAt").descending();
     UserEntity creator = userRepository.findByUsername(username);
-    Page<ArticleEntity> articles = bookmarkRepository
+    Page<BookmarkEntity> bookmarks = bookmarkRepository
       .findByCreator(creator, PageRequest.of(page, 50, sort));
 
-    return articles.stream().map(a -> a.toBookmarkInfoDTO())
-      .collect(Collectors.toMap(ArticleDTO::getReference, ArticleDTO::getTitle));
+    return bookmarks.stream().map(a -> a.toDTO()).collect(Collectors.toList());
   }
 
 }

@@ -1,10 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
-import be.unamur.info.mdl.dto.PasswordChangeDTO;
-import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
-import be.unamur.info.mdl.dto.ProfileProInfoDTO;
-import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
@@ -143,7 +139,7 @@ public class UserController extends APIBaseController {
   public ResponseEntity getBookmarks(@PathVariable String username,
     @RequestParam(defaultValue = "0") int p) {
     try {
-      Map<String, String> bookmarks = profileService.getBookmarks(username, p);
+      List<BookmarkDTO> bookmarks = profileService.getBookmarks(username, p);
       return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
     } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
