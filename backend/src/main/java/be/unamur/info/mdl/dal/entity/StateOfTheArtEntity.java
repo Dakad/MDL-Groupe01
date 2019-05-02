@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO.StateOfTheArtDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
@@ -22,35 +23,43 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "state_of_the_art")
 public class StateOfTheArtEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column(name = "title", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String title;
 
   @Column(name = "reference", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String reference;
 
-  @Column(name = "description")
-  private String description;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "category_id", nullable = false)
+  private TagEntity category;
 
   @Column(name = "created_at")
+  @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity creator;
 
 
@@ -84,9 +93,7 @@ public class StateOfTheArtEntity {
       .collect(Collectors.toList());
 
     StateOfTheArtEntityBuilder entity = StateOfTheArtEntity.builder();
-    entity.id(data.getId()).reference(data.getReference());
-    entity.title(data.getTitle()).description(data.getDescription());
-    entity.createdAt(data.getCreatedAt());
+    entity.id(data.getId()).reference(data.getReference()).title(data.getTitle());
     entity.keywords(listOfTags).articles(listOfArticles);
 
     return entity.build();
@@ -95,11 +102,13 @@ public class StateOfTheArtEntity {
 
   public StateOfTheArtDTO toDTO() {
     List<TagDTO> listOfTags = keywords.stream().map(t -> t.toDTO()).collect(Collectors.toList());
+    List<ArticleDTO> listOfArticles = articles.stream().map(a -> a.toDTO()).collect(Collectors.toList());
 
     StateOfTheArtDTOBuilder dto = StateOfTheArtDTO.builder();
-    dto.id(id).title(title).reference(reference).description(description);
+    dto.id(id).title(title).reference(reference).category(category.getName());
     dto.createdAt(createdAt).creator(creator.toDTO());
     dto.keywords(listOfTags);
+    dto.articles(listOfArticles);
 
     return dto.build();
   }

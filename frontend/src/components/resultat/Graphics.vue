@@ -7,18 +7,6 @@
         :width="width+'%'"
         :height="height+'px'"
       >
-        <line
-          v-for="(link,i) in graph.links"
-          :key="'link_'+i"
-          :x1="coords[link.source.index].x"
-          :y1="coords[link.source.index].y"
-          :x2="coords[link.target.index].x"
-          :y2="coords[link.target.index].y"
-          class="link-line"
-          stroke="black"
-          stroke-width="2"
-        ></line>
-
         <circle
           v-for="(node, i) in graph.nodes"
           :key="'node_'+i"
@@ -31,19 +19,29 @@
           stroke="black"
           stroke-width="1"
           @mouseover="showInfo(node, i)"
-          @mouseout="nullInfo()"
           @click="clicked(node)"
         ></circle>
 
-        <text
-          v-for="(link,i) in graph.links"
-          :key="'text_3_'+i"
-          :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
-          :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
-          text-anchor="middle"
-          class="link-label"
-          color="black"
-        >{{link.tag}}</text>
+        <template v-for="(link, i) in graph.links">
+          <line
+            :key="'link_'+i"
+            :x1="coords[link.source.index].x"
+            :y1="coords[link.source.index].y"
+            :x2="coords[link.target.index].x"
+            :y2="coords[link.target.index].y"
+            class="link-line"
+            stroke="black"
+            stroke-width="2"
+          ></line>
+          <text
+            :key="'text_3_'+i"
+            :x="(coords[link.source.index].x + coords[link.target.index].x) / 2"
+            :y="(coords[link.source.index].y + coords[link.target.index].y) / 2"
+            text-anchor="middle"
+            class="link-label"
+            color="black"
+          >{{link.tag}}</text>
+        </template>
       </svg>
     </div>
     <div class="legend">
@@ -54,7 +52,7 @@
           <span class="holder name">{{nameHolder}}</span>
           <br>
           <label>Domain</label> :
-          <span class="holder domain">{{domainHolder}}</span>
+          <span class="holder domain">{{domainHolder | capitalize }}</span>
           <br>
           <label>Year of publication</label> :
           <span class="holder year">{{yearHolder}}</span>
@@ -66,8 +64,8 @@
       <div class="legend-color-info">
         <h5>Legend</h5>
         <p>Main domain of the article</p>
-        <li v-for="(item, i) in legendMaker" :key="i">
-          <p :style="{ color: item['color'] }">{{item['domain']}}</p>
+        <li class="colors-info" v-for="(item, i) in legendMaker" :key="i">
+          <p :style="{ color: item['color'] }">{{item['domain'] | capitalize }}</p>
         </li>
       </div>
 
@@ -144,7 +142,7 @@ export default {
       };
     },
     coords() {
-      var clientWidth = document.getElementById("graphics").clientWidth;
+      const clientWidth = document.getElementById("graphics").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
@@ -194,10 +192,10 @@ export default {
           index: i,
           x: null,
           y: null,
-          name: this.articlesTitles[i][0],
-          domain: this.articlesTitles[i][2],
-          ref: this.articlesTitles[i][1],
-          year: this.articlesTitles[i][3]
+          name: this.articlesTitles[i]["title"],
+          domain: this.articlesTitles[i]["domain"],
+          ref: this.articlesTitles[i]["reference"],
+          year: this.articlesTitles[i]["year"]
         })),
         links: d3.range(this.linkedArticles.length).map(i => ({
           source: this.linkedArticles[i][0],
@@ -264,6 +262,22 @@ export default {
   float: left;
   width: 75%;
 }
+
+.node-container,
+.node-label,
+.link-line,
+.link-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node-container:hover,
+.node-label:hover {
+  cursor: pointer;
+}
+
 .legend {
   float: left;
   width: 20%;
@@ -275,6 +289,10 @@ export default {
     }
     .holder {
     }
+  }
+
+  .colors-info {
+    list-style: none;
   }
 }
 
