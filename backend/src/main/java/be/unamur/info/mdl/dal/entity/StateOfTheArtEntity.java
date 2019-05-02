@@ -14,24 +14,29 @@ import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "state_of_the_art")
 public class StateOfTheArtEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column(name = "title", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String title;
 
   @Column(name = "reference", unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String reference;
 
   @Column(name = "description")

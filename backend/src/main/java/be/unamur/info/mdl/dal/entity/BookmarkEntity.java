@@ -1,9 +1,16 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
-import java.util.Set;
-import javax.persistence.*;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "bookmark")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookmarkEntity {
 
   @Id
@@ -29,7 +37,7 @@ public class BookmarkEntity {
   private LocalDate createdAt = LocalDate.now();
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", unique = true, nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity creator;
 
   @ManyToOne(cascade = {
