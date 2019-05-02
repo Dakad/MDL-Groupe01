@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +142,7 @@ public class ArticleController extends APIBaseController {
   @ApiResponses(value = {
     @ApiResponse(code = 200, message = "List of the matching articles"),
   })
-  @GetMapping(name = "GET_articles_by_categories",path = "", params = "category")
+  @GetMapping(name = "GET_articles_by_categories", path = "", params = "category")
   public Map<String, List<ArticleDTO>> listByCategories(
     @RequestParam(name = "category") List<String> categories) {
     Map<String, List<ArticleDTO>> articles = articleService

@@ -88,7 +88,6 @@ public class ArticleServiceImpl implements ArticleService {
     // First, find all categories provided
     List<TagEntity> categories = this.tagRepository.findByNameOrSlugIn(categoryNames);
 
-
     categories.forEach(category -> {
       // Find the article by category and transform to DTO
       List<ArticleDTO> articles = this.articleRepository

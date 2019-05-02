@@ -5,10 +5,8 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface ArticleService {
 
@@ -49,6 +47,7 @@ public interface ArticleService {
 
   /**
    * Retrieve a list of article based their references
+   *
    * @param references The provided references
    * @return The list of referenced articles
    */
@@ -56,6 +55,7 @@ public interface ArticleService {
 
   /**
    * Retrieve a list of article based their categories
+   *
    * @param categories The provided categories
    * @return The list of referenced articles
    */
