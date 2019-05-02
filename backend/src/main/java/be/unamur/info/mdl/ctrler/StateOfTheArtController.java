@@ -89,9 +89,13 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
 
   @PutMapping({"/{reference}"})
   public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
-    throws UsernameNotFoundException {
-    sotaService.put(reference, authUser.getName(),data);
-    return ResponseEntity.status(HttpStatus.OK).body(data);
+     {
+       try {
+         sotaService.put(reference, authUser.getName(),data);
+       } catch (UsernameNotFoundException e) {
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+       }
+       return ResponseEntity.status(HttpStatus.OK).body(data);
   }
 }
 
