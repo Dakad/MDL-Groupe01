@@ -167,10 +167,7 @@ public class ArticleServiceImpl implements ArticleService {
     bookmark.setNote(note);
     user.getBookmarks().add(bookmark);
     article.get().getBookmarks().add(bookmark);
-
-    userRepository.save(user);
-    articleRepository.save(article.get());
-    bookmarkRepository.save(bookmark);
+    
     return true;
   }
 
