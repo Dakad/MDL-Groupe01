@@ -1,17 +1,12 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
-import be.unamur.info.mdl.dal.entity.TagEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
-import be.unamur.info.mdl.dal.repository.ArticleRepository;
-import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
-import be.unamur.info.mdl.dal.repository.TagRepository;
-import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dal.entity.*;
+import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.SotatNotFoundException;
 import java.time.LocalDate;
@@ -33,15 +28,16 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   private ArticleRepository articleRepository;
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   @Autowired
   public StateOfTheArtServiceImpl(StateOfTheArtRepository sotaRepo, UserRepository userRepo,
-    ArticleRepository articleRepo, TagRepository tagRepo) {
+         ArticleRepository articleRepo, TagRepository tagRepo, BookmarkRepository bookmarkRepository) {
     this.sotaRepository = sotaRepo;
     this.articleRepository = articleRepo;
     this.userRepository = userRepo;
     this.tagRepository = tagRepo;
-
+    this.bookmarkRepository = bookmarkRepository;
   }
 
 
@@ -141,7 +137,64 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     newSota.setKeywords(list);
   }
 
+  @Override
+  public boolean addBookmark(String reference, String username, String note)
+    throws SotatNotFoundException {
 
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotatNotFoundException("The requested state of the art was not found");
+    }
+    //Check if the user has already bookmarked this article
+    UserEntity user = userRepository.findByUsername(username);
+    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(sota.get()))) {
+      return false;
+    }
+
+    BookmarkEntity bookmark = new BookmarkEntity();
+    bookmark.setSota(sota.get());
+    bookmark.setCreator(user);
+    bookmark.setNote(note);
+    user.getBookmarks().add(bookmark);
+    sota.get().getBookmarks().add(bookmark);
+
+    return true;
+  }
+
+
+  @Override
+  public boolean isBookmarked(String reference, String username) throws SotatNotFoundException {
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotatNotFoundException("The requested state of the art was not found");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    return bookmarkRepository.existsByCreatorAndSota(user, sota.get());
+  }
+
+
+  @Override
+  public boolean removeBookmark(String reference, String username)
+    throws SotatNotFoundException, BookmarkNotFoundException {
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotatNotFoundException("State of the art does not exist");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository
+      .findByCreatorAndSota(user, sota.get());
+    if (!bookmark.isPresent()) {
+      throw new BookmarkNotFoundException("The request state of the art was not present in the bookmarks");
+    }
+
+    user.getBookmarks().remove(bookmark.get());
+    sota.get().getBookmarks().remove(bookmark.get());
+
+    userRepository.save(user);
+    sotaRepository.save(sota.get());
+    bookmarkRepository.delete(bookmark.get());
+    return true;
+  }
 
 
 }
