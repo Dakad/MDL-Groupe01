@@ -114,6 +114,7 @@ public class ProfileServiceImpl implements ProfileService {
     return userRepository.findByUsername(username).getFollowsDTO(page);
   }
 
+
   @Override
   public List<BookmarkDTO> getBookmarks(String username, int page)
     throws UsernameNotFoundException {

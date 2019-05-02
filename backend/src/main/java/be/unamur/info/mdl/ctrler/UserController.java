@@ -135,6 +135,60 @@ public class UserController extends APIBaseController {
     }
   }
 
+  @RequestMapping(path = "/{username}/follow", method = RequestMethod.POST)
+  public ResponseEntity follow(@PathVariable String username, Principal authUser) {
+    try {
+      String user = authUser.getName();
+      if (username.equals(user)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("A user cannot follow themselves");
+      }
+      boolean done = userService.follow(username, user);
+      if (done) {
+        return ResponseEntity.status(HttpStatus.OK).body("User now followed");
+      } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already followed");
+      }
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
+    }
+  }
+
+  @RequestMapping(path = "/{username}/unfollow", method = RequestMethod.POST)
+  public ResponseEntity unfollow(@PathVariable String username, Principal authUser) {
+    try {
+      String user = authUser.getName();
+      if (username.equals(user)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("A user cannot unfollow themselves");
+      }
+      boolean response = userService.unfollow(username, user);
+      if (response) {
+        return ResponseEntity.status(HttpStatus.OK).body("User now unfollowed");
+      } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already not followed");
+      }
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+
+  @RequestMapping(path = "/{username}/followed", method = RequestMethod.GET)
+  public ResponseEntity isFollowed(@PathVariable String username, Principal authUser) {
+    try {
+      if (username.equals(authUser.getName())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("If you followed yourself, you'd be walking in circles.");
+      }
+      boolean response = userService.isFollowed(username, authUser.getName());
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username does not exist");
+    }
+  }
+
+
   @RequestMapping(path = "/{username}/profile/bookmarks", method = RequestMethod.GET)
   public ResponseEntity getBookmarks(@PathVariable String username,
     @RequestParam(defaultValue = "0") int p) {

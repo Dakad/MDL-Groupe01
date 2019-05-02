@@ -831,9 +831,10 @@ INSERT INTO PUBLIC.ARTICLE_KEYWORDS(ARTICLE_ID, TAG_ID) VALUES
 (408, 101);    
 
 -- 2 +/- SELECT COUNT(*) FROM PUBLIC.STATE_OF_THE_ART;
-INSERT INTO PUBLIC.STATE_OF_THE_ART(ID, CREATED_AT, DESCRIPTION, REFERENCE, TITLE, USER_ID) VALUES
-(419, DATE '2019-04-25', 'Lorem ipsum dolor sit amet, laoreet egestas justo et, lobortis quis non lorem congue arcu', 'b24a454d82d9abaf6716edd650cb4d6c', 'My first sota', 2),
-(420, DATE '2019-04-25', 'Lorem ipsum dolor sit amet non. Magna a sed lobortis libero curabitur montes urna egestas integer vitae sed justo litora pellentesque. Quis diam in. Praesent arcu nisl ad amet urna. Sagittis faucibus at orci sit amet quam erat sed quidem semper sed.', 'c847ae369aba54139f44ca95927388be', 'My second sota', 2);              
+INSERT INTO PUBLIC.STATE_OF_THE_ART(ID, CREATED_AT, REFERENCE, TITLE, CATEGORY_ID, USER_ID) VALUES
+(419, DATE '2019-04-25', 'my-sota-123', 'My first sota', 3, 2),
+(420, DATE '2019-05-01', 'c847ae369aba54139f44ca95927388be', 'My second sota', 91, 2);
+
 
 -- 11 +/- SELECT COUNT(*) FROM PUBLIC.STATE_OF_THE_ART_ARTICLES;
 INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
@@ -847,6 +848,4 @@ INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
 (419, 386),
 (420, 155),
 (420, 143),
-(420, 128);     
-
--- 0 +/- SELECT COUNT(*) FROM PUBLIC.USER_GROUP;
+(420, 128);

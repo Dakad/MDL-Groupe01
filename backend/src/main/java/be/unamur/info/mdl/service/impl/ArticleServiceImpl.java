@@ -18,12 +18,16 @@ import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service("articleService")
@@ -60,9 +64,42 @@ public class ArticleServiceImpl implements ArticleService {
     if (!dbArticle.isPresent()) {
       throw new ArticleNotFoundException("The referenced article was not found");
     } else {
-      return dbArticle.get().toDTO();
+      ArticleEntity article = dbArticle.get();
+      article.setNbViews(article.getNbViews() + 1);
+      this.articleRepository.save(article);
+      return article.toDTO();
     }
+  }
 
+
+  @Override
+  public List<ArticleDTO> listArticleByReferences(List<String> references) {
+    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
+    return this.articleRepository.findDistinctFirst5ByReferenceIsIn(references, sortByViews)
+      .map(a -> a.toDTO()).collect(
+        Collectors.toList());
+  }
+
+  @Override
+  public Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categoryNames) {
+    Map<String, List<ArticleDTO>> articlesByCategory = new HashMap<>();
+    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
+
+    // First, find all categories provided
+    List<TagEntity> categories = this.tagRepository.findByNameOrSlugIn(categoryNames);
+
+
+    categories.forEach(category -> {
+      // Find the article by category and transform to DTO
+      List<ArticleDTO> articles = this.articleRepository
+        .findDistinctFirst5ByCategory(category, sortByViews)
+        .map(a -> a.toDTO())
+        .collect(Collectors.toList());
+
+      articlesByCategory.put(category.getName(), articles);
+    });
+
+    return articlesByCategory;
   }
 
   @Override
