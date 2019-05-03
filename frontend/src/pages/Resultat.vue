@@ -213,27 +213,18 @@ export default {
       this.relatedArticles = [];
       const { articles } = this.results;
       for (let i = 0; i < articles.length; i++) {
-        let keywords = articles[i].keywords;
+        const keywords = articles[i].keywords.map(k => k["name"]);
         for (let j = i + 1; j < articles.length; j++) {
-          let commonKeyword = "";
-          let commonArticle = [];
-          let alreadyIn = false;
-          for (let k = 0; k < keywords.length; k++) {
-            let keywordName = keywords[k].name;
-            for (let l = 0; l < articles[j].keywords.length; l++) {
-              if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += keywordName + ", ";
-                if (alreadyIn === false) {
-                  alreadyIn = true;
-                  commonArticle.push(i);
-                  commonArticle.push(j);
-                }
-              }
-            }
-          }
-          commonArticle.push(commonKeyword);
-          if (commonArticle.length > 1) {
-            this.relatedArticles.push(commonArticle);
+          const commonKeywords = keywords.filter(keyword => {
+            return articles[j].keywords.map(k => k["name"]).includes(keyword);
+          });
+
+          if (commonKeywords.length != 0) {
+            this.relatedArticles.push({
+              src: i,
+              target: j,
+              keywords: commonKeywords.join(", ")
+            });
           }
         }
       }
