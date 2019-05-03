@@ -8,8 +8,9 @@ import Accueil from './pages/Accueil.vue';
 import About from './pages/About.vue';
 import Resultat from './pages/Resultat.vue';
 import Article from './pages/Article';
-import Sota from './pages/Sota';
+import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
+import SotaHelper from './pages/SotaHelper';
 
 Vue.use(Router);
 
@@ -22,9 +23,9 @@ const routes = [
 
   { name: '404', path: '/404', component: NotFound },
 
-  { name: 'articleDetails', path: '/article/:reference', component: Article },
+  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails },
 
-  { name: 'sota', path: '/sota', component: Sota },
+  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
@@ -35,6 +36,8 @@ const routes = [
     meta: { requiresAuth: true },
     props: true
   },
+
+  { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
 
   { name: '', path: '*', redirect: '/404' }
 ];
@@ -52,7 +55,7 @@ appRouter.beforeEach((to, from, next) => {
     if (!isLogged()) {
       next({
         name: 'accueil',
-        query: { action: 'login',redirect: to.fullPath }
+        query: { action: 'login', redirect: to.fullPath }
       });
     } else {
       next();

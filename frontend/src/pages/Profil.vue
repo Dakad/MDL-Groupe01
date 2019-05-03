@@ -16,7 +16,7 @@
     <div class="tabs">
     <md-tabs>
       <md-tab id="profile" md-label="My profile">
-       <!-- <MyProfile :infoPro="infoPro"></MyProfile> -->
+        <MyProfile :infoPro="infoPro"></MyProfile>
       </md-tab>
       <md-tab id="Sota" md-label="State Of The Art">
         <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
@@ -72,7 +72,7 @@
           sotaList: {},
           infoPro: {},
           username: {},
-          loading: false
+          loading: false,
         }
       },
       created() {
@@ -137,5 +137,9 @@
     position: relative;
     height: 60%;
     width: 100%;
+  }
+
+  #profile{
+    height: 370px;
   }
 </style>
