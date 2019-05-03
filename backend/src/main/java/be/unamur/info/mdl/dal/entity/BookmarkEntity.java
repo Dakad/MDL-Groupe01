@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.BookmarkDTO;
 import java.time.LocalDate;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import be.unamur.info.mdl.dto.BookmarkDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -52,9 +51,15 @@ public class BookmarkEntity {
     CascadeType.MERGE})
   private StateOfTheArtEntity sota;
 
-  public BookmarkDTO toDTO(){
-    if(article != null) return  new BookmarkDTO(note,article.getTitle(),article.getReference());
-    if(sota != null) return new BookmarkDTO(note, sota.getTitle(),sota.getReference());
+
+
+  public BookmarkDTO toDTO() {
+    if (article != null) {
+      return new BookmarkDTO(note, article.toDTO(), null);
+    }
+    if (sota != null) {
+      return new BookmarkDTO(note, null, sota.toDTO());
+    }
     return null;
   }
 }
