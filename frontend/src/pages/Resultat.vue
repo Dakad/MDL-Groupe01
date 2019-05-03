@@ -5,8 +5,8 @@
         class="sort-container"
         :sort="sortBy"
         :order="orderBy"
-        @change:sort="updateSearchURL('sort', $event)"
-        @change:order="updateSearchURL('order', $event)"
+        @change:sort="sortBy = $event; updateSearchURL('sort', $event)"
+        @change:order="orderBy = $event; updateSearchURL('order', $event)"
       ></result-sort>
     </div>
     <div class="md-layout-item md-size-80">
@@ -122,7 +122,7 @@ export default {
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
-      page: 0,
+      page: 1,
       metas: {},
       results: {},
       pages: {},
@@ -165,10 +165,10 @@ export default {
       this.searchTerm = this.$route.query["search"];
 
       const searchQuery = {
-        st: this.searchTerm,
-        s: this.sortBy,
-        o: this.orderBy,
-        p: this.page
+        term: this.searchTerm,
+        sort: this.sortBy,
+        order: this.orderBy,
+        page: this.page
       };
 
       return getSearchResults(searchQuery)
