@@ -6,7 +6,9 @@
 
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="visu">
-        <md-tab id="gestion" md-label="Gestion" md-icon="view_module"></md-tab>
+        <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
+          <SotaGestion/>
+        </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic/>
         </md-tab>
@@ -20,12 +22,13 @@
 </template>
 
 <script>
+import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate, SotaGraphic }
+  components: { createSota: SotaCreate, SotaGraphic, SotaGestion }
 };
 </script>
 
