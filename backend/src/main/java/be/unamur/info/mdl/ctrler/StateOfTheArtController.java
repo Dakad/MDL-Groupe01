@@ -50,6 +50,7 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
+
   @ApiOperation(value = "Create a new SoTA")
   @ApiResponses(value = {
     @ApiResponse(code = 201, message = "Successfully created"),
@@ -65,13 +66,14 @@ public class StateOfTheArtController extends APIBaseController {
       currentUser.setUsername(username);
 
       StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-      return ResponseEntity.status(HttpStatus.OK).body(sota);
+      return ResponseEntity.status(HttpStatus.CREATED).body(sota);
     } catch (SotaAlreadyExistException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
+
 
   @DeleteMapping({"/{reference}"})
 public ResponseEntity delete (@PathVariable String reference, Principal authUser)
@@ -88,7 +90,7 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
   }
 
   @PutMapping({"/{reference}"})
-  public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
+  public ResponseEntity put (@PathVariable String reference,@Valid @RequestBody StateOfTheArtDTO data, Principal authUser)
      {
        try {
          sotaService.put(reference, authUser.getName(),data);
@@ -97,6 +99,7 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
        }
        return ResponseEntity.status(HttpStatus.OK).body(data);
   }
+
 }
 
 
