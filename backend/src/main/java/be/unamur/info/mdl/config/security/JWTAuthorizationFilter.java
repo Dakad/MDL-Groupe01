@@ -9,7 +9,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -75,7 +74,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
       String user = SecurityUtils.parseToken(token);
 
       if (user != null) {
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.EMPTY_LIST);
+        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
       }
     }
 

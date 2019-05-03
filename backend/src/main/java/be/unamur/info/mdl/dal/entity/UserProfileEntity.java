@@ -37,7 +37,7 @@ public class UserProfileEntity {
   @Column(name="twitter_url")
   private String twitterURL;
 
-  @Column(name = "linked_in_url")
+  @Column(name = "linkedin_url")
   private String linkedInURL;
 
   @OneToOne

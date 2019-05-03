@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ApiModel(value = "UniversityInfo", description = "Model representing an information about an university")
 public class UniversityInfoDTO {
+
   private String name;
   private String website;
 }
