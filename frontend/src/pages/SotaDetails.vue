@@ -3,7 +3,7 @@
     <div class="leftContainer">
       <h1>{{ articleTitle }}</h1>
       <div class="menuBo">
-        <menuSota></menuSota>
+        <SotaMenu></SotaMenu>
       </div>
       <div class="abstract">
         <p>{{ abstract }}</p>
@@ -23,14 +23,14 @@
 
 <script>
 import InfoNav from "@/components/article/InfoNav";
-import MenuSota from "@/components/sota/MenuSota";
+import SotaMenu from "@/components/sota-details/SotaMenu";
 import json from "@/assets/dummy-SOTA.json";
 
 export default {
   name: "Sota",
   components: {
     InfoNav,
-    MenuSota
+    SotaMenu
   },
   data() {
     return {
