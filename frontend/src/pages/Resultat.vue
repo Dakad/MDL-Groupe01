@@ -43,7 +43,8 @@
               v-show="!loading"
               :list="results.articles"
               :meta="metas['articles']"
-              @pagination="pages['article'] = $event"
+              :hasPagination="isPaginationVisible('articles')"
+              @pagination="page = $event; updateSearchURL('page', $event) "
             ></article-list>
             <md-empty-state
               v-if="!results.articles || results.articles.length == 0"
@@ -122,7 +123,7 @@ export default {
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
-      page: 1,
+      page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
       pages: {},
@@ -145,6 +146,15 @@ export default {
   computed: {
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
+    },
+    isPaginationVisible(type) {
+      return type => {
+        return (
+          !this.loading &&
+          this.metas[type] &&
+          this.metas[type]["total_pages"] >= 1
+        );
+      };
     }
   },
   methods: {
@@ -168,22 +178,19 @@ export default {
         term: this.searchTerm,
         sort: this.sortBy,
         order: this.orderBy,
-        page: this.page
+        page: !this.changingTab ? this.page : 1,
+        only: !this.changingTab ? this.activeTab : undefined
       };
 
       return getSearchResults(searchQuery)
         .then(res => {
           this.loading = false;
 
-          Object.keys(res["metas"]).forEach(type => {
+          Object.keys(res["metas"]);
+          filter(type => res["metas"][type] != null).forEach(type => {
             this.$set(this.metas, type, res["metas"][type]);
             this.$set(this.results, type, res[type]);
           });
-
-          // this.$set(this.results, "articles", res["articles"]);
-          // this.$set(this.results, "authors", res["authors"]);
-          // this.$set(this.results, "sotas", res["sotas"]);
-          // this.$set(this.results, "users", res["users"]);
 
           this.articlesTitles = [];
 
