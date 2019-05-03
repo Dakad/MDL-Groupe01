@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.AuthorDTO;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +36,10 @@ public class AuthorEntity {
   @Column(name = "slug", unique = true, nullable = false)
   @EqualsAndHashCode.Include
   private String slug;
+
+  @Column(name = "created_at")
+  @Builder.Default
+  private LocalDate createdAt = LocalDate.now();
 
 
   @ManyToMany(mappedBy = "authors")
