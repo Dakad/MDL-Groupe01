@@ -1,9 +1,6 @@
 package be.unamur.info.mdl.service;
 
-import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
-import be.unamur.info.mdl.dto.ProfileProInfoDTO;
-import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +28,6 @@ public interface ProfileService {
 
   List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException;
 
+  List<BookmarkDTO> getBookmarks(String username, int page) throws UsernameNotFoundException;
 
-  Map<String, String> getBookmarks(String username, int page) throws UsernameNotFoundException;
 }

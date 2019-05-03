@@ -29,6 +29,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -36,20 +37,24 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column(unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String username;
 
   @Column(nullable = false)
   private String password;
 
   @Column(name = "email", unique = true)
+  @EqualsAndHashCode.Include
   private String email;
 
   @Column(name = "first_name")
