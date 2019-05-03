@@ -2,6 +2,7 @@ package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.service.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
@@ -29,7 +30,7 @@ public interface ArticleService {
    * @throws ArticleNotFoundException if the reference corresponds to no article
    */
   boolean addBookmark(String reference, String username, String note)
-    throws ArticleNotFoundException;
+    throws ArticleNotFoundException, AlreadyBookmarkedException;
 
   /**
    * Removes a bookmarked article from a user's list of bookmarked articles

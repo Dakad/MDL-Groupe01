@@ -13,6 +13,7 @@ import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
+import be.unamur.info.mdl.service.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
@@ -185,16 +186,17 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public boolean addBookmark(String reference, String username, String note)
-    throws ArticleNotFoundException {
+    throws ArticleNotFoundException, AlreadyBookmarkedException {
 
-    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    Optional<ArticleEntity> article;
+    article = articleRepository.findByReference(reference);
     if (!article.isPresent()) {
       throw new ArticleNotFoundException("The requested article was not found");
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
     if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
-      return false;
+      throw new AlreadyBookmarkedException("This article is already in your bookmarks");
     }
 
     BookmarkEntity bookmark = new BookmarkEntity();

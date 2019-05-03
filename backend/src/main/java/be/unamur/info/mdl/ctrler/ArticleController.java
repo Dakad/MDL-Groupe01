@@ -1,8 +1,10 @@
 package be.unamur.info.mdl.ctrler;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
+import be.unamur.info.mdl.service.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
@@ -42,7 +44,7 @@ public class ArticleController extends APIBaseController {
     @ApiResponse(code = 400, message = "Some required fields are invalid or missing"),
     @ApiResponse(code = 409, message = "If the article already exists", response = String.class)
   })
-  @RequestMapping(path = {"", "/add"}, method = RequestMethod.POST)
+  @RequestMapping(path = {"", "/"}, method = RequestMethod.POST)
   public ResponseEntity create(@Valid @RequestBody ArticleDTO articleData, Principal authUser) {
     try {
       String username = authUser.getName();
@@ -55,6 +57,18 @@ public class ArticleController extends APIBaseController {
     return new ResponseEntity<>(articleData, HttpStatus.CREATED);
   }
 
+
+  @ApiOperation(value = "Retrieve a list of article by their references")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of the matching articles", response = ArticleDTO[].class),
+    @ApiResponse(code = 400, message = "The list of provided references is empty"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist")
+  })
+  @GetMapping(name = "GET_articles_by_references", path = {"", "/"}, params = "reference")
+  public List<ArticleDTO> listByReferences(
+    @RequestParam(name = "reference") List<@NotBlank(message = "The reference must be defined") String> references) {
+    return articleService.listArticleByReferences(references);
+  }
 
   @ApiOperation(value = "Retrieve a specific article by it reference")
   @ApiResponses(value = {
@@ -71,38 +85,39 @@ public class ArticleController extends APIBaseController {
     }
   }
 
+
+  @ApiOperation(value = "Retrieve a list of article by their categories")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of the matching articles"),
+  })
+  @GetMapping(name = "GET_articles_by_categories", path = "", params = "category")
+  public Map<String, List<ArticleDTO>> listByCategories(
+    @RequestParam(name = "category") List<String> categories) {
+    Map<String, List<ArticleDTO>> articles = articleService
+      .listArticleByCategories(categories);
+    return articles;
+  }
+
+
   @ApiOperation(value = "Create a new bookmark on an article")
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 201, message = "Successfully created"),
+    @ApiResponse(code = 400, message = "The referenced article is already bookmarked"),
     @ApiResponse(code = 404, message = "The provided reference doesn't exist")
   })
   @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.POST)
   public ResponseEntity addBookmark(@PathVariable String reference, Principal authUser,
-    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
+    @ApiParam(name = "note", value = "A note about the bookmark") @RequestBody(required = false) BookmarkDTO data) {
     try {
-      if (articleService.addBookmark(reference, authUser.getName(), note)) {
-        return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
-      } else {
-        //TODO Add more explicit error message
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
-      }
+      articleService.addBookmark(reference, authUser.getName(), data.getNote());
+      return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
+    } catch (AlreadyBookmarkedException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
 
-  @ApiOperation(value = "Retrieve a list of article by their references")
-  @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "List of the matching articles", response = ArticleDTO[].class),
-    @ApiResponse(code = 400, message = "The list of provided references is empty"),
-    @ApiResponse(code = 404, message = "The provided reference doesn't exist")
-  })
-  @GetMapping(name = "GET_articles_by_references", path = "", params = "reference")
-  public List<ArticleDTO> listByReferences(
-    @RequestParam(name = "reference") List<@NotBlank(message = "The reference must be defined") String> references) {
-    return articleService.listArticleByReferences(references);
-  }
 
   @ApiOperation(value = "Remove a bookmark on an article")
   @ApiResponses(value = {
@@ -112,7 +127,7 @@ public class ArticleController extends APIBaseController {
   })
   @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.DELETE)
   public ResponseEntity removeBookmark(
-    @ApiParam(name = "reference", defaultValue = "The article reference")
+    @ApiParam(name = "reference", value = "The article reference")
     @PathVariable String reference,
     Principal authUser) {
     try {
@@ -136,18 +151,6 @@ public class ArticleController extends APIBaseController {
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-  }
-
-  @ApiOperation(value = "Retrieve a list of article by their categories")
-  @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "List of the matching articles"),
-  })
-  @GetMapping(name = "GET_articles_by_categories", path = "", params = "category")
-  public Map<String, List<ArticleDTO>> listByCategories(
-    @RequestParam(name = "category") List<String> categories) {
-    Map<String, List<ArticleDTO>> articles = articleService
-      .listArticleByCategories(categories);
-    return articles;
   }
 
 }
