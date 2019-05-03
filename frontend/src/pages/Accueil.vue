@@ -14,58 +14,42 @@
       <div class="filter"></div>
     </div>
 
-  <!--<div class="recommended">
-      <p>recommended</p>
-      <div class="switch-news">
-        <md-button class="md-raised" v-on:click="switcher">What might interest you</md-button>
-      </div>
-      <div id="slider">
-        <carousel autoplay=true>
-          <slide>
-            <span class="label">1</span>
-          </slide>
-        </carousel>
-      </div>
-    </div>-->
+    <div class="recommended">
+      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000" :navigationEnabled="true">
+        <slide class="slides" v-for="(recommended,index) in list" :key="index">
+          <article-slide :title="recommended.title" :authors="recommended.authors" :domain="recommended.category" :date="recommended.created_at" :nb-views="recommended.nb_views" :nb-quotes="recommended.nb_citations" :keywords="recommended.keywords"></article-slide>
+        </slide>
+      </carousel>
+    </div>
   </section>
 </template>
 
-
-
 <script>
-//import { Carousel, Slide } from "vue-carousel";
+import { Carousel, Slide } from "vue-carousel";
+
+import ArticleSlide from "@/components/accueil/ArticleSlide";
+
 import Search from '@/components/navbar/Search';
+
+import dummy from "@/assets/dummy-Results.json";
 
 export default {
   name: "Accueil",
   components: {
-    //Carousel,
-    //Slide,
-    Search
+    Carousel,
+    Slide,
+    ArticleSlide,
+    Search,
   },
   data() {
     return {
       searchInput: null,
-      //carrouselAutoplay: true
+      list: dummy.results.articles,
     };
-  },
-  methods: {
-    // buildSlideMarkup(count) {
-    //   let slideMarkup = "";
-    //   for (var i = 1; i <= count; i++) {
-    //     slideMarkup += '<slide><span class="label">' + i + "</span></slide>";
-    //   }
-    //   return slideMarkup;
-    // }
   },
   searchIt() {}
 };
 </script>
-
-
-
-
-
 
 <style scoped>
 img {
@@ -101,7 +85,7 @@ h1 {
 }
 
 #search {
-  margin-top: 150px;
+  margin-top: 140px;
 }
 
 p {
@@ -109,7 +93,7 @@ p {
   width: 20%;
 }
 
-/*.recommended {
+.recommended {
   margin: 0;
   position: absolute;
   top: 75%;
@@ -117,13 +101,16 @@ p {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   width: 75%;
-  height: 40%;
-  border: 3px solid gray;
-  overflow: auto;
-  z-index: -1;
+  height: 47%;
 }
 
-.switch-news {
+.slides {
+  border: 1px solid gray;
+  margin: 1%;
+  padding: 1%;
+}
+
+/*.switch-news {
   float: right;
   margin-right: 50px;
   position: absolute;
@@ -146,28 +133,10 @@ p {
   top: 75%;
 }
 
-/*.VueCarousel-slide {
-  position: relative;
-  background: #42b983;
-  color: #fff;
-  font-family: Arial;
-  font-size: 24px;
-  text-align: center;
-  min-height: 50px;
-}*/
-
 .label {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-/*#slider {
-  width: 80%;
-  height: 70%;
-  position: absolute;
-  top: 20%;
-  left: 10%;
-}*/
 </style>

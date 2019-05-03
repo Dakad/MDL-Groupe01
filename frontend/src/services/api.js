@@ -23,3 +23,7 @@ export function getTeam() {
 export function getSearchResults(searchQuery) {
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
+
+export function getArticleByReference(reference) {
+  return Vue.http.get('/api/article/' + reference).then(res => res.body);
+}
