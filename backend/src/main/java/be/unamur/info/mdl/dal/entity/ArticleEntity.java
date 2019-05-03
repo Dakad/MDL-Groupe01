@@ -157,7 +157,7 @@ public class ArticleEntity {
       .title(this.title).content(this.content).url(url).price(price);
 
     data.journal(this.journal).number(this.journalNumber).publisher(this.publisher);
-    data.year(this.publicationYear).month(this.publicationMonth);
+    data.year(this.publicationYear).month(this.publicationMonth).createdAt(this.createdAt);
     data.pages(this.pages).nbCitations(nbCitations).nbViews(nbViews);
 
     List<String> listOfAuthors = authors.stream().map(a -> a.getName())
@@ -177,6 +177,11 @@ public class ArticleEntity {
     }
 
     return data.build();
+  }
+
+
+  public ArticleDTO toBookmarkInfoDTO(){
+    return ArticleDTO.builder().reference(this.reference).title(this.title).build();
   }
 
 

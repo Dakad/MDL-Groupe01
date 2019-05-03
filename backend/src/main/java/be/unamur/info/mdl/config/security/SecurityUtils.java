@@ -30,7 +30,7 @@ public abstract class SecurityUtils {
 
   @Value("${app.auth.secureEndpoints}")
   public static final String[] SECURED_ENDPOINTS = new String[]{
-     "/api/team"
+     // "/api/team"
   };
 
 
