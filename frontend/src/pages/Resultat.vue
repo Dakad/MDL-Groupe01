@@ -17,7 +17,7 @@
         <md-tabs
           md-alignment="fixed"
           :md-active-tab="activeTab"
-          @md-changed="updateSearchURL('tab', $event)"
+          @md-changed="activeTab = $event; updateSearchURL('tab', $event)"
         >
           <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
             <sota-list v-show="!loading" :list="results.sotas"></sota-list>
@@ -126,10 +126,7 @@ export default {
       page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
-      pages: {},
-      articlesTags: {},
-      articlesTitles: [],
-      relatedArticles: []
+      pages: {}
     };
   },
   created() {
@@ -155,6 +152,59 @@ export default {
           this.metas[type]["total_pages"] >= 1
         );
       };
+    },
+    articlesTitles() {
+      if (!this.results["articles"]) {
+        return [];
+      }
+      return this.results["articles"].map(article => ({
+        title: article.title,
+        reference: article.reference,
+        year: article.year,
+        domain: article.category
+      }));
+    },
+
+    articlesTags() {
+      if (!this.results["articles"]) {
+        return {};
+      }
+      return this.results["articles"].reduce((acc, article) => {
+        // As the same time, push the article title
+        article.keywords.forEach(({ name, slug }) => {
+          const nb = acc[slug] ? acc[slug]["occur"] : 0;
+          acc[slug] = { name, occur: nb + 1 };
+        });
+        return acc;
+      }, {});
+    },
+
+    /**
+     * Group articles based on common keywords among them.
+     */
+    relatedArticles() {
+      if (!this.results["articles"]) {
+        return [];
+      }
+      const { articles } = this.results;
+      let related = [];
+      for (let i = 0; i < articles.length; i++) {
+        const keywords = articles[i].keywords.map(k => k["name"]);
+        for (let j = i + 1; j < articles.length; j++) {
+          const commonKeywords = keywords.filter(keyword => {
+            return articles[j].keywords.map(k => k["name"]).includes(keyword);
+          });
+
+          if (commonKeywords.length != 0) {
+            related.push({
+              src: i,
+              target: j,
+              keywords: commonKeywords.join(", ")
+            });
+          }
+        }
+      }
+      return related;
     }
   },
   methods: {
@@ -186,66 +236,14 @@ export default {
         .then(res => {
           this.loading = false;
 
-          Object.keys(res["metas"]);
-          filter(type => res["metas"][type] != null).forEach(type => {
-            this.$set(this.metas, type, res["metas"][type]);
-            this.$set(this.results, type, res[type]);
-          });
-
-          this.articlesTitles = [];
-
-          this.articlesTags = res["articles"].reduce((acc, article) => {
-            // As the same time, push the article title
-            this.articlesTitles.push({
-              title: article.title,
-              reference: article.reference,
-              year: article.year,
-              domain: article.category
+          Object.keys(res["metas"])
+            .filter(type => res["metas"][type] != null)
+            .forEach(type => {
+              this.$set(this.metas, type, res["metas"][type]);
+              this.$set(this.results, type, res[type]);
             });
-            article.keywords.forEach(({ name, slug }) => {
-              const nb = acc[slug] ? acc[slug]["occur"] : 0;
-              acc[slug] = { name, occur: nb + 1 };
-            });
-            return acc;
-          }, {});
-
-          this.groupArticleByKeywords();
         })
         .catch(console.error);
-    },
-    /**
-     * Group articles based on common keywords among them.
-     */
-    groupArticleByKeywords() {
-      this.relatedArticles = [];
-      const { articles } = this.results;
-      for (let i = 0; i < articles.length; i++) {
-        const keywords = articles[i].keywords.map(k => k["name"]);
-        for (let j = i + 1; j < articles.length; j++) {
-          const commonKeywords = keywords.filter(keyword => {
-            return articles[j].keywords.map(k => k["name"]).includes(keyword);
-          });
-
-          if (commonKeywords.length != 0) {
-            this.relatedArticles.push({
-              src: i,
-              target: j,
-              keywords: commonKeywords.join(", ")
-            });
-          }
-        }
-      }
-    },
-    groupyTags() {},
-    getEmptyStateLabel(type) {},
-    getEmptyStateDescription(type) {
-      switch (type) {
-        case "value":
-          break;
-
-        default:
-          break;
-      }
     }
   }
 };
