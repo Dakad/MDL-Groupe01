@@ -5,21 +5,13 @@ import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO.StateOfTheArtDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -84,7 +76,9 @@ public class StateOfTheArtEntity {
   @Builder.Default
   private List<TagEntity> keywords = new LinkedList<>();
 
-
+  @OneToMany(mappedBy = "sota")
+  @Builder.Default
+  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
   public static StateOfTheArtEntity of(StateOfTheArtDTO data) {
     List<TagEntity> listOfTags = data.getKeywords().stream().map(t -> TagEntity.of(t)).collect(
