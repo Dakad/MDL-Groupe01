@@ -12,9 +12,9 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.AuthorDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO;
-import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO.MetaField;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
+import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
@@ -56,29 +56,59 @@ public class SearchServiceImpl implements SearchService {
     SearchResultDTOBuilder searchResult = SearchResultDTO.builder();
 
     // PAGEABLE
-    int page = searchQuery.getPage();
-    String searchTerm = searchQuery.getSearchTerm();
+    int page = 0;
+    String searchTerm = searchQuery.getTerm();
+    String sort = searchQuery.getSort().toLowerCase();
+    String order = searchQuery.getOrder().toLowerCase();
+
     SearchResultMetaDTO resultMeta = new SearchResultMetaDTO();
     Sort pageSort;
     Pageable pageable;
 
-    // USERS
+    if (!searchQuery.getOnly().equalsIgnoreCase("ALL")) {
+      page = searchQuery.getPage() - 1;
+    }
 
-//    pageSort = this.getSortForUser(searchQuery.getSort(), searchQuery.getOrder());
-//    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
-//    Page<UserEntity> users = userRepository
-//      .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm,
-//        searchTerm, pageable);
-//    List<UserDTO> userList = users.stream().map(u -> u.toDTO())
-//      .collect(Collectors.toList());
-//
-//    searchResult.users(userList);
-//    resultMeta.setUsersMeta(this.createMeta(users, pageSort));
+    // USERS
+    if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
+      .equalsIgnoreCase("USERS")) {
+      pageSort = this.getSortForUser(searchQuery.getSort(), searchQuery.getOrder());
+      pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+      searchForUsers(searchResult, searchTerm, resultMeta, pageable);
+    }
 
     // AUTHORS
+    if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
+      .equalsIgnoreCase("AUTHORS")) {
+      pageSort = this.getSortForAuthor(sort, order);
+      pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+      searchForAuthors(searchResult, searchTerm, resultMeta, pageable);
+    }
 
-    pageSort = this.getSortForAuthor(searchQuery.getSort(), searchQuery.getOrder());
-    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+    // ARTICLES
+    if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
+      .equalsIgnoreCase("ARTICLES")) {
+      pageSort = this.getSortForArticle(sort, order);
+      pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+      searchForArticles(searchResult, searchTerm, resultMeta, pageable);
+    }
+
+    // SOTAS
+    if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
+      .equalsIgnoreCase("SOTAS")) {
+      pageSort = this.getSortForSota(sort, order);
+      pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+      searchForSotas(searchResult, searchTerm, resultMeta, pageable);
+    }
+
+    searchResult.metas(resultMeta);
+
+    return searchResult.build();
+  }
+
+
+  private void searchForAuthors(SearchResultDTOBuilder searchResult, String searchTerm,
+    SearchResultMetaDTO resultMeta, Pageable pageable) {
     Page<AuthorEntity> authors = authorRepository
       .findDistinctByNameContainingIgnoreCase(searchTerm, pageable);
 
@@ -86,13 +116,25 @@ public class SearchServiceImpl implements SearchService {
       .collect(Collectors.toList());
 
     searchResult.authors(authorsList);
-    resultMeta.setAuthorsMeta(this.createMeta(authors, pageSort));
+    resultMeta.setAuthorsMeta(this.createMeta(authors, pageable.getSort()));
+  }
 
-    // ARTICLES
 
-    pageSort = this.getSortForArticle(searchQuery.getSort(), searchQuery.getOrder());
-    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
+  private void searchForUsers(SearchResultDTOBuilder searchResult, String searchTerm,
+    SearchResultMetaDTO resultMeta, Pageable pageable) {
+    Page<UserEntity> users = userRepository
+      .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm,
+        searchTerm, pageable);
+    List<UserDTO> userList = users.stream().map(u -> u.toDTO())
+      .collect(Collectors.toList());
 
+    searchResult.users(userList);
+    resultMeta.setUsersMeta(this.createMeta(users, pageable.getSort()));
+  }
+
+
+  private void searchForArticles(SearchResultDTOBuilder searchResult, String searchTerm,
+    SearchResultMetaDTO resultMeta, Pageable pageable) {
     Page<ArticleEntity> articles = articleRepository
       .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
 
@@ -100,13 +142,12 @@ public class SearchServiceImpl implements SearchService {
       .collect(Collectors.toList());
 
     searchResult.articles(articleList);
-    resultMeta.setArticlesMeta(this.createMeta(articles, pageSort));
+    resultMeta.setArticlesMeta(this.createMeta(articles, pageable.getSort()));
+  }
 
-    // SOTAS
 
-    pageSort = this.getSortForSota(searchQuery.getSort(), searchQuery.getOrder());
-    pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
-
+  private void searchForSotas(SearchResultDTOBuilder searchResult, String searchTerm,
+    SearchResultMetaDTO resultMeta, Pageable pageable) {
     Page<StateOfTheArtEntity> sotas = stateOfTheArtRepository
       .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
 
@@ -114,15 +155,12 @@ public class SearchServiceImpl implements SearchService {
       .collect(Collectors.toList());
 
     searchResult.statesOfTheArt(sotaList);
-    resultMeta.setSotasMeta(this.createMeta(sotas, pageSort));
-
-    searchResult.metas(resultMeta);
-
-    return searchResult.build();
+    resultMeta.setSotasMeta(this.createMeta(sotas, pageable.getSort()));
   }
 
+
   private Sort getSortForUser(final String sort, final String order) {
-    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title"))  {
+    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title")) {
       if (order.equalsIgnoreCase("ASC")) {
         return Sort.by("lastname", "firstname").ascending();
       }
@@ -134,15 +172,17 @@ public class SearchServiceImpl implements SearchService {
   }
 
   private Sort getSortForAuthor(final String sort, final String order) {
-    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title")) {
-      if (order.equalsIgnoreCase("ASC")) {
-        return Sort.by("name").ascending();
-      }
-      if (order.equalsIgnoreCase("DESC")) {
-        return Sort.by("name").descending();
-      }
+    switch (sort) {
+      case "name":
+      case "title":
+        if (order.equalsIgnoreCase("DESC")) {
+          return Sort.by("name").descending();
+        } else {
+          return Sort.by("name").ascending();
+        }
+      default:
+        return this.getSort(sort, order);
     }
-    return this.getSort(sort, order);
   }
 
   private Sort getSortForArticle(final String sort, final String order) {
@@ -156,10 +196,9 @@ public class SearchServiceImpl implements SearchService {
   private Sort getSortForSota(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
       return this.getSort("title", order);
-    }else{
+    } else {
       return this.getSort(sort, order);
     }
-
   }
 
   /**
@@ -181,10 +220,11 @@ public class SearchServiceImpl implements SearchService {
         pageSort = Sort.by("createdAt");
         break;
       default:
+        pageSort = null;
         break;
     }
 
-    if(pageSort == null) {
+    if (pageSort == null) {
       return Sort.unsorted();
     }
 
@@ -214,8 +254,8 @@ public class SearchServiceImpl implements SearchService {
     int totalSize = (int) page.getTotalElements();
     size = (totalSize < size) ? totalSize : size;
 
-    meta.put(MetaField.SIZE, size);
-    meta.put(MetaField.TOTAL_SIZE, totalSize);
+    meta.put(MetaField.PAGE_SIZE, size);
+    meta.put(MetaField.TOTAL_PAGE_SIZE, totalSize);
 
     Order order = pageSort.get().findFirst().get();
     meta.put(MetaField.ORDER_BY, order.getProperty());
