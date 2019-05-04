@@ -215,8 +215,9 @@ export default {
       for (let i = 0; i < articles.length; i++) {
         const keywords = articles[i].keywords.map(k => k["name"]);
         for (let j = i + 1; j < articles.length; j++) {
+          const secondKeywords = articles[j].keywords.map(k => k["name"]);
           const commonKeywords = keywords.filter(keyword => {
-            return articles[j].keywords.map(k => k["name"]).includes(keyword);
+            return secondKeywords.includes(keyword);
           });
 
           if (commonKeywords.length != 0) {
