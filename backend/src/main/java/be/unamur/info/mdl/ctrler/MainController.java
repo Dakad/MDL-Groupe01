@@ -127,39 +127,15 @@ public class MainController extends APIBaseController {
   }
 
 
-  //?st={searchTerm}&p={page}&o={order}&s={sort}&t={tag}
+  //?st={term}&p={page}&o={order}&s={sort}&t={tag}
   @ApiOperation(value = "Search articles, S.O.T.A or authors", response = SearchResultDTO.class)
-  @ApiResponse(code = 200, message = "List of each searched elements")
+  @ApiResponses(value = {
+    @ApiResponse(code = 400, message = "Some required fields are invalid or missing"),
+    @ApiResponse(code = 200, message = "List of each searched elements")
+  })
   @RequestMapping(value = "/search", method = RequestMethod.GET)
-  public ResponseEntity<SearchResultDTO> search(
-    @ApiParam(value = "Pagination", defaultValue = "0")
-    @RequestParam(defaultValue = "0", required = false) String p,
-
-    @ApiParam(value = "Order", defaultValue = "ASC")
-    @RequestParam(defaultValue = "ASC", required = false) String o,
-
-    @ApiParam(value = "Sort", allowMultiple = true, defaultValue = "DATE")
-    @RequestParam(defaultValue = "DATE", required = false) String s,
-
-    @ApiParam(value = "Search term", required = true)
-    @RequestParam String st,
-
-    @ApiParam(value = "Tags")
-    @RequestParam(required = false) String t) {
-
-    int page;
-    try {
-      page = Integer.parseInt(p);
-    } catch (NumberFormatException e) {
-      page = 0;
-    }
-
-    if (page < 0) {
-      page = 0;
-    }
-
-    SearchQueryDTO searchQuery = new SearchQueryDTO(st, t, page, o.toUpperCase(), s.toUpperCase());
-    SearchResultDTO resultDTO = searchService.getSearchResults(searchQuery);
+  public ResponseEntity<SearchResultDTO> search(@Valid SearchQueryDTO query) {
+    SearchResultDTO resultDTO = searchService.getSearchResults(query);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
 

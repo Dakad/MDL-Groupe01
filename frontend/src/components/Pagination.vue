@@ -1,5 +1,5 @@
-<!-- Original Source :  https://github.com/creativetimofficial/vue-material-kit/blob/master/src/components/Pagination.vue -->
-<!-- Original LICENSE : https://github.com/creativetimofficial/vue-material-kit/blob/master/LICENSE.md -->
+<!-- Original Source :  https://github.com/creativetimofficial/vue-material-kit/blob/a7791837dce5d5e80aea1b93e835644b2e6eb4c6/src/components/Pagination.vue -->
+<!-- Original LICENSE : https://github.com/creativetimofficial/vue-material-kit/blob/a7791837dce5d5e80aea1b93e835644b2e6eb4c6/LICENSE.md -->
 
 <template>
   <ul class="pagination">
