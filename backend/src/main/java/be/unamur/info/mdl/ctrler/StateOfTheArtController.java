@@ -4,7 +4,9 @@ import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
+import io.swagger.annotations.*;
 import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
 import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.swagger.annotations.Api;
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping(path = "/api/sota")
@@ -73,6 +77,60 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
+  @ApiOperation(value = "Create a new bookmark on a state of the art")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist")
+  })
+  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.POST)
+  public ResponseEntity addBookmark(@PathVariable String reference, Principal authUser,
+                                    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
+    try {
+      if (sotaService.addBookmark(reference, authUser.getName(), note)) {
+        return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
+      } else {
+        //TODO Add more explicit error message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
+      }
+    } catch (SotaNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
+
+  @ApiOperation(value = "Remove a bookmark on a state of the art")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist"),
+    @ApiResponse(code = 404, message = "The specified state of the art is not bookmarked")
+  })
+  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.DELETE)
+  public ResponseEntity removeBookmark(
+    @ApiParam(name = "reference", defaultValue = "The sota reference")
+    @PathVariable String reference,
+    Principal authUser) {
+    try {
+      if (sotaService.removeBookmark(reference, authUser.getName())) {
+        return ResponseEntity.status(HttpStatus.OK).body("Bookmark removed");
+      } else {
+        //TODO Add more explicit error message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+      }
+    } catch (SotaNotFoundException | BookmarkNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
+
+
+  @RequestMapping(path = "/{reference}/bookmarked", method = RequestMethod.GET)
+  public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
+    try {
+      return ResponseEntity.status(HttpStatus.OK)
+        .body(sotaService.isBookmarked(reference, authUser.getName()));
+    } catch (SotaNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
 
   @DeleteMapping({"/{reference}"})
 public ResponseEntity delete (@PathVariable String reference, Principal authUser)
