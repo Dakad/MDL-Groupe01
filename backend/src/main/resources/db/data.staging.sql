@@ -1,6 +1,6 @@
 -- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: mdl_froggosaur
+-- Host: localhost    Database: mdl_staging
 -- ------------------------------------------------------
 -- Server version	10.1.38-MariaDB-0ubuntu0.18.04.1
 
@@ -16,12 +16,12 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `mdl_froggosaur`
+-- Current Database: `mdl_staging`
 --
 SET FOREIGN_KEY_CHECKS = 0;
 
 
-USE `mdl_froggosaur`;
+USE `mdl_staging`;
 
 
 

@@ -1,6 +1,6 @@
 -- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: mdl_froggosaur
+-- Host: localhost    Database: mdl_staging
 -- ------------------------------------------------------
 -- Server version	10.1.38-MariaDB-0ubuntu0.18.04.1
 
@@ -16,14 +16,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 SET FOREIGN_KEY_CHECKS = 0;
 --
--- Current Database: `mdl_froggosaur`
+-- Current Database: `mdl_staging`
 --
 
-DROP DATABASE IF EXISTS `mdl_froggosaur`;
+DROP DATABASE IF EXISTS `mdl_staging`;
 
-CREATE DATABASE  IF NOT EXISTS `mdl_froggosaur` DEFAULT CHARACTER SET utf8mb4;
+CREATE DATABASE  IF NOT EXISTS `mdl_staging` DEFAULT CHARACTER SET utf8mb4;
 
-USE `mdl_froggosaur`;
+USE `mdl_staging`;
 
 --
 -- Table structure for table `article`
