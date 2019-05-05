@@ -1,7 +1,7 @@
 package be.unamur.info.mdl.ctrler;
 
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dto.CredentialDTO;
@@ -51,7 +51,7 @@ public class MainController {
   @ApiResponse(code = 200, message = "Simple message from the API")
   @GetMapping(path = {"", "/zen"})
   public String yello() {
-    return ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Yello from MDL API !");
+    return ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Yello from MDL API !");
   }
 
 
@@ -85,7 +85,7 @@ public class MainController {
   @PostMapping(path = "/signin")
   public ResponseEntity<String> signin(@Valid @RequestBody UserDTO userData) {
     this.userService.signin(userData);
-    String response = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "New user registered");
+    String response = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "New user registered");
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
