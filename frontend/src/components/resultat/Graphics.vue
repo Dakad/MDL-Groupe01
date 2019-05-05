@@ -256,7 +256,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .graphics {
   position: relative;
   float: left;
@@ -281,19 +281,15 @@ export default {
 .legend {
   float: left;
   width: 20%;
-  .more-info {
-    label {
-      font-weight: bold;
-      // margin-bottom: 5px;
-      text-decoration: underline;
-    }
-    .holder {
-    }
-  }
+}
 
-  .colors-info {
-    list-style: none;
-  }
+.legend .more-info label {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.legend .colors-info {
+  list-style: none;
 }
 
 .node-container,
