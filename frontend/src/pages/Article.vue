@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout md-gutter md-alignment-center-space-around">
     <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
-      <md-card md-with-hover class="article-container">
+      <md-card md-with-hover id="article-container">
         <md-card-header>
           <h1 class="article-title md-display-2">{{ article.title }}</h1>
           <div class="article-authors md-subhead">
@@ -142,29 +142,26 @@ export default {
 };
 </script>
 
-<style  lang="scss" scoped>
-.article-container {
+<style  lang="css" scoped>
+#article-container {
   margin-top: 15px;
   cursor: auto;
-
-  .article-title {
-    margin: 3vh 0;
-  }
-
-  .article-authors button {
-    cursor: default;
-  }
-
-  .article-keywords {
-    margin: 1vh 0;
-  }
-
-  .article-abstract {
-    margin: 15px 0;
-  }
 }
 
-.info-container {
+#article-container .article-title {
+  margin: 3vh 0;
+}
+
+#article-container .article-authors button {
+  cursor: default;
+}
+
+#article-container .article-keywords {
+  margin: 1vh 0;
+}
+
+#article-container .article-abstract {
+  margin: 15px 0;
 }
 </style>
 

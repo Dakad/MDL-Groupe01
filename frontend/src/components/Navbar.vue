@@ -62,7 +62,7 @@
 </template>
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .signin-dialog {
   width: 55%;
 }
