@@ -7,9 +7,9 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
-import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.exceptions.InvalidCredentialException;
+import be.unamur.info.mdl.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
       throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
     }
     CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
-    return new User(credential.getUsername(), credential.getPassword(), Collections.EMPTY_LIST);
+    return new User(credential.getUsername(), credential.getPassword(), Collections.emptyList());
   }
 
 
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean follow(String username, String follower) throws UsernameNotFoundException {
+  public boolean follow(String username, String follower) throws UserNotFoundException {
     if (!this.isFollowed(username, follower)) {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
@@ -115,9 +115,9 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean isFollowed(String username, String user) throws UsernameNotFoundException {
+  public boolean isFollowed(String username, String user) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     UserEntity currentUser = userRepository.findByUsername(user);
     UserEntity visitedUser = userRepository.findByUsername(username);
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean unfollow(String username, String follower) throws UsernameNotFoundException {
+  public boolean unfollow(String username, String follower) throws UserNotFoundException {
     if (this.isFollowed(username, follower)) {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
@@ -136,6 +136,6 @@ public class UserServiceImpl implements UserService {
       userRepository.save(userFollower);
       return true;
     }
-    return false;
+    throw new UserNotFoundException();
   }
 }

@@ -20,6 +20,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 public class SearchServiceImpl implements SearchService {
 
   public static final int PAGE_SIZE_MAX = 20;
+  public static final String SORT_BY_TITLE = "title";
   private final UserRepository userRepository;
   private final ArticleRepository articleRepository;
   private final StateOfTheArtRepository stateOfTheArtRepository;
@@ -160,7 +162,7 @@ public class SearchServiceImpl implements SearchService {
 
 
   private Sort getSortForUser(final String sort, final String order) {
-    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase("title")) {
+    if (sort.equalsIgnoreCase("name") || sort.equalsIgnoreCase(SORT_BY_TITLE)) {
       if (order.equalsIgnoreCase("ASC")) {
         return Sort.by("lastname", "firstname").ascending();
       }
@@ -174,7 +176,7 @@ public class SearchServiceImpl implements SearchService {
   private Sort getSortForAuthor(final String sort, final String order) {
     switch (sort) {
       case "name":
-      case "title":
+      case SORT_BY_TITLE:
         if (order.equalsIgnoreCase("DESC")) {
           return Sort.by("name").descending();
         } else {
@@ -187,7 +189,7 @@ public class SearchServiceImpl implements SearchService {
 
   private Sort getSortForArticle(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
-      return this.getSort("title", order);
+      return this.getSort(SORT_BY_TITLE, order);
     }
     return this.getSort(sort, order);
   }
@@ -195,7 +197,7 @@ public class SearchServiceImpl implements SearchService {
 
   private Sort getSortForSota(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
-      return this.getSort("title", order);
+      return this.getSort(SORT_BY_TITLE, order);
     } else {
       return this.getSort(sort, order);
     }
@@ -211,16 +213,15 @@ public class SearchServiceImpl implements SearchService {
   private Sort getSort(String searchSortedBy, String searchSortOrder) {
     Sort pageSort = null;
     switch (searchSortedBy.toLowerCase()) {
-      case "title":
-        pageSort = Sort.by("title");
-        break;
-      case "name":
+      case SORT_BY_TITLE:
+        pageSort = Sort.by(SORT_BY_TITLE);
         break;
       case "date":
         pageSort = Sort.by("createdAt");
         break;
+      case "name":
+        break;
       default:
-        pageSort = null;
         break;
     }
 
@@ -257,9 +258,11 @@ public class SearchServiceImpl implements SearchService {
     meta.put(MetaField.PAGE_SIZE, size);
     meta.put(MetaField.TOTAL_PAGE_SIZE, totalSize);
 
-    Order order = pageSort.get().findFirst().get();
-    meta.put(MetaField.ORDER_BY, order.getProperty());
-    meta.put(MetaField.SORT_BY, order.getDirection().name());
+    Optional<Order> order = pageSort.get().findFirst();
+    if(order.isPresent()){
+      meta.put(MetaField.ORDER_BY, order.get().getProperty());
+      meta.put(MetaField.SORT_BY, order.get().getDirection().name());
+    }
 
     return meta;
   }

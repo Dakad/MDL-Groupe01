@@ -2,11 +2,11 @@ package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
-import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.exceptions.SotaNotFoundException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 
 public interface StateOfTheArtService {
 
@@ -60,6 +60,6 @@ public interface StateOfTheArtService {
   boolean isBookmarked(String reference, String username) throws SotaNotFoundException;
 
   boolean delete (String reference, String username)
-    throws  UsernameNotFoundException;
+    throws UserNotFoundException;
 }
 
