@@ -50,7 +50,6 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
-
   @ApiOperation(value = "Create a new SoTA")
   @ApiResponses(value = {
     @ApiResponse(code = 201, message = "Successfully created"),
@@ -66,7 +65,7 @@ public class StateOfTheArtController extends APIBaseController {
       currentUser.setUsername(username);
 
       StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-      return ResponseEntity.status(HttpStatus.CREATED).body(sota);
+      return ResponseEntity.status(HttpStatus.OK).body(sota);
     } catch (SotaAlreadyExistException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     } catch (ArticleNotFoundException e) {
@@ -74,9 +73,8 @@ public class StateOfTheArtController extends APIBaseController {
     }
   }
 
-
   @DeleteMapping({"/{reference}"})
-public ResponseEntity delete (@PathVariable String reference, Principal authUser)
+  public ResponseEntity delete (@PathVariable String reference, Principal authUser)
     throws UsernameNotFoundException {
     try {
       sotaService.delete(reference, authUser.getName());
@@ -90,16 +88,15 @@ public ResponseEntity delete (@PathVariable String reference, Principal authUser
   }
 
   @PutMapping({"/{reference}"})
-  public ResponseEntity put (@PathVariable String reference,@Valid @RequestBody StateOfTheArtDTO data, Principal authUser)
-     {
-       try {
-         sotaService.put(reference, authUser.getName(),data);
-       } catch (UsernameNotFoundException e) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-       }
-       return ResponseEntity.status(HttpStatus.OK).body(data);
+  public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
+  {
+    try {
+      sotaService.put(reference, authUser.getName(),data);
+    } catch (UsernameNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(data);
   }
-
 }
 
 
