@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
@@ -136,7 +136,7 @@ public class UserController {
       throw new UserAlreadyFollowedException("User already followed");
     }
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "User now followed");
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "User now followed");
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
@@ -151,7 +151,7 @@ public class UserController {
       throw new UserAlreadyFollowedException("User already not followed");
     }
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "User now unfollowed");
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "User now unfollowed");
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
@@ -168,7 +168,7 @@ public class UserController {
     } else {
       msg = "You do not follow " + username;
     }
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, msg);
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 

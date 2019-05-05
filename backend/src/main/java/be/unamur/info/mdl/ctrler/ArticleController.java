@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.BookmarkDTO;
@@ -103,7 +103,7 @@ public class ArticleController {
     throws AlreadyBookmarkedException {
 
     articleService.addBookmark(reference, authUser.getName(), data.getNote());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark added");
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark added");
     return ResponseEntity.status(HttpStatus.CREATED).body(responsesMsg);
   }
 
@@ -121,7 +121,7 @@ public class ArticleController {
     Principal authUser) {
 
     if (articleService.removeBookmark(reference, authUser.getName())) {
-      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark removed");
+      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark removed");
       return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
     } else {
       //TODO Add more explicit error message
@@ -139,7 +139,7 @@ public class ArticleController {
       msg = "This article is not present your bookmarks";
     }
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, msg);
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 

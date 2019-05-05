@@ -1,6 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
@@ -76,7 +76,7 @@ public class StateOfTheArtController {
     @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
 
     if (sotaService.addBookmark(reference, authUser.getName(), note)) {
-      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark added");
+      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark added");
       return ResponseEntity.status(HttpStatus.CREATED).body(responsesMsg);
     } else {
       //TODO Add more explicit error message
@@ -98,7 +98,7 @@ public class StateOfTheArtController {
     @PathVariable String reference,
     Principal authUser) throws BookmarkNotFoundException {
     sotaService.removeBookmark(reference, authUser.getName());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark removed");
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark removed");
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
@@ -110,7 +110,7 @@ public class StateOfTheArtController {
       msg = "This article is not present your bookmarks";
     }
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, msg);
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
@@ -119,7 +119,7 @@ public class StateOfTheArtController {
   public ResponseEntity delete(@PathVariable String reference, Principal authUser)
     throws UserNotFoundException {
     sotaService.delete(reference, authUser.getName());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "SoTA removed");
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "SoTA removed");
     return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
