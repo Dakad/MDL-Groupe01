@@ -1,6 +1,8 @@
 package be.unamur.info.mdl.ctrler;
 
 
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+
 import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.SearchQueryDTO;
@@ -8,8 +10,6 @@ import be.unamur.info.mdl.dto.SearchResultDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
 import be.unamur.info.mdl.service.UserService;
-import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
@@ -29,17 +29,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(path = "/api")
-@Api(value = "Main endpoints", description = "Operations unrelated to specific actions ")
-public class MainController extends APIBaseController {
+@Api(value = "Operations unrelated to specific actions ")
+public class MainController {
 
   @Autowired
   private UserService userService;
@@ -52,7 +51,7 @@ public class MainController extends APIBaseController {
   @ApiResponse(code = 200, message = "Simple message from the API")
   @GetMapping(path = {"", "/zen"})
   public String yello() {
-    return "Yello from MDL API !";
+    return ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Yello from MDL API !");
   }
 
 
@@ -61,7 +60,7 @@ public class MainController extends APIBaseController {
     @ApiResponse(code = 200, message = "List of each person with it avatar, full name, role and short description"),
     @ApiResponse(code = 500, message = "If some shit hit the fan :-)")
   })
-  @RequestMapping(path = "/team", method = RequestMethod.GET)
+  @GetMapping(path = "/team")
   public ResponseEntity<List<Object>> getTeamMembers() {
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -83,17 +82,11 @@ public class MainController extends APIBaseController {
     @ApiResponse(code = 400, message = "Some required fields are invalid"),
     @ApiResponse(code = 409, message = "If the username or email is already taken")
   })
-  @RequestMapping(path = "/signin", method = RequestMethod.POST)
-  public ResponseEntity<Map<String, String>> signin(@Valid @RequestBody UserDTO userData) {
-    Map<String, String> response = new HashMap<>();
-    try {
-      this.userService.signin(userData);
-      response.put("success", "New user registered");
-      return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    } catch (RegistrationException ex) {
-      response.put("error", ex.getMessage());
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
+  @PostMapping(path = "/signin")
+  public ResponseEntity<String> signin(@Valid @RequestBody UserDTO userData) {
+    this.userService.signin(userData);
+    String response = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "New user registered");
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
 
@@ -105,35 +98,31 @@ public class MainController extends APIBaseController {
     @ApiResponse(code = 400, message = "Some required fields are invalid"),
     @ApiResponse(code = 409, message = "If the username or password is not recognized")
   })
-  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  @PostMapping(value = "/login")
   public ResponseEntity<Map<String, String>> login(
     @ApiParam(value = "Credentials", required = true)
     @Valid @RequestBody CredentialDTO userDTO) {
+
+    String token = userService.login(userDTO);
+
+    HttpHeaders header = new HttpHeaders();
+    header.set(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + token);
+
     Map<String, String> result = new HashMap<>();
-    try {
-      String token = userService.login(userDTO);
-      HttpHeaders header = new HttpHeaders();
-      header.set(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + token);
+    result.put("auth_token", token);
+    result.put("auth_header", SecurityUtils.HEADER_STRING);
+    result.put("auth_token_type", SecurityUtils.TOKEN_PREFIX);
 
-      result.put("auth_token", token);
-      result.put("auth_header", SecurityUtils.HEADER_STRING);
-      result.put("auth_token_type", SecurityUtils.TOKEN_PREFIX);
-
-      return ResponseEntity.status(HttpStatus.OK).headers(header).body(result);
-    } catch (InvalidCredentialException ex) {
-      result.put("error", ex.getMessage());
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
-    }
+    return ResponseEntity.status(HttpStatus.OK).headers(header).body(result);
   }
 
 
-  //?st={term}&p={page}&o={order}&s={sort}&t={tag}
   @ApiOperation(value = "Search articles, S.O.T.A or authors", response = SearchResultDTO.class)
   @ApiResponses(value = {
     @ApiResponse(code = 400, message = "Some required fields are invalid or missing"),
     @ApiResponse(code = 200, message = "List of each searched elements")
   })
-  @RequestMapping(value = "/search", method = RequestMethod.GET)
+  @GetMapping(value = "/search")
   public ResponseEntity<SearchResultDTO> search(@Valid SearchQueryDTO query) {
     SearchResultDTO resultDTO = searchService.getSearchResults(query);
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);

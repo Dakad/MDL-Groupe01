@@ -1,16 +1,15 @@
 package be.unamur.info.mdl.ctrler;
 
+import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSSAGE;
+
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import be.unamur.info.mdl.service.StateOfTheArtService;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
-import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import io.swagger.annotations.*;
-import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
@@ -18,7 +17,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/sota")
 @Api("Operations related to a SoTA such as add, get, delete ...")
-public class StateOfTheArtController extends APIBaseController {
+public class StateOfTheArtController {
 
   @Autowired
   private StateOfTheArtService sotaService;
@@ -45,12 +43,8 @@ public class StateOfTheArtController extends APIBaseController {
   })
   @GetMapping(path = "/{reference}")
   public ResponseEntity get(@PathVariable String reference) {
-    try {
-      StateOfTheArtDTO sota = sotaService.getSotaByReference(reference);
-      return ResponseEntity.status(HttpStatus.OK).body(sota);
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+    StateOfTheArtDTO sota = sotaService.getSotaByReference(reference);
+    return ResponseEntity.status(HttpStatus.OK).body(sota);
   }
 
 
@@ -63,87 +57,70 @@ public class StateOfTheArtController extends APIBaseController {
   })
   @PostMapping({"/", "/add"})
   public ResponseEntity create(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser) {
-    try {
-      String username = authUser.getName();
-      UserDTO currentUser = new UserDTO();
-      currentUser.setUsername(username);
+    String username = authUser.getName();
+    UserDTO currentUser = new UserDTO();
+    currentUser.setUsername(username);
 
-      StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-      return ResponseEntity.status(HttpStatus.CREATED).body(sota);
-    } catch (SotaAlreadyExistException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    } catch (ArticleNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+    StateOfTheArtDTO sota = sotaService.create(data, currentUser);
+    return ResponseEntity.status(HttpStatus.CREATED).body(sota);
   }
+
 
   @ApiOperation(value = "Create a new bookmark on a state of the art")
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 201, message = "Successfully created"),
     @ApiResponse(code = 404, message = "The provided reference doesn't exist")
   })
-  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.POST)
+  @PostMapping(path = "/{reference}/bookmark")
   public ResponseEntity addBookmark(@PathVariable String reference, Principal authUser,
-                                    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
-    try {
-      if (sotaService.addBookmark(reference, authUser.getName(), note)) {
-        return ResponseEntity.status(HttpStatus.OK).body("Bookmark added");
-      } else {
-        //TODO Add more explicit error message
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
-      }
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
+
+    if (sotaService.addBookmark(reference, authUser.getName(), note)) {
+      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark added");
+      return ResponseEntity.status(HttpStatus.CREATED).body(responsesMsg);
+    } else {
+      //TODO Add more explicit error message
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
     }
   }
+
 
   @ApiOperation(value = "Remove a bookmark on a state of the art")
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully created"),
+    @ApiResponse(code = 200, message = "Successfully removed"),
     @ApiResponse(code = 404, message = "The provided reference doesn't exist"),
     @ApiResponse(code = 404, message = "The specified state of the art is not bookmarked")
   })
-  @RequestMapping(path = "/{reference}/bookmark", method = RequestMethod.DELETE)
+  @DeleteMapping(path = "/{reference}/bookmark")
   public ResponseEntity removeBookmark(
     @ApiParam(name = "reference", defaultValue = "The sota reference")
     @PathVariable String reference,
-    Principal authUser) {
-    try {
-      if (sotaService.removeBookmark(reference, authUser.getName())) {
-        return ResponseEntity.status(HttpStatus.OK).body("Bookmark removed");
-      } else {
-        //TODO Add more explicit error message
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
-      }
-    } catch (SotaNotFoundException | BookmarkNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+    Principal authUser) throws BookmarkNotFoundException {
+    sotaService.removeBookmark(reference, authUser.getName());
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "Bookmark removed");
+    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
 
-  @RequestMapping(path = "/{reference}/bookmarked", method = RequestMethod.GET)
+  @GetMapping(path = "/{reference}/bookmarked")
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
-    try {
-      return ResponseEntity.status(HttpStatus.OK)
-        .body(sotaService.isBookmarked(reference, authUser.getName()));
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    String msg = "This article is present your bookmarks";
+    if (!sotaService.isBookmarked(reference, authUser.getName())) {
+      msg = "This article is not present your bookmarks";
     }
+
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, msg);
+    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
+
 
   @DeleteMapping({"/{reference}"})
-public ResponseEntity delete (@PathVariable String reference, Principal authUser)
-    throws UsernameNotFoundException {
-    try {
-      sotaService.delete(reference, authUser.getName());
-      return ResponseEntity.noContent().build();
-
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }catch (UsernameNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
+  public ResponseEntity delete(@PathVariable String reference, Principal authUser)
+    throws UserNotFoundException {
+    sotaService.delete(reference, authUser.getName());
+    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSSAGE, "SoTA removed");
+    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
   }
 
 }
