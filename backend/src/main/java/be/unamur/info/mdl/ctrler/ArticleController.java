@@ -4,6 +4,7 @@ import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.BookmarkDTO;
+import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.ArticleService;
@@ -102,9 +103,10 @@ public class ArticleController {
     @ApiParam(name = "note", value = "A note about the bookmark") @RequestBody(required = false) BookmarkDTO data)
     throws AlreadyBookmarkedException {
 
-    articleService.addBookmark(reference, authUser.getName(), data.getNote());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark added");
-    return ResponseEntity.status(HttpStatus.CREATED).body(responsesMsg);
+    boolean done = articleService.addBookmark(reference, authUser.getName(), data.getNote());
+    String msg = "Bookmark " + (!done ? "not" : "") + " added";
+    return ResponseEntity.status(HttpStatus.CREATED)
+      .body(DefaultResponseDTO.builder().done(done).message(msg));
   }
 
 
@@ -120,27 +122,20 @@ public class ArticleController {
     @PathVariable String reference,
     Principal authUser) {
 
-    if (articleService.removeBookmark(reference, authUser.getName())) {
-      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark removed");
-      return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
-    } else {
-      //TODO Add more explicit error message
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
-    }
+    boolean done = articleService.removeBookmark(reference, authUser.getName());
+    String msg = "Bookmark " + (!done ? "not" : "") + " removed";
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done).message(msg));
+
   }
 
 
   @GetMapping(path = "/{reference}/bookmarked")
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
-    String msg;
-    if(articleService.isBookmarked(reference, authUser.getName())){
-      msg = "This article is present your bookmarks";
-    } else {
-      msg = "This article is not present your bookmarks";
-    }
-
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+    boolean done = articleService.isBookmarked(reference, authUser.getName());
+    String msg = "This article is " + (!done ? "not" : "") + " present your bookmarks";
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done).message(msg));
   }
 
 }
