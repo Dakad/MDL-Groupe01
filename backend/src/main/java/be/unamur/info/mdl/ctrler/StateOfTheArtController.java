@@ -2,6 +2,8 @@ package be.unamur.info.mdl.ctrler;
 
 import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
+import be.unamur.info.mdl.dto.BookmarkDTO;
+import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
@@ -73,16 +75,12 @@ public class StateOfTheArtController {
   })
   @PostMapping(path = "/{reference}/bookmark")
   public ResponseEntity addBookmark(@PathVariable String reference, Principal authUser,
-    @ApiParam(name = "note", defaultValue = "A note about the bookmark") @RequestBody String note) {
+    @ApiParam(name = "note", value = "A note about the bookmark") @RequestBody(required = false) BookmarkDTO data) {
 
-    if (sotaService.addBookmark(reference, authUser.getName(), note)) {
-      String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark added");
-      return ResponseEntity.status(HttpStatus.CREATED).body(responsesMsg);
-    } else {
-      //TODO Add more explicit error message
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body("Something, somewhere, has gone sideways.\nAnd basically, error...");
-    }
+    boolean done = sotaService.addBookmark(reference, authUser.getName(), data.getNote());
+    return ResponseEntity.status(HttpStatus.CREATED)
+      .body(DefaultResponseDTO.builder().done(done)
+        .message("Bookmark " + (!done ? "not" : "") + " added"));
   }
 
 
@@ -97,30 +95,31 @@ public class StateOfTheArtController {
     @ApiParam(name = "reference", defaultValue = "The sota reference")
     @PathVariable String reference,
     Principal authUser) throws BookmarkNotFoundException {
-    sotaService.removeBookmark(reference, authUser.getName());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "Bookmark removed");
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+
+    boolean done = sotaService.removeBookmark(reference, authUser.getName());
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done)
+        .message("Bookmark " + (!done ? "not" : "") + " removed"));
   }
 
 
   @GetMapping(path = "/{reference}/bookmarked")
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
-    String msg = "This article is present your bookmarks";
-    if (!sotaService.isBookmarked(reference, authUser.getName())) {
-      msg = "This article is not present your bookmarks";
-    }
-
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+    boolean done = sotaService.isBookmarked(reference, authUser.getName());
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done)
+        .message("This article is " + (done ? "" : "not") + " present your bookmarks"));
   }
 
 
   @DeleteMapping({"/{reference}"})
   public ResponseEntity delete(@PathVariable String reference, Principal authUser)
     throws UserNotFoundException {
-    sotaService.delete(reference, authUser.getName());
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "SoTA removed");
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+
+    boolean done = sotaService.removeBookmark(reference, authUser.getName());
+    String msg = "SoTA " + (!done ? "not" : "") + " removed";
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done).message(msg));
   }
 
 }
