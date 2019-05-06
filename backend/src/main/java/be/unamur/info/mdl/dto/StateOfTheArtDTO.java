@@ -30,6 +30,7 @@ public class StateOfTheArtDTO {
 
 
   @JsonProperty(value = "subject")
+  @Builder.Default
   private String category = "unknown";
 
 
@@ -40,16 +41,20 @@ public class StateOfTheArtDTO {
   private UserDTO creator;
 
   @JsonProperty(value = "keywords", access = Access.WRITE_ONLY)
+  @Builder.Default
   private List<@NotBlank(message = "The keywords(s) must be defined") String> keywordList = new LinkedList<>();
 
   @JsonProperty(value = "keywords", access = Access.READ_ONLY)
+  @Builder.Default
   private List<TagDTO> keywords = new LinkedList<>();
 
 
   @JsonProperty(value = "articles", access = Access.WRITE_ONLY)
+  @Builder.Default
   private List<@NotBlank(message = "The article reference(s) must be defined") String> articleList = new LinkedList<>();
 
   @JsonProperty(value = "articles", access = Access.READ_ONLY)
+  @Builder.Default
   private List<ArticleDTO> articles = new LinkedList<>();
 
 }

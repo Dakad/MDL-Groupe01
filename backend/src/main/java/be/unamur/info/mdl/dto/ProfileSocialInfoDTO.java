@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "Model representing an user's profile social information")
 public class ProfileSocialInfoDTO {
 
+  @Builder.Default
   private String bio = "This user hasn't added a bio.";
 
   @JsonAlias("num_follows")
