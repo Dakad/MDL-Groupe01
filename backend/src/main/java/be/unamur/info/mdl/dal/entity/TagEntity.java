@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -54,10 +55,12 @@ public class TagEntity {
 
 
   @ManyToMany(mappedBy = "keywords")
+  @Builder.Default
   private Set<StateOfTheArtEntity> statesOfTheArts = new LinkedHashSet<>();
 
 
   @ManyToMany(mappedBy = "tags")
+  @Builder.Default
   private Set<UserEntity> followers = new LinkedHashSet<>();
 
 
