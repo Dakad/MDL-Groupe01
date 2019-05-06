@@ -17,7 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@WebFilter(filterName = "JWTAuthenticationFilter")
+//@WebFilter(filterName = "JWTAuthenticationFilter")
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private AuthenticationManager authenticationManager;

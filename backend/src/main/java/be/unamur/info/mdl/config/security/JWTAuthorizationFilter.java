@@ -24,8 +24,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Slf4j
-@WebFilter(filterName = "JWTAuthorizationFilter")
+//@WebFilter(filterName = "JWTAuthorizationFilter")
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
 
   public JWTAuthorizationFilter(AuthenticationManager authManager) {
     super(authManager);
