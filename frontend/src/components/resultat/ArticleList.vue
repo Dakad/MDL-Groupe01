@@ -4,7 +4,7 @@
       <md-card-header>
         <div class="title">
           <router-link :to="{ name: 'articleDetails', params: { reference: article.reference }}">
-            <h1>{{article.title}}</h1>
+            <h4>{{article.title}}</h4>
           </router-link>
         </div>
       </md-card-header>
@@ -13,14 +13,14 @@
           <p>Written By</p>
           <div class="author">
             <md-list v-for="author in article.authors" v-bind:key="author">
-              <md-list-item></md-list-item>
-              <!-- <md-item href="/">{{author}}</md-item> -->
+              <md-item href="/">{{author}}</md-item>
             </md-list>
           </div>
-          <div class="keyword"></div>
+          <div class="keyword">
+
+          </div>
           <div class="date">
-            <p>Published on the</p>
-            <h4>{{article.year}}</h4>
+            <p>Published on the {{article.year}}</p>
           </div>
         </div>
       </md-card-content>
@@ -82,4 +82,20 @@ export default {
   margin: 10px;
   display: inline-block;
 }
+
+  .author{
+    float: left;
+    width: 30%;
+    margin: 1.5%;
+  }
+  .keyword{
+    float: left;
+    width: 30%;
+    margin: 1.5%;
+  }
+  .date{
+    float: left;
+    width: 17%;
+    margin: 1.5%;
+  }
 </style>
