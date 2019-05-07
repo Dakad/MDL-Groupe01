@@ -50,7 +50,7 @@
               v-if="!results.articles || results.articles.length == 0"
               md-icon="description"
               md-label="No articles found"
-              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+              :md-description="'Sorry, we didn\'t find any articles matching your search for \'\''+searchTerm+'\'\''"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
@@ -157,6 +157,7 @@ export default {
       if (!this.results["articles"]) {
         return [];
       }
+      
       return this.results["articles"].map(article => ({
         title: article.title,
         reference: article.reference,

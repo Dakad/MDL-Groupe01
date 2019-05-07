@@ -78,7 +78,7 @@ export default {
   props: ["reference"],
   components: {
     InfoNav,
-    MenuArticle
+    //MenuArticle
   },
   data() {
     return {
