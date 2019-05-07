@@ -1,6 +1,18 @@
 // vue.config.js
 var path = require('path');
-console.log();
+
+let publicPath = '/';
+if (process.env.PUBLIC_PATH) {
+  publicPath = process.env.PUBLIC_PATH;
+} else {
+  if (process.env.NODE_ENV == 'staging') {
+    publicPath = '/latest-release/';
+  }
+}
+const apiURL = process.env.API_URL || 'http://localhost:8088';
+
+console.log(publicPath, apiURL);
+
 module.exports = {
   // proxy all webpack dev-server requests starting with /api
   // to our Spring Boot backend (localhost:8088) using http-proxy-middleware
@@ -8,7 +20,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8088',
+        target: apiURL,
         ws: true,
         changeOrigin: true
       }
@@ -18,5 +30,5 @@ module.exports = {
   // see https://cli.vuejs.org/config/
   outputDir: 'target/dist',
   assetsDir: 'static',
-  publicPath: process.env.NODE_ENV != 'production' ? '/' : '/latest-release/'
+  publicPath
 };

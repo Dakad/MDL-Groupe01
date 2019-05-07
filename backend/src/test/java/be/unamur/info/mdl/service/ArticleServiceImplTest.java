@@ -4,16 +4,13 @@ import static org.mockito.Mockito.when;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
-import be.unamur.info.mdl.dal.entity.TagEntity.TagEntityBuilder;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.AuthorRepository;
-import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.impl.ArticleServiceImpl;
-import be.unamur.info.mdl.service.impl.SearchServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import javax.rmi.CORBA.ValueHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,7 +56,7 @@ public class ArticleServiceImplTest {
 
   @BeforeClass
   public static void startup() throws IOException {
-    ObjectMapper mapper= new ObjectMapper()
+    ObjectMapper mapper = new ObjectMapper()
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     TypeReference<List<ArticleDTO>> articleTypeReference = new TypeReference<List<ArticleDTO>>() {
@@ -90,7 +86,8 @@ public class ArticleServiceImplTest {
 
     when(articleRepository.findByReference("")).thenReturn(Optional.empty());
     when(articleRepository.findByReference("article123")).thenReturn(Optional.empty());
-    when(articleRepository.findByReference("rebolj1999gis")).thenReturn(Optional.of(MOCK_ARTICLE_1));
+    when(articleRepository.findByReference("rebolj1999gis"))
+      .thenReturn(Optional.of(MOCK_ARTICLE_1));
 
   }
 
@@ -116,7 +113,8 @@ public class ArticleServiceImplTest {
     ArticleDTO article = articleService.getArticleByReference("rebolj1999gis");
 
     Assert.assertNotNull("The article should not be null", article);
-    Assert.assertSame("The reference should match", article.getReference(), MOCK_ARTICLE_1.getReference());
+    Assert.assertSame("The reference should match", article.getReference(),
+      MOCK_ARTICLE_1.getReference());
   }
 
 
