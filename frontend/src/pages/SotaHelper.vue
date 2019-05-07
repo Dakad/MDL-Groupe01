@@ -13,9 +13,9 @@
           <sota-graphic/>
         </md-tab>
         <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
-          <article-list v-show="!loading" :list="results.articles"></article-list>
+          <article-list v-show="!loading" :list="articles"></article-list>
           <md-empty-state
-            v-if="!results.articles || results.articles.length == 0"
+            v-if="!articles || articles.length == 0"
             md-icon="description"
             md-label="No articles found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
@@ -33,37 +33,21 @@
 import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
-import articleList from "@/components/resulat/ArticleList";
+import articleList from "@/components/resultat/ArticleList";
+import data from "@/services/dummy/articles.json";
 
 export default {
   name: "SotaHelper",
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList, },
   data() {
     return {
-      list: dummy.results.articles,
-      loading: false,
-      searchTerm: null,
-      sortBy: this.$route.query["sort"] || "name",
-      orderBy: this.$route.query["order"] || "asc",
-      activeTab: "articles",
-      page: 0,
-      results: {},
-      articlesTags: {},
-      articlesTitles: [],
-      relatedArticles: []
+      articles: data
     };
   },
 };
 </script>
 
 <style scoped>
-.container {
-  /* position: absolute;
-  width: 100%;
-  height: 86%;
-  max-width: 1900px;
-  margin-top: 1%; */
-}
 
 .title {
   position: relative;
@@ -78,10 +62,6 @@ h2 {
   width: 99%;
   height: 85%;
   margin-top: 3%;
-}
-
-.recommend {
-  width: 75%;
 }
 
 #uploadOne {
