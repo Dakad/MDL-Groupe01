@@ -10,7 +10,7 @@ import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.service.ProfileService;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,18 +41,18 @@ public class ProfileServiceImpl implements ProfileService {
   }
 
   @Override
-  public ProfileBasicInfoDTO getBasicInfo(String username) throws UsernameNotFoundException {
+  public ProfileBasicInfoDTO getBasicInfo(String username) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     return userRepository.findByUsername(username).toProfileBasicInfoDTO();
   }
 
   @Override
   @Transactional
-  public ProfileProInfoDTO getProInfo(String username) throws UsernameNotFoundException {
+  public ProfileProInfoDTO getProInfo(String username) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
 
     PageRequest pagination = PageRequest.of(0, 3, Sort.by(Sort.Order.desc("createdAt")));
@@ -89,27 +89,27 @@ public class ProfileServiceImpl implements ProfileService {
     );
   }
 
-  public ProfileSocialInfoDTO getSocialInfo(String username) throws UsernameNotFoundException {
+  public ProfileSocialInfoDTO getSocialInfo(String username) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     return userRepository.findByUsername(username).toProfileSocialInfoDTO();
   }
 
 
   @Override
-  public List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException {
+  public List<UserDTO> getFollowers(String username, int page) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     return userRepository.findByUsername(username).getFollowersDTO(page);
   }
 
 
   @Override
-  public List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException {
+  public List<UserDTO> getFollows(String username, int page) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     return userRepository.findByUsername(username).getFollowsDTO(page);
   }
@@ -117,9 +117,9 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Override
   public List<BookmarkDTO> getBookmarks(String username, int page)
-    throws UsernameNotFoundException {
+    throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
 
     Sort sort = Sort.by("createdAt").descending();

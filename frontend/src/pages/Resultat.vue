@@ -5,8 +5,8 @@
         class="sort-container"
         :sort="sortBy"
         :order="orderBy"
-        @change:sort="updateSearchURL('sort', $event)"
-        @change:order="updateSearchURL('order', $event)"
+        @change:sort="sortBy = $event; updateSearchURL('sort', $event)"
+        @change:order="orderBy = $event; updateSearchURL('order', $event)"
       ></result-sort>
     </div>
     <div class="md-layout-item md-size-80">
@@ -17,7 +17,7 @@
         <md-tabs
           md-alignment="fixed"
           :md-active-tab="activeTab"
-          @md-changed="updateSearchURL('tab', $event)"
+          @md-changed="activeTab = $event; updateSearchURL('tab', $event)"
         >
           <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
             <sota-list v-show="!loading" :list="results.sotas"></sota-list>
@@ -43,7 +43,8 @@
               v-show="!loading"
               :list="results.articles"
               :meta="metas['articles']"
-              @pagination="pages['article'] = $event"
+              :hasPagination="isPaginationVisible('articles')"
+              @pagination="page = $event; updateSearchURL('page', $event) "
             ></article-list>
             <md-empty-state
               v-if="!results.articles || results.articles.length == 0"
@@ -122,13 +123,10 @@ export default {
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
-      page: 0,
+      page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
-      pages: {},
-      articlesTags: {},
-      articlesTitles: [],
-      relatedArticles: []
+      pages: {}
     };
   },
   created() {
@@ -145,6 +143,68 @@ export default {
   computed: {
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
+    },
+    isPaginationVisible(type) {
+      return type => {
+        return (
+          !this.loading &&
+          this.metas[type] &&
+          this.metas[type]["total_pages"] >= 1
+        );
+      };
+    },
+    articlesTitles() {
+      if (!this.results["articles"]) {
+        return [];
+      }
+      return this.results["articles"].map(article => ({
+        title: article.title,
+        reference: article.reference,
+        year: article.year,
+        domain: article.category
+      }));
+    },
+
+    articlesTags() {
+      if (!this.results["articles"]) {
+        return {};
+      }
+      return this.results["articles"].reduce((acc, article) => {
+        // As the same time, push the article title
+        article.keywords.forEach(({ name, slug }) => {
+          const nb = acc[slug] ? acc[slug]["occur"] : 0;
+          acc[slug] = { name, occur: nb + 1 };
+        });
+        return acc;
+      }, {});
+    },
+
+    /**
+     * Group articles based on common keywords among them.
+     */
+    relatedArticles() {
+      if (!this.results["articles"]) {
+        return [];
+      }
+      const { articles } = this.results;
+      let related = [];
+      for (let i = 0; i < articles.length; i++) {
+        const keywords = articles[i].keywords.map(k => k["name"]);
+        for (let j = i + 1; j < articles.length; j++) {
+          const commonKeywords = keywords.filter(keyword => {
+            return articles[j].keywords.map(k => k["name"]).includes(keyword);
+          });
+
+          if (commonKeywords.length != 0) {
+            related.push({
+              src: i,
+              target: j,
+              keywords: commonKeywords.join(", ")
+            });
+          }
+        }
+      }
+      return related;
     }
   },
   methods: {
@@ -165,89 +225,25 @@ export default {
       this.searchTerm = this.$route.query["search"];
 
       const searchQuery = {
-        st: this.searchTerm,
-        s: this.sortBy,
-        o: this.orderBy,
-        p: this.page
+        term: this.searchTerm,
+        sort: this.sortBy,
+        order: this.orderBy,
+        page: !this.changingTab ? this.page : 1,
+        only: !this.changingTab ? this.activeTab : undefined
       };
 
       return getSearchResults(searchQuery)
         .then(res => {
           this.loading = false;
 
-          Object.keys(res["metas"]).forEach(type => {
-            this.$set(this.metas, type, res["metas"][type]);
-            this.$set(this.results, type, res[type]);
-          });
-
-          // this.$set(this.results, "articles", res["articles"]);
-          // this.$set(this.results, "authors", res["authors"]);
-          // this.$set(this.results, "sotas", res["sotas"]);
-          // this.$set(this.results, "users", res["users"]);
-
-          this.articlesTitles = [];
-
-          this.articlesTags = res["articles"].reduce((acc, article) => {
-            // As the same time, push the article title
-            this.articlesTitles.push({
-              title: article.title,
-              reference: article.reference,
-              year: article.year,
-              domain: article.category
+          Object.keys(res["metas"])
+            .filter(type => res["metas"][type] != null)
+            .forEach(type => {
+              this.$set(this.metas, type, res["metas"][type]);
+              this.$set(this.results, type, res[type]);
             });
-            article.keywords.forEach(({ name, slug }) => {
-              const nb = acc[slug] ? acc[slug]["occur"] : 0;
-              acc[slug] = { name, occur: nb + 1 };
-            });
-            return acc;
-          }, {});
-
-          this.groupArticleByKeywords();
         })
         .catch(console.error);
-    },
-    /**
-     * Group articles based on common keywords among them.
-     */
-    groupArticleByKeywords() {
-      this.relatedArticles = [];
-      const { articles } = this.results;
-      for (let i = 0; i < articles.length; i++) {
-        let keywords = articles[i].keywords;
-        for (let j = i + 1; j < articles.length; j++) {
-          let commonKeyword = "";
-          let commonArticle = [];
-          let alreadyIn = false;
-          for (let k = 0; k < keywords.length; k++) {
-            let keywordName = keywords[k].name;
-            for (let l = 0; l < articles[j].keywords.length; l++) {
-              if (keywordName === articles[j].keywords[l].name) {
-                commonKeyword += keywordName + ", ";
-                if (alreadyIn === false) {
-                  alreadyIn = true;
-                  commonArticle.push(i);
-                  commonArticle.push(j);
-                }
-              }
-            }
-          }
-          commonArticle.push(commonKeyword);
-          if (commonArticle.length > 1) {
-            this.relatedArticles.push(commonArticle);
-          }
-        }
-      }
-    },
-    groupyTags() {},
-    getEmptyStateLabel(type) {},
-    getEmptyStateDescription(type) {
-      switch (type) {
-        case "value":
-          break;
-
-        default:
-          break;
-      }
     }
   }
 };

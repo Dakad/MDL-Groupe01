@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import authorList from "@/components/resulat/AuthorList";
+import authorList from "@/components/resultat/AuthorList";
 import jsonFollow from "@/assets/dummy-Follow.json";
 export default {
   components: { authorList },

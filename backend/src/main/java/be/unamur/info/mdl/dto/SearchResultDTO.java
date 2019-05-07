@@ -58,10 +58,10 @@ public class SearchResultDTO {
     CURRENT_PAGE,
 
     @JsonProperty("total_size")
-    TOTAL_SIZE,
+    TOTAL_PAGE_SIZE,
 
     @JsonProperty("size")
-    SIZE,
+    PAGE_SIZE,
 
     @JsonProperty("ordered_by")
     ORDER_BY,

@@ -6,19 +6,18 @@
 </template>
 
 <script>
-  export default {
-    name: "MenuSota",
-    methods: {
-      downloadRef(){
-        // TODO add the download function
-      },
-      addToSOTA(){
-        // TODO add the add to SOTA function
-      }
+export default {
+  name: "SotaMenu",
+  methods: {
+    downloadRef() {
+      // TODO add the download function
+    },
+    addToSOTA() {
+      // TODO add the add to SOTA function
     }
   }
+};
 </script>
 
 <style scoped>
-
 </style>

@@ -5,12 +5,11 @@ import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.StateOfTheArtService;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
-import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
-import java.time.LocalDate;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.exceptions.SotaNotFoundException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -89,7 +88,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   }
 
   @Override
-  public boolean delete(String reference, String username) throws UsernameNotFoundException {
+  public boolean delete(String reference, String username) throws UserNotFoundException {
 
     Optional<StateOfTheArtEntity> dbSota = sotaRepository.findByReference(reference);
     StateOfTheArtEntity sota;
@@ -100,7 +99,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     }
 
     if (!sota.getCreator().getUsername().equals(username)) {
-      throw new UsernameNotFoundException("The user is not the owner of the sota");
+      throw new UserNotFoundException("The user is not the owner of the sota");
     }
 
     sota.getCreator().getStateOfTheArts().remove(sota);
@@ -143,7 +142,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    */
   private void attachArticles(StateOfTheArtEntity newSota, List<String> references)
     throws ArticleNotFoundException {
-    List<ArticleEntity> list = new LinkedList<ArticleEntity>();
+    List<ArticleEntity> list = new LinkedList<>();
     Optional<ArticleEntity> entity;
 
     for (String reference : references) {
@@ -165,7 +164,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    * @param keywords - The keyword's name list.
    */
   private void attachKeywords(StateOfTheArtEntity newSota, List<String> keywords) {
-    List<TagEntity> list = new LinkedList<TagEntity>();
+    List<TagEntity> list = new LinkedList<>();
     TagEntity keyword;
 
     for (String keywordName : keywords) {

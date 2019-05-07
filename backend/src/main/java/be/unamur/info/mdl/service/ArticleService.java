@@ -2,10 +2,10 @@ package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.exceptions.AlreadyBookmarkedException;
-import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import be.unamur.info.mdl.service.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
+import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
 import java.util.List;
 import java.util.Map;
 

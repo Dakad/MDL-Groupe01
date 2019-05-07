@@ -18,17 +18,20 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="css">
 #app {
   margin-bottom: 10px;
+}
+#app-navbar {
+  position: sticky;
+  margin-bottom: 10px;
+  width: 100%;
+  z-index: 10;
+  top: 0;
+}
 
-  #app-navbar {
-    margin-bottom: 15px;
-  }
-
-  #app-content {
-    width: 100%;
-  }
+#app-content {
+  width: 100%;
 }
 </style>
 

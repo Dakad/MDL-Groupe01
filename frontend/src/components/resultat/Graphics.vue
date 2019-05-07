@@ -197,10 +197,10 @@ export default {
           ref: this.articlesTitles[i]["reference"],
           year: this.articlesTitles[i]["year"]
         })),
-        links: d3.range(this.linkedArticles.length).map(i => ({
-          source: this.linkedArticles[i][0],
-          target: this.linkedArticles[i][1],
-          tag: this.linkedArticles[i][2]
+        links: d3.range(Object.keys(this.linkedArticles).length).map(i => ({
+          source: this.linkedArticles[i]["src"],
+          target: this.linkedArticles[i]["target"],
+          tag: this.linkedArticles[i]["keywords"]
         }))
       };
       this.simulation = d3
@@ -256,7 +256,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .graphics {
   position: relative;
   float: left;
@@ -281,19 +281,15 @@ export default {
 .legend {
   float: left;
   width: 20%;
-  .more-info {
-    label {
-      font-weight: bold;
-      // margin-bottom: 5px;
-      text-decoration: underline;
-    }
-    .holder {
-    }
-  }
+}
 
-  .colors-info {
-    list-style: none;
-  }
+.legend .more-info label {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.legend .colors-info {
+  list-style: none;
 }
 
 .node-container,

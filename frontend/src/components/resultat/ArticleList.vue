@@ -1,5 +1,5 @@
 <template>
-  <div class="article">
+  <div class="article" v-if="hasPagination">
     <md-card v-for="article in list" :key="article.reference">
       <md-card-header>
         <div class="title">
@@ -42,6 +42,10 @@ export default {
     Pagination
   },
   props: {
+    hasPagination: {
+      type: Boolean,
+      default: _ => true
+    },
     list: {
       type: Array,
       default: _ => []
