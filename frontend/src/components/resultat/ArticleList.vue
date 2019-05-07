@@ -10,7 +10,7 @@
       </md-card-header>
       <md-card-content>
         <div class="info">
-          <div class="article-authors md-subhead">
+           <div class="article-authors md-subhead">
            <md-icon title="Authors">{{ article.authors.length > 1 ? 'people' : "person" }}</md-icon>
             <md-button
               class="md-primary"
@@ -19,11 +19,15 @@
               :md-ripple="false"
             >{{author}}</md-button>
           </div>
-          <div class="keyword"></div>
-          <div class="date">
-            <p>Published on the</p>
-            <h4>{{article.year}}</h4>
+          <div class="journal">
+            <p>Publisher: </p>
+            <span class="md-body-2">{{article.journal}}</span>
           </div>
+          <div class="date">
+            <p>Date: </p>
+            <span class="md-body-2">{{article.year}}</span>
+          </div>
+          <div class="keyword"></div>
         </div>
       </md-card-content>
     </md-card>
@@ -89,5 +93,19 @@ export default {
 .md-list-item{
   margin: 0px;
 }
-
+.article-authors button {
+  cursor: default;
+}
+.journal{
+  display: flex;
+}
+.journal p{
+  margin-right: 1%;
+}
+.date{
+  display: flex;
+}
+.date p{
+  margin-right: 1%;
+}
 </style>
