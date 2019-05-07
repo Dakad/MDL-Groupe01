@@ -11,6 +11,10 @@ import java.util.Optional;
 public abstract class ServiceUtils {
   private static final Slugify slugify = new Slugify();
 
+  private ServiceUtils() {
+    super();
+  }
+
   /**
    * Get the matching tag from the repository or create a new one.
    * @param tagName  The tag name

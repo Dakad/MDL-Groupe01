@@ -7,6 +7,8 @@
         v-show="searchBar.show"
         :mode="searchBar.mode"
         :term="searchBar.input"
+        :min-length="2"
+        @error="handleError('search', $event)"
         id="search"
         class="flex"
       ></search>
@@ -60,7 +62,7 @@
 </template>
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .signin-dialog {
   width: 55%;
 }
@@ -91,7 +93,7 @@ export default {
       searchBar: {
         mode: MODE_NAVBAR,
         show: true,
-        input: this.$route.query["search"]
+        input: this.$route.query["search"] || null
       },
       showLoginDialog: false,
       showRegisterDialog: false,

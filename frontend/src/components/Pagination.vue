@@ -1,5 +1,5 @@
-<!-- Original Source :  https://github.com/creativetimofficial/vue-material-kit/blob/master/src/components/Pagination.vue -->
-<!-- Original LICENSE : https://github.com/creativetimofficial/vue-material-kit/blob/master/LICENSE.md -->
+<!-- Original Source :  https://github.com/creativetimofficial/vue-material-kit/blob/a7791837dce5d5e80aea1b93e835644b2e6eb4c6/src/components/Pagination.vue -->
+<!-- Original LICENSE : https://github.com/creativetimofficial/vue-material-kit/blob/a7791837dce5d5e80aea1b93e835644b2e6eb4c6/LICENSE.md -->
 
 <template>
   <ul class="pagination">
@@ -147,7 +147,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .page-link {
   position: relative;
   display: block;
@@ -168,23 +168,22 @@ export default {
   padding-left: 0;
   list-style: none;
   border-radius: 0.25rem;
-
-  > .page-item > .page-link,
-  > .page-item > span {
-    border: 0;
-    border-radius: 30px !important;
-    transition: all 0.3s;
-    margin: 3px;
-    padding: 3px;
-    min-width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-weight: 400 default;
-    font-size: 12px default;
-    text-transform: uppercase;
-    background: transparent;
-    text-align: center;
-    cursor: pointer;
-  }
+}
+.pagination .page-item > .page-link,
+.pagination .page-item > span {
+  border: 0;
+  border-radius: 30px !important;
+  transition: all 0.3s;
+  margin: 3px;
+  padding: 3px;
+  min-width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 400 default;
+  font-size: 12px default;
+  text-transform: uppercase;
+  background: transparent;
+  text-align: center;
+  cursor: pointer;
 }
 </style>

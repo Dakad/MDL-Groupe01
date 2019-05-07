@@ -21,8 +21,6 @@ const routes = [
 
   { name: 'resultat', path: '/result', component: Resultat },
 
-  { name: '404', path: '/404', component: NotFound },
-
   { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails },
 
   { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
@@ -38,6 +36,8 @@ const routes = [
   },
 
   { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
+
+  { name: '404', path: '/404', component: NotFound },
 
   { name: '', path: '*', redirect: '/404' }
 ];
