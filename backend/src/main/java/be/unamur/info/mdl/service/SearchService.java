@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface SearchService {
 
-  public SearchResultDTO getSearchResults(SearchQueryDTO searchQuerry);
+  SearchResultDTO getSearchResults(SearchQueryDTO searchQuerry);
 
   List<Object[]> getTags(String keyword);
 }
