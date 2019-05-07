@@ -1,7 +1,6 @@
 package be.unamur.info.mdl.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.swagger.annotations.ApiModel;
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "SOTA", description = "Model representing a State Of The Art")
 public class StateOfTheArtDTO {
 
-  @JsonIgnoreProperties
+  @JsonIgnore
   private Long id;
 
   @NotBlank(message = "The title is required")
@@ -29,26 +28,33 @@ public class StateOfTheArtDTO {
 
   private String reference;
 
-  private String description;
+
+  @JsonProperty(value = "subject")
+  @Builder.Default
+  private String category = "unknown";
 
 
-  @JsonAlias("created_at")
+  @JsonProperty("created_at")
   private LocalDate createdAt;
 
 
   private UserDTO creator;
 
   @JsonProperty(value = "keywords", access = Access.WRITE_ONLY)
+  @Builder.Default
   private List<@NotBlank(message = "The keywords(s) must be defined") String> keywordList = new LinkedList<>();
 
   @JsonProperty(value = "keywords", access = Access.READ_ONLY)
+  @Builder.Default
   private List<TagDTO> keywords = new LinkedList<>();
 
 
   @JsonProperty(value = "articles", access = Access.WRITE_ONLY)
+  @Builder.Default
   private List<@NotBlank(message = "The article reference(s) must be defined") String> articleList = new LinkedList<>();
 
   @JsonProperty(value = "articles", access = Access.READ_ONLY)
+  @Builder.Default
   private List<ArticleDTO> articles = new LinkedList<>();
 
 }

@@ -9,6 +9,7 @@ import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -28,6 +29,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -35,20 +37,24 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column(unique = true, nullable = false)
+  @EqualsAndHashCode.Include
   private String username;
 
   @Column(nullable = false)
   private String password;
 
   @Column(name = "email", unique = true)
+  @EqualsAndHashCode.Include
   private String email;
 
   @Column(name = "first_name")
@@ -109,7 +115,8 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private List<UserEntity> followers;
+  @Builder.Default
+  private List<UserEntity> followers = new LinkedList<>();
 
 
   @ManyToMany(cascade = {
@@ -118,7 +125,8 @@ public class UserEntity {
   @JoinTable(name = "user_follower",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "following_id")})
-  private List<UserEntity> follows;
+  @Builder.Default
+  private List<UserEntity> follows = new LinkedList<>();
 
 
   @ManyToOne(cascade = {

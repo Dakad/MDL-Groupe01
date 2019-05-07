@@ -7,14 +7,14 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
-import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.InvalidCredentialException;
+import be.unamur.info.mdl.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,19 +62,21 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    if (this.userRepository.existsByUsername(username)){
-      throw new UsernameNotFoundException(username);
+  public UserDetails loadUserByUsername(String username)
+    throws org.springframework.security.core.userdetails.UsernameNotFoundException {
+    if (this.userRepository.existsByUsername(username)) {
+      throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
     }
     CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
-    return new User(credential.getUsername(), credential.getPassword(), Collections.EMPTY_LIST);
+    return new User(credential.getUsername(), credential.getPassword(), Collections.emptyList());
   }
 
 
   @Override
   public String login(@Valid CredentialDTO credential) throws InvalidCredentialException {
-    if (this.userRepository.existsByUsername(credential.getUsername())){
-      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername()).toDTO();
+    if (this.userRepository.existsByUsername(credential.getUsername())) {
+      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername())
+        .toDTO();
       if (checkPassword(credential, userCredential)) {
         return SecurityUtils.generateToken(userCredential.getUsername());
       }
@@ -97,4 +99,43 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
+  @Override
+  public boolean follow(String username, String follower) throws UserNotFoundException {
+    if (!this.isFollowed(username, follower)) {
+      UserEntity userFollower = userRepository.findByUsername(follower);
+      UserEntity userFollowed = userRepository.findByUsername(username);
+      userFollower.getFollows().add(userFollowed);
+      if(!userFollowed.getFollowers().contains(userFollower))userFollowed.getFollowers().add(userFollower);
+      userRepository.save(userFollower);
+      userRepository.save(userFollower);
+      return true;
+    }
+    return false;
+  }
+
+
+  @Override
+  public boolean isFollowed(String username, String user) throws UserNotFoundException {
+    if (!userRepository.existsByUsername(username)) {
+      throw new UserNotFoundException();
+    }
+    UserEntity currentUser = userRepository.findByUsername(user);
+    UserEntity visitedUser = userRepository.findByUsername(username);
+    return currentUser.getFollows().contains(visitedUser);
+  }
+
+  @Override
+  public boolean unfollow(String username, String follower) throws UserNotFoundException {
+    if (this.isFollowed(username, follower)) {
+      UserEntity userFollower = userRepository.findByUsername(follower);
+      UserEntity userFollowed = userRepository.findByUsername(username);
+
+      userFollowed.getFollowers().remove(userFollower);
+      userFollower.getFollows().remove(userFollowed);
+
+      userRepository.save(userFollower);
+      return true;
+    }
+    throw new UserNotFoundException();
+  }
 }
