@@ -1,6 +1,6 @@
 <template>
   <div class="article" v-if="hasPagination">
-    <md-card v-for="article in list" :key="article.reference">
+    <md-card md-with-hover v-for="article in list" :key="article.reference">
       <md-card-header>
         <div class="title">
           <router-link :to="{ name: 'articleDetails', params: { reference: article.reference }}">
@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       currentPage: 1
+      
     };
   },
   watch: {
