@@ -10,12 +10,14 @@
       </md-card-header>
       <md-card-content>
         <div class="info">
-          <p>Written By</p>
-          <div class="author">
-            <md-list v-for="author in article.authors" v-bind:key="author">
-              <md-list-item></md-list-item>
-              <!-- <md-item href="/">{{author}}</md-item> -->
-            </md-list>
+          <div class="article-authors md-subhead">
+           <md-icon title="Authors">{{ article.authors.length > 1 ? 'people' : "person" }}</md-icon>
+            <md-button
+              class="md-primary"
+              v-for="(author, i) in article.authors"
+              :key="i"
+              :md-ripple="false"
+            >{{author}}</md-button>
           </div>
           <div class="keyword"></div>
           <div class="date">
@@ -61,6 +63,7 @@ export default {
     };
   },
   watch: {
+    
     currentPage: function() {
       this.$emit("pagination", this.currentPage);
     }
@@ -68,6 +71,7 @@ export default {
   computed: {
     articles() {
       return this.list;
+      
     },
     page() {
       return this.meta || {};
@@ -75,11 +79,15 @@ export default {
   },
   methods: {}
 };
+
 </script>
 
 <style scoped>
 .md-list {
-  margin: 10px;
-  display: inline-block;
+  margin: 2px;
 }
+.md-list-item{
+  margin: 0px;
+}
+
 </style>
