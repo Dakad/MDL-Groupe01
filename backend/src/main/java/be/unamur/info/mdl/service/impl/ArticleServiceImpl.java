@@ -2,27 +2,33 @@ package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.AuthorEntity;
+import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.AuthorRepository;
+import be.unamur.info.mdl.dal.repository.BookmarkRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
-import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
+import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service("articleService")
@@ -33,6 +39,7 @@ public class ArticleServiceImpl implements ArticleService {
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
   private final AuthorRepository authorRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   private final Slugify slugify = new Slugify();
 
@@ -40,26 +47,59 @@ public class ArticleServiceImpl implements ArticleService {
   @Autowired
   public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository,
     TagRepository tagRepository,
-    AuthorRepository authorRepository) {
+    AuthorRepository authorRepository, BookmarkRepository bookmarkRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
     this.authorRepository = authorRepository;
+    this.bookmarkRepository = bookmarkRepository;
   }
 
 
   @Override
   public ArticleDTO getArticleByReference(String reference) throws ArticleNotFoundException {
-    if(reference == null){
+    if (reference == null) {
       throw new IllegalArgumentException("The reference must be defined");
     }
     Optional<ArticleEntity> dbArticle = this.articleRepository.findByReference(reference);
-    if(!dbArticle.isPresent()){
+    if (!dbArticle.isPresent()) {
       throw new ArticleNotFoundException("The referenced article was not found");
     } else {
-      return dbArticle.get().toDTO();
+      ArticleEntity article = dbArticle.get();
+      article.setNbViews(article.getNbViews() + 1);
+      this.articleRepository.save(article);
+      return article.toDTO();
     }
+  }
 
+
+  @Override
+  public List<ArticleDTO> listArticleByReferences(List<String> references) {
+    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
+    return this.articleRepository.findDistinctFirst5ByReferenceIsIn(references, sortByViews)
+      .map(a -> a.toDTO()).collect(
+        Collectors.toList());
+  }
+
+  @Override
+  public Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categoryNames) {
+    Map<String, List<ArticleDTO>> articlesByCategory = new HashMap<>();
+    Sort sortByViews = Sort.by("nbViews", "createdAt").descending();
+
+    // First, find all categories provided
+    List<TagEntity> categories = this.tagRepository.findByNameOrSlugIn(categoryNames);
+
+    categories.forEach(category -> {
+      // Find the article by category and transform to DTO
+      List<ArticleDTO> articles = this.articleRepository
+        .findDistinctFirst5ByCategory(category, sortByViews)
+        .map(a -> a.toDTO())
+        .collect(Collectors.toList());
+
+      articlesByCategory.put(category.getName(), articles);
+    });
+
+    return articlesByCategory;
   }
 
   @Override
@@ -96,37 +136,22 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach a new category or the one persisted in DB.
+   *
    * @param newArticle - The new Article being created
    * @param categoryName - The category name
    */
   private void attachCategory(ArticleEntity newArticle, String categoryName) {
-    TagEntity category = this.getOrCreateTag(categoryName);
+    TagEntity category = ServiceUtils.getOrCreateTag(categoryName, this.tagRepository);
     category.getArticlesByCategory().add(newArticle);
     newArticle.setCategory(category);
   }
 
-  /**
-   * Get the matching tag from the repository or create a new one.
-   * @param tagName  The tag name
-   * @return the persisted or created Tag
-   */
-  private TagEntity getOrCreateTag(String tagName) {
-    String slug = this.slugify.slugify(tagName);
-    Optional<TagEntity> dbTag = this.tagRepository.findBySlug(slug);
-
-    TagEntity tag;
-    if (dbTag.isPresent()) {
-      tag = dbTag.get();
-    } else {
-      tag = TagEntity.builder().name(tagName.trim()).slug(slug).build();
-    }
-    return tag;
-  }
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
-   * @param newArticle  The new Article being created
-   * @param authors     The author's name list.
+   *
+   * @param newArticle The new Article being created
+   * @param authors The author's name list.
    */
   private void attachAuthors(ArticleEntity newArticle, List<String> authors) {
     Set<AuthorEntity> list = new LinkedHashSet<>(authors.size());
@@ -142,20 +167,82 @@ public class ArticleServiceImpl implements ArticleService {
 
   /**
    * Attach the corresponding Author(created or persisted) to the new article
+   *
    * @param newArticle - The new Article being created
-   * @param keywords - The author's name list.
+   * @param keywords - The keyword's name list.
    */
   private void attachKeywords(ArticleEntity newArticle, Set<String> keywords) {
     Set<TagEntity> list = new LinkedHashSet<>(keywords.size());
     TagEntity keyword;
 
     for (String keywordName : keywords) {
-      keyword = getOrCreateTag(keywordName);
+      keyword = ServiceUtils.getOrCreateTag(keywordName, this.tagRepository);
       keyword.getArticlesByKeyword().add(newArticle);
       list.add(keyword);
     }
 
     newArticle.setKeywords(list);
   }
+
+  @Override
+  public boolean addBookmark(String reference, String username, String note)
+    throws ArticleNotFoundException, AlreadyBookmarkedException {
+
+    Optional<ArticleEntity> article;
+    article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
+    //Check if the user has already bookmarked this article
+    UserEntity user = userRepository.findByUsername(username);
+    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+      throw new AlreadyBookmarkedException("This article is already in your bookmarks");
+    }
+
+    BookmarkEntity bookmark = new BookmarkEntity();
+    bookmark.setArticle(article.get());
+    bookmark.setCreator(user);
+    bookmark.setNote(note);
+    user.getBookmarks().add(bookmark);
+    article.get().getBookmarks().add(bookmark);
+
+    return true;
+  }
+
+
+  @Override
+  public boolean isBookmarked(String reference, String username) throws ArticleNotFoundException {
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    return bookmarkRepository.existsByCreatorAndArticle(user, article.get());
+  }
+
+
+  @Override
+  public boolean removeBookmark(String reference, String username)
+    throws ArticleNotFoundException, BookmarkNotFoundException {
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository
+      .findByCreatorAndArticle(user, article.get());
+    if (!bookmark.isPresent()) {
+      throw new BookmarkNotFoundException("The request article was not present in the bookmarks");
+    }
+
+    user.getBookmarks().remove(bookmark.get());
+    article.get().getBookmarks().remove(bookmark.get());
+
+    userRepository.save(user);
+    articleRepository.save(article.get());
+    bookmarkRepository.delete(bookmark.get());
+    return true;
+  }
+
 
 }

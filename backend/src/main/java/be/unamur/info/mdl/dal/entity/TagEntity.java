@@ -10,11 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -54,11 +54,13 @@ public class TagEntity {
   private Set<ArticleEntity> articlesByKeyword = new LinkedHashSet<>();
 
 
-  @ManyToMany(mappedBy = "tags")
+  @ManyToMany(mappedBy = "keywords")
+  @Builder.Default
   private Set<StateOfTheArtEntity> statesOfTheArts = new LinkedHashSet<>();
 
 
   @ManyToMany(mappedBy = "tags")
+  @Builder.Default
   private Set<UserEntity> followers = new LinkedHashSet<>();
 
 

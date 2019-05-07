@@ -6,14 +6,14 @@
         {"id": 2, "title": "Le secret du shampoing", "publicationDate":"12/30/2015", "authors":["Pierre, Pierre, Pierre, Leblond, Pierre"]}
     ],
     "articles" : [
-        {"id": 0, "title": "GENE1", "publicationDate": "10/03/2017", "price": 198, "nbrePage": 39, "nbreCitation": 59, "user": ["Jean Devis, Patrick Poitou"], "tags": ["English","StrangeThing","Biology"]},
-        {"id": 1, "title": "INFO1", "publicationDate": "12/10/2014", "price": 145, "nbrePage": 22, "nbreCitation": 332, "user": ["Paul Depauw"], "tags": ["Informatic","Biology","Chemestry"]},
-        {"id": 2, "title": "INFO2", "publicationDate": "12/18/2012", "price": 116, "nbrePage": 17, "nbreCitation": 228, "user": ["Paul Viels"], "tags": ["Physic","Physic","English"]},
-        {"id": 3, "title": "Test of life", "publicationDate": "02/28/2012", "price": 23, "nbrePage": 47, "nbreCitation": 155, "user": ["Charles Marin"], "tags": ["Math","Biology","art"]},
-        {"id": 4, "title": "Theorical Analysis", "publicationDate": "10/13/2013", "price": 177, "nbrePage": 26, "nbreCitation": 229, "user": ["Gertrude Devis"], "tags": ["Biology","Informatic","Biology"]},
-        {"id": 5, "title": "Reserch about searchnig", "publicationDate": "03/01/2014", "price": 89, "nbrePage": 43, "nbreCitation": 394, "user": ["Paul Nier"], "tags": ["Informatic","Math","English"]},
-        {"id": 6, "title": "Searching gold on minecraft", "publicationDate": "05/15/2017", "price": 53, "nbrePage": 25, "nbreCitation": 22, "user": ["Jean Niels"], "tags": ["Informatic","Math","Physic"]},
-        {"id": 7, "title": "Game theory", "publicationDate": "03/03/2011", "price": 124, "nbrePage": 48, "nbreCitation": 270, "user": ["Pierre Nier"], "tags": ["StrangeThing","Biology","Chemestry"]}
+        {"id": 0, "category":"test", "title": "GENE1", "created_at": "10/03/2017", "price": 198, "nbrePage": 39, "nb_views": 39, "nb_citations": 59, "authors": ["Jean Devis, Patrick Poitou"], "keywords": ["English","StrangeThing","Biology"]},
+        {"id": 1, "category":"test", "title": "INFO1", "created_at": "12/10/2014", "price": 145, "nbrePage": 22, "nb_views": 22, "nb_citations": 332, "authors": ["Paul Depauw"], "keywords": ["Informatics","Biology","Chemestry"]},
+        {"id": 2, "category":"test", "title": "INFO2", "created_at": "12/18/2012", "price": 116, "nbrePage": 17, "nb_views": 17, "nb_citations": 228, "authors": ["Paul Viels"], "keywords": ["Physics","English"]},
+        {"id": 3, "category":"test", "title": "Test of life", "created_at": "02/28/2012", "price": 23, "nbrePage": 47, "nb_views": 47, "nb_citations": 155, "authors": ["Charles Marin"], "keywords": ["Math","Biology","Art"]},
+        {"id": 4, "category":"test", "title": "Theorical Analysis", "created_at": "10/13/2013", "price": 177, "nbrePage": 26, "nb_views": 26, "nb_citations": 229, "authors": ["Gertrude Devis"], "keywords": ["Biology","Informatics","Biology"]},
+        {"id": 5, "category":"test", "title": "Reserch about searchnig", "created_at": "03/01/2014", "price": 89, "nbrePage": 43, "nb_views": 43, "nb_citations": 394, "authors": ["Paul Nier"], "keywords": ["Informatics","Math","English"]},
+        {"id": 6, "category":"test", "title": "Searching gold on minecraft", "created_at": "05/15/2017", "price": 53, "nbrePage": 25, "nb_views": 25, "nb_citations": 22, "authors": ["Jean Niels"], "keywords": ["Informatics","Math","Physics"]},
+        {"id": 7, "category":"test", "title": "Game theory", "created_at": "03/03/2011", "price": 124, "nbrePage": 48, "nb_views": 270, "authors": ["Pierre Nier"], "keywords": ["StrangeThing","Biology","Chemestry"]}
     ],
     "authors" : "UserDTO[]"
     }

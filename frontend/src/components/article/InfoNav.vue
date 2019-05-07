@@ -1,7 +1,7 @@
 <template>
   <div class="infoNav">
     <div>
-      <md-tabs>
+      <md-tabs md-alignment="fixed">
         <md-tab id="tab-info" md-label="Info">
           <Info :info="info"/>
         </md-tab>
@@ -26,7 +26,7 @@ import Ref from "@/components/article/Tag";
 export default {
   name: "InfoNav",
   props: {
-    info: Array,
+    info: Object,
     tags: Array,
     refs: Array
   },

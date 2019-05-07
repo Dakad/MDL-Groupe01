@@ -1,7 +1,7 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.BookmarkDTO;
 import java.time.LocalDate;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,42 +10,56 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @Table(name = "bookmark")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookmarkEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @EqualsAndHashCode.Include
   private Long id;
 
   @Column
-  private String name;
+  private String note;
 
 
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", unique = true, nullable = false)
-  private UserEntity user;
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserEntity creator;
 
-  @ManyToMany(cascade = {
+  @ManyToOne(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
-  @JoinTable(
-    name = "bookmark_article",
-    joinColumns = @JoinColumn(name = "bookmark_id"),
-    inverseJoinColumns = @JoinColumn(name = "article_id"))
-  private Set<ArticleEntity> articles;
+  private ArticleEntity article;
+
+  @ManyToOne(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  private StateOfTheArtEntity sota;
+
+
+
+  public BookmarkDTO toDTO() {
+    if (article != null) {
+      return new BookmarkDTO(note, article.toDTO(), null);
+    }
+    if (sota != null) {
+      return new BookmarkDTO(note, null, sota.toDTO());
+    }
+    return null;
+  }
 }

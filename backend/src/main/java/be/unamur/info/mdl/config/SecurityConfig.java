@@ -59,8 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers(SecurityUtils.SECURED_ENDPOINTS).authenticated()
       .anyRequest().permitAll()
       .and()
-      .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-      .addFilter(new JWTAuthorizationFilter(authenticationManager()));
+      .addFilter(new JWTAuthenticationFilter(super.authenticationManager()))
+      .addFilter(new JWTAuthorizationFilter(super.authenticationManager()));
 
   }
 
