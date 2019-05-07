@@ -4,22 +4,15 @@ import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.AuthorEntity;
 import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
-import be.unamur.info.mdl.dal.repository.ArticleRepository;
-import be.unamur.info.mdl.dal.repository.AuthorRepository;
-import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
-import be.unamur.info.mdl.dal.repository.UserRepository;
-import be.unamur.info.mdl.dto.ArticleDTO;
-import be.unamur.info.mdl.dto.AuthorDTO;
-import be.unamur.info.mdl.dto.SearchQueryDTO;
-import be.unamur.info.mdl.dto.SearchResultDTO;
+import be.unamur.info.mdl.dal.repository.*;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.dto.SearchResultDTO.MetaField;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
-import be.unamur.info.mdl.dto.StateOfTheArtDTO;
-import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -41,16 +34,18 @@ public class SearchServiceImpl implements SearchService {
   private final ArticleRepository articleRepository;
   private final StateOfTheArtRepository stateOfTheArtRepository;
   private final AuthorRepository authorRepository;
+  private final TagRepository tagRepository;
 
 
   @Autowired
   public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-    StateOfTheArtRepository stateOfTheArtRepository,
-    AuthorRepository authorRepository) {
+                           StateOfTheArtRepository stateOfTheArtRepository,
+                           AuthorRepository authorRepository, TagRepository tagRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
     this.authorRepository = authorRepository;
+    this.tagRepository = tagRepository;
   }
 
   @Override
@@ -265,5 +260,10 @@ public class SearchServiceImpl implements SearchService {
     }
 
     return meta;
+  }
+
+  @Override
+  public List<Object[]> getTags(String keyword) {
+    return tagRepository.findByTerm(keyword);
   }
 }
