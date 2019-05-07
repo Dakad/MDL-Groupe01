@@ -8,9 +8,9 @@ import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import be.unamur.info.mdl.service.UserService;
-import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
-import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,12 +71,12 @@ public class DbDataLoaderRunner implements CommandLineRunner {
     TypeReference<List<String>> dtoTypeReference = new TypeReference<List<String>>() {
     };
     inputStream = TypeReference.class.getResourceAsStream("/json/categories.data.json");
-    List<String> list = mapper.readValue(inputStream, dtoTypeReference);
+    List<String> categories = mapper.readValue(inputStream, dtoTypeReference);
 
-    LOGGER.info("Saving " + list.size() + " categories into DB");
+    LOGGER.info("Saving " + categories.size() + " categories into DB");
 
     Slugify slugify = new Slugify();
-    for (String name : list) {
+    for (String name : categories) {
       try {
         String slug = slugify.slugify(name);
         TagEntity tag = TagEntity.builder().name(name).slug(slug).build();

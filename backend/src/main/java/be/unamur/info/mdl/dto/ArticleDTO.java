@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,7 @@ public class ArticleDTO {
   private String content;
 
   @PastOrPresent(message = "The publication date cannot be in the future")
+  @JsonProperty(value = "publication_date")
   private LocalDate publicationDate;
 
   @NotBlank(message = "The URL is required")
@@ -70,6 +72,7 @@ public class ArticleDTO {
   @JsonProperty(value = "nb_views")
   private int nbViews;
 
+  @Builder.Default
   private String category = "unknown";
 
   @JsonProperty(value = "created_at")
@@ -78,8 +81,8 @@ public class ArticleDTO {
 
   private UserDTO creator;
 
-  private List<@NotBlank(message = "The author(s) must be defined") String> authors = Collections
-    .emptyList();
+  @Builder.Default
+  private List<@NotBlank(message = "The author(s) must be defined") String> authors = new LinkedList<>();
 
   // Receive a list of String representing the keywords
   @Builder.Default

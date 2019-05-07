@@ -8,42 +8,54 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      # ddl-auto: none
-      ddl-auto: create
+      ddl-auto: none # create
   datasource:
-    # initializationMode: always
+    initializationMode: always
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:local_db?DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
-    username: sa
+    username: root
     password:
-    # schema: classpath:db/schema.h2.sql
-    # data: classpath:db/data.h2.sql
+    schema: classpath:db/schema.h2.sql
+    data: classpath:db/data.h2.sql
 app:
   auth:
-    secret: 1j3@BeV!ltA&_SecretKeyToGenJWTs_m$O6Qz3qj
-    tokenExpirationInMs: 8460000000  # 100 days
+    secret: "C0RN#Wd0Qc@F$hY4_9nZ2K3yjA_E!t@Df3Ue#3Hg7w9z5zK2bP"
+    tokenExpirationInMs: 8460000000 # 100 days
     prefix: "Bearer "
     header: Authorization
     secureEndpoints:
       - /api/team
 
-
 ---
-
 spring:
   profiles: test
-
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
 ---
-
+spring:
+  profiles: staging
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    initializationMode: always
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/mdl_staging?autoReconnect=true&allowMultiQueries=true
+    username: root
+    password:
+    schema: classpath:db/schema.staging.sql
+    data: classpath:db/data.staging.sql
+---
 spring:
   profiles: production
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/mdl_prod?createDatabaseIfNotExist=true&autoReconnect=true&allowMultiQueries=true
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/mdl_froggosaur?autoReconnect=true&allowMultiQueries=true
     username: mdl-global-user
     password: mdl-global-password
     testWhileIdle: true
     validationQuery: SELECT 1
     # schema: /db/schema.sql
     # data: /db/data.sql
-

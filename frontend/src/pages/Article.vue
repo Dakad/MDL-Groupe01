@@ -1,89 +1,167 @@
 <template>
-  <div class="article">
-    <div class="leftContainer">
-      <h1>{{ article.title }}</h1>
-      <div class="menuBo">
-        <menuArticle :article-id="article.id"></menuArticle>
-      </div>
-      <div class="abstract">
-        <p>{{ article.abstract }}</p>
-      </div>
+  <div class="md-layout md-gutter md-alignment-center-space-around">
+    <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
+      <md-card md-with-hover id="article-container">
+        <md-card-header>
+          <h1 class="article-title md-display-2">{{ article.title }}</h1>
+          <div class="article-authors md-subhead">
+            <md-icon title="Authors">{{ article.authors.length > 1 ? 'people' : "person" }}</md-icon>&nbsp;
+            <!-- <label >By</label>: -->
+            <md-button
+              class="md-primary"
+              v-for="(author, i) in article.authors"
+              :key="i"
+              :md-ripple="false"
+            >{{author}}</md-button>
+          </div>
+
+          <div class="article-journal md-subhead">
+            <md-icon title="Journal">import_contacts</md-icon>&nbsp;
+            <!-- <span class>Journal :</span>&nbsp; -->
+            <span>{{article.journal}}</span> &nbsp;
+            <span v-show="article.volume" title="Journal Volume">- {{article.volume}}</span>
+          </div>
+
+          <div class="article-keywords">
+            <!-- <label>Keywords</label>: -->
+            <md-chip :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
+            <md-chip v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
+          </div>
+        </md-card-header>
+        <md-card-media-actions>
+          <md-card-area>
+            <md-content class="article-abstract">
+              <!-- <p>{{ article.content}}</p> -->
+              <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
+            </md-content>
+          </md-card-area>
+
+          <md-card-actions>
+            <md-button class="md-icon-button" title="Add to SoTA">
+              <md-icon>playlist_add</md-icon>
+            </md-button>
+
+            <md-button
+              class="md-icon-button"
+              title="Bookmark it"
+              @click="isBookmarked = !isBookmarked"
+            >
+              <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button" title="Go the article source">
+              <md-icon>launch</md-icon>
+            </md-button>
+          </md-card-actions>
+        </md-card-media-actions>
+      </md-card>
     </div>
-    <div class="rightContainer">
-      <infoNav :tags="article.tags" :refs="article.refs" :info="article.sotas"></infoNav>
+
+    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100">
+      <div class="info-container">
+        <info-nav :info="info" :tags="article.keywords" :refs="article.refs"></info-nav>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ColorHash from "color-hash";
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
-import json from "@/assets/dummy-Article.json";
+import { getArticleByReference } from "@/services/api";
+
+const colorHash = new ColorHash();
 
 export default {
   name: "Article",
+  props: ["reference"],
   components: {
     InfoNav,
     MenuArticle
   },
   data() {
     return {
-      article: {
-        tags: [],
-        refs: [],
-        sotas: []
-      }
+      article: {},
+      isBookmarked: false
     };
   },
-  mounted() {
-    this.getArticle();
+  watch: {
+    $route: "fetchArticle"
+  },
+  created() {
+    // fetch the data when the view is created
+    this.fetchArticle();
+  },
+
+  computed: {
+    colorCategory() {
+      return {
+        "background-color": colorHash.hex(this.article.category)
+      };
+    },
+    abstract() {
+      if (!this.article.content) {
+        return [];
+      }
+      return this.article.content.split("\n");
+    },
+    info() {
+      const {
+        created_at,
+        category,
+        nb_citations,
+        nb_views,
+        year,
+        month,
+        pages,
+        url
+      } = this.article;
+      return Object.assign(
+        {},
+        {
+          created_at,
+          category,
+          nb_citations,
+          nb_views,
+          year,
+          month,
+          pages,
+          link: url
+        }
+      );
+    }
   },
   methods: {
-    getArticle() {
-      this.article = json;
+    fetchArticle() {
+      return getArticleByReference(this.reference).then(
+        data => (this.article = data)
+      );
     }
   }
 };
 </script>
 
-<style scoped>
-h1 {
-  position: absolute;
-  left: 10%;
-  width: 70%;
-  top: 10%;
+<style  lang="css" scoped>
+#article-container {
+  margin-top: 15px;
+  cursor: auto;
 }
 
-.menuBo {
-  padding-top: 15%;
-  padding-left: 10%;
-  width: 25%;
-  float: right;
+#article-container .article-title {
+  margin: 3vh 0;
 }
 
-.abstract {
-  float: bottom;
-  padding-top: 10%;
-  padding-left: 15%;
-  width: 80%;
+#article-container .article-authors button {
+  cursor: default;
 }
 
-infoNav {
-  padding-top: 10%;
-  padding: 10%;
+#article-container .article-keywords {
+  margin: 1vh 0;
 }
 
-.leftContainer {
-  position: relative;
-  float: left;
-  width: 60%;
-  height: 80%;
-}
-
-.rightContainer {
-  padding-right: 5px;
-  padding-top: 5%;
-  float: right;
+#article-container .article-abstract {
+  margin: 15px 0;
 }
 </style>
 

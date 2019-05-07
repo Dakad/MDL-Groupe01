@@ -6,18 +6,34 @@
         <h1>Froggosaur</h1>
       </div>
 
+      <h2>{{msg}}</h2>
+
       <!-- place the searched words in var searchwords and the action to
       script the search is searchIt-->
 
-      <search id="search"></search>
+      <search id="search" @error="msg = $event"></search>
 
       <div class="filter"></div>
     </div>
 
     <div class="recommended">
-      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000" :navigationEnabled="true">
+      <carousel
+        :per-page="3"
+        :autoplay="true"
+        :loop="true"
+        :autoplayTimeout="3000"
+        :navigationEnabled="true"
+      >
         <slide class="slides" v-for="(recommended,index) in list" :key="index">
-          <article-slide :title="recommended.title" :authors="recommended.authors" :domain="recommended.category" :date="recommended.created_at" :nb-views="recommended.nb_views" :nb-quotes="recommended.nb_citations" :keywords="recommended.keywords"></article-slide>
+          <article-slide
+            :title="recommended.title"
+            :authors="recommended.authors"
+            :domain="recommended.category"
+            :date="recommended.created_at"
+            :nb-views="recommended.nb_views"
+            :nb-quotes="recommended.nb_citations"
+            :keywords="recommended.keywords"
+          ></article-slide>
         </slide>
       </carousel>
     </div>
@@ -29,9 +45,7 @@ import { Carousel, Slide } from "vue-carousel";
 
 import ArticleSlide from "@/components/accueil/ArticleSlide";
 
-import Search from '@/components/navbar/Search';
-
-import dummy from "@/assets/dummy-Results.json";
+import Search from "@/components/navbar/Search";
 
 export default {
   name: "Accueil",
@@ -39,12 +53,13 @@ export default {
     Carousel,
     Slide,
     ArticleSlide,
-    Search,
+    Search
   },
   data() {
     return {
       searchInput: null,
-      list: dummy.results.articles,
+      msg: "",
+      list: []
     };
   },
   searchIt() {}
