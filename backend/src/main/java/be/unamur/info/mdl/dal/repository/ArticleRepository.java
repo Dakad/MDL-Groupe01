@@ -28,4 +28,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
   Stream<ArticleEntity> findDistinctFirst5ByReferenceIsIn(List<String> references, Sort sortBy);
 
   Stream<ArticleEntity> findDistinctFirst5ByCategory(TagEntity category, Sort sortBy);
+
+
 }
