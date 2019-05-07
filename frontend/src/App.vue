@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <!-- TODO mettre la barre supérieure avec login,... mais sans la barre de recherche-->
-    <navbar/>
+    <navbar id="app-navbar"/>
 
-    <router-view></router-view>
+    <router-view id="app-content"></router-view>
   </div>
 </template>
 
@@ -17,3 +17,21 @@ export default {
   }
 };
 </script>
+
+<style lang="css">
+#app {
+  margin-bottom: 10px;
+}
+#app-navbar {
+  position: sticky;
+  margin-bottom: 10px;
+  width: 100%;
+  z-index: 10;
+  top: 0;
+}
+
+#app-content {
+  width: 100%;
+}
+</style>
+
