@@ -217,10 +217,10 @@ export default {
       this.$router.push({ query });
     },
     fetchSearchResult() {
-      if (this.changingTab) {
-        this.changingTab = false;
-        return;
-      }
+      // if (this.changingTab) {
+      //   this.changingTab = false;
+      //   return;
+      // }
       this.loading = true;
       this.searchTerm = this.$route.query["search"];
 
