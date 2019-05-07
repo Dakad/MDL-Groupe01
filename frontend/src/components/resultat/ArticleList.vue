@@ -4,7 +4,7 @@
       <md-card-header>
         <div class="title">
           <router-link :to="{ name: 'articleDetails', params: { reference: article.reference }}">
-            <h1>{{article.title}}</h1>
+            <h4>{{article.title}}</h4>
           </router-link>
         </div>
       </md-card-header>
