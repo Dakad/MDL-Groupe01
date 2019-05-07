@@ -15,6 +15,9 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   Page<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
 
+  Page<ArticleEntity> findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(
+    String title, List<String> keywords, Pageable pageable);
+
   ArticleEntity findByTitle(String title);
 
   Optional<ArticleEntity> findByReference(String reference);

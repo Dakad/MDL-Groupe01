@@ -87,7 +87,7 @@ public class SearchServiceImpl implements SearchService {
       .equalsIgnoreCase("ARTICLES")) {
       pageSort = this.getSortForArticle(sort, order);
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
-      searchForArticles(searchResult, searchTerm, resultMeta, pageable);
+      searchForArticles(searchResult, searchTerm, resultMeta, pageable, searchQuery.getTag());
     }
 
     // SOTAS
@@ -95,7 +95,7 @@ public class SearchServiceImpl implements SearchService {
       .equalsIgnoreCase("SOTAS")) {
       pageSort = this.getSortForSota(sort, order);
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
-      searchForSotas(searchResult, searchTerm, resultMeta, pageable);
+      searchForSotas(searchResult, searchTerm, resultMeta, pageable, searchQuery.getTag());
     }
 
     searchResult.metas(resultMeta);
@@ -131,9 +131,15 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForArticles(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable) {
-    Page<ArticleEntity> articles = articleRepository
-      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
+    SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
+    Page<ArticleEntity> articles;
+    if(tags.isEmpty()){
+      articles = articleRepository
+      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);}
+    else{
+      articles = articleRepository
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm,tags,pageable);
+    }
 
     List<ArticleDTO> articleList = articles.stream().map(a -> a.toDTO())
       .collect(Collectors.toList());
@@ -144,9 +150,15 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForSotas(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable) {
-    Page<StateOfTheArtEntity> sotas = stateOfTheArtRepository
-      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
+    SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
+    Page<StateOfTheArtEntity> sotas;
+    if(tags.isEmpty()){
+     sotas = stateOfTheArtRepository
+      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);}
+    else {
+      sotas = stateOfTheArtRepository
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm, tags, pageable);
+    }
 
     List<StateOfTheArtDTO> sotaList = sotas.get().map(s -> s.toDTO())
       .collect(Collectors.toList());
