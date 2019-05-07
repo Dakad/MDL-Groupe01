@@ -39,13 +39,12 @@
 </template>
 
 <script>
-import json from "@/assets/dummy-Results.json";
 export default {
   name: "SotAGestion",
   data() {
     return {
-      json,
-      articles: json.results.articles,
+      data: {},
+      articles: [],
       sortBy: "name",
       orderBy: "asc"
     };
