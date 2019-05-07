@@ -92,10 +92,11 @@ public class StateOfTheArtController extends APIBaseController {
   {
     try {
       sotaService.put(reference, authUser.getName(),data);
+      return ResponseEntity.status(HttpStatus.OK).body(data);
     } catch (UsernameNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-    return ResponseEntity.status(HttpStatus.OK).body(data);
+
   }
 }
 
