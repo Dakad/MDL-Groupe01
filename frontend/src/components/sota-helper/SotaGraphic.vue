@@ -1,40 +1,90 @@
 <template>
   <div class="graph-container">
-    <tree class="tree" type="cluster" layout-type="circular" node-text="name" :data="data"/>
+    <tree
+      class="graph-tree"
+      :type="type"
+      :layout-type="layoutType"
+      :data="treeDataFromArticles"
+      node-text="name"
+      :zoomable="true"
+    />
   </div>
 </template>
 
 
 <script>
 import { tree } from "vued3tree";
+import { getArticlesByCategories } from "@/services/api";
 import dummy from "@/services/dummy/sota-helper-visu.json";
+
+const dataTreeBase = {
+  name: "My SoTA",
+  children: []
+};
 
 export default {
   name: "SotaGraphic",
   components: { tree },
-  props: [],
+  props: {
+    articles: {
+      type: Array,
+      required: true,
+      default: () => []
+    }
+  },
   data() {
     return {
       width: "100%",
       height: "auto",
-      selected: null,
+      layoutType: "euclidean", // circular
+      type: "tree", // cluster
+      selectedNode: null,
       data: null
     };
   },
   created() {
-    this.data = dummy;
+    this.fetchArticlesByCategories();
+    this.data = this.articles;
   },
-  computed: {},
+  computed: {
+    getCategoryFromSelectedArticles() {
+      return this.articles.map(a => a["category"]);
+    },
+
+    treeDataFromArticles() {
+      return dummy;
+    }
+  },
   methods: {
     select: function(node) {
-      this.selected = node;
+      this.selectedNode = node;
+    },
+    fetchArticlesByCategories: function() {
+      const categories = this.getCategoryFromSelectedArticles;
+      this.data = Object.assign(dataTreeBase, {});
+      categories.forEach(cat => {
+        const child = {
+          name: cat,
+          children: [
+            { name: "Articles", children: [] },
+            { name: "Sotas", children: [] }
+          ]
+        };
+        data["children"].push(child);
+      });
+      // TODO Send APi request to retrieve articles in the provided categories;
+      getArticlesByCategories(categories).then(respData => {
+        this.data["children"] = Object.keys(respData).reduce((list, cat) => {
+          const article = respData[cat];
+        }, []);
+      });
     }
   }
 };
 </script>
 
 <style lang="css" scoped>
-.tree {
+.graph-tree {
   height: 600px;
   width: 100%;
 }
