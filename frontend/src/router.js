@@ -21,7 +21,7 @@ const routes = [
 
   { name: 'resultat', path: '/result', component: Resultat },
 
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails },
+  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true },
 
   { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
 
