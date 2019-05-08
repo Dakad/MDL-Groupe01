@@ -77,7 +77,6 @@ export default {
       return getSota(this.reference).then(
         data => (this.articles = data)
       );
-      console.log(this.articles);
     }
   }
 };
