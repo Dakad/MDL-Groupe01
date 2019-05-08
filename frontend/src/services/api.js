@@ -27,3 +27,13 @@ export function getSearchResults(searchQuery) {
 export function getArticleByReference(reference) {
   return Vue.http.get('/api/article/' + reference).then(res => res.body);
 }
+
+export function getArticlesByCategories(categories) {
+  if (categories.length <= 0) {
+    return;
+  }
+
+  return Vue.http.get('/api/article', { params : {
+    category: categories.join(',')
+  } }).then(res => res.body);
+}
