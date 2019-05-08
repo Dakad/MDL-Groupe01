@@ -19,7 +19,9 @@
                <md-item href="/">{{sota.creator.username}}</md-item>
             </router-link> </p>
           </div>
-          <div class="keyword"></div>
+          <div class="keyword">
+            <p>Main subject: {{sota.subject}}</p>
+          </div>
           <div class="date">
             <p>Published on the: {{sota.created_at}}</p>
           </div>
