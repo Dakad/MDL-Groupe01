@@ -7,10 +7,10 @@
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="visu">
         <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
-          <SotaGestion/>
+          <!-- <SotaGestion @selected="selectedArticles = $event"/> -->
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic/>
+          <sota-graphic :articles="selectedArticles"/>
         </md-tab>
         <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up"></md-tab>
         <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
@@ -26,9 +26,16 @@ import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 
+import dummyResults from "@/services/dummy/results.json";
+
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate, SotaGraphic, SotaGestion }
+  components: { createSota: SotaCreate, SotaGraphic, SotaGestion },
+  data() {
+    return {
+      selectedArticles: dummyResults.articles
+    };
+  }
 };
 </script>
 
