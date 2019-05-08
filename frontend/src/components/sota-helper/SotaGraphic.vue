@@ -66,7 +66,8 @@ export default {
   },
   computed: {
     categoriesFromArticles() {
-      return this.articles.map(a => a["category"]);
+      const categorySet = new Set(this.articles.map(a => a["category"]));
+      return [...categorySet].sort();
     },
 
     treeDataFromArticles() {
