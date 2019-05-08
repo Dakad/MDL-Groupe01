@@ -73,8 +73,9 @@ export default {
       const reader = new FileReader();
 
       reader.onload = e => {
-        this.bibtex.push(e.target.result);
+        // this.bibtex.push(e.target.result);
         const bib2Json = bibParser(e.target.result);
+        window.alert(bib2Json);
         this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
       };
       reader.readAsText(event.item(0));
@@ -86,12 +87,18 @@ export default {
 
       // TODO Create an api-article.js to create and get an article
 
-      // TODO For each uploaded articles, create new Article via API call
-      this.articlesUploaded.forEach(article => {
-        // TODO Get the reference of the new article created
-        //  TODO Add this ref to the new Sota being created.
-        // createArticle(article).then()
+      const articeRefs = []
+      const createArticleRequests = this.articlesUploaded.map(article => {
+        articleRefs.push(article['reference']);
+        return createArticle(article)
       });
+
+      // Send all request to create an article, fail
+      Promise.race(createArticleRequests).then(values => {
+        console.log(values);
+
+      }).catch(console.error);
+
 
       // TODO Send an API call to create the new SoTA
     }
