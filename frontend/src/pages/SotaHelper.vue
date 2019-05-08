@@ -12,7 +12,15 @@
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
         </md-tab>
-        <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up"></md-tab>
+        <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
+          <article-list v-show="!loading" :list="articles"></article-list>
+          <md-empty-state
+            v-if="!articles || articles.length == 0"
+            md-icon="description"
+            md-label="No articles found"
+            md-description="Creating project, you'll be able to upload your design and collaborate with people."
+          ></md-empty-state>
+        </md-tab>
         <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
@@ -25,14 +33,17 @@
 import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
+import articleList from "@/components/resultat/ArticleList";
 
+import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate, SotaGraphic, SotaGestion },
+  components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
   data() {
     return {
+      articles: dummyArticles,
       selectedArticles: dummyResults.articles
     };
   }
@@ -40,14 +51,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  /* position: absolute;
-  width: 100%;
-  height: 86%;
-  max-width: 1900px;
-  margin-top: 1%; */
-}
-
 .title {
   position: relative;
   width: 100%;
