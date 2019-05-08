@@ -4,7 +4,7 @@
       class="graph-tree"
       :type="type"
       :layout-type="layoutType"
-      :data="treeDataFromArticles"
+      :data="treeData"
       node-text="name"
       :zoomable="true"
     />
@@ -20,6 +20,11 @@ import dummy from "@/services/dummy/sota-helper-visu.json";
 const dataTreeBase = {
   name: "My SoTA",
   children: []
+};
+
+const cutString = function(title) {
+  const overflow = title.length > 75;
+  return !overflow ? title : title.substr(0, 75) + "...";
 };
 
 export default {
@@ -39,20 +44,34 @@ export default {
       layoutType: "euclidean", // circular
       type: "tree", // cluster
       selectedNode: null,
-      list: null
+      treeData: null
     };
   },
   created() {
-    // this.fetchArticlesByCategories();
+    this.treeData = Object.assign(dataTreeBase, {});
+
+    // Insert the categories as node in the tree data
+    this.categoriesFromArticles.forEach(category => {
+      const child = {
+        name: category,
+        children: [
+          { name: "Articles", children: [] },
+          { name: "Sotas", children: [] }
+        ]
+      };
+      this.treeData["children"].push(child);
+    });
+
+    this.fetchArticlesByCategories();
   },
   computed: {
-    getCategoryFromSelectedArticles() {
+    categoriesFromArticles() {
       return this.articles.map(a => a["category"]);
     },
 
     treeDataFromArticles() {
       const tree = Object.assign(dataTreeBase);
-      this.getCategoryFromSelectedArticles.forEach(cat => {
+      this.categoriesFromArticles.forEach(cat => {
         tree["children"].push({
           name: cat,
           children: [
@@ -62,10 +81,8 @@ export default {
         });
       });
 
-      console.dir(tree);
       this.articles.forEach(({ title, category, reference }) => {
         const overflow = title.length > 75;
-
         const name = !overflow ? title : title.substr(0, 75) + "...";
 
         const categoryChild = tree["children"].find(c => c["name"] == category);
@@ -81,26 +98,38 @@ export default {
   methods: {
     select: function(node) {
       this.selectedNode = node;
+      // Call router push to /article page
     },
     fetchArticlesByCategories: function() {
-      const categories = this.getCategoryFromSelectedArticles;
-      this.list = Object.assign(dataTreeBase, {});
-      categories.forEach(cat => {
-        const child = {
-          name: cat,
-          children: [
-            { name: "Articles", children: [] },
-            { name: "Sotas", children: [] }
-          ]
-        };
-        this.list["children"].push(child);
-      });
-      // TODO Send APi request to retrieve articles in the provided categories;
-      getArticlesByCategories(categories).then(respData => {
-        // this.list["children"] = Object.keys(respData).reduce((list, cat) => {
-        //   const article = respData[cat];
-        // }, []);
-      });
+      const categories = this.categoriesFromArticles;
+
+      // Send APi request to retrieve articles matching the provided categories
+      getArticlesByCategories(this.categoriesFromArticles)
+        // After receive the API data, construct the node for the category's articles
+        .then(respData => {
+          console.log(respData);
+
+          categories.forEach(category => {
+            debugger;
+
+            // Get the matching category from the tree data
+            const categoryChild = this.treeData["children"].find(
+              treeCategory => treeCategory["name"] == category
+            );
+
+            // Get only the name and reference of the article
+            const articleChildren = respData[categoryChild.name].map(
+              article => ({
+                name: cutString(article["title"]),
+                reference: article["reference"]
+              })
+            );
+
+            // O : Articles,  1: Sotas
+            categoryChild["children"][0]["children"] = articleChildren;
+            categoryChild["children"][1]["children"] = articleChildren;
+          });
+        });
     }
   }
 };
@@ -110,5 +139,9 @@ export default {
 .graph-tree {
   height: 600px;
   width: 100%;
+}
+.graph-tree .nodetree text {
+  font: 17px sans-serif;
+  cursor: pointer;
 }
 </style>
