@@ -1,14 +1,21 @@
 <template>
   <div class="graph-container">
-    <tree
-      class="graph-tree"
-      :type="type"
-      :layout-type="layoutType"
-      :data="treeData"
-      node-text="name"
-      :zoomable="true"
-      @clicked="onSelectNode"
-    />
+    <md-card>
+      <md-card-header>
+        <div class="md-title center">Preview of your created SoTA grouped by the categories</div>
+      </md-card-header>
+
+      <md-card-content>
+        <tree
+          class="graph-tree"
+          :type="type"
+          :layout-type="layoutType"
+          :data="treeData"
+          node-text="name"
+          @clicked="onSelectNode"
+        />
+      </md-card-content>
+    </md-card>
   </div>
 </template>
 
@@ -142,6 +149,7 @@ export default {
 .graph-tree {
   height: 600px;
   width: 100%;
+  justify-content: center;
 }
 .graph-tree .nodetree text {
   font: 17px sans-serif;
