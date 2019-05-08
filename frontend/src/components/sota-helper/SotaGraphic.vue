@@ -7,6 +7,7 @@
       :data="treeData"
       node-text="name"
       :zoomable="true"
+      @clicked="onSelectNode"
     />
   </div>
 </template>
@@ -15,7 +16,6 @@
 <script>
 import { tree } from "vued3tree";
 import { getArticlesByCategories } from "@/services/api";
-import dummy from "@/services/dummy/sota-helper-visu.json";
 
 const dataTreeBase = {
   name: "My SoTA",
@@ -96,9 +96,15 @@ export default {
     }
   },
   methods: {
-    select: function(node) {
+    onSelectNode: function(node) {
       this.selectedNode = node;
-      // Call router push to /article page
+      if (node["data"]["type"]) {
+        const route = node["data"]["type"];
+        this.$router.push({
+          name: route == "article" ? "articleDetails" : "sotaDetails",
+          params: { reference: node["data"]["reference"] }
+        });
+      }
     },
     fetchArticlesByCategories: function() {
       const categories = this.categoriesFromArticles;
@@ -107,11 +113,7 @@ export default {
       getArticlesByCategories(this.categoriesFromArticles)
         // After receive the API data, construct the node for the category's articles
         .then(respData => {
-          console.log(respData);
-
           categories.forEach(category => {
-            debugger;
-
             // Get the matching category from the tree data
             const categoryChild = this.treeData["children"].find(
               treeCategory => treeCategory["name"] == category
@@ -121,13 +123,13 @@ export default {
             const articleChildren = respData[categoryChild.name].map(
               article => ({
                 name: cutString(article["title"]),
-                reference: article["reference"]
+                reference: article["reference"],
+                type: "article"
               })
             );
 
             // O : Articles,  1: Sotas
             categoryChild["children"][0]["children"] = articleChildren;
-            categoryChild["children"][1]["children"] = articleChildren;
           });
         });
     }
