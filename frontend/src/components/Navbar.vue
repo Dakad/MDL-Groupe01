@@ -21,9 +21,35 @@
       </div>-->
       <div class="buttons" style="float: right">
         <div v-if="isAuthenticated">
-          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
+          <md-menu md-align-trigger v-if="avatar != null">
+            <md-button class="md-icon-button" md-menu-trigger>
+              <md-avatar>
+                <img :src="avatar" alt="Avatar">
+              </md-avatar>
+            </md-button>
+
+            <md-menu-content>
+              <md-menu-item>
+                <md-icon>perm_identity</md-icon>
+                <span>Profile</span>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-icon>view_module</md-icon>
+                <span>SoTA Helper</span>
+              </md-menu-item>
+
+              <md-divider></md-divider>
+
+              <md-menu-item @click="logout()">
+                <md-icon>exit_to_app</md-icon>
+                <span>Logout</span>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <!-- <md-button class="md-icon-button md-dense md-primary" @click="logout()">
             <md-icon>person</md-icon>
-          </md-button>
+          </md-button>-->
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
@@ -61,29 +87,12 @@
   </header>
 </template>
 
-
-<style lang="css" scoped>
-.signin-dialog {
-  width: 55%;
-}
-.app-name {
-  text-decoration: none !important;
-}
-.flex {
-  flex: 1;
-}
-.search {
-  margin: 0 40px;
-}
-</style>
-
-
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
 import { ping as sendPing } from "@/services/api";
 import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
-import { isLogged, logout } from "@/services/api-user";
+import { isLogged, logout, getProfileBase } from "@/services/api-user";
 
 export default {
   name: "Navbar",
@@ -102,7 +111,8 @@ export default {
       signinFailed: false,
       showSnackbar: false,
       snackbarMsg: null,
-      snackbarTime: 5000
+      snackbarTime: 5000,
+      avatar: null
     };
   },
   watch: {
@@ -115,6 +125,7 @@ export default {
   created() {},
 
   mounted() {
+    this.getProfile();
     this.searchBar.show = this.$route.name != "accueil";
     switch (this.$route.query["action"]) {
       case "login":
@@ -174,7 +185,27 @@ export default {
       this.isAuthenticated = false;
       this.snackbarMsg = "Bye, see you !";
       this.showSnackbar = true;
+    },
+    getProfile() {
+      getProfileBase().then(profile => {
+        this.avatar = profile.avatar;
+      });
     }
   }
 };
 </script>
+
+<style lang="css" scoped>
+.signin-dialog {
+  width: 55%;
+}
+.app-name {
+  text-decoration: none !important;
+}
+.flex {
+  flex: 1;
+}
+.search {
+  margin: 0 40px;
+}
+</style>
