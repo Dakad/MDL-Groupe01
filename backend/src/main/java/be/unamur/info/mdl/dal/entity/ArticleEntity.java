@@ -4,9 +4,11 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,6 +30,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Entity
 @Data
@@ -95,6 +98,10 @@ public class ArticleEntity {
   @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
+  @Column(name = "r_score")
+  @PositiveOrZero
+  private Float score = 0f;
+
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "category_id", nullable = false)
@@ -117,7 +124,7 @@ public class ArticleEntity {
   private Set<AuthorEntity> authors = new LinkedHashSet<>();
 
 
-  @OneToMany(mappedBy = "article")
+  @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
   @Builder.Default
   private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
@@ -203,5 +210,22 @@ public class ArticleEntity {
 
     return entity.build();
   }
+
+
+  public void updateScore(){
+    int date;
+    int bookSize = 0;
+
+    if(createdAt.equals(LocalDate.now())) date = 1;
+    else date = (int) createdAt.until(LocalDate.now(), ChronoUnit.DAYS);
+    score = (nbViews/date) + 3 * (bookSize/date) + 0.3f * (nbCitations/date);
+    System.out.println("Article " + reference + " has updated its score to : " + score);
+  }
+
+  private int getBookmarksNb(){
+    if(bookmarks != null && !bookmarks.isEmpty()) return bookmarks.size();
+    else return 0;
+  }
+
 
 }
