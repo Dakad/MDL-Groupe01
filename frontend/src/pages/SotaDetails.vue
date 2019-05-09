@@ -27,8 +27,6 @@
             v-show="!loading"
             :list="articles.articles"
           ></article-list>
-
-          <infoNav></infoNav>
         </md-tab>
 
         <md-tab id="visuSota" md-label="Articles-Tree" md-icon="view_module">
