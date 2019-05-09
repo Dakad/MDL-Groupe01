@@ -22,12 +22,12 @@
             </md-button>
 
             <md-menu-content>
-              <md-menu-item>
+              <md-menu-item @click="$router.push({ name : 'myProfile'})">
                 <md-icon>perm_identity</md-icon>
                 <span>Profile</span>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item @click="$router.push({ name : 'sotaHelper'})">
                 <md-icon>view_module</md-icon>
                 <span>SoTA Helper</span>
               </md-menu-item>
