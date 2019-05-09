@@ -138,4 +138,9 @@ public class ArticleController {
       .body(DefaultResponseDTO.builder().done(done).message(msg));
   }
 
+  @GetMapping(path = "/subscriptions")
+  public ResponseEntity subscriptions(@RequestParam(defaultValue = "1") int p, Principal authUser) {
+    return ResponseEntity.status(HttpStatus.OK).body(articleService.getSubscriptions(authUser.getName(),p));
+  }
+
 }

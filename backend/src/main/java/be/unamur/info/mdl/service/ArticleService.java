@@ -61,4 +61,6 @@ public interface ArticleService {
    * @return The list of referenced articles
    */
   Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categories);
+
+  List<ArticleDTO> getSubscriptions(String username, int page);
 }
