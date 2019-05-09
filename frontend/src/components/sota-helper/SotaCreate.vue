@@ -52,17 +52,20 @@
           <br>
           <md-field>
             <label>Import bibtex file</label>
-            <md-file
-              multiple
-              accept=".bib, .bibtex"
-              v-model="uploads"
-              @md-change="onFileUpload($event)"
-            />
+            <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
           </md-field>
 
           <!-- Upload btn -->
           <div class="md-layout-item md-size-100" id="upload-btn-container">
             <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
+          </div>
+
+          <div>
+            <ul>
+              <li v-for="(error, index) in apiErrors" :key="index">
+                <span class="md-error">{{error}}</span>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -127,7 +130,7 @@ export default {
       },
       sending: false,
       invalid: {},
-      uploads: null,
+      apiErrors: [],
       articlesUploaded: [],
       preview: {
         json: null,
@@ -193,25 +196,24 @@ export default {
     },
 
     onFileUpload(event) {
-      const reader = new FileReader();
+      for (let i = 0; i < event.length; i++) {
+        const evt = event[i];
+        debugger;
 
-      reader.onload = e => {
-        // this.bibtex.push(e.target.result);
-        this.preview["bibtex"] = e.target.result;
-        const bib2Json = bibParser(e.target.result);
-        this.preview["json"] = bib2Json;
-        this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
-        console.log(this.articlesUploaded);
-      };
-      reader.readAsText(event.item(0));
+        let reader = new FileReader();
+        reader.onload = e => {
+          this.preview["bibtex"] = e.target.result;
+          const bib2Json = bibParser(e.target.result);
+          this.preview["json"] = bib2Json;
+          this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
+          console.log(this.articlesUploaded);
+        };
+        reader.readAsText(evt);
+      }
     },
 
     sendSota() {
-      let articlesArray = {};
-      console.log(this.articlesUploaded);
-
-      // TODO Create an api-article.js to create and get an article
-
+      this.apiErrors = [];
       const articleRefs = [];
       const createArticleRequests = this.articlesUploaded.map(article => {
         articleRefs.push(article["reference"]);
@@ -235,7 +237,10 @@ export default {
 
           return createSota(this.sota).then(data => {});
         })
-        .catch(console.error);
+        .catch(err => {
+          console.log(err);
+          this.apiErrors.push(err.body["message"]);
+        });
     }
   }
 };
