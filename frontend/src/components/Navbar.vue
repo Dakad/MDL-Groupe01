@@ -22,12 +22,12 @@
             </md-button>
 
             <md-menu-content>
-              <md-menu-item @click="$router.push({ name : 'myProfile'})">
+              <md-menu-item @click="$router.push({ name : 'myProfile' })">
                 <md-icon>perm_identity</md-icon>
                 <span>Profile</span>
               </md-menu-item>
 
-              <md-menu-item @click="$router.push({ name : 'sotaHelper'})">
+              <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
                 <md-icon>view_module</md-icon>
                 <span>SoTA Helper</span>
               </md-menu-item>
@@ -40,9 +40,6 @@
               </md-menu-item>
             </md-menu-content>
           </md-menu>
-          <!-- <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-            <md-icon>person</md-icon>
-          </md-button>-->
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
@@ -122,7 +119,6 @@ export default {
       this.showSnackbar = true;       
       })
   },
-
   mounted() {
     this.getProfile();
     this.searchBar.show = this.$route.name != "accueil";
@@ -134,13 +130,11 @@ export default {
       default:
         break;
     }
-
     sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
       this.showSnackbar = true;
     });
   },
-
   methods: {
     handleError(component, error) {
       switch (component) {
@@ -156,7 +150,6 @@ export default {
       this.showSnackbar = true;
       this.snackbarMsg = error;
     },
-
     handleSuccess(component, msg) {
       switch (component) {
         case "login":
