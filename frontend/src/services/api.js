@@ -3,6 +3,7 @@
 
 // Import
 import Vue from 'vue';
+import { getAuthToken } from './storage';
 
 // -------------------------------------------------------------------
 // Properties
@@ -12,7 +13,14 @@ const KEY_USERNAME = 'AUTH_USERNAME';
 // -------------------------------------------------------------------
 // Exports
 
-export { KEY_AUTH_TOKEN, KEY_USERNAME };
+export function getAuthHeaders() {
+  const authToken = getAuthToken();
+  return {
+    headers: {
+      Authorization: authToken
+    }
+  };
+}
 
 export function ping() {
   return Vue.http.get('/api/zen').then(resp => resp.body != null);
