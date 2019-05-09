@@ -1,5 +1,5 @@
 <template>
-  <div class>
+  <div>
     <form
       class="md-layout md-gutter md-alignment-center-space-between"
       novalidate
