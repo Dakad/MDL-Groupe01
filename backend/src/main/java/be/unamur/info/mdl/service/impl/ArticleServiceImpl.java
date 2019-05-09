@@ -108,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     if (articleRepository.existsByReference(articleData.getReference())) {
       throw new ArticleAlreadyExistException(
-        "The reference : " + articleData.getTitle() + " is already saved.");
+        "This article is already saved : " + articleData.getReference());
     }
 
     if (articleRepository.existsByTitle(articleData.getTitle())) {
