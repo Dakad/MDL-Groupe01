@@ -83,7 +83,6 @@ export default {
     //this.fetchSota()
     //this.fetchDataPro()
     EventBus.$on(EVENT_USER_LOGOUT, _ => {
-      console.log('logged out')
       this.$router.replace({ name : 'accueil' }, function onComplete() {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true)       
       })
