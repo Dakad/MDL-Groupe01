@@ -2,22 +2,23 @@
   <div class="author">
     <md-card v-for="author in list" >
       <div class="contProfil">
-        <img :src="author.pdp">
+        <img :src="author.pp">
       </div>
       <div class="contInfo">
         <md-card-header>
           <div class="Name">
             <h5>
-              <router-link :to="{name: 'profil', params : {slug : author.slug}}">{{author.name}}</router-link>
+              <router-link :to="{name: 'profil', params : {slug : author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
+              {{author.name}}
             </h5>
           </div>
         </md-card-header>
         <md-card-content>
           <div class="contOrga">
-            <p>{{author.organisation}}</p>
+            <p>{{author.organization}}</p>
           </div>
           <div class="contDom">
-            <p>{{author.domaine}}</p>
+            <p>{{author.domain}}</p>
           </div>
         </md-card-content>
       </div>
@@ -41,6 +42,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .md-list {
