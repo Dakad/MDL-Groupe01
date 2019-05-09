@@ -8,24 +8,24 @@
           <md-field>
             <md-icon>event</md-icon>
             <label>
-              Name of the SotA
+              Title of the SotA
               <span class="md-subheading">(REQUIRED)</span>
             </label>
-            <md-input v-model="sota.title"></md-input>
+            <md-input v-model.lazy.trim="sota.title"></md-input>
             <span class="md-helper-text"></span>
           </md-field>
 
           <md-field>
             <md-icon>event</md-icon>
             <label>Main subject</label>
-            <md-input v-model="sota.domain"></md-input>
+            <md-input v-model.lazy.trim="sota.subject"/>
             <!-- <span class="md-helper-text">Helper text</span> -->
           </md-field>
 
           <md-field>
             <md-icon>event</md-icon>
             <label>Keywords</label>
-            <md-textarea v-model="sota.keywords" md-autogrow></md-textarea>
+            <md-textarea v-model.lazy.trim="sota.keywords" md-autogrow></md-textarea>
             <span class="md-helper-text">
               Separate each tags with a coma
               <!-- <strong class="md-headline">,</strong> -->
@@ -41,6 +41,15 @@
               @md-change="onFileUpload($event)"
             />
           </md-field>
+
+          <!-- Upload btn -->
+          <div class="md-layout-item md-size-100" id="upload-btn-container">
+            <md-button
+              class="md-raised md-primary"
+              :md-ripple="false"
+              @click="showAcceptMessage = true"
+            >Upload the SoTA</md-button>
+          </div>
         </form>
 
         <!-- Import bibtex field -->
@@ -53,22 +62,14 @@
           </md-card>
         </div>
       </div>
-
-      <!-- Upload btn -->
-      <div class="md-layout-item md-size-100" id="upload-btn-container">
-        <md-button
-          class="md-raised md-primary"
-          :md-ripple="false"
-          @click="showAcceptMessage = true"
-        >Upload the SoTA</md-button>
-      </div>
     </form>
 
+    <!-- Dialog box to confirm Sota creation -->
     <md-dialog-confirm
       class="sota-create-dialog"
       :md-active.sync="showAcceptMessage"
-      md-title="Confirm this sota creation"
-      md-content="&nbsp;Do you really want to upload this SotA ?"
+      md-title="Confirm this sota creation ?!"
+      md-content="&nbsp;Do you really want to upload this SoTA ?"
       md-confirm-text="Agree"
       md-cancel-text="No, return"
       @md-cancel="showAcceptMessage = false"
@@ -76,24 +77,13 @@
     />
     <md-dialog-alert md-title="SoTA created!" md-content="Your SoTA has been uploaded."/>
 
+    <!-- Dialog box for created SoTA -->
     <md-dialog :md-active.sync="showCreatedMessage">
       <md-dialog-title>SoTA created</md-dialog-title>
       <md-dialog-actions>
         <md-button class="md-primary" @click="showCreatedMessage = false">Okay</md-button>
       </md-dialog-actions>
     </md-dialog>
-
-    <!--
-    <md-dialog-confirm :md-active.sync="showAcceptMessage">
-      <md-dialog-title>
-        <div class="bottom-acc">
-          <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
-          <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
-        </div>
-      </md-dialog-title>
-
-      <md-button class="md-primary md-raised" @click="active = true">Confirm</md-button>
-    </md-dialog-confirm>-->
   </div>
 </template>
 
@@ -107,9 +97,9 @@ export default {
   data() {
     return {
       sota: {
-        title: null,
-        keywords: null,
-        domain: null
+        title: "",
+        keywords: "",
+        subject: ""
       },
       uploads: null,
       articlesUploaded: [],
@@ -164,17 +154,27 @@ export default {
       const articleRefs = [];
       const createArticleRequests = this.articlesUploaded.map(article => {
         articleRefs.push(article["reference"]);
+        // If the article category is missing, assign the one from the Sota
+        if (!article["category"] || article["category"].length == 0) {
+          article["category"] = this.sota["subject"];
+        }
         return createArticle(article);
       });
 
       // Send all request to create an article, fail
       Promise.race(createArticleRequests)
         .then(values => {
-          console.log(values);
+          // Split the keywords, to get each keywords
+          this.sota["keywords"] = this.sota.keywords
+            .split(",")
+            .map(k => k.trim())
+            .filter(k => k.length > 0);
+
+          this.sota["articles"] = articleRefs;
+
+          createSota(this.sota).then(console.error);
         })
         .catch(console.error);
-
-      // TODO Send an API call to create the new SoTA
     }
   }
 };
