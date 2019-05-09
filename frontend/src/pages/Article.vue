@@ -44,7 +44,7 @@
             <md-button
               class="md-icon-button"
               title="Bookmark it"
-              @click="isBookmarked = !isBookmarked"
+              @click="getBookmarked"
             >
               <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
@@ -70,6 +70,7 @@ import ColorHash from "color-hash";
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
 import { getArticleByReference } from "@/services/api";
+import { getBookmarked, postBookmark, deleteBookmark } from "@/services/api-article";
 
 const colorHash = new ColorHash();
 
@@ -132,11 +133,25 @@ export default {
       );
     }
   },
+  created() {
+    getBookmarked(this.reference).then(
+      data => (this.isBookmarked = data)
+    );
+  },
+
   methods: {
     fetchArticle() {
       return getArticleByReference(this.reference).then(
         data => (this.article = data)
       );
+    },
+
+    getBookmarked() {
+      if (this.isBookmarked){
+        postBookmark(this.reference)
+      } else {
+        deleteBookmark(this.reference)
+      }
     }
   }
 };
