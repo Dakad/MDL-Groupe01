@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// import json from "@/assets/dummy-Article.json";
 export default {
   name: "Tag",
   props: ["tags"],

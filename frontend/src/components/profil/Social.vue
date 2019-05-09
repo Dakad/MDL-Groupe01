@@ -28,12 +28,13 @@
 
 <script>
 import authorList from "@/components/resultat/AuthorList";
-import jsonFollow from "@/assets/dummy-Follow.json";
+
 export default {
-  components: { authorList },
+  components: {
+    /*authorList*/
+  },
   data() {
     return {
-      jsonFollow,
       loading: false
     };
   },

@@ -24,7 +24,6 @@ export function format(json) {
     json.entryTags['keywords'] = '';
   }
 
-  console.log(json.entryTags['author']);
   json.entryTags['author'] = json.entryTags['author'].replace(' and', ',');
 
   return json;
