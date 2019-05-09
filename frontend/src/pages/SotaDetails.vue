@@ -24,7 +24,6 @@
 <script>
 import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
-import json from "@/assets/dummy-SOTA.json";
 
 export default {
   name: "Sota",
@@ -35,9 +34,9 @@ export default {
   data() {
     return {
       json,
-      articleTitle: json.title,
-      abstract: json.description,
-      articles: json.article
+      articleTitle: {},
+      abstract: {},
+      articles: []
     };
   }
 };

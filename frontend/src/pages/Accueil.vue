@@ -47,8 +47,6 @@ import ArticleSlide from "@/components/accueil/ArticleSlide";
 
 import Search from "@/components/navbar/Search";
 
-import dummy from "@/assets/dummy-Results.json";
-
 export default {
   name: "Accueil",
   components: {
@@ -61,7 +59,7 @@ export default {
     return {
       searchInput: null,
       msg: "",
-      list: dummy.results.articles
+      list: []
     };
   },
   searchIt() {}
