@@ -25,11 +25,19 @@
             <span class="md-error" v-if="invalid['title'] != null">{{invalid['title']}}</span>
           </md-field>
 
-          <md-field>
+          <md-field
+            :class="[getValidationClass('subject'), {'md-invalid': invalid['subject'] != null}]"
+          >
             <md-icon>event</md-icon>
-            <label>Main subject</label>
-            <md-input v-model.lazy.trim="sota.subject"/>
-            <!-- <span class="md-helper-text">Helper text</span> -->
+            <label for="subject">Main subject</label>
+            <md-input name="subject" id="subject" v-model.lazy.trim="sota.subject"/>
+            <span class="md-error" v-if="!$v.sota.subject.required">The subject is required</span>
+            <span class="md-error" v-if="!$v.sota.subject.minLength">At least, 5 characters</span>
+            <span
+              class="md-error"
+              v-if="!$v.sota.subject.sameAsTitle"
+            >Cannot be the same as the title</span>
+            <span class="md-error" v-if="invalid['subject'] != null">{{invalid['subject']}}</span>
           </md-field>
 
           <md-field>
@@ -136,8 +144,9 @@ export default {
         minLength: minLength(5),
         maxLength: maxLength(255)
       },
-      domain: {
+      subject: {
         required,
+        minLength: minLength(5),
         sameAsTitle: not(sameAs("title"))
       }
     }
@@ -224,7 +233,7 @@ export default {
 
           this.sota["articles"] = articleRefs;
 
-          createSota(this.sota).then(console.error);
+          return createSota(this.sota).then(data => {});
         })
         .catch(console.error);
     }
