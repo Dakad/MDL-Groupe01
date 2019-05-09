@@ -44,7 +44,7 @@
             <md-button
               class="md-icon-button"
               title="Bookmark it"
-              @click="getBookmarked"
+              @click="getBook"
             >
               <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
@@ -146,7 +146,7 @@ export default {
       );
     },
 
-    getBookmarked() {
+    getBook() {
       if (this.isBookmarked){
         postBookmark(this.reference)
       } else {
