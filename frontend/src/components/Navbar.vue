@@ -117,6 +117,7 @@ export default {
     "$route.query": function(route) {}
   },
   created() {
+    this.isAuthenticated = isLogged();
     EventBus.$on(EVENT_BYE_REDIRECTION, _ => {
       this.snackbarMsg = "You have been logged out, please log back in !";
       this.showSnackbar = true;       
