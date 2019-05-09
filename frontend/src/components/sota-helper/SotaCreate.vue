@@ -37,25 +37,26 @@
     <div class="bottom">
       <b-button size="lg" variant="outline-info" @click="showAcceptMessage = true">UPLOAD THE SotA</b-button>
     </div>
-    <!--
-    <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
+
+    <!-- <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
       <md-dialog-title>
         &nbsp;Are you sure you want to upload this SotA
         <div class="bottom-acc">
           <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
           <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
         </div>
-      </md-dialog-title>
-    </md-dialog>-->
+      </md-dialog-title> -->
+    </md-dialog>
   </div>
 </template>
 
 <script>
 import { createSota } from "../../services/api-sota";
+import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
 export default {
-  name: "CreateSota",
+  name: "SotaCreate",
   data() {
     return {
       sotaName: null,
@@ -75,8 +76,8 @@ export default {
       reader.onload = e => {
         // this.bibtex.push(e.target.result);
         const bib2Json = bibParser(e.target.result);
-        window.alert(bib2Json);
         this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
+        console.log(this.articlesUploaded);
       };
       reader.readAsText(event.item(0));
     },
@@ -87,18 +88,18 @@ export default {
 
       // TODO Create an api-article.js to create and get an article
 
-      const articeRefs = []
+      const articleRefs = [];
       const createArticleRequests = this.articlesUploaded.map(article => {
-        articleRefs.push(article['reference']);
-        return createArticle(article)
+        articleRefs.push(article["reference"]);
+        return createArticle(article);
       });
 
       // Send all request to create an article, fail
-      Promise.race(createArticleRequests).then(values => {
-        console.log(values);
-
-      }).catch(console.error);
-
+      Promise.race(createArticleRequests)
+        .then(values => {
+          console.log(values);
+        })
+        .catch(console.error);
 
       // TODO Send an API call to create the new SoTA
     }
