@@ -6,6 +6,7 @@ import Vue from 'vue';
 
 // Mine
 import { getAuthToken } from './storage';
+import { getAuthHeaders } from './api';
 
 // -------------------------------------------------------------------
 // Properties
@@ -18,7 +19,7 @@ export function getArticleByReference(reference) {
 }
 
 export function createArticle(article) {
-  const token = getAuthToken();
+  const headers = getAuthHeaders();
   // TODO Add the token in the request header to create the new article
-  return Vue.http.post('api/article', article).then(res => res.body);
+  return Vue.http.post('api/article', article, headers).then(res => res.body);
 }
