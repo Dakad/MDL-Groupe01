@@ -1,9 +1,9 @@
 <template>
-  <div class="container">
-    <div class="left">
+  <div class="md-layout md-gutter">
+    <div class="md-layout-item">
       <md-field>
         <label>Name of the SotA</label>
-        <md-input v-model="sotAName"></md-input>
+        <md-input v-model="sotaName"></md-input>
         <span class="md-helper-text">Helper text</span>
       </md-field>
       <md-field>
@@ -23,61 +23,61 @@
         <span class="md-helper-text">separate each tags with a coma</span>
       </md-field>
     </div>
-    <div class="right">
+    <div class="md-layout-item">
       <md-field>
         <label>Import bibtex file</label>
-        <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
+        <md-file
+          multiple
+          accept=".bib, .bibtex"
+          v-model="uploads"
+          @md-change="onFileUpload($event)"
+        />
       </md-field>
     </div>
     <div class="bottom">
       <b-button size="lg" variant="outline-info" @click="showAcceptMessage = true">UPLOAD THE SotA</b-button>
     </div>
 
-    <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
+    <!-- <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
       <md-dialog-title>
         &nbsp;Are you sure you want to upload this SotA
         <div class="bottom-acc">
           <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
           <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
         </div>
-      </md-dialog-title>
-      <!-- <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/> -->
+      </md-dialog-title> -->
     </md-dialog>
   </div>
 </template>
 
 <script>
 import { createSota } from "../../services/api-sota";
+import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
 export default {
-  name: "CreateSota",
-  data: () => ({
-    initial: "Initial Value",
-    sotAName: null,
-    withLabel: null,
-    inline: null,
-    number: null,
-    textarea: null,
-    autogrow: null,
-    disabled: null,
-    domain: null,
-    year: null,
-    author: null,
-    tags: null,
-    articlesUploaded: [],
-    showAcceptMessage: false
-  }),
+  name: "SotaCreate",
+  data() {
+    return {
+      sotaName: null,
+      domain: null,
+      author: null,
+      tags: null,
+      uploads: null,
+      articlesUploaded: [],
+      showAcceptMessage: false
+    };
+  },
 
   methods: {
     onFileUpload(event) {
       const reader = new FileReader();
 
       reader.onload = e => {
-        this.bibtex.push(e.target.result);
-        this.articlesUploaded = this.articlesUploaded.concat(
-          bibParser(e.target.result)
-        );
+        // this.bibtex.push(e.target.result);
+        const bib2Json = bibParser(e.target.result);
+        this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
+        console.log(this.articlesUploaded);
       };
       reader.readAsText(event.item(0));
     },
@@ -88,12 +88,18 @@ export default {
 
       // TODO Create an api-article.js to create and get an article
 
-      // TODO For each uploaded articles, create new Article via API call
-      this.articlesUploaded.forEach(article => {
-        // TODO Get the reference of the new article created
-        //  TODO Add this ref to the new Sota being created.
-        // createArticle(article).then()
+      const articleRefs = [];
+      const createArticleRequests = this.articlesUploaded.map(article => {
+        articleRefs.push(article["reference"]);
+        return createArticle(article);
       });
+
+      // Send all request to create an article, fail
+      Promise.race(createArticleRequests)
+        .then(values => {
+          console.log(values);
+        })
+        .catch(console.error);
 
       // TODO Send an API call to create the new SoTA
     }
