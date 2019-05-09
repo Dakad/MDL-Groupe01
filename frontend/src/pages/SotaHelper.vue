@@ -38,6 +38,8 @@ import articleList from "@/components/resultat/ArticleList";
 import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
+import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
+
 export default {
   name: "SotaHelper",
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
@@ -46,7 +48,14 @@ export default {
       articles: dummyArticles,
       selectedArticles: dummyResults.articles
     };
-  }
+  },
+  created() {
+    EventBus.$on(EVENT_USER_LOGOUT, _ => {
+      this.$router.replace({ name : 'accueil' }, function onComplete() {
+        EventBus.$emit(EVENT_BYE_REDIRECTION, true)       
+      })
+    })
+  },
 };
 </script>
 
