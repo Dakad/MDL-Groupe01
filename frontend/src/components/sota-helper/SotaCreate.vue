@@ -1,18 +1,28 @@
 <template>
   <div class>
-    <form class="md-layout md-gutter md-alignment-center-space-between">
+    <form
+      class="md-layout md-gutter md-alignment-center-space-between"
+      novalidate
+      @submit.prevent="validateSota"
+    >
       <div class="md-layout-item md-size-100 md-layout md-gutter">
-        <form class="md-layout-item">
+        <div class="md-layout-item">
           <h2 class="create-sota-heading">Create a new SoTA via an upload</h2>
           <br>
-          <md-field>
+          <md-field
+            :class="[getValidationClass('title'), {'md-invalid': invalid['title'] != null}]"
+          >
             <md-icon>event</md-icon>
-            <label>
+            <label for="title">
               Title of the SotA
               <span class="md-subheading">(REQUIRED)</span>
             </label>
-            <md-input v-model.lazy.trim="sota.title"></md-input>
+            <md-input name="title" id="title" v-model.lazy.trim="sota.title" :disabled="sending"></md-input>
             <span class="md-helper-text"></span>
+            <span class="md-error" v-if="!$v.sota.title.required">The title is required</span>
+            <span class="md-error" v-if="!$v.sota.title.minLength">At least, 5 characters</span>
+            <span class="md-error" v-if="!$v.sota.title.maxLength">250 characters should be enough</span>
+            <span class="md-error" v-if="invalid['title'] != null">{{invalid['title']}}</span>
           </md-field>
 
           <md-field>
@@ -44,13 +54,9 @@
 
           <!-- Upload btn -->
           <div class="md-layout-item md-size-100" id="upload-btn-container">
-            <md-button
-              class="md-raised md-primary"
-              :md-ripple="false"
-              @click="showAcceptMessage = true"
-            >Upload the SoTA</md-button>
+            <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
           </div>
-        </form>
+        </div>
 
         <!-- Import bibtex field -->
         <div class="md-layout-item md-size-45">
@@ -88,12 +94,22 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  minLength,
+  maxLength,
+  not,
+  sameAs
+} from "vuelidate/lib/validators";
+
 import { createSota } from "../../services/api-sota";
 import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
 export default {
   name: "SotaCreate",
+  mixins: [validationMixin],
   data() {
     return {
       sota: {
@@ -101,6 +117,8 @@ export default {
         keywords: "",
         subject: ""
       },
+      sending: false,
+      invalid: {},
       uploads: null,
       articlesUploaded: [],
       preview: {
@@ -110,6 +128,19 @@ export default {
       showAcceptMessage: false,
       showCreatedMessage: false
     };
+  },
+  validations: {
+    sota: {
+      title: {
+        required,
+        minLength: minLength(5),
+        maxLength: maxLength(255)
+      },
+      domain: {
+        required,
+        sameAsTitle: not(sameAs("title"))
+      }
+    }
   },
 
   computed: {
@@ -131,6 +162,27 @@ export default {
   },
 
   methods: {
+    getValidationClass(fieldName) {
+      const field = this.$v.sota[fieldName];
+      if (field) {
+        return {
+          "md-invalid": field.$invalid && field.$dirty
+        };
+      }
+    },
+    clearForm() {
+      this.$v.$reset();
+      this.sota.title = null;
+      this.sota.domain = null;
+    },
+    validateSota() {
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        this.invalid = {};
+        this.showAcceptMessage = true;
+      }
+    },
+
     onFileUpload(event) {
       const reader = new FileReader();
 
