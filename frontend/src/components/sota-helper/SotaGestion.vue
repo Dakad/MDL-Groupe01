@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       data: {},
-      articles: [],
+      articles: {},
       sortBy: "name",
       orderBy: "asc"
     };
@@ -56,14 +56,14 @@ export default {
 .left {
   position: relative;
   float: left;
-  width: 47%;
+  width: 70%;
   height: 75%;
   margin: 1%;
 }
 .right {
   position: relative;
   float: left;
-  width: 47%;
+  width: 20%;
   height: 75%;
   margin: 1%;
 }
