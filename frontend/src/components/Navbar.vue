@@ -118,7 +118,6 @@ export default {
   },
   created() {
     EventBus.$on(EVENT_BYE_REDIRECTION, _ => {
-      console.log('bye bye')
       this.snackbarMsg = "You have been logged out, please log back in !";
       this.showSnackbar = true;       
       })
