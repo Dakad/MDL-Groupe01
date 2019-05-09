@@ -8,8 +8,13 @@ import Vue from 'vue';
 
 const Storage = localStorage;
 
+const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
+const KEY_USERNAME = 'AUTH_USERNAME';
+
 // -------------------------------------------------------------------
 // Exports
+
+export { KEY_AUTH_TOKEN, KEY_USERNAME };
 
 export function isInStorage(key) {
   return Storage.hasOwnProperty(key);
@@ -25,6 +30,10 @@ export function addToStorage(key, item) {
 
 export function removeFromStorage(key) {
   Storage.removeItem(key);
+}
+
+export function getAuthToken() {
+  return getFromStorage(KEY_AUTH_TOKEN);
 }
 
 /**

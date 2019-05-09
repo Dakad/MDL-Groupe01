@@ -6,9 +6,13 @@ import Vue from 'vue';
 
 // -------------------------------------------------------------------
 // Properties
+const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
+const KEY_USERNAME = 'AUTH_USERNAME';
 
 // -------------------------------------------------------------------
 // Exports
+
+export { KEY_AUTH_TOKEN, KEY_USERNAME };
 
 export function ping() {
   return Vue.http.get('/api/zen').then(resp => resp.body != null);
@@ -33,7 +37,11 @@ export function getArticlesByCategories(categories) {
     return;
   }
 
-  return Vue.http.get('/api/article', { params : {
-    category: categories.join(',')
-  } }).then(res => res.body);
+  return Vue.http
+    .get('/api/article', {
+      params: {
+        category: categories.join(',')
+      }
+    })
+    .then(res => res.body);
 }
