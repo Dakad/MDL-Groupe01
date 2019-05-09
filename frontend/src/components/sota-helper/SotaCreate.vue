@@ -93,10 +93,11 @@
 
 <script>
 import { createSota } from "../../services/api-sota";
+import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
 export default {
-  name: "CreateSota",
+  name: "SotaCreate",
   data() {
     return {
       sota: {
@@ -143,6 +144,7 @@ export default {
         const bib2Json = bibParser(e.target.result);
         this.preview["json"] = bib2Json;
         this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
+        console.log(this.articlesUploaded);
       };
       reader.readAsText(event.item(0));
     },
@@ -153,7 +155,7 @@ export default {
 
       // TODO Create an api-article.js to create and get an article
 
-      const articeRefs = [];
+      const articleRefs = [];
       const createArticleRequests = this.articlesUploaded.map(article => {
         articleRefs.push(article["reference"]);
         return createArticle(article);
