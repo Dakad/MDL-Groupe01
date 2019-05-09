@@ -2,7 +2,9 @@
   <div class>
     <form class="md-layout md-gutter md-alignment-center-space-between">
       <div class="md-layout-item md-size-100 md-layout md-gutter">
-        <div class="md-layout-item">
+        <form class="md-layout-item">
+          <h2 class="create-sota-heading">Create a new SoTA via an upload</h2>
+          <br>
           <md-field>
             <md-icon>event</md-icon>
             <label>
@@ -39,12 +41,16 @@
               @md-change="onFileUpload($event)"
             />
           </md-field>
-        </div>
+        </form>
 
         <!-- Import bibtex field -->
         <div class="md-layout-item md-size-45">
           <h3 class="md-title">Preview of processed .bibtex</h3>
-          <pre id="bibtex-preview">{{preview.json}}</pre>
+          <md-card>
+            <md-content id="bibtex-preview">
+              <pre>{{preview.json}}</pre>
+            </md-content>
+          </md-card>
         </div>
       </div>
 
@@ -182,10 +188,11 @@ export default {
 
 #bibtex-preview {
   padding: 10px;
+  height: 90%;
   max-height: 450px;
   white-space: pre-wrap;
   font-size: 13px;
-  border: 3px solid gray;
+  /* border: 3px solid gray; */
   overflow-y: hidden;
 }
 
