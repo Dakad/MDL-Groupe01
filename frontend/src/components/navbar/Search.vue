@@ -37,7 +37,7 @@ export default {
   },
   data: function() {
     return {
-      helperText: "Think well about your search",
+      helperText: "Think well about it",
       searchInput: this.term
     };
   },
