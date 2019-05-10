@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="graphics">
+    <div id="graphic">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         v-if="bounds.minX"
@@ -147,7 +147,7 @@ export default {
       };
     },
     coords() {
-      const clientWidth = document.getElementById("graphics").clientWidth;
+      const clientWidth = document.getElementById("graphic").clientWidth;
       return this.graph.nodes.map(node => {
         return {
           x:
@@ -267,7 +267,7 @@ export default {
 
 <style lang="css" scoped>
 
-.graphics {
+#graphic {
   position: relative;
   float: left;
   width: 75%;
