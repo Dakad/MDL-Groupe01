@@ -137,6 +137,7 @@ export default {
     getBookmarked(this.reference).then(
       data => (this.isBookmarked = data)
     );
+    console.log(this.isBookmarked)
   },
 
   methods: {
