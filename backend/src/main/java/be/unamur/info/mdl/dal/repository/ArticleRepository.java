@@ -38,5 +38,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     nativeQuery = true)
   Stream<ArticleEntity> findDistinctByFollower(String username, Pageable p);
 
+  Stream<ArticleEntity> findByReferenceNotIn(List<String> references, Pageable p);
+
   Stream<ArticleEntity> findByCategoryAndReferenceNotIn(TagEntity domain, List<String> references, Pageable pageable);
 }
