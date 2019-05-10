@@ -33,7 +33,6 @@
         <small>{{ sortBy }} + {{ orderBy }}</small>
       </div>
       <md-button class="md-raised md-primary">Export all refs in bibTex</md-button>
-      <md-button class="md-raised md-primary">Export SotA for offline storage</md-button>
     </div>
   </div>
 </template>
