@@ -258,7 +258,10 @@ public class ArticleServiceImpl implements ArticleService {
     Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("score").descending());
     if(username == null) return articleRepository.findAll(pageable).stream().map(a -> a.toDTO()).collect(Collectors.toList());
     UserEntity user = userRepository.findByUsername(username);
-    return articleRepository.findByCategoryAndNotInBookmarks_Creator(user.getDomain(), user, pageable).map(a ->a.toDTO()).collect(Collectors.toList());
+    return articleRepository.findByCategoryAndReferenceNotIn(user.getDomain(),
+      user.getBookmarks().stream().map(a-> a.getArticle().getReference()).collect(Collectors.toList()),
+      pageable)
+      .map(a ->a.toDTO()).collect(Collectors.toList());
   }
 
 }

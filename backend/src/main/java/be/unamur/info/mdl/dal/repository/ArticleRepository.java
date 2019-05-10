@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dal.repository;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
+import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import java.util.List;
@@ -37,5 +38,5 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     nativeQuery = true)
   Stream<ArticleEntity> findDistinctByFollower(String username, Pageable p);
 
-  Stream<ArticleEntity> findByCategoryAndNotInBookmarks_Creator(TagEntity domain, UserEntity user, Pageable pageable);
+  Stream<ArticleEntity> findByCategoryAndReferenceNotIn(TagEntity domain, List<String> references, Pageable pageable);
 }
