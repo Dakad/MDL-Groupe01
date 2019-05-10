@@ -9,6 +9,7 @@ import { getAuthToken } from './storage';
 // Properties
 const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
 const KEY_USERNAME = 'AUTH_USERNAME';
+const SEARCH_FOR_VALUES = ['all', 'sotas', 'authors', 'user', 'articles'];
 
 // -------------------------------------------------------------------
 // Exports
@@ -33,6 +34,10 @@ export function getTeam() {
 }
 
 export function getSearchResults(searchQuery) {
+  const isSearchValid = SEARCH_FOR_VALUES.includes(searchQuery['only']);
+  if (!isSearchValid) {
+    searchQuery['only'] = SEARCH_FOR_VALUES[0];
+  }
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
 
