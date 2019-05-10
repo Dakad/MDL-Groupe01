@@ -50,13 +50,14 @@
               v-if="!results.articles || results.articles.length == 0"
               md-icon="description"
               md-label="No articles found"
-              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+              :md-description="'Sorry, we didn\'t find any articles matching your search for \'\''+searchTerm+'\'\''"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+            <author-list v-show="!loading" :list="results.users"></author-list>
             <author-list v-show="!loading" :list="results.authors"></author-list>
             <md-empty-state
-              v-if="!results.authors || results.authors.length == 0"
+              v-if="!results.users || results.users.length == 0 && results.authors.length == 0"
               md-icon="people"
               md-label="No authors/users found"
               :md-description="'Sorry, we didn\'t find any authors/users matching your search for \'\''+searchTerm+'\'\''"
@@ -157,6 +158,7 @@ export default {
       if (!this.results["articles"]) {
         return [];
       }
+      
       return this.results["articles"].map(article => ({
         title: article.title,
         reference: article.reference,
@@ -234,8 +236,8 @@ export default {
         term: this.searchTerm,
         sort: this.sortBy,
         order: this.orderBy,
-        //page: !this.changingTab ? this.page : 1,
-        //only: !this.changingTab ? this.activeTab : undefined
+        page: !this.changingTab ? this.page : 1,
+        only: !this.changingTab ? this.activeTab : undefined
       };
 
       return getSearchResults(searchQuery)

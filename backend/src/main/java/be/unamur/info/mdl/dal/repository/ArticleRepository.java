@@ -10,10 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   Page<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+  Page<ArticleEntity> findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(
+    String title, List<String> keywords, Pageable pageable);
 
   ArticleEntity findByTitle(String title);
 
@@ -28,4 +32,8 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
   Stream<ArticleEntity> findDistinctFirst5ByReferenceIsIn(List<String> references, Sort sortBy);
 
   Stream<ArticleEntity> findDistinctFirst5ByCategory(TagEntity category, Sort sortBy);
+
+  @Query(value = "select a.* from article a, user u, user_follower f where u.id = f.user_id and a.creator_user_id = f.following_id and u.username = ?1",
+    nativeQuery = true)
+  Stream<ArticleEntity> findDistinctByFollower(String username, Pageable p);
 }

@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -25,11 +26,22 @@ public class UserDTO extends CredentialDTO {
 
   private String firstname;
 
+  @JsonProperty("pfp")
+  private String profilePicUrl;
 
-  public UserDTO(String username, String password, String lastname, String firstname, String email) {
+  private String domain;
+
+  private String organisation;
+
+
+  public UserDTO(String username, String password, String lastname, String firstname, String email,
+                 String profilePicUrl, String domain, String organisation) {
     super(username, password);
     this.email = email;
     this.lastname = lastname;
     this.firstname = firstname;
+    this.profilePicUrl = profilePicUrl;
+    this.domain = domain;
+    this.organisation = organisation;
   }
 }

@@ -24,15 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -128,5 +126,10 @@ public class MainController {
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
 
+  @GetMapping(value = "/tags")
+  public ResponseEntity getTags(@NotBlank(message = "Search term cannot be empty") @RequestParam String k){
+    if(k == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Search term must be specified");
+    return ResponseEntity.status(HttpStatus.OK).body(searchService.getTags(k));
+  }
 
 }
