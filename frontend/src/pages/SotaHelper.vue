@@ -41,7 +41,6 @@ import dummyResults from "@/services/dummy/results.json";
 
 import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
-
 export default {
   name: "SotaHelper",
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
