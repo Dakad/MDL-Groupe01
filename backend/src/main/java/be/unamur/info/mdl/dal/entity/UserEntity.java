@@ -162,7 +162,8 @@ public class UserEntity {
     if(getUserProfile() != null) profilePic = getUserProfile().getProfilePictureURL();
     String organisation = "Not defined";
     if(getCurrentUniversity() != null) organisation = getCurrentUniversity().getName();
-    return new UserDTO(username, password, lastname, firstname, email, profilePic, domain.getName(), organisation);
+    String dom = (domain != null)? domain.getName() : null;
+    return new UserDTO(username, password, lastname, firstname, email, profilePic, dom, organisation);
   }
 
 
@@ -178,7 +179,8 @@ public class UserEntity {
     } else {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }
-    return new ProfileBasicInfoDTO(lastname, firstname, domain.getName(), universityInfoDTO, email, avatar);
+    String dom = (domain != null)? domain.getName() : null;
+    return new ProfileBasicInfoDTO(lastname, firstname, dom, universityInfoDTO, email, avatar);
   }
 
 
