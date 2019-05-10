@@ -23,13 +23,16 @@ export function createArticle(article) {
 }
 
 export function getBookmarked(reference) {
-  return Vue.http.get('/api/article/' + reference + '/bookmarked').then(res => res.body)
+  const headers = getAuthHeaders();
+  return Vue.http.get('/api/article/' + reference + '/bookmarked', headers).then(res => res.body)
 }
 
 export function postBookmark(reference){
-  return Vue.http.post('/api/article/' + reference + '/bookmark').then(res => res.body)
+  const headers = getAuthHeaders();
+  return Vue.http.post('/api/article/' + reference + '/bookmark',{}, headers).then(res => res.body)
 }
 
 export function deleteBookmark(reference){
-  return Vue.http.delete('/api/article/' + reference + '/bookmark').then(res => res.body)
+  const headers = getAuthHeaders();
+  return Vue.http.delete('/api/article/' + reference + '/bookmark', headers).then(res => res.body)
 }
