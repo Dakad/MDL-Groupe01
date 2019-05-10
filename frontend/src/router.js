@@ -27,13 +27,7 @@ const routes = [
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
-  {
-    name: 'userProfile',
-    path: '/profile/:username',
-    component: Profil,
-    meta: { requiresAuth: true },
-    props: true
-  },
+  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true }, props: true },
 
   { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
 
