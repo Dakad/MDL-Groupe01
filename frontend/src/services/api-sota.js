@@ -30,7 +30,7 @@ export function createSota(sota) {
 
 export function sotaPostBookmark(reference) {
   const headers = getAuthHeaders();
-  return Vue.http.post('/api/sota/' + reference + "/bookmark" , headers).then(res => res.body);
+  return Vue.http.post('/api/sota/' + reference + "/bookmark",{} , headers).then(res => res.body);
 }
 
 export function sotaGetBookmark(reference) {
