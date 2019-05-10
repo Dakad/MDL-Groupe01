@@ -12,18 +12,34 @@
         id="search"
         class="flex"
       ></search>
-
-      <!-- <div class="search">
-          <form class="form-inline my-2 my-lg-0 ml-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
-          </form>
-      </div>-->
       <div class="buttons" style="float: right">
         <div v-if="isAuthenticated">
-          <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-            <md-icon>person</md-icon>
-          </md-button>
+          <md-menu md-align-trigger v-if="avatar != null">
+            <md-button class="md-icon-button" md-menu-trigger>
+              <md-avatar>
+                <img :src="avatar" alt="Avatar">
+              </md-avatar>
+            </md-button>
+
+            <md-menu-content>
+              <md-menu-item @click="$router.push({ name : 'myProfile' })">
+                <md-icon>perm_identity</md-icon>
+                <span>Profile</span>
+              </md-menu-item>
+
+              <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
+                <md-icon>view_module</md-icon>
+                <span>SoTA Helper</span>
+              </md-menu-item>
+
+              <md-divider></md-divider>
+
+              <md-menu-item @click="logout()">
+                <md-icon>exit_to_app</md-icon>
+                <span>Logout</span>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
@@ -61,29 +77,13 @@
   </header>
 </template>
 
-
-<style lang="css" scoped>
-.signin-dialog {
-  width: 55%;
-}
-.app-name {
-  text-decoration: none !important;
-}
-.flex {
-  flex: 1;
-}
-.search {
-  margin: 0 40px;
-}
-</style>
-
-
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
 import { ping as sendPing } from "@/services/api";
 import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
-import { isLogged, logout } from "@/services/api-user";
+import { isLogged, logout, getProfileBase } from "@/services/api-user";
+import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
 export default {
   name: "Navbar",
@@ -102,7 +102,8 @@ export default {
       signinFailed: false,
       showSnackbar: false,
       snackbarMsg: null,
-      snackbarTime: 5000
+      snackbarTime: 5000,
+      avatar: null
     };
   },
   watch: {
@@ -112,9 +113,15 @@ export default {
     },
     "$route.query": function(route) {}
   },
-  created() {},
-
+  created() {
+    this.isAuthenticated = isLogged();
+    EventBus.$on(EVENT_BYE_REDIRECTION, _ => {
+      this.snackbarMsg = "You have been logged out, please log back in !";
+      this.showSnackbar = true;       
+      })
+  },
   mounted() {
+    this.getProfile();
     this.searchBar.show = this.$route.name != "accueil";
     switch (this.$route.query["action"]) {
       case "login":
@@ -124,13 +131,11 @@ export default {
       default:
         break;
     }
-
     sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
       this.showSnackbar = true;
     });
   },
-
   methods: {
     handleError(component, error) {
       switch (component) {
@@ -146,7 +151,6 @@ export default {
       this.showSnackbar = true;
       this.snackbarMsg = error;
     },
-
     handleSuccess(component, msg) {
       switch (component) {
         case "login":
@@ -174,7 +178,29 @@ export default {
       this.isAuthenticated = false;
       this.snackbarMsg = "Bye, see you !";
       this.showSnackbar = true;
+
+      EventBus.$emit(EVENT_USER_LOGOUT, true);
+    },
+    getProfile() {
+      getProfileBase().then(profile => {
+        this.avatar = profile.avatar;
+      });
     }
   }
 };
 </script>
+
+<style lang="css" scoped>
+.signin-dialog {
+  width: 55%;
+}
+.app-name {
+  text-decoration: none !important;
+}
+.flex {
+  flex: 1;
+}
+.search {
+  margin: 0 40px;
+}
+</style>

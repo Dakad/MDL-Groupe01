@@ -12,15 +12,12 @@
 </template>
 
 <script>
-import json from "@/assets/dummy-Article.json";
 export default {
   name: "Ref",
   props: ["refs", "sotas"],
   data() {
     return {
-      json,
-      callRef: json.refs,
-      callSota: json.sotas
+      data: {}
     };
   }
 };
