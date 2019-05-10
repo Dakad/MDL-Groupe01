@@ -103,7 +103,7 @@ public class ArticleController {
 
     boolean done = articleService.addBookmark(reference, authUser.getName(), data.getNote());
     String msg = "Bookmark " + (!done ? "not" : "") + " added";
-    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new DefaultResponseDTO(done, msg));
 
   }
 
