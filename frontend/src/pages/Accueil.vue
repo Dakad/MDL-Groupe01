@@ -29,7 +29,7 @@
           <article-slide
             :title="recommended.title"
             :authors="recommended.authors"
-            :domain="recommended.category"
+            :category="recommended.category"
             :date="recommended.created_at"
             :nb-views="recommended.nb_views"
             :nb-quotes="recommended.nb_citations"
