@@ -235,8 +235,8 @@ export default {
         term: this.searchTerm,
         sort: this.sortBy,
         order: this.orderBy,
-        //page: !this.changingTab ? this.page : 1,
-        //only: !this.changingTab ? this.activeTab : undefined
+        page: !this.changingTab ? this.page : 1,
+        only: !this.changingTab ? this.activeTab : undefined
       };
 
       return getSearchResults(searchQuery)

@@ -6,6 +6,7 @@ import Vue from 'vue';
 
 // -------------------------------------------------------------------
 // Properties
+const SEARCH_FOR = ['all', 'sotas', 'authors', 'user', 'articles'];
 
 // -------------------------------------------------------------------
 // Exports
@@ -21,6 +22,10 @@ export function getTeam() {
 }
 
 export function getSearchResults(searchQuery) {
+  const isSearchValid = SEARCH_FOR.includes(searchQuery['only']);
+  if (!isSearchValid) {
+    searchQuery['only'] = SEARCH_FOR[0];
+  }
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
 
@@ -33,7 +38,11 @@ export function getArticlesByCategories(categories) {
     return;
   }
 
-  return Vue.http.get('/api/article', { params : {
-    category: categories.join(',')
-  } }).then(res => res.body);
+  return Vue.http
+    .get('/api/article', {
+      params: {
+        category: categories.join(',')
+      }
+    })
+    .then(res => res.body);
 }
