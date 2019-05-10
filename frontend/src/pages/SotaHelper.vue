@@ -38,6 +38,8 @@ import articleList from "@/components/resultat/ArticleList";
 import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
+import { }
+
 export default {
   name: "SotaHelper",
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
@@ -46,6 +48,9 @@ export default {
       articles: dummyArticles,
       selectedArticles: dummyResults.articles
     };
+  },
+  created(){
+
   }
 };
 </script>
