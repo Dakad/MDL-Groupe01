@@ -12,7 +12,7 @@
       </div>
       <div class="menuBo">
         <!-- TODO gerer les boutons pour telecharger le bibtex et bookmark -->
-          <SotaMenu></SotaMenu>
+          <SotaMenu :reference="articles.reference"></SotaMenu>
       </div>
     </div>
       <md-tabs
