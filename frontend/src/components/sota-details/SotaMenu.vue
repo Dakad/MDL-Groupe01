@@ -37,9 +37,9 @@
 
     getBook(){
       if (isBookmarked){
-        sotaDeleteBookmark()
+        sotaDeleteBookmark(this.reference).then(x => this.isBookmarked = false)
       } else if (!isBookmarked){
-        sotaPostBookmark()
+        sotaDeleteBookmark(this.reference).then(x => this.isBookmarked = true)
       }
     }
   }
