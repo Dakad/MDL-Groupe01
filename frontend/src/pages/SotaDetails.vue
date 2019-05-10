@@ -1,19 +1,22 @@
 <template>
-  <div class="Sota">
-    <div class="leftContainer">
-      <h3>{{ articles.title }}</h3>
-      <div class="infoBaseLeft">
-        <p>Main subject: {{articles.subject}}</p>
-        <p>Date of creation: {{articles.created_at}}</p>
+  <div id="sota ">
+    <div class="md-layout md-gutter">
+      <h3 class="sota-title md-display-1 md-layout-item md-size-80">{{ sota.title }}</h3>
+      <div class="md-layout-item md-size-25">
+        <p>
+          Main subject:
+          <b>{{sota.subject}}</b>
+        </p>
+        <p>Date of creation: {{sota.created_at}}</p>
       </div>
-      <div class="infoBaseRight">
-        <p>Creator: {{articles.creator.lastname}} {{articles.creator.firstname}}</p>
-        <p>Creator e-mail: {{articles.creator.email}}</p>
+      <div class="md-layout-item md-size-20">
+        <p>Creator: {{creatorFullname}}</p>
+        <p>Creator e-mail: {{sota.creator.email}}</p>
       </div>
       <div class="menuBo">
         <!-- TODO gerer les boutons pour telecharger le bibtex et bookmark -->
         <SotaMenu
-          :reference="articles.reference"
+          :reference="sota.reference"
           :is-bookmarked="isBookmarked"
           @bookmark="bookmarkSota"
         ></SotaMenu>
@@ -23,7 +26,7 @@
       <md-tab id="articleList" md-label="List of articles" md-icon="view_module">
         <h5>List of article in the SOTA:</h5>
 
-        <article-list v-show="!loading" :list="articles.articles"></article-list>
+        <article-list v-show="!loading" :list="sota.articles"></article-list>
       </md-tab>
 
       <md-tab id="visuSota" md-label="Articles-Tree" md-icon="view_module">
@@ -54,11 +57,16 @@ export default {
   },
   data() {
     return {
-      articleTitle: {},
-      articles: {},
+      sota: {},
       isBookmarked: false
     };
   },
+  computed: {
+    creatorFullname() {
+      return this.sota.creator.lastname + " " + this.sota.creator.firstname;
+    }
+  },
+
   watch: {
     $route: "fetchSota"
   },
@@ -73,7 +81,7 @@ export default {
 
   methods: {
     fetchSota() {
-      return getSota(this.reference).then(data => (this.articles = data));
+      return getSota(this.reference).then(data => (this.sota = data));
     },
     bookmarkSota() {
       if (this.isBookmarked) {
@@ -89,38 +97,17 @@ export default {
 </script>
 
 <style scoped>
-.Sota {
+#sota {
   border: solid lightgrey 1px;
 }
-h1 {
-  position: absolute;
-  left: 10%;
-  width: 70%;
-  top: 10%;
+
+.sota-title {
+  margin: 15px 0;
 }
 
 .menuBo {
   float: left;
   margin-left: 100px;
-}
-
-.leftContainer {
-  position: relative;
-  float: left;
-  width: 60%;
-  height: 80%;
-  margin: 15px;
-}
-
-.rightContainer {
-  margin-top: 15%;
-  width: 30%;
-  height: 90%;
-  float: left;
-}
-
-.tabSize {
-  float: left;
 }
 
 .infoBaseLeft {
