@@ -1,35 +1,49 @@
-<template>
-  <div id="sota ">
-    <div class="md-layout md-gutter">
+<template v-cloak>
+  <div id="sota  ">
+    <div class="sota-details md-layout md-gutter md-alignment-top-left">
       <h3 class="sota-title md-display-1 md-layout-item md-size-80">{{ sota.title }}</h3>
       <div class="md-layout-item md-size-25">
+        <md-chip id="sota-subject" :style="subjectColor" title="Main subject">
+          <span class="md-subheading">{{sota.subject}}</span>
+        </md-chip>
         <p>
-          Main subject:
-          <b>{{sota.subject}}</b>
+          <md-icon title="Date of creation">date_range</md-icon>&nbsp;
+          <b>{{sota.created_at}}</b>
         </p>
-        <p>Date of creation: {{sota.created_at}}</p>
       </div>
       <div class="md-layout-item md-size-20">
-        <p>Creator: {{creatorFullname}}</p>
-        <p>Creator e-mail: {{sota.creator.email}}</p>
+        <p>
+          <router-link
+            :to="{name:'userProfile', params: {username : sota.creator.username}}"
+            id="sota-creator-name"
+            :title="`Go to ${creatorFullname} profile`"
+          >
+            <md-icon title="Creator">person</md-icon>&nbsp;
+            <b>{{creatorFullname}}</b>
+          </router-link>
+        </p>
+        <p id="sota-creator-email">
+          <md-icon title="Creator e-mail">mail</md-icon>&nbsp;
+          <b>{{sota.creator.email}}</b>
+        </p>
       </div>
       <div class="menuBo">
-        <!-- TODO gerer les boutons pour telecharger le bibtex et bookmark -->
         <SotaMenu
+          v-if="userIsLogged"
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
           @bookmark="bookmarkSota"
         ></SotaMenu>
       </div>
     </div>
-    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="tabSize">
-      <md-tab id="articleList" md-label="List of articles" md-icon="view_module">
+    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="sota-articles">
+      <md-tab id="articles-list" md-label="List of articles" md-icon="view_day">
         <h5>List of article in the SOTA:</h5>
 
-        <article-list v-show="!loading" :list="sota.articles"></article-list>
+        <article-list :list="sota.articles"></article-list>
       </md-tab>
 
-      <md-tab id="visuSota" md-label="Articles-Tree" md-icon="view_module">
+      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
         <!-- TODO Mettre la visu de David -->
       </md-tab>
     </md-tabs>
@@ -37,6 +51,8 @@
 </template>
 
 <script>
+import ColorHash from "color-hash";
+
 // import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
 import ArticleList from "@/components/resultat/ArticleList";
@@ -46,6 +62,9 @@ import {
   sotaDeleteBookmark,
   sotaPostBookmark
 } from "@/services/api-sota";
+import { isLogged } from "@/services/api-user";
+
+const colorHash = new ColorHash();
 
 export default {
   name: "SotaDetails",
@@ -57,13 +76,26 @@ export default {
   },
   data() {
     return {
-      sota: {},
-      isBookmarked: false
+      userIsLogged: isLogged(),
+      sota: {
+        creator: {}
+      },
+      isBookmarked: false,
+      activeTab: "articles-list"
     };
   },
   computed: {
     creatorFullname() {
-      return this.sota.creator.lastname + " " + this.sota.creator.firstname;
+      if (this.sota.hasOwnProperty("reference")) {
+        return this.sota.creator.lastname + " " + this.sota.creator.firstname;
+      } else {
+        return null;
+      }
+    },
+    subjectColor() {
+      return {
+        "background-color": colorHash.hex(this.sota.subject)
+      };
     }
   },
 
@@ -74,9 +106,12 @@ export default {
   created() {
     // fetch the data when the view is created
     this.fetchSota();
-    sotaGetBookmark(this.reference).then(
-      data => (this.isBookmarked = data.done)
-    );
+
+    if (this.userIsLogged) {
+      sotaGetBookmark(this.reference).then(
+        data => (this.isBookmarked = data.done)
+      );
+    }
   },
 
   methods: {
@@ -84,6 +119,8 @@ export default {
       return getSota(this.reference).then(data => (this.sota = data));
     },
     bookmarkSota() {
+      if (!this.userIsLogged) return;
+
       if (this.isBookmarked) {
         sotaDeleteBookmark(this.reference).then(
           x => (this.isBookmarked = false)
@@ -101,8 +138,21 @@ export default {
   border: solid lightgrey 1px;
 }
 
+.sota-details {
+  margin: 0;
+  margin-bottom: 35px;
+}
+
 .sota-title {
   margin: 15px 0;
+}
+
+#sota-subject {
+  margin-bottom: 10px;
+}
+
+#sota-creator-name {
+  text-decoration: none;
 }
 
 .menuBo {
