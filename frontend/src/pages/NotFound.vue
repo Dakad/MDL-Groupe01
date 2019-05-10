@@ -1,5 +1,8 @@
 <template>
   <div class="not-found-container">
+    <div>
+      <h1 class="text">Oops... This page does not exist !</h1>
+    </div>
     <div class="svg-container col-md-12" style>
       <div class="svg-404">
         <svg
@@ -44,14 +47,21 @@ export default {
 <style scoped>
 .not-found-container {
   position: relative;
-  height: 100vh;
+  height: 78vh;
+}
+
+.text {
+  text-align: center;
+  position: relative;
+  margin-top: 5%;
+  color: tomato;
 }
 
 .svg-container {
   width: 100%;
   text-align: center;
   position: absolute;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
 }
 

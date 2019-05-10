@@ -75,10 +75,8 @@ public class ArticleController {
   })
   @GetMapping(path = "/{reference}")
   public ResponseEntity get(@PathVariable String reference) {
-
     ArticleDTO articleData = articleService.getArticleByReference(reference);
     return new ResponseEntity(articleData, HttpStatus.OK);
-
   }
 
 
@@ -106,8 +104,8 @@ public class ArticleController {
 
     boolean done = articleService.addBookmark(reference, authUser.getName(), data.getNote());
     String msg = "Bookmark " + (!done ? "not" : "") + " added";
-    return ResponseEntity.status(HttpStatus.CREATED)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
+
   }
 
 
@@ -125,8 +123,7 @@ public class ArticleController {
 
     boolean done = articleService.removeBookmark(reference, authUser.getName());
     String msg = "Bookmark " + (!done ? "not" : "") + " removed";
-    return ResponseEntity.status(HttpStatus.OK)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
 
   }
 
@@ -135,8 +132,7 @@ public class ArticleController {
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
     boolean done = articleService.isBookmarked(reference, authUser.getName());
     String msg = "This article is " + (!done ? "not" : "") + " present your bookmarks";
-    return ResponseEntity.status(HttpStatus.OK)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
   }
 
   @GetMapping(path = "/subscriptions")

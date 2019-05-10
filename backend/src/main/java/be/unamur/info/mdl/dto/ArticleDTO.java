@@ -33,13 +33,14 @@ public class ArticleDTO {
   private String title;
 
   @NotBlank(message = "The content (abstract) is required")
+  @JsonProperty(value = "abstract")
   private String content;
 
   @PastOrPresent(message = "The publication date cannot be in the future")
   @JsonProperty(value = "publication_date")
   private LocalDate publicationDate;
 
-  @NotBlank(message = "The URL is required")
+//  @NotBlank(message = "The URL is required")
   private String url;
 
   @NotBlank(message = "The publication medium is required ")

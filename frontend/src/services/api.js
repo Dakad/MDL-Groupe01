@@ -3,12 +3,25 @@
 
 // Import
 import Vue from 'vue';
+import { getAuthToken } from './storage';
 
 // -------------------------------------------------------------------
 // Properties
+const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
+const KEY_USERNAME = 'AUTH_USERNAME';
+const SEARCH_FOR_VALUES = ['all', 'sotas', 'authors', 'user', 'articles'];
 
 // -------------------------------------------------------------------
 // Exports
+
+export function getAuthHeaders() {
+  const authToken = getAuthToken();
+  return {
+    headers: {
+      Authorization: authToken
+    }
+  };
+}
 
 export function ping() {
   return Vue.http.get('/api/zen').then(resp => resp.body != null);
@@ -21,6 +34,10 @@ export function getTeam() {
 }
 
 export function getSearchResults(searchQuery) {
+  const isSearchValid = SEARCH_FOR_VALUES.includes(searchQuery['only']);
+  if (!isSearchValid) {
+    searchQuery['only'] = SEARCH_FOR_VALUES[0];
+  }
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
 
@@ -33,7 +50,11 @@ export function getArticlesByCategories(categories) {
     return;
   }
 
-  return Vue.http.get('/api/article', { params : {
-    category: categories.join(',')
-  } }).then(res => res.body);
+  return Vue.http
+    .get('/api/article', {
+      params: {
+        category: categories.join(',')
+      }
+    })
+    .then(res => res.body);
 }
