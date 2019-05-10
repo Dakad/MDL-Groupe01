@@ -33,5 +33,10 @@ export default {
 #app-content {
   width: 100%;
 }
+
+md-tabs {
+  width: auto;
+  height: auto;
+}
 </style>
 
