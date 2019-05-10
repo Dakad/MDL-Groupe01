@@ -1,37 +1,25 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.AuthorEntity;
-import be.unamur.info.mdl.dal.entity.BookmarkEntity;
-import be.unamur.info.mdl.dal.entity.TagEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
-import be.unamur.info.mdl.dal.repository.ArticleRepository;
-import be.unamur.info.mdl.dal.repository.AuthorRepository;
-import be.unamur.info.mdl.dal.repository.BookmarkRepository;
-import be.unamur.info.mdl.dal.repository.TagRepository;
-import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dal.entity.*;
+import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.service.ArticleService;
 import com.github.slugify.Slugify;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("articleService")
 @Transactional
@@ -48,8 +36,8 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Autowired
   public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository,
-    TagRepository tagRepository,
-    AuthorRepository authorRepository, BookmarkRepository bookmarkRepository) {
+                            TagRepository tagRepository,
+                            AuthorRepository authorRepository, BookmarkRepository bookmarkRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
@@ -139,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService {
   /**
    * Attach a new category or the one persisted in DB.
    *
-   * @param newArticle - The new Article being created
+   * @param newArticle   - The new Article being created
    * @param categoryName - The category name
    */
   private void attachCategory(ArticleEntity newArticle, String categoryName) {
@@ -153,7 +141,7 @@ public class ArticleServiceImpl implements ArticleService {
    * Attach the corresponding Author(created or persisted) to the new article
    *
    * @param newArticle The new Article being created
-   * @param authors The author's name list.
+   * @param authors    The author's name list.
    */
   private void attachAuthors(ArticleEntity newArticle, List<String> authors) {
     Set<AuthorEntity> list = new LinkedHashSet<>(authors.size());
@@ -171,7 +159,7 @@ public class ArticleServiceImpl implements ArticleService {
    * Attach the corresponding Author(created or persisted) to the new article
    *
    * @param newArticle - The new Article being created
-   * @param keywords - The keyword's name list.
+   * @param keywords   - The keyword's name list.
    */
   private void attachKeywords(ArticleEntity newArticle, Set<String> keywords) {
     Set<TagEntity> list = new LinkedHashSet<>(keywords.size());
@@ -247,21 +235,31 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public List<ArticleDTO> getSubscriptions(String username, int page){
-    Pageable pageable = PageRequest.of(page -1,20,Sort.by("created_at").descending());
+  public List<ArticleDTO> getSubscriptions(String username, int page) {
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("created_at").descending());
     UserEntity user = userRepository.findByUsername(username);
-    return articleRepository.findDistinctByFollower(username,pageable).map(a -> a.toDTO()).collect(Collectors.toList());
+    return articleRepository.findDistinctByFollower(username, pageable).map(a -> a.toDTO()).collect(Collectors.toList());
   }
 
   @Override
-  public List<ArticleDTO> getRecommended(String username, int page){
+  public List<ArticleDTO> getRecommended(String username, int page) {
+    //Pageable sorting on score, descending
     Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("score").descending());
-    if(username == null) return articleRepository.findAll(pageable).stream().map(a -> a.toDTO()).collect(Collectors.toList());
+    //case of user not connected : get all articles
+    if (username == null)
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO()).collect(Collectors.toList());
     UserEntity user = userRepository.findByUsername(username);
-    return articleRepository.findByCategoryAndReferenceNotIn(user.getDomain(),
-      user.getBookmarks().stream().map(a-> a.getArticle().getReference()).collect(Collectors.toList()),
-      pageable)
-      .map(a ->a.toDTO()).collect(Collectors.toList());
+    //The list of a user's bookmarked articles' references
+    List<String> references = user.getBookmarks().stream().map(a -> a.getArticle().getReference()).collect(Collectors.toList());
+    //case where a user has no bookmarks -- this one exists because when the list is empty no article is returned
+    if (references.isEmpty())
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO()).collect(Collectors.toList());
+    //case of user domain not defined, only looking at bookmarks
+    if (user.getDomain() == null)
+      return articleRepository.findByReferenceNotIn(references, pageable).map(a -> a.toDTO()).collect(Collectors.toList());
+    //case of user domain defined, looking at domain and bookmarks
+    return articleRepository.findByCategoryAndReferenceNotIn(user.getDomain(), references, pageable)
+      .map(a -> a.toDTO()).collect(Collectors.toList());
   }
 
 }
