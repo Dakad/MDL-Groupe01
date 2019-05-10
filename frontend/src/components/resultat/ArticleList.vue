@@ -32,6 +32,8 @@
       </md-card-content>
     </md-card>
     <Pagination
+      class="md-layout md-alignment-center"
+      id="article-pagination"
       v-if="page['total_pages'] >= 1"
       v-model="currentPage"
       :page-count="page['total_pages']"
@@ -108,5 +110,9 @@ export default {
 }
 .date p{
   margin-right: 1%;
+}
+
+#article-pagination {
+  margin: 20px;
 }
 </style>
