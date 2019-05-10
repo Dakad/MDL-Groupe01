@@ -6,7 +6,7 @@
       </md-button>
 
       <md-button class="md-icon-button" title="Download" @click="downloadRef">
-        <md-icon>arrow_downward</md-icon>
+        <md-icon>get_app</md-icon>
       </md-button>
     </md-card-actions>
   </div>
@@ -17,7 +17,7 @@ import {
   sotaDeleteBookmark,
   sotaGetBookmark,
   sotaPostBookmark
-} from "../../services/api-sota";
+} from "@/services/api-sota";
 
 export default {
   name: "SotaMenu",
@@ -32,6 +32,7 @@ export default {
   },
 
   created() {},
+
   methods: {
     downloadRef() {
       // TODO add the download function
