@@ -38,5 +38,9 @@ md-tabs {
   width: auto;
   height: auto;
 }
+
+/* body {
+  min-height: 150%;
+} */
 </style>
 
