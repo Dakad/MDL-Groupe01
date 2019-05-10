@@ -1,11 +1,7 @@
 <template>
   <div class="menuArticle">
     <md-card-actions>
-      <md-button
-        class="md-icon-button"
-        title="Bookmark it"
-        @click="getBook"
-      >
+      <md-button class="md-icon-button" :title="bookmarkBtnTitle" @click="bookmarkMe">
         <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
       </md-button>
 
@@ -17,33 +13,32 @@
 </template>
 
 <script>
- import {sotaDeleteBookmark, sotaGetBookmark, sotaPostBookmark} from "../../services/api-sota";
+import {
+  sotaDeleteBookmark,
+  sotaGetBookmark,
+  sotaPostBookmark
+} from "../../services/api-sota";
 
- export default {
+export default {
   name: "SotaMenu",
-   props: ["reference"],
-  data(){
-    return{
-      isBookmarked: false
+  props: ["isBookmarked"],
+  data() {
+    return {};
+  },
+  computed: {
+    bookmarkBtnTitle() {
+      return !this.isBookmarked ? "Bookmark it" : "Remove from bookmarks";
     }
   },
 
-  created() {
-    sotaGetBookmark(this.reference).then(
-      data => (this.isBookmarked = data.done)
-    );
-  },
+  created() {},
   methods: {
     downloadRef() {
       // TODO add the download function
     },
 
-    getBook(){
-      if (isBookmarked){
-        sotaDeleteBookmark(this.reference).then(x => this.isBookmarked = false)
-      } else if (!isBookmarked){
-        sotaPostBookmark(this.reference).then(x => this.isBookmarked = true)
-      }
+    bookmarkMe() {
+      this.$emit("bookmark");
     }
   }
 };
