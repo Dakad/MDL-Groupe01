@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +110,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     if (articleRepository.existsByReference(articleData.getReference())) {
       throw new ArticleAlreadyExistException(
-        "The reference : " + articleData.getTitle() + " is already saved.");
+        "This article is already saved : " + articleData.getReference());
     }
 
     if (articleRepository.existsByTitle(articleData.getTitle())) {
@@ -244,5 +246,11 @@ public class ArticleServiceImpl implements ArticleService {
     return true;
   }
 
+  @Override
+  public List<ArticleDTO> getSubscriptions(String username, int page){
+    Pageable pageable = PageRequest.of(page -1,10,Sort.by("created_at").descending());
+    UserEntity user = userRepository.findByUsername(username);
+    return articleRepository.findDistinctByFollower(username,pageable).map(a -> a.toDTO()).collect(Collectors.toList());
+  }
 
 }

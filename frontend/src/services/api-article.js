@@ -4,6 +4,7 @@
 // Import
 import Vue from 'vue';
 
+// Mine
 import { getAuthHeaders } from './api';
 
 // -------------------------------------------------------------------
@@ -12,18 +13,11 @@ import { getAuthHeaders } from './api';
 // -------------------------------------------------------------------
 // Exports
 
-export function ping() {
-  return Vue.http.get('/api/zen').then(resp => resp.body != null);
+export function getArticleByReference(reference) {
+  return Vue.http.get('/api/article/' + reference).then(res => res.body);
 }
 
-
-export function getSota(reference) {
-  return Vue.http.get('/api/sota/' + reference).then(function(response) {
-    return response.body;
-  });
-}
-
-export function createSota(sota) {
+export function createArticle(article) {
   const headers = getAuthHeaders();
-  return Vue.http.post('/api/sota', sota, headers).then(res => res.body);
+  return Vue.http.post('/api/article', article, headers).then(res => res.body);
 }
