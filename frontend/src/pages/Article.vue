@@ -93,6 +93,10 @@ export default {
   created() {
     // fetch the data when the view is created
     this.fetchArticle();
+    getBookmarked(this.reference).then(
+      data => (this.isBookmarked = data.done)
+    );
+    console.log(this.isBookmarked)
   },
 
   computed: {
@@ -133,12 +137,6 @@ export default {
       );
     }
   },
-  created() {
-    getBookmarked(this.reference).then(
-      data => (this.isBookmarked = data)
-    );
-    console.log(this.isBookmarked)
-  },
 
   methods: {
     fetchArticle() {
@@ -148,10 +146,10 @@ export default {
     },
 
     getBook() {
-      if (this.isBookmarked){
-        postBookmark(this.reference)
-      } else {
-        deleteBookmark(this.reference)
+      if (!this.isBookmarked){
+        postBookmark(this.reference).then(x => this.isBookmarked = true)
+      } else if (this.isBookmarked){
+        deleteBookmark(this.reference).then(x => this.isBookmarked = false)
       }
     }
   }
