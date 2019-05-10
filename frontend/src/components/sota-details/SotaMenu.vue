@@ -28,7 +28,9 @@
   },
 
   created() {
-    this.isBookmarked =  sotaGetBookmark()
+    sotaGetBookmark(this.reference).then(
+      data => (this.isBookmarked = data.done)
+    );
   },
   methods: {
     downloadRef() {
