@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,7 +141,15 @@ public class ArticleController {
 
   @GetMapping(path = "/subscriptions")
   public ResponseEntity subscriptions(@RequestParam(defaultValue = "1") int p, Principal authUser) {
+    if(p<=0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Page number cannot be less than 1");
     return ResponseEntity.status(HttpStatus.OK).body(articleService.getSubscriptions(authUser.getName(),p));
+  }
+
+  @GetMapping(path = "/recommended")
+  public ResponseEntity recommandations(@RequestParam(defaultValue = "1") int p, HttpServletRequest request){
+    if(p<=0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Page number cannot be less than 1");
+    String username = (request.getUserPrincipal() != null)? request.getUserPrincipal().getName() : null;
+    return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username,p));
   }
 
 }

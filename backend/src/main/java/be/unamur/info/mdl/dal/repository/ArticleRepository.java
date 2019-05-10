@@ -36,4 +36,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
   @Query(value = "select a.* from article a, user u, user_follower f where u.id = f.user_id and a.creator_user_id = f.following_id and u.username = ?1",
     nativeQuery = true)
   Stream<ArticleEntity> findDistinctByFollower(String username, Pageable p);
+
+  Stream<ArticleEntity> findByCategoryAndNotInBookmarks_Creator(TagEntity domain, UserEntity user, Pageable pageable);
 }

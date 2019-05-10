@@ -248,9 +248,17 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public List<ArticleDTO> getSubscriptions(String username, int page){
-    Pageable pageable = PageRequest.of(page -1,10,Sort.by("created_at").descending());
+    Pageable pageable = PageRequest.of(page -1,20,Sort.by("created_at").descending());
     UserEntity user = userRepository.findByUsername(username);
     return articleRepository.findDistinctByFollower(username,pageable).map(a -> a.toDTO()).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ArticleDTO> getRecommended(String username, int page){
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("score").descending());
+    if(username == null) return articleRepository.findAll(pageable).stream().map(a -> a.toDTO()).collect(Collectors.toList());
+    UserEntity user = userRepository.findByUsername(username);
+    return articleRepository.findByCategoryAndNotInBookmarks_Creator(user.getDomain(), user, pageable).map(a ->a.toDTO()).collect(Collectors.toList());
   }
 
 }
