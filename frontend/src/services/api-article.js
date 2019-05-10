@@ -4,6 +4,9 @@
 // Import
 import Vue from 'vue';
 
+// Mine
+import { getAuthHeaders } from './api';
+
 // -------------------------------------------------------------------
 // Properties
 
@@ -15,7 +18,8 @@ export function getArticleByReference(reference) {
 }
 
 export function createArticle(article) {
-  return Vue.http.post('api/article', article).then(res => res.body);
+  const headers = getAuthHeaders();
+  return Vue.http.post('/api/article', article, headers).then(res => res.body);
 }
 
 export function getBookmarked(reference) {
