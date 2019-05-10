@@ -4,6 +4,8 @@
 // Import
 import Vue from 'vue';
 
+import { getAuthHeaders } from './api';
+
 // -------------------------------------------------------------------
 // Properties
 
@@ -11,15 +13,16 @@ import Vue from 'vue';
 // Exports
 
 export function ping() {
-  return Vue.http.get('api/zen').then(resp => resp.body != null);
+  return Vue.http.get('/api/zen').then(resp => resp.body != null);
 }
 
 export function getSota() {
-  return Vue.http.get('api/sota', sota).then(function(response) {
+  return Vue.http.get('/api/sota', sota).then(function(response) {
     return response.body;
   });
 }
 
 export function createSota(sota) {
-  return Vue.http.post('api/sota', sota).then(res => res.body);
+  const headers = getAuthHeaders();
+  return Vue.http.post('/api/sota', sota, headers).then(res => res.body);
 }
