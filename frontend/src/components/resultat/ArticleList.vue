@@ -1,27 +1,33 @@
 <template>
   <div class="article" v-if="hasPagination">
-    <md-card v-for="article in list" :key="article.reference">
+    <md-card md-with-hover v-for="article in list" :key="article.reference">
       <md-card-header>
         <div class="title">
           <router-link :to="{ name: 'articleDetails', params: { reference: article.reference }}">
-            <h1>{{article.title}}</h1>
+            <h4>{{article.title}}</h4>
           </router-link>
         </div>
       </md-card-header>
       <md-card-content>
         <div class="info">
-          <p>Written By</p>
-          <div class="author">
-            <md-list v-for="author in article.authors" v-bind:key="author">
-              <md-list-item></md-list-item>
-              <!-- <md-item href="/">{{author}}</md-item> -->
-            </md-list>
+           <div class="article-authors md-subhead">
+           <md-icon title="Authors">{{ article.authors.length > 1 ? 'people' : "person" }}</md-icon>
+            <md-button
+              class="md-primary"
+              v-for="(author, i) in article.authors"
+              :key="i"
+              :md-ripple="false"
+            >{{author}}</md-button>
+          </div>
+          <div class="journal">
+            <p>Publisher: </p>
+            <span class="md-body-2">{{article.journal}}</span>
+          </div>
+          <div class="date">
+            <p>Date: </p>
+            <span class="md-body-2">{{article.year}}</span>
           </div>
           <div class="keyword"></div>
-          <div class="date">
-            <p>Published on the</p>
-            <h4>{{article.year}}</h4>
-          </div>
         </div>
       </md-card-content>
     </md-card>
@@ -58,9 +64,11 @@ export default {
   data() {
     return {
       currentPage: 1
+      
     };
   },
   watch: {
+    
     currentPage: function() {
       this.$emit("pagination", this.currentPage);
     }
@@ -68,6 +76,7 @@ export default {
   computed: {
     articles() {
       return this.list;
+      
     },
     page() {
       return this.meta || {};
@@ -75,11 +84,29 @@ export default {
   },
   methods: {}
 };
+
 </script>
 
 <style scoped>
 .md-list {
-  margin: 10px;
-  display: inline-block;
+  margin: 2px;
+}
+.md-list-item{
+  margin: 0px;
+}
+.article-authors button {
+  cursor: default;
+}
+.journal{
+  display: flex;
+}
+.journal p{
+  margin-right: 1%;
+}
+.date{
+  display: flex;
+}
+.date p{
+  margin-right: 1%;
 }
 </style>
