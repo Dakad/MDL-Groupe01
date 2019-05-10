@@ -156,7 +156,12 @@ public class UserEntity {
 
 
   public UserDTO toDTO() {
-    return new UserDTO(username, password, lastname, firstname, email);
+    UserProfileEntity profile = getUserProfile();
+    String profilePic = "https://i.imgur.com/0MC7ZG4.jpg";
+    if(getUserProfile() != null) profilePic = getUserProfile().getProfilePictureURL();
+    String organisation = "Not defined";
+    if(getCurrentUniversity() != null) organisation = getCurrentUniversity().getName();
+    return new UserDTO(username, password, lastname, firstname, email, profilePic, domain, organisation);
   }
 
 

@@ -15,16 +15,16 @@ import bibtexParser from 'bibtex-parse-js';
  * @param {*} json
  */
 export function format(json) {
-  if (json.entryTags['abstract'] != undefined) {
-    json.entryTags['content'] = json.entryTags['abstract'];
-    delete json.entryTags['abstract'];
+  const abstract = json.entryTags['abstract'];
+  if (abstract == undefined || abstract.trim().length()) {
+    json.entryTags['abstract'] = json.entryTags['title'];
   }
+  // delete json.entryTags['abstract'];
 
   if (json.entryTags['keywords'] == undefined) {
-    json.entryTags['keywords'] = '';
+    json.entryTags['keywords'] = 'Unknown';
   }
 
-  console.log(json.entryTags['author']);
   json.entryTags['author'] = json.entryTags['author'].replace(' and', ',');
 
   return json;

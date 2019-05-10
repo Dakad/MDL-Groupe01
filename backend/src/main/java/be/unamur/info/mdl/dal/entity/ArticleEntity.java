@@ -55,8 +55,7 @@ public class ArticleEntity {
   @Lob
   private String content;
 
-  @Column(name = "url", unique = true, nullable = false)
-  @EqualsAndHashCode.Include
+  @Column(name = "url")
   private String url;
 
   @Column(name = "journal", nullable = false)

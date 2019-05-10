@@ -5,14 +5,18 @@
 import Vue from 'vue';
 
 // Mine
-import {addToStorage, getFromStorage, isInStorage, removeFromStorage} from './storage';
-import response from "vue-resource/src/http/response";
+import {
+  addToStorage,
+  getFromStorage,
+  isInStorage,
+  removeFromStorage,
+  KEY_AUTH_TOKEN,
+  KEY_USERNAME
+} from './storage';
+import response from 'vue-resource/src/http/response';
 
 // -------------------------------------------------------------------
 // Properties
-
-const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
-const KEY_USERNAME = 'AUTH_USERNAME';
 
 // -------------------------------------------------------------------
 // Exports
@@ -32,7 +36,7 @@ export function postLogin(credentials) {
       token = res.body['auth_token_type'] + res.body['auth_token'];
     }
     addToStorage(KEY_AUTH_TOKEN, token);
-    addToStorage(KEY_USERNAME, credentials["username"]);
+    addToStorage(KEY_USERNAME, credentials['username']);
     return res.json();
   });
 }
@@ -43,28 +47,30 @@ export function postSignin(data) {
 
 export function getProfileBase(username) {
   if (username == undefined) {
-    username = getFromStorage(KEY_USERNAME)
+    username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http.get('/api/user/' + username + '/profile/base').then(response => response.body);
 }
 
 export function getBookmark(username) {
   if (username == undefined) {
-    username = getFromStorage(KEY_USERNAME)
+    username = getFromStorage(KEY_USERNAME);
   }
-  return Vue.http.get('/api/user/' + username + '/profile/bookmark').then(response => response.body);
+  return Vue.http
+    .get('/api/user/' + username + '/profile/bookmark')
+    .then(response => response.body);
 }
 
 export function getProfileInfoPro(username) {
   if (username == undefined) {
-    username = getFromStorage(KEY_USERNAME)
+    username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http.get('/api/user/' + username + '/profile/pro').then(response => response.body);
 }
 
 export function getProfileSota(username) {
   if (username == undefined) {
-    username = getFromStorage(KEY_USERNAME)
+    username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http.get('/api/user/' + username + '/profile/sota').then(response => response.body);
 }

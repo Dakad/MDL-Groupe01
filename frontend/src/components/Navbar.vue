@@ -12,13 +12,6 @@
         id="search"
         class="flex"
       ></search>
-
-      <!-- <div class="search">
-          <form class="form-inline my-2 my-lg-0 ml-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <b-button size="lg" variant="outline-success" type="submit">Search</b-button>
-          </form>
-      </div>-->
       <div class="buttons" style="float: right">
         <div v-if="isAuthenticated">
           <md-menu md-align-trigger v-if="avatar != null">
@@ -29,12 +22,12 @@
             </md-button>
 
             <md-menu-content>
-              <md-menu-item>
+              <md-menu-item @click="$router.push({ name : 'myProfile' })">
                 <md-icon>perm_identity</md-icon>
                 <span>Profile</span>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
                 <md-icon>view_module</md-icon>
                 <span>SoTA Helper</span>
               </md-menu-item>
@@ -47,9 +40,6 @@
               </md-menu-item>
             </md-menu-content>
           </md-menu>
-          <!-- <md-button class="md-icon-button md-dense md-primary" @click="logout()">
-            <md-icon>person</md-icon>
-          </md-button>-->
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
@@ -93,6 +83,7 @@ import Register from "./navbar/Register.vue";
 import { ping as sendPing } from "@/services/api";
 import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
 import { isLogged, logout, getProfileBase } from "@/services/api-user";
+import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
 export default {
   name: "Navbar",
@@ -122,8 +113,13 @@ export default {
     },
     "$route.query": function(route) {}
   },
-  created() {},
-
+  created() {
+    this.isAuthenticated = isLogged();
+    EventBus.$on(EVENT_BYE_REDIRECTION, _ => {
+      this.snackbarMsg = "You have been logged out, please log back in !";
+      this.showSnackbar = true;       
+      })
+  },
   mounted() {
     this.getProfile();
     this.searchBar.show = this.$route.name != "accueil";
@@ -135,13 +131,11 @@ export default {
       default:
         break;
     }
-
     sendPing().catch(err => {
       this.snackbarMsg = "API Error - API doesn't respond";
       this.showSnackbar = true;
     });
   },
-
   methods: {
     handleError(component, error) {
       switch (component) {
@@ -157,7 +151,6 @@ export default {
       this.showSnackbar = true;
       this.snackbarMsg = error;
     },
-
     handleSuccess(component, msg) {
       switch (component) {
         case "login":
@@ -185,6 +178,8 @@ export default {
       this.isAuthenticated = false;
       this.snackbarMsg = "Bye, see you !";
       this.showSnackbar = true;
+
+      EventBus.$emit(EVENT_USER_LOGOUT, true);
     },
     getProfile() {
       getProfileBase().then(profile => {

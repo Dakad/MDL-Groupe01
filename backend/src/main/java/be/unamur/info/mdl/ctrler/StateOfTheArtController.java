@@ -57,7 +57,7 @@ public class StateOfTheArtController {
     @ApiResponse(code = 400, message = "The SoTA is already created"),
     @ApiResponse(code = 404, message = "The provided article reference doesn't exist")
   })
-  @PostMapping({"/", "/add"})
+  @PostMapping({"", "/"})
   public ResponseEntity create(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser) {
     String username = authUser.getName();
     UserDTO currentUser = new UserDTO();
