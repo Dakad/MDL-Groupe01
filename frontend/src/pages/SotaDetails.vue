@@ -12,53 +12,51 @@
       </div>
       <div class="menuBo">
         <!-- TODO gerer les boutons pour telecharger le bibtex et bookmark -->
-          <SotaMenu :reference="articles.reference"></SotaMenu>
+        <SotaMenu
+          :reference="articles.reference"
+          :is-bookmarked="isBookmarked"
+          @bookmark="bookmarkSota"
+        ></SotaMenu>
       </div>
     </div>
-      <md-tabs
-        md-alignment="fixed"
-        :md-active-tab="activeTab"
-        class="tabSize">
+    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="tabSize">
+      <md-tab id="articleList" md-label="List of articles" md-icon="view_module">
+        <h5>List of article in the SOTA:</h5>
 
-        <md-tab id="articleList" md-label="List of articles" md-icon="view_module">
-          <h5>List of article in the SOTA:</h5>
+        <article-list v-show="!loading" :list="articles.articles"></article-list>
+      </md-tab>
 
-          <article-list
-            v-show="!loading"
-            :list="articles.articles"
-          ></article-list>
-        </md-tab>
-
-        <md-tab id="visuSota" md-label="Articles-Tree" md-icon="view_module">
-          <!-- TODO Mettre la visu de David -->
-
-        </md-tab>
-
-      </md-tabs>
-
-
+      <md-tab id="visuSota" md-label="Articles-Tree" md-icon="view_module">
+        <!-- TODO Mettre la visu de David -->
+      </md-tab>
+    </md-tabs>
   </div>
 </template>
 
 <script>
-import InfoNav from "@/components/article/InfoNav";
+// import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
 import ArticleList from "@/components/resultat/ArticleList";
-import { getSota }  from "@/services/api-sota";
+import {
+  getSota,
+  sotaGetBookmark,
+  sotaDeleteBookmark,
+  sotaPostBookmark
+} from "@/services/api-sota";
 
 export default {
-  name: "Sota",
+  name: "SotaDetails",
   props: ["reference"],
   components: {
-    InfoNav,
+    // InfoNav,
     SotaMenu,
     ArticleList
   },
   data() {
     return {
       articleTitle: {},
-      abstract: {},
-      articles: {}
+      articles: {},
+      isBookmarked: false
     };
   },
   watch: {
@@ -68,22 +66,32 @@ export default {
   created() {
     // fetch the data when the view is created
     this.fetchSota();
+    sotaGetBookmark(this.reference).then(
+      data => (this.isBookmarked = data.done)
+    );
   },
 
-  methods:{
+  methods: {
     fetchSota() {
-      return getSota(this.reference).then(
-        data => (this.articles = data)
-      );
+      return getSota(this.reference).then(data => (this.articles = data));
+    },
+    bookmarkSota() {
+      if (this.isBookmarked) {
+        sotaDeleteBookmark(this.reference).then(
+          x => (this.isBookmarked = false)
+        );
+      } else {
+        sotaPostBookmark(this.reference).then(x => (this.isBookmarked = true));
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-  .Sota{
-    border: solid lightgrey 1px;
-  }
+.Sota {
+  border: solid lightgrey 1px;
+}
 h1 {
   position: absolute;
   left: 10%;
@@ -95,7 +103,6 @@ h1 {
   float: left;
   margin-left: 100px;
 }
-
 
 .leftContainer {
   position: relative;
@@ -112,18 +119,17 @@ h1 {
   float: left;
 }
 
-  .tabSize{
-    float:left;
-  }
+.tabSize {
+  float: left;
+}
 
-  .infoBaseLeft{
-    float: left;
-  }
+.infoBaseLeft {
+  float: left;
+}
 
-  .infoBaseRight{
-    float: left;
-    margin-left: 60px;
-  }
-
+.infoBaseRight {
+  float: left;
+  margin-left: 60px;
+}
 </style>
 
