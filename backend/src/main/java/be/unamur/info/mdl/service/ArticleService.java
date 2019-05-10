@@ -63,4 +63,6 @@ public interface ArticleService {
   Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categories);
 
   List<ArticleDTO> getSubscriptions(String username, int page);
+
+  List<ArticleDTO> getRecommended(String username, int page);
 }
