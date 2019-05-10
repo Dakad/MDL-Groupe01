@@ -21,6 +21,7 @@
 
  export default {
   name: "SotaMenu",
+   props: ["reference"],
   data(){
     return{
       isBookmarked: false
@@ -41,7 +42,7 @@
       if (isBookmarked){
         sotaDeleteBookmark(this.reference).then(x => this.isBookmarked = false)
       } else if (!isBookmarked){
-        sotaDeleteBookmark(this.reference).then(x => this.isBookmarked = true)
+        sotaPostBookmark(this.reference).then(x => this.isBookmarked = true)
       }
     }
   }
