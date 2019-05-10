@@ -12,13 +12,14 @@
           :key="'node_'+i"
           :cx="coords[i].x"
           :cy="coords[i].y"
-          :r="7"
+          :r="selected == node ? '15' : '10'"
           :fill="choseColor(node.domain)"
           :opacity="choseOpacity(i)"
           class="node-container"
           stroke="black"
           stroke-width="1"
-          @mouseover="showInfo(node, i)"
+          @mouseover="showInfo(node)"
+          @mouseout="nullInfo(node)"
           @click="clicked(node)"
         ></circle>
 
@@ -40,7 +41,7 @@
             text-anchor="middle"
             class="link-label"
             color="black"
-          >{{link.tag}}</text>
+          >{{link.tag.substr(0, link.tag.length - 2)}}</text>
         </template>
       </svg>
     </div>
@@ -122,7 +123,11 @@ export default {
       currentMove: null,
       nameHolder: "",
       domainHolder: "",
-      yearHolder: ""
+      yearHolder: "",
+      rMouseOver: 25,
+      rMouseOut: 10,
+      r:10,
+      selected: null
     };
   },
   watch: {
@@ -198,9 +203,9 @@ export default {
           year: this.articlesTitles[i]["year"]
         })),
         links: d3.range(Object.keys(this.linkedArticles).length).map(i => ({
-          source: this.linkedArticles[i]["src"],
-          target: this.linkedArticles[i]["target"],
-          tag: this.linkedArticles[i]["keywords"]
+          source: this.linkedArticles[i][0],
+          target: this.linkedArticles[i][1],
+          tag: this.linkedArticles[i][2]
         }))
       };
       this.simulation = d3
@@ -234,22 +239,26 @@ export default {
       }
       arrayYear.sort();
       let delta = arrayYear[arrayYear.length - 1] - arrayYear[0];
+      let deltasum = ((delta*20)/delta);
       let opacityVar =
-        (arrayYear[arrayYear.length - 1] + 4 - this.graph.nodes[j].year) /
-        delta;
-      return opacityVar;
+        (arrayYear[arrayYear.length - 1] + delta + deltasum - this.graph.nodes[j].year) /
+        (delta + deltasum);
+      return 2 - opacityVar;
     },
 
-    showInfo(node, i) {
-      this.nameHolder = node.name;
-      this.domainHolder = node.domain;
-      this.yearHolder = node.year;
+    showInfo(d, i) {
+      this.nameHolder = d.name;
+      this.domainHolder = d.domain;
+      this.yearHolder = d.year;
+
+      this.selected = d;
+
+      this.r = this.rMouseOver
     },
 
-    nullInfo() {
-      this.nameHolder = "";
-      this.domainHolder = "";
-      this.yearHolder = "";
+    nullInfo(d, i) {
+      this.r = this.rMouseOut
+
     }
   }
 };
@@ -257,10 +266,13 @@ export default {
 
 
 <style lang="css" scoped>
+
 .graphics {
   position: relative;
   float: left;
   width: 75%;
+  margin-right: 3px;
+  border: lightgrey 1px solid;
 }
 
 .node-container,

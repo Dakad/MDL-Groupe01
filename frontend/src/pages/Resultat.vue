@@ -54,9 +54,10 @@
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+            <author-list v-show="!loading" :list="results.users"></author-list>
             <author-list v-show="!loading" :list="results.authors"></author-list>
             <md-empty-state
-              v-if="!results.authors || results.authors.length == 0"
+              v-if="!results.users || results.users.length == 0 && results.authors.length == 0"
               md-icon="people"
               md-label="No authors/users found"
               :md-description="'Sorry, we didn\'t find any authors/users matching your search for \'\''+searchTerm+'\'\''"
@@ -184,28 +185,34 @@ export default {
      * Group articles based on common keywords among them.
      */
     relatedArticles() {
-      if (!this.results["articles"]) {
-        return [];
-      }
+      let relatedArticlesList = [];
       const { articles } = this.results;
-      let related = [];
       for (let i = 0; i < articles.length; i++) {
-        const keywords = articles[i].keywords.map(k => k["name"]);
+        let keywords = articles[i].keywords;
         for (let j = i + 1; j < articles.length; j++) {
-          const commonKeywords = keywords.filter(keyword => {
-            return articles[j].keywords.map(k => k["name"]).includes(keyword);
-          });
-
-          if (commonKeywords.length != 0) {
-            related.push({
-              src: i,
-              target: j,
-              keywords: commonKeywords.join(", ")
-            });
+          let commonKeyword = "";
+          let commonArticle = [];
+          let alreadyIn = false;
+          for (let k = 0; k < keywords.length; k++) {
+            let keywordName = keywords[k].name;
+            for (let l = 0; l < articles[j].keywords.length; l++) {
+              if (keywordName === articles[j].keywords[l].name) {
+                commonKeyword += keywordName + ", ";
+                if (alreadyIn === false) {
+                  alreadyIn = true;
+                  commonArticle.push(i);
+                  commonArticle.push(j);
+                }
+              }
+            }
+          }
+          commonArticle.push(commonKeyword);
+          if (commonArticle.length > 1) {
+            relatedArticlesList.push(commonArticle);
           }
         }
       }
-      return related;
+      return relatedArticlesList;
     }
   },
   methods: {
@@ -218,10 +225,10 @@ export default {
       this.$router.push({ query });
     },
     fetchSearchResult() {
-      if (this.changingTab) {
-        this.changingTab = false;
-        return;
-      }
+      // if (this.changingTab) {
+      //   this.changingTab = false;
+      //   return;
+      // }
       this.loading = true;
       this.searchTerm = this.$route.query["search"];
 
@@ -229,8 +236,8 @@ export default {
         term: this.searchTerm,
         sort: this.sortBy,
         order: this.orderBy,
-        page: !this.changingTab ? this.page : 1,
-        only: !this.changingTab ? this.activeTab : undefined
+        //page: !this.changingTab ? this.page : 1,
+        //only: !this.changingTab ? this.activeTab : undefined
       };
 
       return getSearchResults(searchQuery)

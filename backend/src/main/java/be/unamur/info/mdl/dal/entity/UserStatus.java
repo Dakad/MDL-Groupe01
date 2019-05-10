@@ -6,4 +6,3 @@ public enum UserStatus {
   PROFESSOR,
   ASSISTANT
 }
-
