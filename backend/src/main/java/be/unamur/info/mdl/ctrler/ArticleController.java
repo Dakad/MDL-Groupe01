@@ -1,7 +1,5 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
@@ -16,7 +14,9 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -134,9 +134,27 @@ public class ArticleController {
     return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
   }
 
+
   @GetMapping(path = "/subscriptions")
-  public ResponseEntity subscriptions(@RequestParam(defaultValue = "1") int p, Principal authUser) {
-    return ResponseEntity.status(HttpStatus.OK).body(articleService.getSubscriptions(authUser.getName(),p));
+  public ResponseEntity subscriptions(
+    @Min(value = 1, message = "Page number cannot be less than 1")
+    @RequestParam(defaultValue = "1") int page,
+    Principal authUser) {
+
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(articleService.getSubscriptions(authUser.getName(), page));
+  }
+
+
+  @GetMapping(path = "/recommended")
+  public ResponseEntity recommandations(
+    @Min(value = 1, message = "Page number cannot be less than 1")
+    @RequestParam(defaultValue = "1") int page,
+    HttpServletRequest request) {
+
+    String username =
+      (request.getUserPrincipal() != null) ? request.getUserPrincipal().getName() : null;
+    return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username, page));
   }
 
 }
