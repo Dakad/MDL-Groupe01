@@ -6,17 +6,16 @@ import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "User", description = "Model representing an user data")
 public class UserDTO extends CredentialDTO {
-
-  @JsonIgnore
-  private Long id;
 
   @NotBlank(message = "The email is required")
   @Email(message = "The email provided is not valid")
@@ -26,22 +25,14 @@ public class UserDTO extends CredentialDTO {
 
   private String firstname;
 
+  @Builder.Default
   @JsonProperty("avatar")
-  private String profilePicUrl;
+  private String profilePicUrl = "https://i.imgur.com/0MC7ZG4.jpg";
 
-  private String domain;
+  @Builder.Default
+  private String domain = "Unknown";
 
-  private String organisation;
+  @Builder.Default
+  private String organisation = "Not defined";
 
-
-  public UserDTO(String username, String password, String lastname, String firstname, String email,
-                 String profilePicUrl, String domain, String organisation) {
-    super(username, password);
-    this.email = email;
-    this.lastname = lastname;
-    this.firstname = firstname;
-    this.profilePicUrl = profilePicUrl;
-    this.domain = domain;
-    this.organisation = organisation;
-  }
 }

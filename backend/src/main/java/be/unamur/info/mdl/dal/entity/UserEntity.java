@@ -157,18 +157,25 @@ public class UserEntity {
 
 
   public UserDTO toDTO() {
-    UserProfileEntity profile = getUserProfile();
-    String profilePic = "https://i.imgur.com/0MC7ZG4.jpg";
+    UserDTO dto = new UserDTO();
+    dto.setUsername(username);
+    dto.setLastname(lastname);
+    dto.setFirstname(firstname);
+    dto.setEmail(email);
+
     if (getUserProfile() != null) {
-      profilePic = getUserProfile().getProfilePictureURL();
+      dto.setProfilePicUrl(getUserProfile().getProfilePictureURL());
     }
-    String organisation = "Not defined";
+
     if (getCurrentUniversity() != null) {
-      organisation = getCurrentUniversity().getName();
+      dto.setOrganisation(getCurrentUniversity().getName());
     }
-    String dom = (domain != null) ? domain.getName() : null;
-    return new UserDTO(username, password, lastname, firstname, email, profilePic, dom,
-      organisation);
+
+    if(getDomain() != null){
+      dto.setDomain(getDomain().getName());
+    }
+
+    return dto;
   }
 
 
