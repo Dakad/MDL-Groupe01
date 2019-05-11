@@ -22,7 +22,7 @@
         :per-page="3"
         :autoplay="true"
         :loop="true"
-        :autoplayTimeout="3000"
+        :autoplayTimeout="5000"
         :navigationEnabled="true"
       >
         <slide class="slides" v-for="(recommended,index) in articles" :key="index">
@@ -136,9 +136,7 @@ p {
 }
 
 .slides {
-  border: 1px solid gray;
   margin: 1%;
-  padding: 1%;
 }
 
 /*.switch-news {
