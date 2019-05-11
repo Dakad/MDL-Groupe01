@@ -80,14 +80,12 @@ export default {
     this.fetchProfile();
     //this.fetchBookmark()
     //this.fetchSota()
-    //this.fetchDataPro()
+    this.fetchDataPro();
   },
   methods: {
     fetchProfile() {
-      console.log(this.username);
       getProfileBase(this.username).then(data => {
         this.profil = data;
-        console.log(this.profil);
       });
     },
     fetchBookmark() {
@@ -97,15 +95,14 @@ export default {
       });
     },
     fetchSota() {
-      getProfileSota(this.username).then(function(data) {
+      getProfileSota(this.username).then(data => {
         this.sotaList = data;
         console.log(this.sotaList);
       });
     },
     fetchDataPro() {
-      getProfileInfoPro(this.username).then(function(data) {
+      getProfileInfoPro(this.username).then(data => {
         this.infoPro = data;
-        console.log(this.infoPro);
       });
     }
   }

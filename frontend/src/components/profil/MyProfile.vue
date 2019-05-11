@@ -3,19 +3,22 @@
     <div class="left">
       <h5>Research Groups:</h5>
       <li v-for="(item, index) in infoPro.ResearchGroup" :key="index">{{ item }}</li>
+      <p v-if="infoPro.ResearchGroup ==null">No Research Groups</p>
     </div>
     <div class="center">
       <h5>Interests:</h5>
       <li v-for="(item, index) in infoPro.Interests" :key="index">{{ item }}</li>
+      <p v-if="infoPro.Interests ==null">No Interests registered</p>
 
       <h5>Previous universities</h5>
       <li v-for="(item, index) in infoPro.Universities" :key="index">{{ item }}</li>
+      <p v-if="infoPro.Universities ==null">No Previous Universities</p>
     </div>
     <div class="right">
       <h5>Publicated Articles:</h5>
-      <li v-for="(item, index) in infoPro.Articles" :key="index">{{ item.item }}</li>
+      <li v-for="(item, index) in infoPro.recentArticles" :key="index">{{ item }}</li>
       <h5>Publicated State of the art</h5>
-      <li v-for="(item, index) in infoPro.Sotas" :key="index">{{ item.item }}</li>
+      <li v-for="(item, index) in infoPro.recentSotAs" :key="index">{{ item }}</li>
     </div>
   </div>
 </template>
