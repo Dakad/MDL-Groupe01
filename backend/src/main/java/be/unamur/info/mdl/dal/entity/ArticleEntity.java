@@ -222,13 +222,6 @@ public class ArticleEntity {
     System.out.println("Article " + reference + " has updated its score to : " + score);
   }
 
-  private int getBookmarksNb() {
-    if (bookmarks != null && !bookmarks.isEmpty()) {
-      return bookmarks.size();
-    } else {
-      return 0;
-    }
-  }
 
 
 }
