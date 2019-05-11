@@ -5,13 +5,16 @@
 
     <router-view id="app-content"></router-view>
     <md-snackbar
+      class="md-layout md-alignment-center-center"
       md-position="center"
-      :md-duration="snackbarTime"
-      :md-active.sync="showSnackbar"
+      :md-duration="flashMsg.duration"
+      :md-active.sync="flashMsg.show"
       md-persistent
     >
-      <span>{{snackbarMsg}}</span>
-      <!-- <md-button class="md-primary" @click="showSnackbar = false">Retry</md-button> -->
+      <span class="md-layout-item md-subheading">{{flashMsg.msg}}</span>
+      <md-button class="md-icon-button md-accent" :md-ripple="false" @click="flashMsg.show = false">
+        <md-icon>clear</md-icon>
+      </md-button>
     </md-snackbar>
   </div>
 </template>
@@ -29,7 +32,7 @@ import {
   EVENT_APP_MESSAGE
 } from "@/services/event-bus.js";
 
-const DEFAULT_SNACKBAR_TIME = 5000;
+const DEFAULT_FLASH_MSG_TIME = 5000;
 
 export default {
   name: "App",
@@ -38,9 +41,12 @@ export default {
   },
   data() {
     return {
-      showSnackbar: false,
-      snackbarMsg: null,
-      snackbarTime: DEFAULT_SNACKBAR_TIME
+      flashMsg: {
+        show: false,
+        type: null,
+        msg: null,
+        duration: DEFAULT_FLASH_MSG_TIME
+      }
     };
   },
   created() {
@@ -54,12 +60,13 @@ export default {
     // Handle the display of flash msg on the snackbar
     EventBus.$on(EVENT_APP_MESSAGE, payload => {
       if (typeof payload == "string") {
-        this.snackbarMsg = payload;
+        this.flashMsg.msg = payload;
       } else {
-        this.snackbarMsg = payload["message"] || payload["msg"];
+        this.flashMsg.type = payload["type"];
+        this.flashMsg.msg = payload["message"] || payload["msg"];
       }
-      this.snackbarTime = payload["duration"] || DEFAULT_SNACKBAR_TIME;
-      this.showSnackbar = this.snackbarMsg != undefined;
+      this.flashMsg.duration = payload["duration"] || DEFAULT_FLASH_MSG_TIME;
+      this.flashMsg.show = this.flashMsg.msg != undefined;
     });
 
     // Handle the user logged event
