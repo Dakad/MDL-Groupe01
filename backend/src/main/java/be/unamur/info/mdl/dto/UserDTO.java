@@ -26,7 +26,7 @@ public class UserDTO extends CredentialDTO {
 
   private String firstname;
 
-  @JsonProperty("pfp")
+  @JsonProperty("avatar")
   private String profilePicUrl;
 
   private String domain;
