@@ -65,4 +65,9 @@ public interface ArticleService {
   List<ArticleDTO> getSubscriptions(String username, int page);
 
   List<ArticleDTO> getRecommended(String username, int page);
+
+  /**
+   * Update the score of all articles
+   */
+  void updateScores();
 }
