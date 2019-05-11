@@ -30,7 +30,8 @@
             :title="recommended.title"
             :authors="recommended.authors"
             :category="recommended.category"
-            :date="recommended.created_at"
+            :year="recommended.year"
+            :month="recommended.month"
             :nb-views="recommended.nb_views"
             :nb-quotes="recommended.nb_citations"
             :keywords="recommended.keywords"
@@ -136,7 +137,7 @@ p {
 }
 
 .slides {
-  margin: 1%;
+  margin: 3px;
 }
 
 /*.switch-news {

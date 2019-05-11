@@ -10,11 +10,30 @@
         </span>
       </div>
     </md-card-header>
+
     <md-card-content>
-      <h5><md-chip :style="colorCategory" title="Category : ">{{category}}</md-chip>&nbsp;{{ date }}</h5><br>
-      <h6>Views: {{ nbViews }}     Quotes: {{ nbQuotes }}</h6>
-      <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
+      <h5>
+        <md-chip :style="colorCategory" title="Category : ">
+          {{category}}
+        </md-chip>&nbsp;&nbsp;
+        {{ year }}<b v-if="month">, {{ month }}</b>
+      </h5><br>
+      <h6>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</h6>
     </md-card-content>
+
+    <md-card-expand>
+      <md-card-actions>
+        <md-card-expand-trigger>
+          <md-button :md-ripple="false">Keywords</md-button>
+        </md-card-expand-trigger>
+      </md-card-actions>
+
+      <md-card-expand-content>
+        <md-card-content>
+          <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
+        </md-card-content>
+      </md-card-expand-content>
+    </md-card-expand>
   </md-card>
 </template>
 
@@ -26,7 +45,7 @@
 
   export default {
     name: "ArticleSlide",
-    props: ["title", "authors", "category", "date", "nbViews", "nbQuotes", "keywords", "reference"],
+    props: ["title", "authors", "category", "year", "month", "nbViews", "nbQuotes", "keywords", "reference"],
     computed: {
       colorCategory() {
         return {
@@ -39,6 +58,6 @@
 
 <style scoped>
   .chip {
-    margin: 3px;
+    margin: 4px;
   }
 </style>
