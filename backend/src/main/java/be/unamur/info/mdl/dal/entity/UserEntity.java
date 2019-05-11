@@ -105,8 +105,13 @@ public class UserEntity {
   private Set<BookmarkEntity> bookmarks;
 
 
-  @OneToMany(mappedBy = "user")
-  private List<UniversityCurrent> universities;
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "user_university",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "university_id")})
+  private List<UniversityEntity> universities;
 
 
   @ManyToMany(cascade = {
@@ -129,13 +134,13 @@ public class UserEntity {
   private List<UserEntity> follows = new LinkedList<>();
 
 
-  @ManyToOne(cascade = {
+  @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private ResearchGroupEntity researchGroup;
+  private Set<ResearchGroupEntity> researchGroup;
 
 
   @ManyToMany(cascade = {
@@ -188,9 +193,6 @@ public class UserEntity {
 
     if (this.userProfile != null) {
       dto.bio(userProfile.getDescription());
-      dto.facebookURL(this.userProfile.getFacebookURL())
-        .linkedinURL(this.userProfile.getLinkedInURL())
-        .twitterURL(this.userProfile.getTwitterURL());
     }
     return dto.build();
   }
