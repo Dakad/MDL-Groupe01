@@ -78,8 +78,8 @@ export default {
   created() {
     this.username = this.$route.params["username"];
     this.fetchProfile();
-    //this.fetchBookmark()
-    //this.fetchSota()
+    this.fetchBookmark()
+    this.fetchSota();
     this.fetchDataPro();
   },
   methods: {
@@ -95,7 +95,7 @@ export default {
       });
     },
     fetchSota() {
-      getProfileSota(this.username).then(data => {
+      getProfileSota(this.username).then(function(data) {
         this.sotaList = data;
         console.log(this.sotaList);
       });

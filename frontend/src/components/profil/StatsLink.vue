@@ -16,7 +16,7 @@
         </a>
       </li>
       <li>
-        <a href="http://www.youtube.com">
+        <a href="http://www.linkedin.com">
           <img src="@/assets/Linkedin_logo.png">
         </a>
       </li>
