@@ -160,9 +160,15 @@ export default {
 
     setBookmark() {
       if (!this.isBookmarked) {
-        postBookmark(this.reference).then(x => (this.isBookmarked = true));
+        postBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "Article bookmarked"));
       } else if (this.isBookmarked) {
-        deleteBookmark(this.reference).then(x => (this.isBookmarked = false));
+        deleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "Article removed from bookmarks")
+          );
       }
     }
   }
