@@ -33,6 +33,7 @@
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
           @bookmark="bookmarkSota"
+          @download="wantDownload"
         ></SotaMenu>
       </div>
     </div>
@@ -47,6 +48,44 @@
         <!-- TODO Mettre la visu de David -->
       </md-tab>
     </md-tabs>
+
+    <!-- Download SoTA choice Dialog  -->
+    <md-dialog :md-active.sync="wantDownload">
+      <md-dialog-title>Preferences</md-dialog-title>
+
+      <md-dialog-actions>
+        <md-button class="md-accent" @click="wantDownload = false">Close</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="wantDownload">
+      <md-dialog-title>Choose the download file format ?</md-dialog-title>
+      <md-content class="md-layout md-alignment-center-space-around">
+        <a
+          :href="jsonData"
+          :download="this.sota.reference +'.json'"
+          class="md-layout-item md-dense md-raised md-primary"
+        >
+          <md-button
+            class="md-dense md-raised md-primary"
+            :md-ripple="false"
+            @click="wantDownload = false"
+          >JSON</md-button>
+        </a>
+
+        <a
+          :href="bibtexData"
+          :download="this.sota.reference +'.bib'"
+          class="md-layout-item md-dense md-raised"
+        >
+          <md-button
+            class="md-dense md-raised md-primary"
+            :md-ripple="false"
+            @click="wantDownload = false"
+          >BIBTEX</md-button>
+        </a>
+      </md-content>
+    </md-dialog>
   </div>
 </template>
 
@@ -63,6 +102,7 @@ import {
   sotaPostBookmark
 } from "@/services/api-sota";
 import { isLogged } from "@/services/api-user";
+import { exportAsJson, exportAsBibtex } from "@/services/api";
 
 import {
   EventBus,
@@ -88,6 +128,7 @@ export default {
         creator: {}
       },
       isBookmarked: false,
+      wantDownload: false,
       activeTab: "articles-list"
     };
   },
@@ -103,6 +144,14 @@ export default {
       return {
         "background-color": colorHash.hex(this.sota.subject)
       };
+    },
+    jsonData() {
+      const data = exportAsJson(this.sota, this.sota.reference);
+      return data;
+      // return "data:text/json;charset=utf-8," + data;
+    },
+    bibtexData() {
+      return exportAsBibtex(this.sota.articles);
     }
   },
 
@@ -144,6 +193,12 @@ export default {
       sotaGetBookmark(this.reference).then(
         data => (this.isBookmarked = data.done)
       );
+    },
+    download(format) {
+      this.wantDownload = false;
+      if (format == "json") {
+        // exportAsJson();
+      }
     }
   }
 };
