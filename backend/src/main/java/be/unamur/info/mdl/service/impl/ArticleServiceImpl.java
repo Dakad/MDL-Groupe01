@@ -285,4 +285,13 @@ public class ArticleServiceImpl implements ArticleService {
       .map(a -> a.toDTO()).collect(Collectors.toList());
   }
 
+  @Override
+  public  void updateScores() {
+    List<ArticleEntity> articles = articleRepository.findAll();
+    articles.forEach(a -> {
+      a.updateScore();
+      articleRepository.save(a);
+    });
+  }
+
 }
