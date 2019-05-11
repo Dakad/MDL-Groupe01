@@ -19,6 +19,7 @@ import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.service.ArticleService;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -130,7 +131,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     this.attachKeywords(newArticle, articleData.getKeywordList());
 
-    newArticle.setCreatedAt(LocalDate.now());
     this.articleRepository.save(newArticle);
     return true;
   }
@@ -286,12 +286,27 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public  void updateScores() {
+  public void updateScores() {
     List<ArticleEntity> articles = articleRepository.findAll();
-    articles.forEach(a -> {
-      a.updateScore();
-      articleRepository.save(a);
+    articles.forEach(article -> {
+      int nbDays = 1;
+      int nbBookmarked = article.getNbBookmarks();
+
+      if (!article.getCreatedAt().equals(LocalDate.now())) {
+        // Older implies more relevant
+        nbDays = (int) article.getCreatedAt().until(LocalDate.now(), ChronoUnit.DAYS);
+      }
+
+      // More views, more juicy
+      float score = article.getNbViews() / nbDays;
+
+      score = score + 3 * (nbBookmarked / nbDays); // More bookmark, more relevant
+      score = score + 0.3f * (article.getNbCitations() / nbDays); // More citation, more relevant
+
+      article.setScore(score);
     });
+
+    articleRepository.saveAll(articles);
   }
 
 }

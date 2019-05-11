@@ -4,7 +4,6 @@ import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,6 +96,7 @@ public class ArticleEntity {
 
   @Column(name = "recommendation_score")
   @PositiveOrZero
+  @Builder.Default
   private Float score = 0f;
 
 
@@ -150,6 +150,14 @@ public class ArticleEntity {
   @Builder.Default
   private Set<TagEntity> keywords = new LinkedHashSet<>();
 
+
+  public int getNbBookmarks() {
+    if (bookmarks != null && !bookmarks.isEmpty()) {
+      return bookmarks.size();
+    } else {
+      return 0;
+    }
+  }
 
   /**
    * Convert the current Entity to its DTO version.
@@ -207,21 +215,6 @@ public class ArticleEntity {
 
     return entity.build();
   }
-
-
-  public void updateScore() {
-    int date;
-    int bookSize = 0;
-
-    if (createdAt.equals(LocalDate.now())) {
-      date = 1;
-    } else {
-      date = (int) createdAt.until(LocalDate.now(), ChronoUnit.DAYS);
-    }
-    score = (nbViews / date) + 3 * (bookSize / date) + 0.3f * (nbCitations / date);
-    System.out.println("Article " + reference + " has updated its score to : " + score);
-  }
-
 
 
 }
