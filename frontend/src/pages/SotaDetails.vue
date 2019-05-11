@@ -111,10 +111,9 @@ export default {
   },
 
   created() {
-    EventBus.$on(EVENT_USER_LOGGED, state => {
-      this.userIsLogged = true;
+    if (this.userIsLogged) {
       this.getBookmarkState();
-    });
+    }
 
     EventBus.$on(EVENT_USER_LOGOUT, _ => (this.userIsLogged = false));
 
@@ -130,11 +129,15 @@ export default {
       if (!this.userIsLogged) return;
 
       if (this.isBookmarked) {
-        sotaDeleteBookmark(this.reference).then(
-          x => (this.isBookmarked = false)
-        );
+        sotaDeleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+          );
       } else {
-        sotaPostBookmark(this.reference).then(x => (this.isBookmarked = true));
+        sotaPostBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "SoTA bookmarked"));
       }
     },
     getBookmarkState() {
