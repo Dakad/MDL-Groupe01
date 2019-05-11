@@ -35,7 +35,7 @@ export default {
 
   methods: {
     downloadRef() {
-      // TODO add the download function
+      this.$emit("download");
     },
 
     bookmarkMe() {
