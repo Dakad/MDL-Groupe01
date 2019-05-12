@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
+    // TODO At the same time, init it profile
+
     this.userRepository.save(UserEntity.of(userData));
 
     return true;
