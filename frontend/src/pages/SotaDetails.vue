@@ -98,6 +98,13 @@ import {
   EVENT_APP_MESSAGE
 } from "@/services/event-bus.js";
 
+import {
+  EventBus,
+  EVENT_USER_LOGGED,
+  EVENT_USER_LOGOUT,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
+
 const colorHash = new ColorHash();
 
 export default {
@@ -183,6 +190,7 @@ export default {
       sotaGetBookmark(this.reference).then(
         data => (this.isBookmarked = data.done)
       );
+
     },
     download(format) {
       this.wantDownload = true;
@@ -195,6 +203,7 @@ export default {
     onDownloadFormatChoiceBtnClick(choice) {
       this.wantDownload = false;
       EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
+
     }
   }
 };
