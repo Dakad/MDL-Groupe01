@@ -34,19 +34,19 @@
           :is-bookmarked="isBookmarked"
           :download-filename="sota.title"
           @bookmark="bookmarkSota"
-          @download="wantDownload = true; download()"
+          @download="download()"
         ></SotaMenu>
       </div>
     </div>
     <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="sota-articles">
-      <md-tab id="articles-list" md-label="List of articles" md-icon="view_day">
+      <md-tab id="articles-list" md-label="List of articles" md-icon="description">
         <h5>List of article in the SOTA:</h5>
 
         <article-list :list="sota.articles"></article-list>
       </md-tab>
 
       <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
-        <sota-graphic :articles="sota.articles"/>
+        <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
       </md-tab>
     </md-tabs>
 
@@ -71,7 +71,7 @@
           @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
         >BIBTEX</md-button>
       </md-content>
-    </md-dialog>>>>>>>> frontend-sota-download
+    </md-dialog>
   </div>
 </template>
 
