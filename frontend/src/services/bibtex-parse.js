@@ -22,7 +22,7 @@ const EXCLUDED_PROPS = [
  */
 function formatToJson(json) {
   const abstract = json.entryTags['abstract'];
-  if (abstract == undefined || abstract.trim().length()) {
+  if (abstract == undefined || abstract.trim().length == 0) {
     json.entryTags['abstract'] = json.entryTags['title'];
   }
   // delete json.entryTags['abstract'];
