@@ -57,7 +57,8 @@
           v-for="upload in uploads"
           :key="upload"
           :item="articlesUploaded[upload]"
-          @select="preview = articlesUploaded[upload].bibtex"
+          :selected="upload == selected['filename']"
+          @select="onSelectUpload"
           @remove="onRemoveUpload"
           @edit="onEditUpload"
         />
@@ -66,7 +67,7 @@
       <div>
         <ul>
           <li v-for="(error, index) in apiErrors" :key="index">
-            <span class="md-error">{{error}}</span>
+            <span class="md-error">#{{index}} - {{error}}</span>
           </li>
         </ul>
       </div>
@@ -74,45 +75,11 @@
 
     <!-- Import bibtex field -->
     <div class="md-layout-item md-size" id="bibtex-preview-container">
-      <md-card>
-        <md-card-header>
-          <md-card-header-text>
-            <div class="md-title" title="Only the 3 first articles">Preview of processed .bibtex</div>
-            <div
-              class="md-subhead"
-              v-if="preview"
-            >Contains {{ preview.length | pluralize('article')}}</div>
-          </md-card-header-text>
-          <md-menu md-size="big" md-direction="bottom-end">
-            <md-button class="md-icon-button" md-menu-trigger>
-              <md-icon>more_vert</md-icon>
-            </md-button>
-
-            <md-menu-content>
-              <md-menu-item @click="onEditUpload">
-                <span>Edit</span>
-                <md-icon>create</md-icon>
-              </md-menu-item>
-
-              <md-menu-item @click="onRemoveUpload">
-                <span>Remove</span>
-                <md-icon>clear</md-icon>
-              </md-menu-item>
-            </md-menu-content>
-          </md-menu>
-        </md-card-header>
-
-        <md-card-content v-if="preview" class="md-scrollbar">
-          <!-- id="bibtex-preview" -->
-          <pre id="bibtex-preview">{{preview.slice(0,2)}}</pre>
-          <b v-if="preview.length > 3" class="md-subhead">&hellip; {{preview.length - 3}} more</b>
-        </md-card-content>
-
-        <!-- <md-card-actions>
-          <md-button :md-ripple="false" class="md-primary">Edit</md-button>
-          <md-button :md-ripple="false" class="md-raised md-accent">Remove</md-button>
-        </md-card-actions>-->
-      </md-card>
+      <sota-upload-preview
+        :preview="previewJson"
+        @remove="onRemoveUpload()"
+        @edit="showUploadEdit = true"
+      ></sota-upload-preview>
     </div>
 
     <!-- Dialog box to confirm Sota creation -->
@@ -153,10 +120,11 @@ import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
 import SotaUploadListItem from "@/components/sota-helper/SotaUploadListItem";
+import SotaUploadPreview from "@/components/sota-helper/SotaUploadPreview";
 
 export default {
   name: "SotaCreate",
-  components: { SotaUploadListItem },
+  components: { SotaUploadListItem, SotaUploadPreview },
   mixins: [validationMixin],
   data() {
     return {
@@ -169,14 +137,13 @@ export default {
       invalid: {},
       apiErrors: [],
       articlesUploaded: {},
-      preview: null,
       selected: {
         filename: null,
         upload: null
       },
       showAcceptMessage: false,
       showCreatedMessage: false,
-      showEditUpload: false
+      showUploadEdit: false
     };
   },
   validations: {
@@ -214,7 +181,11 @@ export default {
       return Object.keys(this.articlesUploaded);
     },
     previewJson() {
-      return this.preview.slice(0, 3);
+      if (this.selected["filename"] == null) {
+        return null;
+      }
+      const filename = this.selected["filename"];
+      return this.articlesUploaded[filename]["bibtex"].slice(0, 3);
     }
   },
 
@@ -247,7 +218,7 @@ export default {
         const reader = new FileReader();
         reader.onload = e => {
           const bib2Json = bibParser(e.target.result);
-          this.preview = bib2Json;
+          this.selected["filename"] = evt.name;
           this.$set(this.articlesUploaded, evt.name, {
             name: evt.name,
             size: evt.size,
@@ -258,12 +229,27 @@ export default {
       }
     },
 
+    onSelectUpload(filename) {
+      this.selected["filename"] = filename;
+      this.selected["upload"] = this.articlesUploaded[filename]["bibtex"];
+    },
+
     onRemoveUpload(filename) {
-      delete this.articlesUploaded[filename];
+      if (!filename) {
+        filename = this.selected["filename"];
+      }
+      if (this.selected["filename"] == filename) {
+        this.selected = {
+          filename: null,
+          upload: null
+        };
+      }
+      this.$delete(this.articlesUploaded, filename);
     },
     onEditUpload(filename) {
       this.selected.filename = filename;
       this.selected.upload = this.articlesUploaded[filename];
+      this.showUploadEdit = true;
       window.alert("Edit me : " + filename);
     },
 
@@ -323,16 +309,5 @@ export default {
 
 #bibtex-preview-container {
   max-width: 55%;
-}
-
-#bibtex-preview {
-  white-space: pre-wrap;
-  width: auto;
-  max-height: 375px;
-  overflow-y: hidden;
-}
-
-#bibtex-preview:hover {
-  overflow-y: visible;
 }
 </style>

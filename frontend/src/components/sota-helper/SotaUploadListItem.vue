@@ -1,7 +1,7 @@
 <template>
   <md-list-item class="md-layout md-gutter">
     <!-- <md-checkbox v-model="selected" class="md-layout-item md-primary md-size-5" :value="item.name"/> -->
-    <span class="md-layout-item upload-details" @click="onDetailsClick()">
+    <span class="md-layout-item upload-details" :class="{selected}" @click="onDetailsClick()">
       <span class="upload-name">{{item.name}}</span>
       &#x7C;
       <span class="upload-size" :title="item.size + ' Bytes'">{{item.size | sizeHuman }}</span>
@@ -18,7 +18,7 @@
       <md-button
         class="md-icon-button md-dense md-accent"
         title="Remove this SoTA"
-        @click="OnRemoveBtnClick()"
+        @click="onRemoveBtnClick()"
       >
         <md-icon>clear</md-icon>
       </md-button>
@@ -31,9 +31,12 @@ export default {
   name: "SotaUploadListItem",
   props: {
     item: {
-      type: Object,
       required: true,
       default: () => {}
+    },
+    selected: {
+      type: Boolean,
+      default: () => true
     }
   },
   computed: {},
@@ -55,5 +58,9 @@ export default {
 .upload-details {
   cursor: pointer;
   padding-left: 5%;
+}
+
+.upload-details.selected {
+  font-weight: bold;
 }
 </style>
