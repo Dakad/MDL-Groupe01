@@ -1,14 +1,12 @@
 <template>
   <div class="menuArticle">
-    <md-card-actions>
-      <md-button class="md-icon-button" :title="bookmarkBtnTitle" @click="bookmarkMe">
-        <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
-      </md-button>
+    <md-button class="md-icon-button" :title="bookmarkBtnTitle" @click="bookmarkMe">
+      <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
+    </md-button>
 
-      <md-button class="md-icon-button" title="Download" @click="downloadRef">
-        <md-icon>get_app</md-icon>
-      </md-button>
-    </md-card-actions>
+    <md-button class="md-icon-button" title="Download" @click="downloadRef">
+      <md-icon>get_app</md-icon>
+    </md-button>
   </div>
 </template>
 
