@@ -57,7 +57,7 @@ public class StateOfTheArtController {
     @ApiResponse(code = 400, message = "The SoTA is already created"),
     @ApiResponse(code = 404, message = "The provided article reference doesn't exist")
   })
-  @PostMapping({"/", "/add"})
+  @PostMapping({"", "/"})
   public ResponseEntity create(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser) {
     String username = authUser.getName();
     UserDTO currentUser = new UserDTO();
@@ -80,7 +80,7 @@ public class StateOfTheArtController {
     boolean done = sotaService.addBookmark(reference, authUser.getName(), data.getNote());
     return ResponseEntity.status(HttpStatus.CREATED)
       .body(DefaultResponseDTO.builder().done(done)
-        .message("Bookmark " + (!done ? "not" : "") + " added"));
+        .message("Bookmark " + (!done ? "not" : "") + " added").build());
   }
 
 
@@ -99,7 +99,7 @@ public class StateOfTheArtController {
     boolean done = sotaService.removeBookmark(reference, authUser.getName());
     return ResponseEntity.status(HttpStatus.OK)
       .body(DefaultResponseDTO.builder().done(done)
-        .message("Bookmark " + (!done ? "not" : "") + " removed"));
+        .message("Bookmark " + (!done ? "not" : "") + " removed").build());
   }
 
 
@@ -108,7 +108,8 @@ public class StateOfTheArtController {
     boolean done = sotaService.isBookmarked(reference, authUser.getName());
     return ResponseEntity.status(HttpStatus.OK)
       .body(DefaultResponseDTO.builder().done(done)
-        .message("This article is " + (done ? "" : "not") + " present your bookmarks"));
+        .message("This article is " + (done ? "" : "not") + " present your bookmarks").build()
+      );
   }
 
 
@@ -119,7 +120,7 @@ public class StateOfTheArtController {
     boolean done = sotaService.removeBookmark(reference, authUser.getName());
     String msg = "SoTA " + (!done ? "not" : "") + " removed";
     return ResponseEntity.status(HttpStatus.OK)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+      .body(DefaultResponseDTO.builder().done(done).message(msg).build());
   }
 
 }

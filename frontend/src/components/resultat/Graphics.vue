@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="graphics">
+  <div class>
+    <md-card id="graphic">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         v-if="bounds.minX"
@@ -44,7 +44,7 @@
           >{{link.tag.substr(0, link.tag.length - 2)}}</text>
         </template>
       </svg>
-    </div>
+    </md-card>
     <div class="legend">
       <div class="more-info">
         <h5 class>More Info</h5>
@@ -126,7 +126,7 @@ export default {
       yearHolder: "",
       rMouseOver: 25,
       rMouseOut: 10,
-      r:10,
+      r: 10,
       selected: null
     };
   },
@@ -147,16 +147,17 @@ export default {
       };
     },
     coords() {
-      const clientWidth = document.getElementById("graphics").clientWidth;
+      const clientWidth = document.getElementById("graphic").clientWidth;
+      const clientHeight = document.getElementById("graphic").clientHeight;
       return this.graph.nodes.map(node => {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (clientWidth - 7 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 2 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
-            ((node.y - this.bounds.minY) * (this.height - 2 * this.padding)) /
+            ((node.y - this.bounds.minY) * (clientHeight - 2 * this.padding)) /
               (this.bounds.maxY - this.bounds.minY)
         };
       });
@@ -239,9 +240,12 @@ export default {
       }
       arrayYear.sort();
       let delta = arrayYear[arrayYear.length - 1] - arrayYear[0];
-      let deltasum = ((delta*20)/delta);
+      let deltasum = (delta * 20) / delta;
       let opacityVar =
-        (arrayYear[arrayYear.length - 1] + delta + deltasum - this.graph.nodes[j].year) /
+        (arrayYear[arrayYear.length - 1] +
+          delta +
+          deltasum -
+          this.graph.nodes[j].year) /
         (delta + deltasum);
       return 2 - opacityVar;
     },
@@ -253,12 +257,11 @@ export default {
 
       this.selected = d;
 
-      this.r = this.rMouseOver
+      this.r = this.rMouseOver;
     },
 
     nullInfo(d, i) {
-      this.r = this.rMouseOut
-
+      this.r = this.rMouseOut;
     }
   }
 };
@@ -266,12 +269,11 @@ export default {
 
 
 <style lang="css" scoped>
-
-.graphics {
+#graphic {
   position: relative;
   float: left;
   width: 75%;
-  margin-right: 3px;
+  margin-right: 2%;
   border: lightgrey 1px solid;
 }
 
