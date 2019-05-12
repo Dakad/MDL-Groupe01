@@ -1,6 +1,6 @@
 <template>
     <div id="bookmarks">
-    <h2>Articles bookmarked</h2>
+    <h2 v-if="articles.length!=0">Articles bookmarked</h2>
         <div class="article">
             <div v-for="item in articles" :key="item">
                 <md-card md-with-hover>
@@ -12,7 +12,7 @@
                 </md-card>
             </div>
         </div>
-    <h2>State of the art bookmarked</h2>
+    <h2 v-if="sota.length!=0">State of the art bookmarked</h2>
         <div class="sota">
             <div v-for="item in sota" :key="item">
                 <md-card md-with-hover>

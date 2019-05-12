@@ -41,8 +41,8 @@
         <md-empty-state
           v-if="!bookmarkList || bookmarkList == 0"
           md-icon="view_module"
-          md-label="No bookmark found"
-          md-description="Search for article to bookmark them."
+          md-label="No bookmarks found"
+          md-description="Search for article/state of the art to bookmark them."
           ></md-empty-state>
         </md-tab>
       </md-tabs>
@@ -70,7 +70,8 @@ export default {
     return {
       profil: {},
       bookmarkList: {},
-      sotaList: {},
+      sota: {},
+      reference:null,
       infoPro: {},
       username: {},
       loading: false
@@ -80,7 +81,7 @@ export default {
     this.username = this.$route.params["username"];
     this.fetchProfile();
     this.fetchBookmark()
-   // this.fetchSota();
+    //this.fetchSota();
     this.fetchDataPro();
   },
   methods: {
@@ -95,10 +96,8 @@ export default {
       });
     },
     fetchSota() {
-      getProfileSota(this.username).then(data => {
-        this.sotaList = data;
-        console.log(this.sotaList);
-      });
+      getSota(this.reference).then(data =>{ 
+      this.sota = data});
     },
     fetchDataPro() {
       getProfileInfoPro(this.username).then(data => {
