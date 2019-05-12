@@ -64,6 +64,13 @@ import {
 } from "@/services/api-sota";
 import { isLogged } from "@/services/api-user";
 
+import {
+  EventBus,
+  EVENT_USER_LOGGED,
+  EVENT_USER_LOGOUT,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
+
 const colorHash = new ColorHash();
 
 export default {
@@ -104,14 +111,14 @@ export default {
   },
 
   created() {
+    if (this.userIsLogged) {
+      this.getBookmarkState();
+    }
+
+    EventBus.$on(EVENT_USER_LOGOUT, _ => (this.userIsLogged = false));
+
     // fetch the data when the view is created
     this.fetchSota();
-
-    if (this.userIsLogged) {
-      sotaGetBookmark(this.reference).then(
-        data => (this.isBookmarked = data.done)
-      );
-    }
   },
 
   methods: {
@@ -122,12 +129,21 @@ export default {
       if (!this.userIsLogged) return;
 
       if (this.isBookmarked) {
-        sotaDeleteBookmark(this.reference).then(
-          x => (this.isBookmarked = false)
-        );
+        sotaDeleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+          );
       } else {
-        sotaPostBookmark(this.reference).then(x => (this.isBookmarked = true));
+        sotaPostBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "SoTA bookmarked"));
       }
+    },
+    getBookmarkState() {
+      sotaGetBookmark(this.reference).then(
+        data => (this.isBookmarked = data.done)
+      );
     }
   }
 };
