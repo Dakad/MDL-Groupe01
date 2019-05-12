@@ -38,7 +38,12 @@
         ></SotaMenu>
       </div>
     </div>
-    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="sota-articles">
+    <md-tabs
+      md-alignment="fixed"
+      :md-active-tab="activeTab"
+      class="sota-articles"
+      @md-changed="updateURL"
+    >
       <md-tab id="articles-list" md-label="List of articles" md-icon="description">
         <h5>List of article in the SOTA:</h5>
 
@@ -118,7 +123,7 @@ export default {
       },
       isBookmarked: false,
       wantDownload: false,
-      activeTab: "articles-list",
+      activeTab: this.$route.query["tab"] || "articles-list",
       downloadData: {
         json: "",
         bibtex: ""
@@ -148,7 +153,7 @@ export default {
   },
 
   watch: {
-    $route: "fetchSota"
+    "$route.path": "fetchSota"
   },
 
   created() {
@@ -163,6 +168,12 @@ export default {
   },
 
   methods: {
+    updateURL(tab) {
+      this.activeTab = tab;
+      const query = { ...this.$route.query };
+      query["tab"] = tab;
+      this.$router.push({ query });
+    },
     fetchSota() {
       return getSota(this.reference).then(data => (this.sota = data));
     },
