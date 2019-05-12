@@ -32,6 +32,11 @@
                 <span>SoTA Helper</span>
               </md-menu-item>
 
+              <md-menu-item @click="$router.push({ name : 'modifyProfil' })">
+                <md-icon>info</md-icon>
+                <span>Change my information's</span>
+              </md-menu-item>
+
               <md-divider></md-divider>
 
               <md-menu-item @click="logout()">
