@@ -33,7 +33,7 @@
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
           @bookmark="bookmarkSota"
-          @download="wantDownload"
+          @download="wantDownload = true"
         ></SotaMenu>
       </div>
     </div>
