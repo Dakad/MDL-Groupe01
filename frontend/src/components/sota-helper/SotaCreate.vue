@@ -1,93 +1,119 @@
 <template>
-  <div>
-    <form
-      class="md-layout md-gutter md-alignment-center-space-between"
-      novalidate
-      @submit.prevent="validateSota"
-    >
-      <div class="md-layout-item md-size-100 md-layout md-gutter">
-        <div class="md-layout-item">
-          <h2 class="create-sota-heading">Create a new SoTA via an upload</h2>
-          <br>
-          <md-field
-            :class="[getValidationClass('title'), {'md-invalid': invalid['title'] != null}]"
-          >
-            <md-icon>event</md-icon>
-            <label for="title">
-              Title of the SotA
-              <span class="md-subheading">(REQUIRED)</span>
-            </label>
-            <md-input name="title" id="title" v-model.lazy.trim="sota.title" :disabled="sending"></md-input>
-            <span class="md-helper-text"></span>
-            <span class="md-error" v-if="!$v.sota.title.required">The title is required</span>
-            <span class="md-error" v-if="!$v.sota.title.minLength">At least, 5 characters</span>
-            <span class="md-error" v-if="!$v.sota.title.maxLength">250 characters should be enough</span>
-            <span class="md-error" v-if="invalid['title'] != null">{{invalid['title']}}</span>
-          </md-field>
+  <div class="app-sota-create md-layout md-gutter md-alignment-top-space-between">
+    <form class="md-layout-item md-size-45" novalidate @submit.prevent="validateSota">
+      <h2 class="create-sota-heading">Create a new SoTA via upload</h2>
+      <br>
+      <md-field :class="[getValidationClass('title'), {'md-invalid': invalid['title'] != null}]">
+        <md-icon>event</md-icon>
+        <label for="title">
+          Title of the SotA
+          <span class="md-subheading">(REQUIRED)</span>
+        </label>
+        <md-input name="title" id="title" v-model.lazy.trim="sota.title" :disabled="sending"></md-input>
+        <span class="md-helper-text"></span>
+        <span class="md-error" v-if="!$v.sota.title.required">The title is required</span>
+        <span class="md-error" v-if="!$v.sota.title.minLength">At least, 5 characters</span>
+        <span class="md-error" v-if="!$v.sota.title.maxLength">250 characters should be enough</span>
+        <span class="md-error" v-if="invalid['title'] != null">{{invalid['title']}}</span>
+      </md-field>
 
-          <md-field
-            :class="[getValidationClass('subject'), {'md-invalid': invalid['subject'] != null}]"
-          >
-            <md-icon>event</md-icon>
-            <label for="subject">Main subject</label>
-            <md-input name="subject" id="subject" v-model.lazy.trim="sota.subject"/>
-            <span class="md-error" v-if="!$v.sota.subject.required">The subject is required</span>
-            <span class="md-error" v-if="!$v.sota.subject.minLength">At least, 5 characters</span>
-            <span
-              class="md-error"
-              v-if="!$v.sota.subject.sameAsTitle"
-            >Cannot be the same as the title</span>
-            <span class="md-error" v-if="invalid['subject'] != null">{{invalid['subject']}}</span>
-          </md-field>
+      <md-field
+        :class="[getValidationClass('subject'), {'md-invalid': invalid['subject'] != null}]"
+      >
+        <md-icon>event</md-icon>
+        <label for="subject">Main subject</label>
+        <md-input name="subject" id="subject" v-model.lazy.trim="sota.subject"/>
+        <span class="md-error" v-if="!$v.sota.subject.required">The subject is required</span>
+        <span class="md-error" v-if="!$v.sota.subject.minLength">At least, 5 characters</span>
+        <span class="md-error" v-if="!$v.sota.subject.sameAsTitle">Cannot be the same as the title</span>
+        <span class="md-error" v-if="invalid['subject'] != null">{{invalid['subject']}}</span>
+      </md-field>
 
-          <md-field>
-            <md-icon>event</md-icon>
-            <label>Keywords</label>
-            <md-textarea v-model.lazy.trim="sota.keywords" md-autogrow></md-textarea>
-            <span class="md-helper-text">
-              Separate each tags with a coma
-              <!-- <strong class="md-headline">,</strong> -->
-            </span>
-          </md-field>
-          <br>
-          <md-field>
-            <label>Import bibtex file</label>
-            <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
-          </md-field>
+      <md-field>
+        <md-icon>event</md-icon>
+        <label>Keywords</label>
+        <md-textarea v-model.lazy.trim="sota.keywords" md-autogrow></md-textarea>
+        <span class="md-helper-text">
+          Separate each tags with a coma
+          <!-- <strong class="md-headline">,</strong> -->
+        </span>
+      </md-field>
+      <br>
+      <md-field>
+        <label>Import bibtex file</label>
+        <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
+      </md-field>
 
-          <md-list>
-            <sota-upload-list-item
-              v-for="upload in uploads"
-              :key="upload"
-              :item="articlesUploaded[upload]"
-            />
-          </md-list>
+      <!-- Upload btn -->
+      <div class id="upload-btn-container">
+        <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
+        <md-button class="md-raised md-accent" :md-ripple="false">Clear uploads</md-button>
+      </div>
 
-          <!-- Upload btn -->
-          <div class="md-layout-item md-size-100" id="upload-btn-container">
-            <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
-          </div>
+      <hr v-if="uploads.length">
 
-          <div>
-            <ul>
-              <li v-for="(error, index) in apiErrors" :key="index">
-                <span class="md-error">{{error}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <md-list class="upload-file-list md-scrollbar">
+        <sota-upload-list-item
+          v-for="upload in uploads"
+          :key="upload"
+          :item="articlesUploaded[upload]"
+          @select="preview = articlesUploaded[upload].bibtex"
+          @remove="onRemoveUpload"
+          @edit="onEditUpload"
+        />
+      </md-list>
 
-        <!-- Import bibtex field -->
-        <div class="md-layout-item md-size-45">
-          <h3 class="md-title">Preview of processed .bibtex</h3>
-          <md-card>
-            <md-content id="bibtex-preview">
-              <pre>{{preview.json}}</pre>
-            </md-content>
-          </md-card>
-        </div>
+      <div>
+        <ul>
+          <li v-for="(error, index) in apiErrors" :key="index">
+            <span class="md-error">{{error}}</span>
+          </li>
+        </ul>
       </div>
     </form>
+
+    <!-- Import bibtex field -->
+    <div class="md-layout-item md-size" id="bibtex-preview-container">
+      <md-card>
+        <md-card-header>
+          <md-card-header-text>
+            <div class="md-title" title="Only the 3 first articles">Preview of processed .bibtex</div>
+            <div
+              class="md-subhead"
+              v-if="preview"
+            >Contains {{ preview.length | pluralize('article')}}</div>
+          </md-card-header-text>
+          <md-menu md-size="big" md-direction="bottom-end">
+            <md-button class="md-icon-button" md-menu-trigger>
+              <md-icon>more_vert</md-icon>
+            </md-button>
+
+            <md-menu-content>
+              <md-menu-item @click="onEditUpload">
+                <span>Edit</span>
+                <md-icon>create</md-icon>
+              </md-menu-item>
+
+              <md-menu-item @click="onRemoveUpload">
+                <span>Remove</span>
+                <md-icon>clear</md-icon>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </md-card-header>
+
+        <md-card-content v-if="preview" class="md-scrollbar">
+          <!-- id="bibtex-preview" -->
+          <pre id="bibtex-preview">{{preview.slice(0,2)}}</pre>
+          <b v-if="preview.length > 3" class="md-subhead">&hellip; {{preview.length - 3}} more</b>
+        </md-card-content>
+
+        <!-- <md-card-actions>
+          <md-button :md-ripple="false" class="md-primary">Edit</md-button>
+          <md-button :md-ripple="false" class="md-raised md-accent">Remove</md-button>
+        </md-card-actions>-->
+      </md-card>
+    </div>
 
     <!-- Dialog box to confirm Sota creation -->
     <md-dialog-confirm
@@ -143,12 +169,14 @@ export default {
       invalid: {},
       apiErrors: [],
       articlesUploaded: {},
-      preview: {
-        json: null,
-        bibtex: null
+      preview: null,
+      selected: {
+        filename: null,
+        upload: null
       },
       showAcceptMessage: false,
-      showCreatedMessage: false
+      showCreatedMessage: false,
+      showEditUpload: false
     };
   },
   validations: {
@@ -184,6 +212,9 @@ export default {
     },
     uploads() {
       return Object.keys(this.articlesUploaded);
+    },
+    previewJson() {
+      return this.preview.slice(0, 3);
     }
   },
 
@@ -213,11 +244,10 @@ export default {
       for (let i = 0; i < event.length; i++) {
         const evt = event[i];
 
-        let reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = e => {
-          this.preview["bibtex"] = e.target.result;
           const bib2Json = bibParser(e.target.result);
-          this.preview["json"] = bib2Json;
+          this.preview = bib2Json;
           this.$set(this.articlesUploaded, evt.name, {
             name: evt.name,
             size: evt.size,
@@ -226,6 +256,15 @@ export default {
         };
         reader.readAsText(evt);
       }
+    },
+
+    onRemoveUpload(filename) {
+      delete this.articlesUploaded[filename];
+    },
+    onEditUpload(filename) {
+      this.selected.filename = filename;
+      this.selected.upload = this.articlesUploaded[filename];
+      window.alert("Edit me : " + filename);
     },
 
     sendSota() {
@@ -263,18 +302,33 @@ export default {
 </script>
 
 <style scoped>
+.app-sota-create {
+  padding: 2%;
+}
+
 #upload-btn-container {
   text-align: center;
-  margin: 40px;
+  margin: 15px;
+}
+
+.upload-file-list {
+  max-height: 150px;
+  /* max-width: 110%; */
+  overflow: hidden;
+}
+
+.upload-file-list:hover {
+  overflow-y: visible;
+}
+
+#bibtex-preview-container {
+  max-width: 55%;
 }
 
 #bibtex-preview {
-  padding: 10px;
-  height: 90%;
-  max-height: 450px;
   white-space: pre-wrap;
-  font-size: 13px;
-  /* border: 3px solid gray; */
+  width: auto;
+  max-height: 375px;
   overflow-y: hidden;
 }
 
