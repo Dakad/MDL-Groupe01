@@ -55,6 +55,35 @@
             <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
           </md-field>
 
+          <md-list>
+            <md-list-item v-for="upload in uploads" :key="upload" class="md-layout md-gutter">
+              <md-checkbox
+                v-model="sending"
+                class="md-layout-item md-primary md-size-5"
+                :value="upload"
+              />
+              <span class="md-layout-item">
+                <span class="upload-name">{{upload}}</span>
+                &#x7C;
+                <span
+                  class="upload-size"
+                >{{articlesUploaded[upload].size | sizeHuman }}</span>
+              </span>
+
+              <code class="md-layout-item md-size-15 upload-actions">
+                <md-button
+                  class="md-icon-button md-dense md-primary"
+                  title="Add more info about this bibtex"
+                >
+                  <md-icon>create</md-icon>
+                </md-button>
+                <md-button class="md-icon-button md-dense md-accent" title="Remove this SoTA">
+                  <md-icon>clear</md-icon>
+                </md-button>
+              </code>
+            </md-list-item>
+          </md-list>
+
           <!-- Upload btn -->
           <div class="md-layout-item md-size-100" id="upload-btn-container">
             <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
@@ -131,7 +160,7 @@ export default {
       sending: false,
       invalid: {},
       apiErrors: [],
-      articlesUploaded: [],
+      articlesUploaded: {},
       preview: {
         json: null,
         bibtex: null
@@ -170,6 +199,9 @@ export default {
         { name: "White", color: "#ffffff" },
         { name: "Yellow", color: "#ffff00" }
       ];
+    },
+    uploads() {
+      return Object.keys(this.articlesUploaded);
     }
   },
 
@@ -198,15 +230,17 @@ export default {
     onFileUpload(event) {
       for (let i = 0; i < event.length; i++) {
         const evt = event[i];
-        debugger;
 
         let reader = new FileReader();
         reader.onload = e => {
           this.preview["bibtex"] = e.target.result;
           const bib2Json = bibParser(e.target.result);
           this.preview["json"] = bib2Json;
-          this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
-          console.log(this.articlesUploaded);
+          this.$set(this.articlesUploaded, evt.name, {
+            name: evt.name,
+            size: evt.size,
+            bibtex: bib2Json
+          });
         };
         reader.readAsText(evt);
       }
