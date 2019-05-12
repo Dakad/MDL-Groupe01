@@ -37,14 +37,11 @@
           </md-card-area>
 
           <md-card-actions>
-            <md-button class="md-icon-button" title="Add to SoTA">
-              <md-icon>playlist_add</md-icon>
-            </md-button>
-
             <md-button
+              v-if="isLogged"
               class="md-icon-button"
               title="Bookmark it"
-              @click="getBook"
+              @click="setBookmark"
             >
               <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
@@ -70,7 +67,18 @@ import ColorHash from "color-hash";
 import InfoNav from "@/components/article/InfoNav";
 import MenuArticle from "@/components/article/MenuArticle";
 import { getArticleByReference } from "@/services/api";
-import { getBookmarked, postBookmark, deleteBookmark } from "@/services/api-article";
+import { isLogged } from "@/services/api-user";
+
+import {
+  getBookmarked,
+  postBookmark,
+  deleteBookmark
+} from "@/services/api-article";
+import {
+  EventBus,
+  EVENT_USER_LOGOUT,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
 
 const colorHash = new ColorHash();
 
@@ -78,25 +86,25 @@ export default {
   name: "Article",
   props: ["reference"],
   components: {
-    InfoNav,
+    InfoNav
     //MenuArticle
   },
   data() {
     return {
       article: {},
+      isLogged: isLogged(),
       isBookmarked: false
     };
   },
   watch: {
     $route: "fetchArticle"
   },
-  created() {
+  mounted() {
+    EventBus.$on(EVENT_USER_LOGOUT, _ => (this.isLogged = false));
+
     // fetch the data when the view is created
     this.fetchArticle();
-    getBookmarked(this.reference).then(
-      data => (this.isBookmarked = data.done)
-    );
-    console.log(this.isBookmarked)
+    getBookmarked(this.reference).then(data => (this.isBookmarked = data.done));
   },
 
   computed: {
@@ -144,12 +152,23 @@ export default {
         data => (this.article = data)
       );
     },
+    getBookmarkState() {
+      getBookmarked(this.reference).then(
+        data => (this.isBookmarked = data.done)
+      );
+    },
 
-    getBook() {
-      if (!this.isBookmarked){
-        postBookmark(this.reference).then(x => this.isBookmarked = true)
-      } else if (this.isBookmarked){
-        deleteBookmark(this.reference).then(x => this.isBookmarked = false)
+    setBookmark() {
+      if (!this.isBookmarked) {
+        postBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "Article bookmarked"));
+      } else if (this.isBookmarked) {
+        deleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "Article removed from bookmarks")
+          );
       }
     }
   }

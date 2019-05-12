@@ -32,21 +32,51 @@
           v-if="userIsLogged"
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
+          :download-filename="sota.title"
           @bookmark="bookmarkSota"
+          @download="download()"
         ></SotaMenu>
       </div>
     </div>
-    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="sota-articles">
-      <md-tab id="articles-list" md-label="List of articles" md-icon="view_day">
+    <md-tabs
+      md-alignment="fixed"
+      :md-active-tab="activeTab"
+      class="sota-articles"
+      @md-changed="updateURL"
+    >
+      <md-tab id="articles-list" md-label="List of articles" md-icon="description">
         <h5>List of article in the SOTA:</h5>
 
         <article-list :list="sota.articles"></article-list>
       </md-tab>
 
       <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
-        <!-- TODO Mettre la visu de David -->
+        <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
       </md-tab>
     </md-tabs>
+
+    <!-- Download SoTA choice Dialog  -->
+
+    <md-dialog :md-active.sync="wantDownload">
+      <md-dialog-title>Choose the download file format ?</md-dialog-title>
+      <md-content class="md-layout md-alignment-center-space-around">
+        <md-button
+          class="md-dense md-raised"
+          :href="downloadData.json"
+          :download="this.sota.reference +'.json'"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('JSON')"
+        >JSON</md-button>
+
+        <md-button
+          :href="downloadData.bibtex"
+          :download="this.sota.reference +'.bib'"
+          class="md-dense md-raised md-primary"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
+        >BIBTEX</md-button>
+      </md-content>
+    </md-dialog>
   </div>
 </template>
 
@@ -55,6 +85,7 @@ import ColorHash from "color-hash";
 
 // import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
+import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import ArticleList from "@/components/resultat/ArticleList";
 import {
   getSota,
@@ -63,6 +94,16 @@ import {
   sotaPostBookmark
 } from "@/services/api-sota";
 import { isLogged } from "@/services/api-user";
+import { exportAsJson, exportAsBibtex } from "@/services/api";
+import { toBibtex } from "@/services/bibtex-parse";
+
+
+import {
+  EventBus,
+  EVENT_USER_LOGGED,
+  EVENT_USER_LOGOUT,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
 
 const colorHash = new ColorHash();
 
@@ -72,7 +113,8 @@ export default {
   components: {
     // InfoNav,
     SotaMenu,
-    ArticleList
+    ArticleList,
+    SotaGraphic
   },
   data() {
     return {
@@ -81,7 +123,12 @@ export default {
         creator: {}
       },
       isBookmarked: false,
-      activeTab: "articles-list"
+      wantDownload: false,
+      activeTab: this.$route.query["tab"] || "articles-list",
+      downloadData: {
+        json: "",
+        bibtex: ""
+      }
     };
   },
   computed: {
@@ -96,25 +143,38 @@ export default {
       return {
         "background-color": colorHash.hex(this.sota.subject)
       };
+    },
+    jsonData() {
+      return exportAsJson(this.sota);
+    },
+    bibtexData() {
+      const data = toBibtex(this.sota.articles);
+      return exportAsBibtex(data);
     }
   },
 
   watch: {
-    $route: "fetchSota"
+    "$route.path": "fetchSota"
   },
 
   created() {
+    if (this.userIsLogged) {
+      this.getBookmarkState();
+    }
+
+    EventBus.$on(EVENT_USER_LOGOUT, _ => (this.userIsLogged = false));
+
     // fetch the data when the view is created
     this.fetchSota();
-
-    if (this.userIsLogged) {
-      sotaGetBookmark(this.reference).then(
-        data => (this.isBookmarked = data.done)
-      );
-    }
   },
 
   methods: {
+    updateURL(tab) {
+      this.activeTab = tab;
+      const query = { ...this.$route.query };
+      query["tab"] = tab;
+      this.$router.push({ query });
+    },
     fetchSota() {
       return getSota(this.reference).then(data => (this.sota = data));
     },
@@ -122,12 +182,35 @@ export default {
       if (!this.userIsLogged) return;
 
       if (this.isBookmarked) {
-        sotaDeleteBookmark(this.reference).then(
-          x => (this.isBookmarked = false)
-        );
+        sotaDeleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+          );
       } else {
-        sotaPostBookmark(this.reference).then(x => (this.isBookmarked = true));
+        sotaPostBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "SoTA bookmarked"));
       }
+    },
+    getBookmarkState() {
+      sotaGetBookmark(this.reference).then(
+        data => (this.isBookmarked = data.done)
+      );
+
+    },
+    download(format) {
+      this.wantDownload = true;
+
+      this.downloadData["json"] = exportAsJson(this.sota);
+
+      const text = toBibtex(this.sota.articles);
+      this.downloadData["bibtex"] = exportAsBibtex(text);
+    },
+    onDownloadFormatChoiceBtnClick(choice) {
+      this.wantDownload = false;
+      EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
+
     }
   }
 };
