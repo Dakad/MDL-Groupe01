@@ -78,7 +78,7 @@ function parseToBibtex([reference, article]) {
     return '';
   }
 
-  let bibtex = `@book{${reference},\n`;
+  let bibtex = `@article{${reference},\n`;
   // Loop over the fields of the article
   bibtex += Object.entries(article)
     .map(([field, value]) => `${field} = ${JSON.stringify(value)}`)
