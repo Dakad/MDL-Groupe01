@@ -1,13 +1,14 @@
 <template>
-  <section class="accueilapp md-layout md-alignement-center-center">
-    <div class="central md-layout-item md-size-80 md-layout">
+  <section class="accueilapp md-layout md-alignment-top-center">
+    <div class="central md-layout-item md-size-70 md-layout md-alignment-top-center">
       
-      <div class="md-layout-item md-size-80 md-layout md-gutter">
+      <div class="head md-layout-item md-size-80 md-layout md-gutter md-alignment-top-center">
         <img class="logoimg md-layout-item md-size-15" src="../assets/logo-app.png" style="width:90px;height:100px;">
-        <div class="title md-layout-item"><h1>Froggosaur</h1></div>
+        <div class="title md-layout-item md-size-40"><h1>Froggosaur</h1></div>
+        <!-- ou md-size-35? -->
       </div>
 
-      <div class="md-layout-item md-size-80">
+      <div class="search md-layout-item md-size-80">
         <h2>{{msg}}</h2>
 
         <!-- place the searched words in var searchwords and the action to
@@ -17,7 +18,7 @@
       </div>
     </div>  
 
-    <div class="recommended md-layout-item">
+    <div class="recommended md-layout-item md-size-80">
       <carousel
         :per-page="3"
         :autoplay="true"
@@ -25,7 +26,7 @@
         :autoplayTimeout="5000"
         :navigationEnabled="true"
       >
-        <slide class="slides" v-for="(recommended,index) in articles" :key="index">
+        <slide class="slides" v-once v-for="(recommended,index) in articles" :key="index">
           <article-slide
             :title="recommended.title"
             :authors="recommended.authors"
@@ -72,27 +73,8 @@ export default {
 </script>
 
 <style scoped>
-img {
+/* img {
   float: left;
-}
-
-/* .central {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width: 75%;
-  height: 35%;
-  overflow: auto;
-} */
-
-.central {
-  margin: 10%;
-}
-
-/* .l {
-  position: relative;
 } */
 
 /* .logoimg {
@@ -107,66 +89,28 @@ img {
   left: 35%;
 } */
 
-/* h1 {
-  margin-left: 50px;
-  margin-top: 35px;
-} */
-
-/* #search {
-  margin-top: 140px;
-} */
-
-p {
-  margin-left: 15px;
-  width: 20%;
+.head {
+  margin-top: 2%;
 }
 
-/* .recommended {
-  margin: 0;
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width: 75%;
-  height: 47%;
+h1 {
+  margin-left: 47px;
+  margin-top: 35px;
+}
+
+/* #search {
+  margin-top: 100px;
 } */
 
+.search {
+  margin-top: 2%;
+}
+
 .recommended {
-  margin: 10%;
+  margin-top: 2%;
 }
 
 .slides {
   margin: 3px;
-}
-
-/*.switch-news {
-  float: right;
-  margin-right: 50px;
-  position: absolute;
-  top: 5%;
-  left: 85%;
-}*/
-
-.searchText {
-  height: 20%;
-  width: 87%;
-  position: absolute;
-  top: 70%;
-}
-
-.searchbutton {
-  width: 10%;
-  height: 15%;
-  position: absolute;
-  left: 89%;
-  top: 75%;
-}
-
-.label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 </style>
