@@ -6,12 +6,18 @@ import bibtexParser from 'bibtex-parse-js';
 
 // -------------------------------------------------------------------
 // Properties
-
-// -------------------------------------------------------------------
-// Exports
+const EXCLUDED_PROPS = [
+  'creator',
+  'nbrePage',
+  'nb_citations',
+  'nb_views',
+  'created_at',
+  'category',
+  'price'
+];
 
 /**
- *
+ * Format a parsed bibtex to the correct formatted Json object
  * @param {*} json
  */
 function formatToJson(json) {
@@ -30,6 +36,30 @@ function formatToJson(json) {
   return json;
 }
 
+function formatToBibtex(article) {
+  const reference = article['reference'];
+  Object.keys(article).forEach(property => {
+    // Delete incorrect bibtex field or null value
+    if (EXCLUDED_PROPS.includes(property) || article[property] == null) {
+      delete article[property];
+    }
+    switch (property) {
+      case 'authors':
+        article['author'] = article[property].join(' and ');
+        delete article['authors'];
+        break;
+      case 'keywords':
+        article['keywords'] = article[property].map(k => k.name).join(', ');
+        break;
+
+      default:
+        break;
+    }
+  });
+  delete article['reference'];
+  return [reference, article];
+}
+
 /**
  *
  * @param {*} json
@@ -43,6 +73,26 @@ function transformToJson(json) {
   });
 }
 
+function parseToBibtex([reference, article]) {
+  if (typeof article != 'object') {
+    return '';
+  }
+
+  let bibtex = `@book{${reference},\n`;
+  // Loop over the fields of the article
+  bibtex += Object.entries(article)
+    .map(([field, value]) => `${field} = ${JSON.stringify(value)}`)
+    .join('\n');
+
+  // Close the  bibtex
+  bibtex += '\n}';
+
+  return bibtex;
+}
+
+// -------------------------------------------------------------------
+// Exports
+
 /**
  *
  * @param {*} bibtex
@@ -54,34 +104,14 @@ export function parse(bibtex) {
     .map(transformToJson);
 }
 
-export function toBibtex(json) {
+export function toBibtex(articles) {
   let bibtex = '';
-  debugger;
-  if (Array.isArray(json)) {
-    bibtex = json.map(value => parseJsonToBibtex(value)).join('\n\n');
-  } else {
-    bibtex = parseJsonToBibtex(json);
+  if (!Array.isArray(articles)) {
+    articles = [articles];
   }
-  return bibtex;
-}
-
-function parseJsonToBibtex(article) {
-  if (typeof article != 'object' || !article.hasOwnProperty('reference')) {
-    return '';
-  }
-
-  let bibtex = `@book{${article.reference},`;
-  // Loop over the fields of the article
-  Object.keys(article).forEach((field, i, list) => {
-    // write them in the str
-    bibtex += `${field} = ${JSON.stringify(article[field])}\n`;
-    if (i < list.length - 1) {
-      bibtex += ',';
-    }
-  });
-
-  // Close the  bibtex
-  bibtex += '}';
-
+  bibtex = articles
+    .map(formatToBibtex)
+    .map(parseToBibtex)
+    .join('\n\n');
   return bibtex;
 }
