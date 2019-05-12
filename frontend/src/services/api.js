@@ -58,3 +58,23 @@ export function getArticlesByCategories(categories) {
     })
     .then(res => res.body);
 }
+
+export function exportAsJson(data, filename) {
+  if (filename && filename.endsWith('.json')) {
+    filename += '.json';
+  }
+  const fileToSave = new Blob([JSON.stringify(data, undefined, 2)], {
+    type: 'application/json'
+  });
+  return URL.createObjectURL(fileToSave);
+}
+
+export function exportAsBibtex(data, filename) {
+  if (filename && filename.endsWith('.bib')) {
+    filename += '.bib';
+  }
+  const fileToSave = new Blob([data], {
+    type: 'application/x-bibtex'
+  });
+  return URL.createObjectURL(fileToSave);
+}

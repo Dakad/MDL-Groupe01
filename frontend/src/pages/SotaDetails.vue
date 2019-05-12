@@ -32,7 +32,9 @@
           v-if="userIsLogged"
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
+          :download-filename="sota.title"
           @bookmark="bookmarkSota"
+          @download="wantDownload = true; download()"
         ></SotaMenu>
       </div>
     </div>
@@ -47,6 +49,29 @@
         <!-- TODO Mettre la visu de David -->
       </md-tab>
     </md-tabs>
+
+    <!-- Download SoTA choice Dialog  -->
+
+    <md-dialog :md-active.sync="wantDownload">
+      <md-dialog-title>Choose the download file format ?</md-dialog-title>
+      <md-content class="md-layout md-alignment-center-space-around">
+        <md-button
+          class="md-dense md-raised"
+          :href="downloadData.json"
+          :download="this.sota.reference +'.json'"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('JSON')"
+        >JSON</md-button>
+
+        <md-button
+          :href="downloadData.bibtex"
+          :download="this.sota.reference +'.bib'"
+          class="md-dense md-raised md-primary"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
+        >BIBTEX</md-button>
+      </md-content>
+    </md-dialog>
   </div>
 </template>
 
@@ -63,6 +88,9 @@ import {
   sotaPostBookmark
 } from "@/services/api-sota";
 import { isLogged } from "@/services/api-user";
+import { exportAsJson, exportAsBibtex } from "@/services/api";
+import { toBibtex } from "@/services/bibtex-parse";
+
 
 import {
   EventBus,
@@ -88,7 +116,12 @@ export default {
         creator: {}
       },
       isBookmarked: false,
-      activeTab: "articles-list"
+      wantDownload: false,
+      activeTab: "articles-list",
+      downloadData: {
+        json: "",
+        bibtex: ""
+      }
     };
   },
   computed: {
@@ -103,6 +136,13 @@ export default {
       return {
         "background-color": colorHash.hex(this.sota.subject)
       };
+    },
+    jsonData() {
+      return exportAsJson(this.sota);
+    },
+    bibtexData() {
+      const data = toBibtex(this.sota.articles);
+      return exportAsBibtex(data);
     }
   },
 
@@ -144,6 +184,20 @@ export default {
       sotaGetBookmark(this.reference).then(
         data => (this.isBookmarked = data.done)
       );
+
+    },
+    download(format) {
+      this.wantDownload = true;
+
+      this.downloadData["json"] = exportAsJson(this.sota);
+
+      const text = toBibtex(this.sota.articles);
+      this.downloadData["bibtex"] = exportAsBibtex(text);
+    },
+    onDownloadFormatChoiceBtnClick(choice) {
+      this.wantDownload = false;
+      EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
+
     }
   }
 };
