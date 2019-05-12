@@ -66,8 +66,9 @@ public class UserEntity {
   @Column(name = "created_at")
   private LocalDate createdAt;
 
-  @Column(name = "domain")
-  private String domain;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "domain")
+  private TagEntity domain;
 
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -156,7 +157,25 @@ public class UserEntity {
 
 
   public UserDTO toDTO() {
-    return new UserDTO(username, password, lastname, firstname, email);
+    UserDTO dto = new UserDTO();
+    dto.setUsername(username);
+    dto.setLastname(lastname);
+    dto.setFirstname(firstname);
+    dto.setEmail(email);
+
+    if (getUserProfile() != null) {
+      dto.setProfilePicUrl(getUserProfile().getProfilePictureURL());
+    }
+
+    if (getCurrentUniversity() != null) {
+      dto.setOrganisation(getCurrentUniversity().getName());
+    }
+
+    if(getDomain() != null){
+      dto.setDomain(getDomain().getName());
+    }
+
+    return dto;
   }
 
 
@@ -172,7 +191,8 @@ public class UserEntity {
     } else {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }
-    return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
+    String dom = (domain != null) ? domain.getName() : null;
+    return new ProfileBasicInfoDTO(lastname, firstname, dom, universityInfoDTO, email, avatar);
   }
 
 

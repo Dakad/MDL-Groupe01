@@ -3,6 +3,7 @@ package be.unamur.info.mdl.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.LinkedList;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class SearchQueryDTO {
   private String term;
 
   @ApiParam(value = "Tags")
-  private List<String> tag;
+  private List<String> tag = new LinkedList<>();
 
   @ApiParam(value = "Pagination", defaultValue = "1")
   @Min(value = 1, message = "The min. page is 1, no less")

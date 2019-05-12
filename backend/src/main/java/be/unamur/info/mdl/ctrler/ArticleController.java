@@ -1,7 +1,5 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
@@ -16,7 +14,9 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,10 +74,8 @@ public class ArticleController {
   })
   @GetMapping(path = "/{reference}")
   public ResponseEntity get(@PathVariable String reference) {
-
     ArticleDTO articleData = articleService.getArticleByReference(reference);
     return new ResponseEntity(articleData, HttpStatus.OK);
-
   }
 
 
@@ -105,8 +103,8 @@ public class ArticleController {
 
     boolean done = articleService.addBookmark(reference, authUser.getName(), data.getNote());
     String msg = "Bookmark " + (!done ? "not" : "") + " added";
-    return ResponseEntity.status(HttpStatus.CREATED)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new DefaultResponseDTO(done, msg));
+
   }
 
 
@@ -124,8 +122,7 @@ public class ArticleController {
 
     boolean done = articleService.removeBookmark(reference, authUser.getName());
     String msg = "Bookmark " + (!done ? "not" : "") + " removed";
-    return ResponseEntity.status(HttpStatus.OK)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
 
   }
 
@@ -134,8 +131,30 @@ public class ArticleController {
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
     boolean done = articleService.isBookmarked(reference, authUser.getName());
     String msg = "This article is " + (!done ? "not" : "") + " present your bookmarks";
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
+  }
+
+
+  @GetMapping(path = "/subscriptions")
+  public ResponseEntity subscriptions(
+    @Min(value = 1, message = "Page number cannot be less than 1")
+    @RequestParam(defaultValue = "1") int page,
+    Principal authUser) {
+
     return ResponseEntity.status(HttpStatus.OK)
-      .body(DefaultResponseDTO.builder().done(done).message(msg));
+      .body(articleService.getSubscriptions(authUser.getName(), page));
+  }
+
+
+  @GetMapping(path = "/recommended")
+  public ResponseEntity recommandations(
+    @Min(value = 1, message = "Page number cannot be less than 1")
+    @RequestParam(defaultValue = "1") int page,
+    HttpServletRequest request) {
+
+    String username =
+      (request.getUserPrincipal() != null) ? request.getUserPrincipal().getName() : null;
+    return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username, page));
   }
 
 }

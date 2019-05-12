@@ -5,8 +5,10 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,7 +19,8 @@ import org.springframework.web.context.request.WebRequest;
  * This class represent the Model or error sent to the Api consumer.<br\> This class is meant to be
  * converted to Json.
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @Component
 public class ApiError extends DefaultErrorAttributes {
