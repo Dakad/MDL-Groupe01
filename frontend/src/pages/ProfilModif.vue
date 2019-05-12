@@ -113,7 +113,7 @@
         },
 
         saveData(){
-          let dataToSend = {'profilPicURL':this.avatarimg, 'currentUniversity':this.university
+          let dataToSend = {'profilePicURL':this.avatarimg, 'currentUniversity':this.university
             , 'domain':this.domain, 'researchGroups':[this.rGroup], 'email': this.emailAddress
             , 'description': this.bio};
           this.postData(dataToSend)
