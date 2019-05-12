@@ -8,6 +8,7 @@ import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +65,8 @@ public class UserEntity {
   private String lastname;
 
   @Column(name = "created_at")
-  private LocalDate createdAt;
+  @Builder.Default
+  private LocalDate createdAt = LocalDate.now();
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "domain")
@@ -95,7 +97,8 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<StateOfTheArtEntity> stateOfTheArts;
+  @Builder.Default
+  private Set<StateOfTheArtEntity> stateOfTheArts = new LinkedHashSet<>();
 
 
   @OneToMany(
@@ -103,11 +106,12 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<BookmarkEntity> bookmarks;
+  @Builder.Default
+  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
 
   @OneToMany(mappedBy = "user")
-  private List<UniversityCurrent> universities;
+  private List<UniversityCurrent> universities = new LinkedList<>();
 
 
   @ManyToMany(cascade = {
@@ -136,7 +140,8 @@ public class UserEntity {
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private Set<ResearchGroupEntity> researchGroup;
+  @Builder.Default
+  private Set<ResearchGroupEntity> researchGroup = new LinkedHashSet<>();
 
 
   @ManyToMany(cascade = {
@@ -145,7 +150,8 @@ public class UserEntity {
   @JoinTable(name = "follower_tags",
     joinColumns = {@JoinColumn(name = "follower_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags;
+  @Builder.Default
+  private Set<TagEntity> tags = new HashSet<>();
 
 
   public static UserEntity of(UserDTO dto) {
