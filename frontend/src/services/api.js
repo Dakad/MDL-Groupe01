@@ -73,7 +73,7 @@ export function exportAsBibtex(data, filename) {
     filename += '.bib';
   }
   const fileToSave = new Blob([data], {
-    type: 'application/x-bibtex'
+    type: 'text/x-bibtex'
   });
   return URL.createObjectURL(fileToSave);
 }
