@@ -14,6 +14,7 @@ import {
   KEY_USERNAME
 } from './storage';
 import response from 'vue-resource/src/http/response';
+import {getAuthHeaders} from "./api";
 
 // -------------------------------------------------------------------
 // Properties
@@ -73,4 +74,10 @@ export function getProfileSota(username) {
     username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http.get('/api/user/' + username + '/profile/sota').then(response => response.body);
+}
+
+
+export function postModificationProfile() {
+  const headers = getAuthHeaders();
+  return Vue.http.post('/api/user/profile/update', headers).then(response => response.body);
 }

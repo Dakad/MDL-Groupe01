@@ -54,12 +54,15 @@
 </template>
 
 <script>
+  import { postModificationProfile, getProfileBase, getProfileInfoPro} from '@/services/api-user'
+  import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
+
     export default {
         name: "ProfilModif",
       data: () =>({
-        university: 'Unamur',
-        domain: 'ComputerScience',
-        emailAddress: 'std@unamur.be',
+        university: null,
+        domain: null,
+        emailAddress: null,
         rGroup: 'Nadi, IRIDIA, BRUH',
         interest: 'Infovis, Bruh, IT',
         avatarimg: 'link to image',
@@ -69,10 +72,57 @@
           "Language"],
         universities: ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"],
         bio: "BLELBLE",
+        username: null,
+        profil: {},
       }),
+
+      methods: {
+        fetchProfileBase() {
+          getProfileBase(this.username).then(data => {
+            this.profil = data;
+            console.log(this.profil);
+          });
+        },
+
+        fetchDataPro() {
+          getProfileInfoPro(this.username).then(function(data) {
+            this.infoPro = data;
+            console.log(this.infoPro);
+          });
+        },
+
+        postData(){
+          postModificationProfile()
+        },
+      },
+
+      computed: {
+
+      },
+
       created() {
           //todo get the information from BD
-      }
+        this.username = this.$route.params["username"];
+
+        this.fetchProfileBase()
+        this.fetchDataPro()
+
+        this.emailAddress = this.profil.email
+        this.university = this.profil.university
+        this.domain = this.profil.domain
+
+
+
+        EventBus.$on(EVENT_USER_LOGOUT, _ => {
+          this.$router.replace({ name : 'accueil' }, function onComplete() {
+            EventBus.$emit(EVENT_BYE_REDIRECTION, true)
+          })
+        })
+
+      },
+
+
+
     }
 </script>
 
