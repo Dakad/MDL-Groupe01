@@ -21,10 +21,6 @@
             </md-icon>
             <label>Change your domain</label>
           </md-autocomplete>
-          <md-field>
-            <label>Change your bio</label>
-            <md-textarea v-model="bio"></md-textarea>
-          </md-field>
         </div>
       </div>
       <div class="right">
@@ -43,28 +39,43 @@
           <md-input v-model="rGroup" md-autogrow></md-input>
         </md-field>
         <md-field>
-          <label>Change your interest</label>
-          <md-icon class="material-icons">
-            location_searching
-          </md-icon>
-          <md-input v-model="interest" md-autogrow></md-input>
+          <label>Change your bio</label>
+          <md-textarea v-model="bio"></md-textarea>
         </md-field>
       </div>
+      <md-button class="md-raised md-primary">Save changes</md-button>
+      <!--  ask if ok to change  -->
+
+      <md-dialog :md-active.sync="wantToChange">
+        <md-dialog-title>Are you sure to change your information</md-dialog-title>
+        <md-content class="md-layout md-alignment-center-space-around">
+          <md-button
+            class="md-dense md-raised"
+            @click="wantToChange = false"
+          >No</md-button>
+
+          <md-button
+            class="md-dense md-raised md-primary"
+            :md-ripple="false"
+            @click="saveData()"
+          >Yes</md-button>
+        </md-content>
+      </md-dialog>
     </div>
 </template>
 
 <script>
-  import { postModificationProfile, getProfileBase, getProfileInfoPro} from '@/services/api-user'
+  import { postModificationProfile, getProfileBase, getProfileInfoPro, getProfileSocial} from '@/services/api-user'
   import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
     export default {
         name: "ProfilModif",
       data: () =>({
+        wantToChange: false,
         university: null,
         domain: null,
         emailAddress: null,
         rGroup: 'Nadi, IRIDIA, BRUH',
-        interest: 'Infovis, Bruh, IT',
         avatarimg: 'link to image',
         domains: ["ComputerScience", "Literature", "Chemistry", "Physics",
           "Biology", "Medicine", "Economics", "Economics", "Psychology",
@@ -73,27 +84,38 @@
         universities: ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"],
         bio: "BLELBLE",
         username: null,
-        profil: {},
       }),
 
       methods: {
         fetchProfileBase() {
           getProfileBase(this.username).then(data => {
-            this.profil = data;
-            console.log(this.profil);
+            this.emailAddress = data.email;
+            this.domain = data.domain;
+            this.university = data.university;
+            this.avatarimg = data.avatar;
           });
         },
 
         fetchDataPro() {
-          getProfileInfoPro(this.username).then(function(data) {
-            this.infoPro = data;
-            console.log(this.infoPro);
+          getProfileInfoPro(this.username).then(data => {
+            this.rGroup = data.researchGroup;
           });
         },
 
-        postData(){
-          postModificationProfile()
+        fetchSocial() {
+          getProfileSocial(this.username).then(data => {
+            this.bio = data.bio;
+          });
         },
+
+        postData(modifiedData){
+          postModificationProfile(modifiedData)
+        },
+
+        saveData(){
+
+        }
+
       },
 
       computed: {
@@ -104,8 +126,9 @@
           //todo get the information from BD
         this.username = this.$route.params["username"];
 
-        this.fetchProfileBase()
-        this.fetchDataPro()
+        this.fetchProfileBase();
+        this.fetchDataPro();
+        this.fetchSocial();
 
         this.emailAddress = this.profil.email
         this.university = this.profil.university
