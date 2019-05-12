@@ -43,7 +43,7 @@
           <md-textarea v-model="bio"></md-textarea>
         </md-field>
       </div>
-      <md-button class="md-raised md-primary">Save changes</md-button>
+      <md-button class="md-raised md-primary md-alignment-center" @click="wantToChange = true">Save changes</md-button>
       <!--  ask if ok to change  -->
 
       <md-dialog :md-active.sync="wantToChange">
@@ -109,11 +109,14 @@
         },
 
         postData(modifiedData){
-          postModificationProfile(modifiedData)
+          postModificationProfile(modifiedData).then(this.wantToChange=false)
         },
 
         saveData(){
-
+          let dataToSend = {'profilPicURL':this.avatarimg, 'currentUniversity':this.university
+            , 'domain':this.domain, 'researchGroups':[this.rGroup], 'email': this.emailAddress
+            , 'description': this.bio};
+          this.postData(dataToSend)
         }
 
       },
