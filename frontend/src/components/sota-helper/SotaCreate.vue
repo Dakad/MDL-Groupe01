@@ -56,32 +56,11 @@
           </md-field>
 
           <md-list>
-            <md-list-item v-for="upload in uploads" :key="upload" class="md-layout md-gutter">
-              <md-checkbox
-                v-model="sending"
-                class="md-layout-item md-primary md-size-5"
-                :value="upload"
-              />
-              <span class="md-layout-item">
-                <span class="upload-name">{{upload}}</span>
-                &#x7C;
-                <span
-                  class="upload-size"
-                >{{articlesUploaded[upload].size | sizeHuman }}</span>
-              </span>
-
-              <code class="md-layout-item md-size-15 upload-actions">
-                <md-button
-                  class="md-icon-button md-dense md-primary"
-                  title="Add more info about this bibtex"
-                >
-                  <md-icon>create</md-icon>
-                </md-button>
-                <md-button class="md-icon-button md-dense md-accent" title="Remove this SoTA">
-                  <md-icon>clear</md-icon>
-                </md-button>
-              </code>
-            </md-list-item>
+            <sota-upload-list-item
+              v-for="upload in uploads"
+              :key="upload"
+              :item="articlesUploaded[upload]"
+            />
           </md-list>
 
           <!-- Upload btn -->
@@ -147,8 +126,11 @@ import { createSota } from "../../services/api-sota";
 import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 
+import SotaUploadListItem from "@/components/sota-helper/SotaUploadListItem";
+
 export default {
   name: "SotaCreate",
+  components: { SotaUploadListItem },
   mixins: [validationMixin],
   data() {
     return {
