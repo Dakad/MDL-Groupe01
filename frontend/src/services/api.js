@@ -67,7 +67,6 @@ export function exportAsJson(data, filename) {
     type: 'application/json'
   });
   return URL.createObjectURL(fileToSave);
-  // return encodeURIComponent(JSON.stringify(data, undefined, 2));
 }
 
 export function exportAsBibtex(data, filename) {
@@ -78,5 +77,4 @@ export function exportAsBibtex(data, filename) {
     type: 'text/plain;charset=utf-8'
   });
   return URL.createObjectURL(fileToSave);
-  // return encodeURIComponent(JSON.stringify(data, undefined, 2));
 }

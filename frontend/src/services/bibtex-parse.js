@@ -14,7 +14,7 @@ import bibtexParser from 'bibtex-parse-js';
  *
  * @param {*} json
  */
-function format(json) {
+function formatToJson(json) {
   const abstract = json.entryTags['abstract'];
   if (abstract == undefined || abstract.trim().length()) {
     json.entryTags['abstract'] = json.entryTags['title'];
@@ -34,7 +34,7 @@ function format(json) {
  *
  * @param {*} json
  */
-function transform(json) {
+function transformToJson(json) {
   return Object.assign({}, json.entryTags, {
     reference: json.citationKey,
     authors: json.entryTags.author.split(', ').map(a => a.trim()),
@@ -50,16 +50,15 @@ function transform(json) {
 export function parse(bibtex) {
   return bibtexParser
     .toJSON(bibtex)
-    .map(format)
-    .map(transform);
+    .map(formatToJson)
+    .map(transformToJson);
 }
 
 export function toBibtex(json) {
   let bibtex = '';
+  debugger;
   if (Array.isArray(json)) {
-    bibtex = json
-      .map(value => parseJsonToBibtex(value))
-      .reduce((bibtex, str) => (bibtex += str), '');
+    bibtex = json.map(value => parseJsonToBibtex(value)).join('\n\n');
   } else {
     bibtex = parseJsonToBibtex(json);
   }
@@ -67,19 +66,22 @@ export function toBibtex(json) {
 }
 
 function parseJsonToBibtex(article) {
-  const fields = Object.keys(article);
+  if (typeof article != 'object' || !article.hasOwnProperty('reference')) {
+    return '';
+  }
+
   let bibtex = `@book{${article.reference},`;
   // Loop over the fields of the article
   Object.keys(article).forEach((field, i, list) => {
     // write them in the str
-    bibtex += `${field} = ${JSON.stringify(article[field])}`;
+    bibtex += `${field} = ${JSON.stringify(article[field])}\n`;
     if (i < list.length - 1) {
       bibtex += ',';
     }
   });
 
   // Close the  bibtex
-  bibtex += '}\n\n';
+  bibtex += '}';
 
   return bibtex;
 }

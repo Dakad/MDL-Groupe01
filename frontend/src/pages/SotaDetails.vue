@@ -32,8 +32,9 @@
           v-if="userIsLogged"
           :reference="sota.reference"
           :is-bookmarked="isBookmarked"
+          :download-filename="sota.title"
           @bookmark="bookmarkSota"
-          @download="wantDownload = true"
+          @download="wantDownload = true; download()"
         ></SotaMenu>
       </div>
     </div>
@@ -50,40 +51,25 @@
     </md-tabs>
 
     <!-- Download SoTA choice Dialog  -->
-    <md-dialog :md-active.sync="wantDownload">
-      <md-dialog-title>Preferences</md-dialog-title>
-
-      <md-dialog-actions>
-        <md-button class="md-accent" @click="wantDownload = false">Close</md-button>
-      </md-dialog-actions>
-    </md-dialog>
 
     <md-dialog :md-active.sync="wantDownload">
       <md-dialog-title>Choose the download file format ?</md-dialog-title>
       <md-content class="md-layout md-alignment-center-space-around">
-        <a
-          :href="jsonData"
+        <md-button
+          class="md-dense md-raised"
+          :href="downloadData.json"
           :download="this.sota.reference +'.json'"
-          class="md-layout-item md-dense md-raised md-primary"
-        >
-          <md-button
-            class="md-dense md-raised md-primary"
-            :md-ripple="false"
-            @click="wantDownload = false"
-          >JSON</md-button>
-        </a>
+          :md-ripple="false"
+          @click="wantDownload = false"
+        >JSON</md-button>
 
-        <a
-          :href="bibtexData"
+        <md-button
+          :href="downloadData.bibtex"
           :download="this.sota.reference +'.bib'"
-          class="md-layout-item md-dense md-raised"
-        >
-          <md-button
-            class="md-dense md-raised md-primary"
-            :md-ripple="false"
-            @click="wantDownload = false"
-          >BIBTEX</md-button>
-        </a>
+          class="md-dense md-raised md-primary"
+          :md-ripple="false"
+          @click="wantDownload = false"
+        >BIBTEX</md-button>
       </md-content>
     </md-dialog>
   </div>
@@ -103,6 +89,7 @@ import {
 } from "@/services/api-sota";
 import { isLogged } from "@/services/api-user";
 import { exportAsJson, exportAsBibtex } from "@/services/api";
+import { toBibtex } from "@/services/bibtex-parse";
 
 import {
   EventBus,
@@ -129,7 +116,11 @@ export default {
       },
       isBookmarked: false,
       wantDownload: false,
-      activeTab: "articles-list"
+      activeTab: "articles-list",
+      downloadData: {
+        json: "",
+        bibtex: ""
+      }
     };
   },
   computed: {
@@ -146,12 +137,11 @@ export default {
       };
     },
     jsonData() {
-      const data = exportAsJson(this.sota, this.sota.reference);
-      return data;
-      // return "data:text/json;charset=utf-8," + data;
+      return exportAsJson(this.sota);
     },
     bibtexData() {
-      return exportAsBibtex(this.sota.articles);
+      const data = toBibtex(this.sota.articles);
+      return exportAsBibtex(data);
     }
   },
 
@@ -195,10 +185,12 @@ export default {
       );
     },
     download(format) {
-      this.wantDownload = false;
-      if (format == "json") {
-        // exportAsJson();
-      }
+      this.wantDownload = true;
+
+      this.downloadData["json"] = exportAsJson(this.sota);
+
+      const text = toBibtex(this.sota.articles);
+      this.downloadData["bibtex"] = exportAsBibtex(text);
     }
   }
 };
