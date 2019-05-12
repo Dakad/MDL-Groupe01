@@ -60,7 +60,7 @@
           :href="downloadData.json"
           :download="this.sota.reference +'.json'"
           :md-ripple="false"
-          @click="wantDownload = false"
+          @click="onDownloadFormatChoiceBtnClick('JSON')"
         >JSON</md-button>
 
         <md-button
@@ -68,7 +68,7 @@
           :download="this.sota.reference +'.bib'"
           class="md-dense md-raised md-primary"
           :md-ripple="false"
-          @click="wantDownload = false"
+          @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
         >BIBTEX</md-button>
       </md-content>
     </md-dialog>
@@ -191,6 +191,10 @@ export default {
 
       const text = toBibtex(this.sota.articles);
       this.downloadData["bibtex"] = exportAsBibtex(text);
+    },
+    onDownloadFormatChoiceBtnClick(choice) {
+      this.wantDownload = false;
+      EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
     }
   }
 };
