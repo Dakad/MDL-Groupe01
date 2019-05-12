@@ -34,19 +34,24 @@
           :is-bookmarked="isBookmarked"
           :download-filename="sota.title"
           @bookmark="bookmarkSota"
-          @download="wantDownload = true; download()"
+          @download="download()"
         ></SotaMenu>
       </div>
     </div>
-    <md-tabs md-alignment="fixed" :md-active-tab="activeTab" class="sota-articles">
-      <md-tab id="articles-list" md-label="List of articles" md-icon="view_day">
+    <md-tabs
+      md-alignment="fixed"
+      :md-active-tab="activeTab"
+      class="sota-articles"
+      @md-changed="updateURL"
+    >
+      <md-tab id="articles-list" md-label="List of articles" md-icon="description">
         <h5>List of article in the SOTA:</h5>
 
         <article-list :list="sota.articles"></article-list>
       </md-tab>
 
       <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
-        <!-- TODO Mettre la visu de David -->
+        <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
       </md-tab>
     </md-tabs>
 
@@ -80,6 +85,7 @@ import ColorHash from "color-hash";
 
 // import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
+import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import ArticleList from "@/components/resultat/ArticleList";
 import {
   getSota,
@@ -107,7 +113,8 @@ export default {
   components: {
     // InfoNav,
     SotaMenu,
-    ArticleList
+    ArticleList,
+    SotaGraphic
   },
   data() {
     return {
@@ -117,7 +124,7 @@ export default {
       },
       isBookmarked: false,
       wantDownload: false,
-      activeTab: "articles-list",
+      activeTab: this.$route.query["tab"] || "articles-list",
       downloadData: {
         json: "",
         bibtex: ""
@@ -147,7 +154,7 @@ export default {
   },
 
   watch: {
-    $route: "fetchSota"
+    "$route.path": "fetchSota"
   },
 
   created() {
@@ -162,6 +169,12 @@ export default {
   },
 
   methods: {
+    updateURL(tab) {
+      this.activeTab = tab;
+      const query = { ...this.$route.query };
+      query["tab"] = tab;
+      this.$router.push({ query });
+    },
     fetchSota() {
       return getSota(this.reference).then(data => (this.sota = data));
     },
