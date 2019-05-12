@@ -49,7 +49,6 @@ export function getArticlesByCategories(categories) {
   if (categories.length <= 0) {
     return;
   }
-
   return Vue.http
     .get('/api/article', {
       params: {
