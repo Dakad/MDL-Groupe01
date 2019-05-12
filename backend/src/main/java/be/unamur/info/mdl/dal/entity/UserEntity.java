@@ -130,13 +130,13 @@ public class UserEntity {
   private List<UserEntity> follows = new LinkedList<>();
 
 
-  @ManyToOne(cascade = {
+  @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private ResearchGroupEntity researchGroup;
+  private Set<ResearchGroupEntity> researchGroup;
 
 
   @ManyToMany(cascade = {
