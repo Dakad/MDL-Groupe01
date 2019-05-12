@@ -77,8 +77,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     List<String> researchGroup = new ArrayList<>(2);
     if (user.getResearchGroup() != null) {
-      researchGroup.add(user.getResearchGroup().getName());
-      researchGroup.add(user.getResearchGroup().getLink());
+//      researchGroup.add(user.getResearchGroup().getName());
+//      researchGroup.add(user.getResearchGroup().getLink());
     }
 
     return new ProfileProInfoDTO(
