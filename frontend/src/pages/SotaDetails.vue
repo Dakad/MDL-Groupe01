@@ -91,12 +91,6 @@ import { isLogged } from "@/services/api-user";
 import { exportAsJson, exportAsBibtex } from "@/services/api";
 import { toBibtex } from "@/services/bibtex-parse";
 
-import {
-  EventBus,
-  EVENT_USER_LOGGED,
-  EVENT_USER_LOGOUT,
-  EVENT_APP_MESSAGE
-} from "@/services/event-bus.js";
 
 import {
   EventBus,
