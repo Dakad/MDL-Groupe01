@@ -35,14 +35,18 @@
 
     <!-- Dialog box to edit the parsed bibtex files -->
     <md-dialog :md-active.sync="showUploadEdit">
-      <md-dialog-title>{{selected['filename']}}</md-dialog-title>
+      <md-dialog-title>Editing {{selected['filename']}}</md-dialog-title>
       <md-dialog-content>
-        <sota-upload-list-edit :list="selected.bibtex"/>
+        <!-- <sota-upload-list-edit
+          id="upload-list-edit"
+          :filename="selected.filname"
+          :list="selected.bibtex"
+        />-->
       </md-dialog-content>
     </md-dialog>
 
     <!-- Dialog box for be redirect to created SoTA -->
-    <!-- <md-dialog-confirm
+    <md-dialog-confirm
       :md-active.sync="showRedirectDialog"
       md-title="SoTA created"
       md-content="Your <strong>SoTA</strong> has been created.\n Do you want to be redirect to it page"
@@ -50,7 +54,7 @@
       md-cancel-text="Disagree"
       @md-cancel="showRedirectDialog = false"
       @md-confirm="showRedirectDialog = false"
-    />-->
+    />
   </div>
 </template>
 
@@ -205,5 +209,9 @@ export default {
 
 #bibtex-preview-container {
   max-width: 55%;
+}
+
+#upload-list-edit {
+  width: 900px;
 }
 </style>
