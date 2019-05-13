@@ -24,7 +24,7 @@
       </div>
     </sota-create-form>
 
-    <!-- Import bibtex field -->
+    <!-- Preview of the imported bibtex -->
     <div class="md-layout-item md-size" id="bibtex-preview-container">
       <sota-upload-preview
         :preview="previewJson"
@@ -33,8 +33,16 @@
       ></sota-upload-preview>
     </div>
 
+    <!-- Dialog box to edit the parsed bibtex files -->
+    <md-dialog :md-active.sync="showUploadEdit">
+      <md-dialog-title>{{selected['filename']}}</md-dialog-title>
+      <md-dialog-content>
+        <sota-upload-list-edit :list="selected.bibtex"/>
+      </md-dialog-content>
+    </md-dialog>
+
     <!-- Dialog box for be redirect to created SoTA -->
-    <md-dialog-confirm
+    <!-- <md-dialog-confirm
       :md-active.sync="showRedirectDialog"
       md-title="SoTA created"
       md-content="Your <strong>SoTA</strong> has been created.\n Do you want to be redirect to it page"
@@ -42,7 +50,7 @@
       md-cancel-text="Disagree"
       @md-cancel="showRedirectDialog = false"
       @md-confirm="showRedirectDialog = false"
-    />
+    />-->
   </div>
 </template>
 
@@ -54,12 +62,18 @@ import { EventBus, EVENT_APP_MESSAGE } from "@/services/event-bus";
 import {
   SotaUploadListItem,
   SotaUploadPreview,
-  SotaCreateForm
+  SotaCreateForm,
+  SotaUploadListEdit
 } from "@/components/sota-helper/create";
 
 export default {
   name: "SotaCreate",
-  components: { SotaUploadListItem, SotaUploadPreview, SotaCreateForm },
+  components: {
+    SotaUploadListItem,
+    SotaUploadPreview,
+    SotaCreateForm,
+    SotaUploadListEdit
+  },
   data() {
     return {
       sending: false,
@@ -67,7 +81,7 @@ export default {
       articlesUploaded: {},
       selected: {
         filename: null,
-        upload: null
+        bibtex: null
       },
       showUploadEdit: false,
       showRedirectDialog: false
@@ -108,7 +122,7 @@ export default {
 
     onSelectUpload(filename) {
       this.selected["filename"] = filename;
-      this.selected["upload"] = this.articlesUploaded[filename]["bibtex"];
+      this.selected["bibtex"] = this.articlesUploaded[filename]["bibtex"];
     },
 
     onRemoveUpload(filename) {
@@ -118,16 +132,16 @@ export default {
       if (this.selected["filename"] == filename) {
         this.selected = {
           filename: null,
-          upload: null
+          bibtex: null
         };
       }
       this.$delete(this.articlesUploaded, filename);
     },
     onEditUpload(filename) {
-      this.selected.filename = filename;
-      this.selected.upload = this.articlesUploaded[filename];
+      this.selected["filename"] = filename;
+      this.selected["bibtex"] = this.articlesUploaded[filename]["bibtex"];
       this.showUploadEdit = true;
-      window.alert("Edit me : " + filename);
+      // window.alert("Edit me : " + filename);
     },
 
     sendSota(sota) {
