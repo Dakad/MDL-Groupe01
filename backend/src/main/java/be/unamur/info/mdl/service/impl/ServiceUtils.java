@@ -5,13 +5,13 @@ import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.repository.ResearchGroupRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
 import com.github.slugify.Slugify;
-
 import java.util.Optional;
 
 /**
  * This class offers different methods common between the services.
  */
 public abstract class ServiceUtils {
+
   private static final Slugify slugify = new Slugify();
 
   private ServiceUtils() {
@@ -21,12 +21,11 @@ public abstract class ServiceUtils {
   /**
    * Get the matching tag from the repository or create a new one.
    *
-   * @param tagName       The tag name
-   * @param tagRepository
+   * @param tagName The tag name
    * @return the persisted or created Tag
    */
   public static TagEntity getOrCreateTag(String tagName,
-                                         TagRepository tagRepository) {
+    TagRepository tagRepository) {
     String slug = slugify.slugify(tagName);
     Optional<TagEntity> dbTag = tagRepository.findBySlug(slug);
 
@@ -39,16 +38,17 @@ public abstract class ServiceUtils {
     return tag;
   }
 
-  public static ResearchGroupEntity getOrCreateRG(String rgName, ResearchGroupRepository researchGroupRepository) {
+  public static ResearchGroupEntity getOrCreateResearchGroup(String rgName,
+    ResearchGroupRepository researchGroupRepository) {
     String slug = slugify.slugify(rgName);
     Optional<ResearchGroupEntity> researchGroup = researchGroupRepository.findBySlug(slug);
-    ResearchGroupEntity rg;
-    if(!researchGroup.isPresent()) {
-      rg = ResearchGroupEntity.builder().name(rgName).slug(slug).build();
-    }else {
-      rg = researchGroup.get();
+    ResearchGroupEntity group;
+    if (!researchGroup.isPresent()) {
+      group = ResearchGroupEntity.builder().name(rgName).slug(slug).build();
+    } else {
+      group = researchGroup.get();
     }
-    return rg;
+    return group;
   }
 
 }
