@@ -94,6 +94,11 @@ public class ArticleEntity {
   @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
+  @Column(name = "recommendation_score")
+  @PositiveOrZero
+  @Builder.Default
+  private Float score = 0f;
+
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "category_id", nullable = false)
@@ -116,7 +121,7 @@ public class ArticleEntity {
   private Set<AuthorEntity> authors = new LinkedHashSet<>();
 
 
-  @OneToMany(mappedBy = "article")
+  @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
   @Builder.Default
   private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
@@ -145,6 +150,14 @@ public class ArticleEntity {
   @Builder.Default
   private Set<TagEntity> keywords = new LinkedHashSet<>();
 
+
+  public int getNbBookmarks() {
+    if (bookmarks != null && !bookmarks.isEmpty()) {
+      return bookmarks.size();
+    } else {
+      return 0;
+    }
+  }
 
   /**
    * Convert the current Entity to its DTO version.
@@ -202,5 +215,6 @@ public class ArticleEntity {
 
     return entity.build();
   }
+
 
 }

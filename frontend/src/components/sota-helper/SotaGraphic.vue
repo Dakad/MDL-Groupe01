@@ -2,7 +2,7 @@
   <div class="graph-container">
     <md-card>
       <md-card-header>
-        <div class="md-title center">Preview of your created SoTA grouped by the categories</div>
+        <div class="md-title center">Preview of the SoTA grouped by the categories</div>
       </md-card-header>
 
       <md-card-content>
@@ -42,6 +42,10 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    sotaName: {
+      type: String,
+      default: () => "My SoTA"
     }
   },
   data() {
@@ -55,7 +59,9 @@ export default {
     };
   },
   created() {
-    this.treeData = Object.assign(dataTreeBase, {});
+    this.treeData = Object.assign(dataTreeBase, {
+      name: this.sotaName
+    });
 
     // Insert the categories as node in the tree data
     this.categoriesFromArticles.forEach(category => {
@@ -75,33 +81,33 @@ export default {
     categoriesFromArticles() {
       const categorySet = new Set(this.articles.map(a => a["category"]));
       return [...categorySet].sort();
-    },
-
-    treeDataFromArticles() {
-      const tree = Object.assign(dataTreeBase);
-      this.categoriesFromArticles.forEach(cat => {
-        tree["children"].push({
-          name: cat,
-          children: [
-            { name: "Articles", children: [] },
-            { name: "Sota", children: [] }
-          ]
-        });
-      });
-
-      this.articles.forEach(({ title, category, reference }) => {
-        const overflow = title.length > 75;
-        const name = !overflow ? title : title.substr(0, 75) + "...";
-
-        const categoryChild = tree["children"].find(c => c["name"] == category);
-        categoryChild["children"][0]["children"].push({
-          name,
-          reference
-        });
-      });
-
-      return tree;
     }
+
+    // treeDataFromArticles() {
+    //   const tree = Object.assign(dataTreeBase);
+    //   this.categoriesFromArticles.forEach(cat => {
+    //     tree["children"].push({
+    //       name: cat,
+    //       children: [
+    //         { name: "Articles", children: [] },
+    //         { name: "Sota", children: [] }
+    //       ]
+    //     });
+    //   });
+
+    //   this.articles.forEach(({ title, category, reference }) => {
+    //     const overflow = title.length > 75;
+    //     const name = !overflow ? title : title.substr(0, 75) + "...";
+
+    //     const categoryChild = tree["children"].find(c => c["name"] == category);
+    //     categoryChild["children"][0]["children"].push({
+    //       name,
+    //       reference
+    //     });
+    //   });
+
+    //   return tree;
+    // }
   },
   methods: {
     onSelectNode: function(node) {
@@ -118,7 +124,7 @@ export default {
       const categories = this.categoriesFromArticles;
 
       // Send APi request to retrieve articles matching the provided categories
-      getArticlesByCategories(this.categoriesFromArticles)
+      getArticlesByCategories(categories)
         // After receive the API data, construct the node for the category's articles
         .then(respData => {
           categories.forEach(category => {
