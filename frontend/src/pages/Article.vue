@@ -24,15 +24,16 @@
 
           <div class="article-keywords">
             <!-- <label>Keywords</label>: -->
-            <md-chip :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
-            <md-chip v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
+            <md-chip class="chip" :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
+            <md-chip class="chip" v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
           </div>
         </md-card-header>
         <md-card-media-actions>
           <md-card-area>
             <md-content class="article-abstract">
               <!-- <p>{{ article.content}}</p> -->
-              <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
+              <h4 v-if="abstract.length==0"><md-icon class="md-size-2x">mood_bad</md-icon>&nbsp;Oops, abstract missing !</h4>
+              <p v-else v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
             </md-content>
           </md-card-area>
 
@@ -181,7 +182,7 @@ export default {
 <style  lang="css" scoped>
 
 #article-container {
-  margin-top: -20px;
+  margin-top: 15px;
   cursor: auto;
 }
 
@@ -199,6 +200,10 @@ export default {
 
 #article-container .article-abstract {
   margin: 15px 0;
+}
+
+.chip {
+  margin-bottom: 4px;
 }
 </style>
 
