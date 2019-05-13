@@ -43,9 +43,9 @@
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true; showRegisterDialog = false">LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true; showLoginDialog = false;">SIGN IN</b-button>
         </div>
       </div>
     </md-toolbar>
