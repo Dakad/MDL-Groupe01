@@ -7,8 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class MainApplication extends SpringBootServletInitializer {
 
   @Override
@@ -20,12 +23,12 @@ public class MainApplication extends SpringBootServletInitializer {
     SpringApplication.run(MainApplication.class, args);
   }
 
-
-//  @Bean
-//  public CommandLineRunner runDBFiller() {
-//    return new DbDataLoaderRunner();
-//  }
-
+/*
+  @Bean
+  public CommandLineRunner runDBFiller() {
+    return new DbDataLoaderRunner();
+  }
+*/
 
 
 }

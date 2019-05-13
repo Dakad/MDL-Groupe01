@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import json from "@/assets/dummy-Results.json";
 import Cloud from "vue-d3-cloud";
 
 export default {

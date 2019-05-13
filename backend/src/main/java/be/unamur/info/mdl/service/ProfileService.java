@@ -1,12 +1,12 @@
 package be.unamur.info.mdl.service;
 
-import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
-import be.unamur.info.mdl.dto.ProfileProInfoDTO;
-import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
-import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
-import java.util.Map;
 
 public interface ProfileService {
 
@@ -14,23 +14,25 @@ public interface ProfileService {
    * @param username the user's username
    * @return a DTO containing all the basic user data
    */
-  ProfileBasicInfoDTO getBasicInfo(String username) throws UsernameNotFoundException;
+  ProfileBasicInfoDTO getBasicInfo(String username) throws UserNotFoundException;
 
-  ProfileProInfoDTO getProInfo(String username) throws UsernameNotFoundException;
+  ProfileProInfoDTO getProInfo(String username) throws UserNotFoundException;
 
 
   /**
    * @param username the user's username
    * @return a DTO containing all the social information
    */
-  ProfileSocialInfoDTO getSocialInfo(String username) throws UsernameNotFoundException;
+  ProfileSocialInfoDTO getSocialInfo(String username) throws UserNotFoundException;
 
 
-  List<UserDTO> getFollowers(String username, int page) throws UsernameNotFoundException;
+  List<UserDTO> getFollowers(String username, int page) throws UserNotFoundException;
 
 
-  List<UserDTO> getFollows(String username, int page) throws UsernameNotFoundException;
+  List<UserDTO> getFollows(String username, int page) throws UserNotFoundException;
 
+  List<BookmarkDTO> getBookmarks(String username, int page) throws UserNotFoundException;
 
-  Map<String, String> getBookmarks(String username, int page) throws UsernameNotFoundException;
+  boolean update(ProfileUpdateDTO updateDTO, String username) throws InvalidProfilePictureLinkException;
+
 }

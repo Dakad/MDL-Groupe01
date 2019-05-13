@@ -8,18 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import be.unamur.info.mdl.service.SearchService;
-import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.InvalidCredentialException;
+import be.unamur.info.mdl.exceptions.RegistrationException;
 import be.unamur.info.mdl.service.impl.SearchServiceImpl;
 import be.unamur.info.mdl.service.impl.UserServiceImpl;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;

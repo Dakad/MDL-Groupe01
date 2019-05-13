@@ -21,23 +21,17 @@ const routes = [
 
   { name: 'resultat', path: '/result', component: Resultat },
 
-  { name: '404', path: '/404', component: NotFound },
-
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails },
+  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true },
 
   { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
-  {
-    name: 'userProfile',
-    path: '/profile/:username',
-    component: Profil,
-    meta: { requiresAuth: true },
-    props: true
-  },
+  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true }, props: true },
 
   { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
+
+  { name: '404', path: '/404', component: NotFound },
 
   { name: '', path: '*', redirect: '/404' }
 ];

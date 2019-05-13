@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 @Data
 @Builder
@@ -15,6 +14,7 @@ import org.springframework.lang.Nullable;
 @ApiModel(description = "Model representing an user's profile social information")
 public class ProfileSocialInfoDTO {
 
+  @Builder.Default
   private String bio = "This user hasn't added a bio.";
 
   @JsonAlias("num_follows")
@@ -23,12 +23,4 @@ public class ProfileSocialInfoDTO {
   @JsonAlias("num_followers")
   private int numFollowers;
 
-  @JsonAlias("facebook_url")
-  private String facebookURL;
-
-  @JsonAlias("twitter_url")
-  private String twitterURL;
-
-  @JsonAlias("linkedin_url")
-  private String linkedinURL;
 }

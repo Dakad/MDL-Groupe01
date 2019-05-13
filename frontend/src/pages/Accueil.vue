@@ -1,23 +1,43 @@
 <template>
-  <section class="accueilapp">
-    <div class="central">
-      <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
-      <div class="title">
-        <h1>Froggosaur</h1>
+  <section class="accueilapp md-layout md-alignment-top-center">
+    <div class="central md-layout-item md-size-70 md-layout md-alignment-top-center">
+      
+      <div class="head md-layout-item md-size-80 md-layout md-gutter md-alignment-top-center">
+        <img class="logoimg md-layout-item md-size-15" src="../assets/logo-app.png" style="width:90px;height:100px;">
+        <div class="title md-layout-item md-size-40"><h1>Froggosaur</h1></div>
+        <!-- ou md-size-35? -->
       </div>
 
-      <!-- place the searched words in var searchwords and the action to
-      script the search is searchIt-->
+      <div class="search md-layout-item md-size-80">
+        <h2>{{msg}}</h2>
 
-      <search id="search"></search>
+        <!-- place the searched words in var searchwords and the action to
+        script the search is searchIt-->
 
-      <div class="filter"></div>
-    </div>
+        <search id="search" @error="msg = $event"></search>
+      </div>
+    </div>  
 
-    <div class="recommended">
-      <carousel :per-page="3" :autoplay="true" :loop="true" :autoplayTimeout="3000" :navigationEnabled="true">
-        <slide class="slides" v-for="(recommended,index) in list" :key="index">
-          <article-slide :title="recommended.title" :authors="recommended.authors" :domain="recommended.category" :date="recommended.created_at" :nb-views="recommended.nb_views" :nb-quotes="recommended.nb_citations" :keywords="recommended.keywords"></article-slide>
+    <div class="recommended md-layout-item md-size-80">
+      <carousel
+        :per-page="3"
+        :autoplay="true"
+        :loop="true"
+        :autoplayTimeout="5000"
+        :navigationEnabled="true"
+      >
+        <slide class="slides" v-once v-for="(recommended,index) in articles" :key="index">
+          <article-slide
+            :title="recommended.title"
+            :authors="recommended.authors"
+            :category="recommended.category"
+            :year="recommended.year"
+            :month="recommended.month"
+            :nb-views="recommended.nb_views"
+            :nb-quotes="recommended.nb_citations"
+            :keywords="recommended.keywords"
+            :reference="recommended.reference"
+          ></article-slide>
         </slide>
       </carousel>
     </div>
@@ -29,9 +49,9 @@ import { Carousel, Slide } from "vue-carousel";
 
 import ArticleSlide from "@/components/accueil/ArticleSlide";
 
-import Search from '@/components/navbar/Search';
+import Search from "@/components/navbar/Search";
 
-import dummy from "@/assets/dummy-Results.json";
+import dummyArticles from "@/services/dummy/articles.json";
 
 export default {
   name: "Accueil",
@@ -39,12 +59,13 @@ export default {
     Carousel,
     Slide,
     ArticleSlide,
-    Search,
+    Search
   },
   data() {
     return {
       searchInput: null,
-      list: dummy.results.articles,
+      msg: "",
+      articles: dummyArticles,
     };
   },
   searchIt() {}
@@ -52,22 +73,11 @@ export default {
 </script>
 
 <style scoped>
-img {
+/* img {
   float: left;
-}
+} */
 
-.central {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width: 75%;
-  height: 35%;
-  overflow: auto;
-}
-
-.logoimg {
+/* .logoimg {
   width: 10%;
   height: 10%;
   position: absolute;
@@ -77,66 +87,30 @@ img {
 .title {
   position: absolute;
   left: 35%;
+} */
+
+.head {
+  margin-top: 2%;
 }
 
 h1 {
-  margin-left: 50px;
+  margin-left: 47px;
   margin-top: 35px;
 }
 
-#search {
-  margin-top: 140px;
-}
+/* #search {
+  margin-top: 100px;
+} */
 
-p {
-  margin-left: 15px;
-  width: 20%;
+.search {
+  margin-top: 2%;
 }
 
 .recommended {
-  margin: 0;
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width: 75%;
-  height: 47%;
+  margin-top: 2%;
 }
 
 .slides {
-  border: 1px solid gray;
-  margin: 1%;
-  padding: 1%;
-}
-
-/*.switch-news {
-  float: right;
-  margin-right: 50px;
-  position: absolute;
-  top: 5%;
-  left: 85%;
-}*/
-
-.searchText {
-  height: 20%;
-  width: 87%;
-  position: absolute;
-  top: 70%;
-}
-
-.searchbutton {
-  width: 10%;
-  height: 15%;
-  position: absolute;
-  left: 89%;
-  top: 75%;
-}
-
-.label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: 3px;
 }
 </style>

@@ -1,20 +1,16 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
-import be.unamur.info.mdl.dal.entity.TagEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
-import be.unamur.info.mdl.dal.repository.ArticleRepository;
-import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
-import be.unamur.info.mdl.dal.repository.TagRepository;
-import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dal.entity.*;
+import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.StateOfTheArtService;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
-import be.unamur.info.mdl.service.exceptions.SotaAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.SotaNotFoundException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.exceptions.SotaNotFoundException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
+
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -35,15 +32,16 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   private ArticleRepository articleRepository;
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   @Autowired
   public StateOfTheArtServiceImpl(StateOfTheArtRepository sotaRepo, UserRepository userRepo,
-    ArticleRepository articleRepo, TagRepository tagRepo) {
+         ArticleRepository articleRepo, TagRepository tagRepo, BookmarkRepository bookmarkRepository) {
     this.sotaRepository = sotaRepo;
     this.articleRepository = articleRepo;
     this.userRepository = userRepo;
     this.tagRepository = tagRepo;
-
+    this.bookmarkRepository = bookmarkRepository;
   }
 
 
@@ -92,7 +90,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   }
 
   @Override
-  public boolean delete(String reference, String username) throws UsernameNotFoundException {
+  public boolean delete(String reference, String username) throws UserNotFoundException {
 
     Optional<StateOfTheArtEntity> dbSota = sotaRepository.findByReference(reference);
     StateOfTheArtEntity sota;
@@ -103,7 +101,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     }
 
     if (!sota.getCreator().getUsername().equals(username)) {
-      throw new UsernameNotFoundException("The user is not the owner of the sota");
+      throw new UserNotFoundException("The user is not the owner of the sota");
     }
 
     sota.getCreator().getStateOfTheArts().remove(sota);
@@ -114,7 +112,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   }
 
   @Override
-  public  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data) throws UsernameNotFoundException{
+  public  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data) throws UserNotFoundException{
     Optional<StateOfTheArtEntity> dbSota = sotaRepository.findByReference(reference);
 
     if (!dbSota.isPresent()) {
@@ -123,7 +121,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
       StateOfTheArtEntity sota = dbSota.get();
 
       if (!sota.getCreator().getUsername().equals(username)) {
-        throw new UsernameNotFoundException("The user is not the owner of the sota");
+        throw new UserNotFoundException("The user is not the owner of the sota");
       }
 
       //THIS IS WHAT I'VE UNDERSTOOD OF WHAT THE METHOD IS SUPPOSED TO DO, IT IS NOT DOCUMENTED
@@ -163,7 +161,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    */
   private void attachReference(StateOfTheArtEntity newSota, List<String> references)
     throws ArticleNotFoundException {
-    List<ArticleEntity> list = new LinkedList<ArticleEntity>();
+    List<ArticleEntity> list = new LinkedList<>();
     Optional<ArticleEntity> entity;
 
     for (String reference : references) {
@@ -184,7 +182,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    * @param keywords - The keyword's name list.
    */
   private void attachKeywords(StateOfTheArtEntity newSota, List<String> keywords) {
-    List<TagEntity> list = new LinkedList<TagEntity>();
+    List<TagEntity> list = new LinkedList<>();
     TagEntity keyword;
 
     for (String keywordName : keywords) {
@@ -196,6 +194,62 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     newSota.setKeywords(list);
   }
 
+  @Override
+  public boolean addBookmark(String reference, String username, String note)
+    throws SotaNotFoundException {
 
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotaNotFoundException("The requested state of the art was not found");
+    }
+    //Check if the user has already bookmarked this article
+    UserEntity user = userRepository.findByUsername(username);
+    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(sota.get()))) {
+      return false;
+    }
+
+    BookmarkEntity bookmark = new BookmarkEntity();
+    bookmark.setSota(sota.get());
+    bookmark.setCreator(user);
+    bookmark.setNote(note);
+    user.getBookmarks().add(bookmark);
+    sota.get().getBookmarks().add(bookmark);
+
+    return true;
+  }
+
+
+  @Override
+  public boolean isBookmarked(String reference, String username) throws SotaNotFoundException {
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotaNotFoundException("The requested state of the art was not found");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    return bookmarkRepository.existsByCreatorAndSota(user, sota.get());
+  }
+
+
+  @Override
+  public boolean removeBookmark(String reference, String username)
+    throws SotaNotFoundException, BookmarkNotFoundException {
+    Optional<StateOfTheArtEntity> sota = sotaRepository.findByReference(reference);
+    if (!sota.isPresent()) {
+      throw new SotaNotFoundException("State of the art does not exist");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository
+      .findByCreatorAndSota(user, sota.get());
+    if (!bookmark.isPresent()) {
+      throw new BookmarkNotFoundException("The request state of the art was not present in the bookmarks");
+    }
+    user.getBookmarks().remove(bookmark.get());
+    sota.get().getBookmarks().remove(bookmark.get());
+
+    userRepository.save(user);
+    sotaRepository.save(sota.get());
+    bookmarkRepository.delete(bookmark.get());
+    return true;
+  }
 }
 

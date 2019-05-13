@@ -2,19 +2,24 @@ package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.AuthorEntity;
+import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import be.unamur.info.mdl.dal.repository.ArticleRepository;
 import be.unamur.info.mdl.dal.repository.AuthorRepository;
+import be.unamur.info.mdl.dal.repository.BookmarkRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
+import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.service.ArticleService;
-import be.unamur.info.mdl.service.exceptions.ArticleAlreadyExistException;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -24,6 +29,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
   private final UserRepository userRepository;
   private final TagRepository tagRepository;
   private final AuthorRepository authorRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   private final Slugify slugify = new Slugify();
 
@@ -42,11 +50,12 @@ public class ArticleServiceImpl implements ArticleService {
   @Autowired
   public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository,
     TagRepository tagRepository,
-    AuthorRepository authorRepository) {
+    AuthorRepository authorRepository, BookmarkRepository bookmarkRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.tagRepository = tagRepository;
     this.authorRepository = authorRepository;
+    this.bookmarkRepository = bookmarkRepository;
   }
 
 
@@ -83,7 +92,6 @@ public class ArticleServiceImpl implements ArticleService {
     // First, find all categories provided
     List<TagEntity> categories = this.tagRepository.findByNameOrSlugIn(categoryNames);
 
-
     categories.forEach(category -> {
       // Find the article by category and transform to DTO
       List<ArticleDTO> articles = this.articleRepository
@@ -103,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     if (articleRepository.existsByReference(articleData.getReference())) {
       throw new ArticleAlreadyExistException(
-        "The reference : " + articleData.getTitle() + " is already saved.");
+        "This article is already saved : " + articleData.getReference());
     }
 
     if (articleRepository.existsByTitle(articleData.getTitle())) {
@@ -123,7 +131,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     this.attachKeywords(newArticle, articleData.getKeywordList());
 
-    newArticle.setCreatedAt(LocalDate.now());
     this.articleRepository.save(newArticle);
     return true;
   }
@@ -177,6 +184,129 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     newArticle.setKeywords(list);
+  }
+
+  @Override
+  public boolean addBookmark(String reference, String username, String note)
+    throws ArticleNotFoundException, AlreadyBookmarkedException {
+
+    Optional<ArticleEntity> article;
+    article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
+    //Check if the user has already bookmarked this article
+    UserEntity user = userRepository.findByUsername(username);
+    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+      throw new AlreadyBookmarkedException("This article is already in your bookmarks");
+    }
+
+    BookmarkEntity bookmark = new BookmarkEntity();
+    bookmark.setArticle(article.get());
+    bookmark.setCreator(user);
+    bookmark.setNote(note);
+    user.getBookmarks().add(bookmark);
+    article.get().getBookmarks().add(bookmark);
+
+    return true;
+  }
+
+
+  @Override
+  public boolean isBookmarked(String reference, String username) throws ArticleNotFoundException {
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("The requested article was not found");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    return bookmarkRepository.existsByCreatorAndArticle(user, article.get());
+  }
+
+
+  @Override
+  public boolean removeBookmark(String reference, String username)
+    throws ArticleNotFoundException, BookmarkNotFoundException {
+    Optional<ArticleEntity> article = articleRepository.findByReference(reference);
+    if (!article.isPresent()) {
+      throw new ArticleNotFoundException("");
+    }
+    UserEntity user = userRepository.findByUsername(username);
+    Optional<BookmarkEntity> bookmark = bookmarkRepository
+      .findByCreatorAndArticle(user, article.get());
+    if (!bookmark.isPresent()) {
+      throw new BookmarkNotFoundException("The request article was not present in the bookmarks");
+    }
+
+    user.getBookmarks().remove(bookmark.get());
+    article.get().getBookmarks().remove(bookmark.get());
+
+    userRepository.save(user);
+    articleRepository.save(article.get());
+    bookmarkRepository.delete(bookmark.get());
+    return true;
+  }
+
+  @Override
+  public List<ArticleDTO> getSubscriptions(String username, int page) {
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("created_at").descending());
+    UserEntity user = userRepository.findByUsername(username);
+    return articleRepository.findDistinctByFollower(username, pageable).map(a -> a.toDTO())
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ArticleDTO> getRecommended(String username, int page) {
+    //Pageable sorting on score, descending
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("score").descending());
+    //case of user not connected : get all articles
+    if (username == null) {
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+
+    UserEntity user = userRepository.findByUsername(username);
+
+    //The list of a user's bookmarked articles' references
+    List<String> references = user.getBookmarks().stream().map(a -> a.getArticle().getReference())
+      .collect(Collectors.toList());
+
+    //case where a user has no bookmarks -- this one exists because when the list is empty no article is returned
+    if (references.isEmpty()) {
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case of user domain not defined, only looking at bookmarks
+    if (user.getDomain() == null) {
+      return articleRepository.findByReferenceNotIn(references, pageable).map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case of user domain defined, looking at domain and bookmarks
+    return articleRepository.findByCategoryAndReferenceNotIn(user.getDomain(), references, pageable)
+      .map(a -> a.toDTO()).collect(Collectors.toList());
+  }
+
+  @Override
+  public void updateScores() {
+    List<ArticleEntity> articles = articleRepository.findAll();
+    articles.forEach(article -> {
+      int nbDays = 1;
+      int nbBookmarked = article.getNbBookmarks();
+
+      if (!article.getCreatedAt().equals(LocalDate.now())) {
+        // Older implies more relevant
+        nbDays = (int) article.getCreatedAt().until(LocalDate.now(), ChronoUnit.DAYS);
+      }
+
+      // More views, more juicy
+      float score = article.getNbViews() / nbDays;
+
+      score = score + 3 * (nbBookmarked / nbDays); // More bookmark, more relevant
+      score = score + 0.3f * (article.getNbCitations() / nbDays); // More citation, more relevant
+
+      article.setScore(score);
+    });
+
+    articleRepository.saveAll(articles);
   }
 
 }
