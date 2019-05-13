@@ -18,10 +18,11 @@
         </md-chip>&nbsp;&nbsp;
         {{ year }}<b v-if="month">, {{ month }}</b>
       </h5><br>
-      <h6>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</h6>
+      <h6>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</h6><br>
+      <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
     </md-card-content>
 
-    <md-card-expand>
+    <!-- <md-card-expand>
       <md-card-actions>
         <md-card-expand-trigger>
           <md-button :md-ripple="false">Keywords</md-button>
@@ -33,7 +34,7 @@
           <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
         </md-card-content>
       </md-card-expand-content>
-    </md-card-expand>
+    </md-card-expand> -->
   </md-card>
 </template>
 
