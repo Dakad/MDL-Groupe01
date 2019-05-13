@@ -1,5 +1,5 @@
 <template>
-  <md-card>
+  <md-card class="size">
     <md-card-header>
       <router-link class="md-title" :to="{ name: 'articleDetails', params: { reference: reference }}">
         {{ title }}
@@ -60,5 +60,9 @@
 <style scoped>
   .chip {
     margin: 4px;
+  }
+
+  .size {
+    min-height: 100%;
   }
 </style>
