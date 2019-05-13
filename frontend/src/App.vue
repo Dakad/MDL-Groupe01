@@ -138,5 +138,16 @@ md-tabs {
   width: auto;
   height: auto;
 }
+
+.md-tabs-navigation {
+  position: sticky;
+  top: 73px;
+  z-index: 5;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e1e4e8;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding: 5px 10px;
+}
 </style>
 
