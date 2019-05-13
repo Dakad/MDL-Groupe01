@@ -1,17 +1,17 @@
 package be.unamur.info.mdl.dto;
 
 public enum BibtexType {
-  book,
-  booklet,
-  conference,
-  inbook,
-  incollection,
-  inproceedings,
-  manual,
-  mastersthesis,
-  misc,
-  phdthesis,
-  proceedings,
-  techreport,
-  unpublished
+  BOOK,
+  BOOKLET,
+  CONFERENCE,
+  INBOOK,
+  INCOLLECTION,
+  INPROCEEDINGS,
+  MANUAL,
+  MASTERSTHESIS,
+  MISC,
+  PHDTHESIS,
+  PROCEEDINGS,
+  TECHREPORT,
+  UNPUBLISHED
 }
