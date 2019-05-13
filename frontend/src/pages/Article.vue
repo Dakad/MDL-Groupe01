@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-gutter md-alignment-center-space-around">
+  <div class="md-layout md-alignment-center-space-around">
     <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
       <md-card md-with-hover id="article-container">
         <md-card-header>
@@ -54,9 +54,12 @@
       </md-card>
     </div>
 
-    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100">
-      <div class="info-container">
-        <info-nav :info="info" :tags="article.keywords" :refs="article.refs"></info-nav>
+    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100 md-layout">
+      <div class="info-container md-layout-item md-size-90">
+        <info-nav :info="info"></info-nav>
+      </div>
+      <div class="ref-container md-layout-item md-size-90">
+        <info-nav :refs="article.refs"></info-nav>
       </div>
     </div>
   </div>
@@ -176,8 +179,9 @@ export default {
 </script>
 
 <style  lang="css" scoped>
+
 #article-container {
-  margin-top: 15px;
+  margin-top: -20px;
   cursor: auto;
 }
 
