@@ -7,9 +7,9 @@ import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
-import be.unamur.info.mdl.service.exceptions.InvalidCredentialException;
-import be.unamur.info.mdl.service.exceptions.RegistrationException;
-import be.unamur.info.mdl.service.exceptions.UsernameNotFoundException;
+import be.unamur.info.mdl.exceptions.InvalidCredentialException;
+import be.unamur.info.mdl.exceptions.RegistrationException;
+import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
+    // TODO At the same time, init it profile
+
     this.userRepository.save(UserEntity.of(userData));
 
     return true;
@@ -68,24 +70,19 @@ public class UserServiceImpl implements UserService {
       throw new org.springframework.security.core.userdetails.UsernameNotFoundException(username);
     }
     CredentialDTO credential = this.userRepository.findByUsername(username).toDTO();
-    return new User(credential.getUsername(), credential.getPassword(), Collections.EMPTY_LIST);
+    return new User(credential.getUsername(), credential.getPassword(), Collections.emptyList());
   }
 
 
   @Override
   public String login(@Valid CredentialDTO credential) throws InvalidCredentialException {
     if (this.userRepository.existsByUsername(credential.getUsername())) {
-      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername())
-        .toDTO();
-      if (checkPassword(credential, userCredential)) {
-        return SecurityUtils.generateToken(userCredential.getUsername());
+      UserEntity dbUser = userRepository.findByUsername(credential.getUsername());
+      if (this.passwordEncoder.matches(credential.getPassword(), dbUser.getPassword())) {
+        return SecurityUtils.generateToken(dbUser.getUsername());
       }
     }
     throw new InvalidCredentialException("Invalid username or password provided");
-  }
-
-  private boolean checkPassword(CredentialDTO userLogin, CredentialDTO userEntity) {
-    return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 
 
@@ -100,7 +97,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean follow(String username, String follower) throws UsernameNotFoundException {
+  public boolean follow(String username, String follower) throws UserNotFoundException {
     if (!this.isFollowed(username, follower)) {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
@@ -115,9 +112,9 @@ public class UserServiceImpl implements UserService {
 
 
   @Override
-  public boolean isFollowed(String username, String user) throws UsernameNotFoundException {
+  public boolean isFollowed(String username, String user) throws UserNotFoundException {
     if (!userRepository.existsByUsername(username)) {
-      throw new UsernameNotFoundException();
+      throw new UserNotFoundException();
     }
     UserEntity currentUser = userRepository.findByUsername(user);
     UserEntity visitedUser = userRepository.findByUsername(username);
@@ -125,7 +122,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean unfollow(String username, String follower) throws UsernameNotFoundException {
+  public boolean unfollow(String username, String follower) throws UserNotFoundException {
     if (this.isFollowed(username, follower)) {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
@@ -136,6 +133,6 @@ public class UserServiceImpl implements UserService {
       userRepository.save(userFollower);
       return true;
     }
-    return false;
+    throw new UserNotFoundException();
   }
 }

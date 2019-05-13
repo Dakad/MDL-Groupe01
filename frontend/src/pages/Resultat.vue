@@ -5,8 +5,8 @@
         class="sort-container"
         :sort="sortBy"
         :order="orderBy"
-        @change:sort="updateSearchURL('sort', $event)"
-        @change:order="updateSearchURL('order', $event)"
+        @change:sort="sortBy = $event; updateSearchURL('sort', $event)"
+        @change:order="orderBy = $event; updateSearchURL('order', $event)"
       ></result-sort>
     </div>
     <div class="md-layout-item md-size-80">
@@ -17,12 +17,12 @@
         <md-tabs
           md-alignment="fixed"
           :md-active-tab="activeTab"
-          @md-changed="updateSearchURL('tab', $event)"
+          @md-changed="activeTab = $event; updateSearchURL('tab', $event)"
         >
           <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
             <sota-list v-show="!loading" :list="results.sotas"></sota-list>
             <md-empty-state
-              v-if="!results.sotas || results.sotas.length == 0"
+              v-if="!loading && (!results.sotas || results.sotas.length == 0)"
               md-icon="sentiment_dissatisfied"
               md-label="No states of the art found"
               :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
@@ -43,19 +43,21 @@
               v-show="!loading"
               :list="results.articles"
               :meta="metas['articles']"
-              @pagination="pages['article'] = $event"
+              :hasPagination="isPaginationVisible('articles')"
+              @pagination="page = $event; updateSearchURL('page', $event) "
             ></article-list>
             <md-empty-state
-              v-if="!results.articles || results.articles.length == 0"
+              v-if="!loading &&  (!results.articles || results.articles.length == 0)"
               md-icon="description"
               md-label="No articles found"
-              :md-description="'Sorry, we didn\'t find any SoTA matching your search for \'\''+searchTerm+'\'\''"
+              :md-description="'Sorry, we didn\'t find any articles matching your search for \'\''+searchTerm+'\'\''"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+            <author-list v-show="!loading" :list="results.users"></author-list>
             <author-list v-show="!loading" :list="results.authors"></author-list>
             <md-empty-state
-              v-if="!results.authors || results.authors.length == 0"
+              v-if="!loading && (!results.users || results.users.length == 0 && results.authors.length == 0)"
               md-icon="people"
               md-label="No authors/users found"
               :md-description="'Sorry, we didn\'t find any authors/users matching your search for \'\''+searchTerm+'\'\''"
@@ -68,7 +70,7 @@
             :md-disabled="articlesTitles.length == 0"
           >
             <md-empty-state
-              v-if="articlesTitles.length == 0"
+              v-if="!loading && articlesTitles.length == 0"
               md-icon="share"
               md-label="No graphics to display"
               md-description="Try another search"
@@ -82,7 +84,7 @@
             :md-disabled="isEmptyArticlesTags"
           >
             <md-empty-state
-              v-if="isEmptyArticlesTags"
+              v-if="!loading && isEmptyArticlesTags"
               md-icon="cloud"
               md-label="No word cloud to display"
             ></md-empty-state>
@@ -122,13 +124,10 @@ export default {
       sortBy: this.$route.query["sort"] || "name",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
-      page: 0,
+      page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
-      pages: {},
-      articlesTags: {},
-      articlesTitles: [],
-      relatedArticles: []
+      pages: {}
     };
   },
   created() {
@@ -145,72 +144,48 @@ export default {
   computed: {
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
-    }
-  },
-  methods: {
-    updateSearchURL(type, by) {
-      if (type == "tab") {
-        this.changingTab = true;
-      }
-      const query = { ...this.$route.query };
-      query[type] = by;
-      this.$router.push({ query });
     },
-    fetchSearchResult() {
-      if (this.changingTab) {
-        this.changingTab = false;
-        return;
-      }
-      this.loading = true;
-      this.searchTerm = this.$route.query["search"];
-
-      const searchQuery = {
-        st: this.searchTerm,
-        s: this.sortBy,
-        o: this.orderBy,
-        p: this.page
+    isPaginationVisible(type) {
+      return type => {
+        return (
+          !this.loading &&
+          this.metas[type] &&
+          this.metas[type]["total_pages"] >= 1
+        );
       };
-
-      return getSearchResults(searchQuery)
-        .then(res => {
-          this.loading = false;
-
-          Object.keys(res["metas"]).forEach(type => {
-            this.$set(this.metas, type, res["metas"][type]);
-            this.$set(this.results, type, res[type]);
-          });
-
-          // this.$set(this.results, "articles", res["articles"]);
-          // this.$set(this.results, "authors", res["authors"]);
-          // this.$set(this.results, "sotas", res["sotas"]);
-          // this.$set(this.results, "users", res["users"]);
-
-          this.articlesTitles = [];
-
-          this.articlesTags = res["articles"].reduce((acc, article) => {
-            // As the same time, push the article title
-            this.articlesTitles.push({
-              title: article.title,
-              reference: article.reference,
-              year: article.year,
-              domain: article.category
-            });
-            article.keywords.forEach(({ name, slug }) => {
-              const nb = acc[slug] ? acc[slug]["occur"] : 0;
-              acc[slug] = { name, occur: nb + 1 };
-            });
-            return acc;
-          }, {});
-
-          this.groupArticleByKeywords();
-        })
-        .catch(console.error);
     },
+    articlesTitles() {
+      if (!this.results["articles"]) {
+        return [];
+      }
+
+      return this.results["articles"].map(article => ({
+        title: article.title,
+        reference: article.reference,
+        year: article.year,
+        domain: article.category
+      }));
+    },
+
+    articlesTags() {
+      if (!this.results["articles"]) {
+        return {};
+      }
+      return this.results["articles"].reduce((acc, article) => {
+        // As the same time, push the article title
+        article.keywords.forEach(({ name, slug }) => {
+          const nb = acc[slug] ? acc[slug]["occur"] : 0;
+          acc[slug] = { name, occur: nb + 1 };
+        });
+        return acc;
+      }, {});
+    },
+
     /**
      * Group articles based on common keywords among them.
      */
-    groupArticleByKeywords() {
-      this.relatedArticles = [];
+    relatedArticles() {
+      let relatedArticlesList = [];
       const { articles } = this.results;
       for (let i = 0; i < articles.length; i++) {
         let keywords = articles[i].keywords;
@@ -233,21 +208,50 @@ export default {
           }
           commonArticle.push(commonKeyword);
           if (commonArticle.length > 1) {
-            this.relatedArticles.push(commonArticle);
+            relatedArticlesList.push(commonArticle);
           }
         }
       }
-    },
-    groupyTags() {},
-    getEmptyStateLabel(type) {},
-    getEmptyStateDescription(type) {
-      switch (type) {
-        case "value":
-          break;
-
-        default:
-          break;
+      return relatedArticlesList;
+    }
+  },
+  methods: {
+    updateSearchURL(type, by) {
+      if (type == "tab") {
+        this.changingTab = true;
       }
+      const query = { ...this.$route.query };
+      query[type] = by;
+      this.$router.push({ query });
+    },
+    fetchSearchResult() {
+      // if (this.changingTab) {
+      //   this.changingTab = false;
+      //   return;
+      // }
+      this.loading = true;
+      this.searchTerm = this.$route.query["search"];
+
+      const searchQuery = {
+        term: this.searchTerm,
+        sort: this.sortBy,
+        order: this.orderBy,
+        page: !this.changingTab ? this.page : 1,
+        only: !this.changingTab ? this.activeTab : undefined
+      };
+
+      return getSearchResults(searchQuery)
+        .then(res => {
+          this.loading = false;
+
+          Object.keys(res["metas"])
+            .filter(type => res["metas"][type] != null)
+            .forEach(type => {
+              this.$set(this.metas, type, res["metas"][type]);
+              this.$set(this.results, type, res[type]);
+            });
+        })
+        .catch(console.error);
     }
   }
 };

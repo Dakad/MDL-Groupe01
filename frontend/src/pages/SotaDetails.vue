@@ -1,86 +1,255 @@
-<template>
-  <div class="Sota">
-    <div class="leftContainer">
-      <h1>{{ articleTitle }}</h1>
+<template v-cloak>
+  <div id="sota  ">
+    <div class="sota-details md-layout md-gutter md-alignment-top-left">
+      <h3 class="sota-title md-display-1 md-layout-item md-size-80">{{ sota.title }}</h3>
+      <div class="md-layout-item md-size-25">
+        <md-chip id="sota-subject" :style="subjectColor" title="Main subject">
+          <span class="md-subheading">{{sota.subject}}</span>
+        </md-chip>
+        <p>
+          <md-icon title="Date of creation">date_range</md-icon>&nbsp;
+          <b>{{sota.created_at}}</b>
+        </p>
+      </div>
+      <div class="md-layout-item md-size-20">
+        <p>
+          <router-link
+            :to="{name:'userProfile', params: {username : sota.creator.username}}"
+            id="sota-creator-name"
+            :title="`Go to ${creatorFullname} profile`"
+          >
+            <md-icon title="Creator">person</md-icon>&nbsp;
+            <b>{{creatorFullname}}</b>
+          </router-link>
+        </p>
+        <p id="sota-creator-email">
+          <md-icon title="Creator e-mail">mail</md-icon>&nbsp;
+          <b>{{sota.creator.email}}</b>
+        </p>
+      </div>
       <div class="menuBo">
-        <menuSota></menuSota>
+        <SotaMenu
+          v-if="userIsLogged"
+          :reference="sota.reference"
+          :is-bookmarked="isBookmarked"
+          :download-filename="sota.title"
+          @bookmark="bookmarkSota"
+          @download="download()"
+        ></SotaMenu>
       </div>
-      <div class="abstract">
-        <p>{{ abstract }}</p>
-      </div>
+    </div>
+    <md-tabs
+      md-alignment="fixed"
+      :md-active-tab="activeTab"
+      class="sota-articles"
+      @md-changed="updateURL"
+    >
+      <md-tab id="articles-list" md-label="List of articles" md-icon="description">
+        <h5>List of article in the SOTA:</h5>
 
-      <!-- TODO rajouter le templace d'affichage d'article une fois le merge fait pour SOTA -->
-      <h5>List of article in the SOTA:</h5>
-      <ul id="articleList">
-        <li v-for="(article,index) in articles" :key="index">{{ article }}</li>
-      </ul>
-    </div>
-    <div class="rightContainer">
-      <infoNav></infoNav>
-    </div>
+        <article-list :list="sota.articles"></article-list>
+      </md-tab>
+
+      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
+        <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
+      </md-tab>
+    </md-tabs>
+
+    <!-- Download SoTA choice Dialog  -->
+
+    <md-dialog :md-active.sync="wantDownload">
+      <md-dialog-title>Choose the download file format ?</md-dialog-title>
+      <md-content class="md-layout md-alignment-center-space-around">
+        <md-button
+          class="md-dense md-raised"
+          :href="downloadData.json"
+          :download="this.sota.reference +'.json'"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('JSON')"
+        >JSON</md-button>
+
+        <md-button
+          :href="downloadData.bibtex"
+          :download="this.sota.reference +'.bib'"
+          class="md-dense md-raised md-primary"
+          :md-ripple="false"
+          @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
+        >BIBTEX</md-button>
+      </md-content>
+    </md-dialog>
   </div>
 </template>
 
 <script>
-import InfoNav from "@/components/article/InfoNav";
-import MenuSota from "@/components/sota/MenuSota";
-import json from "@/assets/dummy-SOTA.json";
+import ColorHash from "color-hash";
+
+// import InfoNav from "@/components/article/InfoNav";
+import SotaMenu from "@/components/sota-details/SotaMenu";
+import SotaGraphic from "@/components/sota-helper/SotaGraphic";
+import ArticleList from "@/components/resultat/ArticleList";
+import {
+  getSota,
+  sotaGetBookmark,
+  sotaDeleteBookmark,
+  sotaPostBookmark
+} from "@/services/api-sota";
+import { isLogged } from "@/services/api-user";
+import { exportAsJson, exportAsBibtex } from "@/services/api";
+import { toBibtex } from "@/services/bibtex-parse";
+
+
+import {
+  EventBus,
+  EVENT_USER_LOGGED,
+  EVENT_USER_LOGOUT,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
+
+const colorHash = new ColorHash();
 
 export default {
-  name: "Sota",
+  name: "SotaDetails",
+  props: ["reference"],
   components: {
-    InfoNav,
-    MenuSota
+    // InfoNav,
+    SotaMenu,
+    ArticleList,
+    SotaGraphic
   },
   data() {
     return {
-      json,
-      articleTitle: json.title,
-      abstract: json.description,
-      articles: json.article
+      userIsLogged: isLogged(),
+      sota: {
+        creator: {}
+      },
+      isBookmarked: false,
+      wantDownload: false,
+      activeTab: this.$route.query["tab"] || "articles-list",
+      downloadData: {
+        json: "",
+        bibtex: ""
+      }
     };
+  },
+  computed: {
+    creatorFullname() {
+      if (this.sota.hasOwnProperty("reference")) {
+        return this.sota.creator.lastname + " " + this.sota.creator.firstname;
+      } else {
+        return null;
+      }
+    },
+    subjectColor() {
+      return {
+        "background-color": colorHash.hex(this.sota.subject)
+      };
+    },
+    jsonData() {
+      return exportAsJson(this.sota);
+    },
+    bibtexData() {
+      const data = toBibtex(this.sota.articles);
+      return exportAsBibtex(data);
+    }
+  },
+
+  watch: {
+    "$route.path": "fetchSota"
+  },
+
+  created() {
+    if (this.userIsLogged) {
+      this.getBookmarkState();
+    }
+
+    EventBus.$on(EVENT_USER_LOGOUT, _ => (this.userIsLogged = false));
+
+    // fetch the data when the view is created
+    this.fetchSota();
+  },
+
+  methods: {
+    updateURL(tab) {
+      this.activeTab = tab;
+      const query = { ...this.$route.query };
+      query["tab"] = tab;
+      this.$router.push({ query });
+    },
+    fetchSota() {
+      return getSota(this.reference).then(data => (this.sota = data));
+    },
+    bookmarkSota() {
+      if (!this.userIsLogged) return;
+
+      if (this.isBookmarked) {
+        sotaDeleteBookmark(this.reference)
+          .then(x => (this.isBookmarked = false))
+          .then(_ =>
+            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+          );
+      } else {
+        sotaPostBookmark(this.reference)
+          .then(x => (this.isBookmarked = true))
+          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "SoTA bookmarked"));
+      }
+    },
+    getBookmarkState() {
+      sotaGetBookmark(this.reference).then(
+        data => (this.isBookmarked = data.done)
+      );
+
+    },
+    download(format) {
+      this.wantDownload = true;
+
+      this.downloadData["json"] = exportAsJson(this.sota);
+
+      const text = toBibtex(this.sota.articles);
+      this.downloadData["bibtex"] = exportAsBibtex(text);
+    },
+    onDownloadFormatChoiceBtnClick(choice) {
+      this.wantDownload = false;
+      EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
+
+    }
   }
 };
 </script>
 
 <style scoped>
-h1 {
-  position: absolute;
-  left: 10%;
-  width: 70%;
-  top: 10%;
+#sota {
+  border: solid lightgrey 1px;
+}
+
+.sota-details {
+  margin: 0;
+  margin-bottom: 35px;
+}
+
+.sota-title {
+  margin: 15px 0;
+}
+
+#sota-subject {
+  margin-bottom: 10px;
+}
+
+#sota-creator-name {
+  text-decoration: none;
 }
 
 .menuBo {
-  padding-top: 15%;
-  padding-left: 10%;
-  width: 25%;
-  float: right;
-}
-
-.abstract {
-  float: bottom;
-  padding-top: 10%;
-  padding-left: 15%;
-  width: 80%;
-}
-
-.infoNav {
-  padding-top: 10%;
-  padding: 10%;
-}
-
-.leftContainer {
-  position: relative;
   float: left;
-  width: 60%;
-  height: 80%;
+  margin-left: 100px;
 }
 
-.rightContainer {
-  padding-right: 5px;
-  padding-top: 5%;
-  float: right;
+.infoBaseLeft {
+  float: left;
+}
+
+.infoBaseRight {
+  float: left;
+  margin-left: 60px;
 }
 </style>
 

@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import be.unamur.info.mdl.service.ArticleServiceImplTest;
-import be.unamur.info.mdl.service.exceptions.ArticleNotFoundException;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.service.impl.ArticleServiceImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;

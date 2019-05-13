@@ -52,8 +52,6 @@ public class AuthorEntity {
 
 
   public AuthorDTO toDTO() {
-//    List<ArticleDTO> articleList = this.articles.stream()
-//      .map(a -> a.toDTO()).collect(Collectors.toList());
     return AuthorDTO.builder().name(this.name).slug(this.slug).build();
   }
 }

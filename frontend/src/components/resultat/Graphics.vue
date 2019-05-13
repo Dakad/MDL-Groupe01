@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="graphics">
+  <div class>
+    <md-card id="graphic">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         v-if="bounds.minX"
@@ -12,13 +12,14 @@
           :key="'node_'+i"
           :cx="coords[i].x"
           :cy="coords[i].y"
-          :r="7"
+          :r="selected == node ? '15' : '10'"
           :fill="choseColor(node.domain)"
           :opacity="choseOpacity(i)"
           class="node-container"
           stroke="black"
           stroke-width="1"
-          @mouseover="showInfo(node, i)"
+          @mouseover="showInfo(node)"
+          @mouseout="nullInfo(node)"
           @click="clicked(node)"
         ></circle>
 
@@ -40,10 +41,10 @@
             text-anchor="middle"
             class="link-label"
             color="black"
-          >{{link.tag}}</text>
+          >{{link.tag.substr(0, link.tag.length - 2)}}</text>
         </template>
       </svg>
-    </div>
+    </md-card>
     <div class="legend">
       <div class="more-info">
         <h5 class>More Info</h5>
@@ -122,7 +123,11 @@ export default {
       currentMove: null,
       nameHolder: "",
       domainHolder: "",
-      yearHolder: ""
+      yearHolder: "",
+      rMouseOver: 25,
+      rMouseOut: 10,
+      r: 10,
+      selected: null
     };
   },
   watch: {
@@ -142,16 +147,17 @@ export default {
       };
     },
     coords() {
-      const clientWidth = document.getElementById("graphics").clientWidth;
+      const clientWidth = document.getElementById("graphic").clientWidth;
+      const clientHeight = document.getElementById("graphic").clientHeight;
       return this.graph.nodes.map(node => {
         return {
           x:
             this.padding +
-            ((node.x - this.bounds.minX) * (clientWidth - 7 * this.padding)) /
+            ((node.x - this.bounds.minX) * (clientWidth - 2 * this.padding)) /
               (this.bounds.maxX - this.bounds.minX),
           y:
             this.padding +
-            ((node.y - this.bounds.minY) * (this.height - 2 * this.padding)) /
+            ((node.y - this.bounds.minY) * (clientHeight - 2 * this.padding)) /
               (this.bounds.maxY - this.bounds.minY)
         };
       });
@@ -197,7 +203,7 @@ export default {
           ref: this.articlesTitles[i]["reference"],
           year: this.articlesTitles[i]["year"]
         })),
-        links: d3.range(this.linkedArticles.length).map(i => ({
+        links: d3.range(Object.keys(this.linkedArticles).length).map(i => ({
           source: this.linkedArticles[i][0],
           target: this.linkedArticles[i][1],
           tag: this.linkedArticles[i][2]
@@ -234,33 +240,41 @@ export default {
       }
       arrayYear.sort();
       let delta = arrayYear[arrayYear.length - 1] - arrayYear[0];
+      let deltasum = (delta * 20) / delta;
       let opacityVar =
-        (arrayYear[arrayYear.length - 1] + 4 - this.graph.nodes[j].year) /
-        delta;
-      return opacityVar;
+        (arrayYear[arrayYear.length - 1] +
+          delta +
+          deltasum -
+          this.graph.nodes[j].year) /
+        (delta + deltasum);
+      return 2 - opacityVar;
     },
 
-    showInfo(node, i) {
-      this.nameHolder = node.name;
-      this.domainHolder = node.domain;
-      this.yearHolder = node.year;
+    showInfo(d, i) {
+      this.nameHolder = d.name;
+      this.domainHolder = d.domain;
+      this.yearHolder = d.year;
+
+      this.selected = d;
+
+      this.r = this.rMouseOver;
     },
 
-    nullInfo() {
-      this.nameHolder = "";
-      this.domainHolder = "";
-      this.yearHolder = "";
+    nullInfo(d, i) {
+      this.r = this.rMouseOut;
     }
   }
 };
 </script>
 
 
-<style lang="scss" scoped>
-.graphics {
+<style lang="css" scoped>
+#graphic {
   position: relative;
   float: left;
   width: 75%;
+  margin-right: 2%;
+  border: lightgrey 1px solid;
 }
 
 .node-container,
@@ -281,19 +295,15 @@ export default {
 .legend {
   float: left;
   width: 20%;
-  .more-info {
-    label {
-      font-weight: bold;
-      // margin-bottom: 5px;
-      text-decoration: underline;
-    }
-    .holder {
-    }
-  }
+}
 
-  .colors-info {
-    list-style: none;
-  }
+.legend .more-info label {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.legend .colors-info {
+  list-style: none;
 }
 
 .node-container,

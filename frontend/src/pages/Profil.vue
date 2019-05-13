@@ -1,16 +1,21 @@
 <template>
   <div class="info">
+    <div class="right"></div>
     <div class="infotop">
-    <InfoBase :profil="profil"></InfoBase>
+      <InfoBase :profil="profil"></InfoBase>
+    </div>
+
+    <div class="stats">
+      <StatsLink/>
     </div>
 
     <div class="tabs">
-    <md-tabs>
-      <md-tab id="profile" md-label="My profile">
-        <MyProfile :infoPro="infoPro"></MyProfile>
-      </md-tab>
-      <md-tab id="Sota" md-label="State Of The Art">
-        <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
+      <md-tabs>
+        <md-tab id="profile" md-label="My profile">
+          <MyProfile :infoPro="infoPro"></MyProfile>
+        </md-tab>
+        <md-tab id="Sota" md-label="State Of The Art">
+          <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
         <h5>Owned SotA</h5>
         <sota-list v-show="!loading" :list="sotaList.owned"></sota-list>
         <md-empty-state
@@ -26,102 +31,120 @@
           md-icon="view_module"
           md-label="No owned state of the art found"
           md-description="Create State of the art to see them here."
-        ></md-empty-state>  -->
-      </md-tab>
-      <md-tab id="Social" md-label="Social">
-
-      </md-tab>
-      <md-tab id="Bookmarks" md-label="Bookmarks">
-        <!--<sota-list v-show="!loading" :list="bookmarkList"></sota-list>
+          ></md-empty-state>-->
+        </md-tab>
+        <md-tab id="Social" md-label="Social">
+          <Social/>
+        </md-tab>
+        <md-tab id="Bookmarks" md-label="Bookmarks">
+          <!--<sota-list v-show="!loading" :list="bookmarkList"></sota-list>
         <md-empty-state
           v-if="!bookmarkList || bookmarkList == 0"
           md-icon="view_module"
           md-label="No bookmark found"
           md-description="Search for article to bookmark them."
-        ></md-empty-state>-->
-      </md-tab>
-    </md-tabs>
+          ></md-empty-state>-->
+        </md-tab>
+      </md-tabs>
     </div>
   </div>
 </template>
 
 <script>
-  import InfoBase from "@/components/profil/Info-base";
-  import {getProfileBase, getBookmark, getProfileInfoPro, getProfileSota} from "../services/api-user";
-  import MyProfile from "../components/profil/MyProfile";
+import InfoBase from "@/components/profil/InfoBase";
+import MyProfile from "../components/profil/MyProfile";
+import Social from "../components/profil/Social";
+import StatsLink from "../components/profil/StatsLink";
+import {
+  getProfileBase,
+  getBookmark,
+  getProfileInfoPro,
+  getProfileSota
+} from "../services/api-user";
+import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
-
-  export default {
-      name: "profil",
-      components: {MyProfile, InfoBase},
-      data() {
-        return{
-          profil: {},
-          bookmarkList: {},
-          sotaList: {},
-          infoPro: {},
-          username: {},
-          loading: false,
-        }
-      },
-      created() {
-        this.username = this.$route.params["username"]
-        this.fetchProfile()
-        //this.fetchBookmark()
-        //this.fetchSota()
-        //this.fetchDataPro()
-      },
-      methods: {
-        fetchProfile(){
-          console.log(this.username);
-          getProfileBase(this.username).then(data =>{
-            this.profil = data;
-            console.log(this.profil);
-          })
-        },
-        fetchBookmark(){
-          getBookmark(this.username).then(function(data){
-            this.bookmarkList = data;
-            console.log(this.bookmarkList);
-          })
-        },
-        fetchSota(){
-          getProfileSota(this.username).then(function(data){
-            this.sotaList = data;
-            console.log(this.sotaList);
-          })
-        },
-        fetchDataPro(){
-          getProfileInfoPro(this.username).then(function(data){
-            this.infoPro = data;
-            console.log(this.infoPro);
-          })
-        }
-      }
+export default {
+  name: "profil",
+  components: { MyProfile, InfoBase, Social, StatsLink },
+  data() {
+    return {
+      profil: {},
+      bookmarkList: {},
+      sotaList: {},
+      infoPro: {},
+      username: {},
+      loading: false
+    };
+  },
+  created() {
+    this.username = this.$route.params["username"];
+    this.fetchProfile();
+    //this.fetchBookmark()
+    //this.fetchSota()
+    //this.fetchDataPro()
+    EventBus.$on(EVENT_USER_LOGOUT, _ => {
+      this.$router.replace({ name : 'accueil' }, function onComplete() {
+        EventBus.$emit(EVENT_BYE_REDIRECTION, true)       
+      })
+    })
+  },
+  methods: {
+    fetchProfile() {
+      console.log(this.username);
+      getProfileBase(this.username).then(data => {
+        this.profil = data;
+        console.log(this.profil);
+      });
+    },
+    fetchBookmark() {
+      getBookmark(this.username).then(function(data) {
+        this.bookmarkList = data;
+        console.log(this.bookmarkList);
+      });
+    },
+    fetchSota() {
+      getProfileSota(this.username).then(function(data) {
+        this.sotaList = data;
+        console.log(this.sotaList);
+      });
+    },
+    fetchDataPro() {
+      getProfileInfoPro(this.username).then(function(data) {
+        this.infoPro = data;
+        console.log(this.infoPro);
+      });
     }
-
+  }
+};
 </script>
 
 <style scoped>
-  .info{
-    position: absolute;
-    height: 100%;
-    width: 100%;
-  }
+.info {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
 
-  .infotop {
-    position: relative;
-    height: 30%;
-    width: 100%;
-  }
+.infotop {
+  position: relative;
+  height: 30%;
+  width: 100%;
+}
+.stats {
+  position: relative;
+  left: 40%;
+  bottom: 28%;
+  width: 40%;
+  height: 15%;
+}
 
-  .tabs{
-    position: relative;
-    height: 60%;
-    width: 100%;
-  }
+.tabs {
+  position: relative;
+  height: 60%;
+  width: 100%;
+}
 
-  #profile{
-    height: 370px;
-  }
+#profile {
+  height: 370px;
+}
 </style>
