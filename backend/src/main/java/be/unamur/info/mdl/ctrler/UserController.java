@@ -3,6 +3,7 @@ package be.unamur.info.mdl.ctrler;
 import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
 import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.dto.DefaultResponseDTO.DefaultResponseDTOBuilder;
 import be.unamur.info.mdl.exceptions.AutoFollowedException;
 import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserAlreadyFollowedException;
@@ -46,16 +47,17 @@ public class UserController {
     @ApiResponse(code = 409, message = "If the username or password is not recognized")
   })
   @PutMapping(path = "/changepwd")
-  public String changePassword(
+  public ResponseEntity changePassword(
     @ApiParam(value = "The new && old password", required = true)
     @Valid @RequestBody PasswordChangeDTO passwordChangeDTO,
     Principal authUser
   ) {
     String authUsername = authUser.getName();
-    if (userService.changePassword(authUsername, passwordChangeDTO)) {
-      return "OK";
-    }
-    return "ERROR : 409 CONFLICT";
+    userService.changePassword(authUsername, passwordChangeDTO);
+    DefaultResponseDTO response = DefaultResponseDTO.builder().done(true)
+      .message("Password changed").build();
+    return ResponseEntity.ok(response);
+
   }
 
 
@@ -177,13 +179,11 @@ public class UserController {
   }
 
   @PostMapping(path = "/profile/update")
-  public ResponseEntity updateProfile(@RequestBody ProfileUpdateDTO updateDTO, Principal authUser){
-    try{
-      profileService.update(updateDTO, authUser.getName());
-      return ResponseEntity.status(HttpStatus.OK).body("Profile updated");
-    }catch (InvalidProfilePictureLinkException e){
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
-    }
+  public ResponseEntity updateProfile(@Valid @RequestBody ProfileUpdateDTO updateDTO, Principal authUser) {
+    boolean isDone = profileService.update(updateDTO, authUser.getName());
+    DefaultResponseDTO response = DefaultResponseDTO.builder()
+      .done(isDone).message("Profile updated").build();
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 }
 
