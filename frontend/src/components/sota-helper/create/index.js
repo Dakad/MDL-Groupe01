@@ -1,5 +1,5 @@
 import SotaUploadListItem from './SotaUploadListItem';
 import SotaUploadPreview from './SotaUploadPreview';
-// import SotaCreateForm from './SotaCreateForm';
+import SotaCreateForm from './SotaCreateForm';
 
-export { SotaUploadListItem, SotaUploadPreview /*SotaCreateForm*/ };
+export { SotaUploadListItem, SotaUploadPreview, SotaCreateForm };

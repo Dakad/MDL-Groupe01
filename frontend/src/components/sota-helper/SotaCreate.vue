@@ -42,13 +42,13 @@ import { parse as bibParser } from "@/services/bibtex-parse";
 
 import {
   SotaUploadListItem,
-  SotaUploadPreview
-  // SotaCreateForm
+  SotaUploadPreview,
+  SotaCreateForm
 } from "@/components/sota-helper/create";
 
 export default {
   name: "SotaCreate",
-  components: { SotaUploadListItem, SotaUploadPreview /*SotaCreateForm*/ },
+  components: { SotaUploadListItem, SotaUploadPreview, SotaCreateForm },
   data() {
     return {
       sending: false,
@@ -155,11 +155,6 @@ export default {
 <style scoped>
 .app-sota-create {
   padding: 2%;
-}
-
-#upload-btn-container {
-  text-align: center;
-  margin: 15px;
 }
 
 .upload-file-list {
