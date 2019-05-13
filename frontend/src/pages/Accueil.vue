@@ -1,38 +1,41 @@
 <template>
-  <section class="accueilapp">
-    <div class="central">
-      <img class="logoimg" src="../assets/logochicken.jpg" style="width:100px;height:100px;">
-      <div class="title">
-        <h1>Froggosaur</h1>
+  <section class="accueilapp md-layout md-alignement-center-center">
+    <div class="central md-layout-item md-size-80 md-layout">
+      
+      <div class="md-layout-item md-size-80 md-layout md-gutter">
+        <img class="logoimg md-layout-item md-size-15" src="../assets/logo-app.png" style="width:90px;height:100px;">
+        <div class="title md-layout-item"><h1>Froggosaur</h1></div>
       </div>
 
-      <h2>{{msg}}</h2>
+      <div class="md-layout-item md-size-80">
+        <h2>{{msg}}</h2>
 
-      <!-- place the searched words in var searchwords and the action to
-      script the search is searchIt-->
+        <!-- place the searched words in var searchwords and the action to
+        script the search is searchIt-->
 
-      <search id="search" @error="msg = $event"></search>
+        <search id="search" @error="msg = $event"></search>
+      </div>
+    </div>  
 
-      <div class="filter"></div>
-    </div>
-
-    <div class="recommended">
+    <div class="recommended md-layout-item">
       <carousel
         :per-page="3"
         :autoplay="true"
         :loop="true"
-        :autoplayTimeout="3000"
+        :autoplayTimeout="5000"
         :navigationEnabled="true"
       >
-        <slide class="slides" v-for="(recommended,index) in list" :key="index">
+        <slide class="slides" v-for="(recommended,index) in articles" :key="index">
           <article-slide
             :title="recommended.title"
             :authors="recommended.authors"
-            :domain="recommended.category"
-            :date="recommended.created_at"
+            :category="recommended.category"
+            :year="recommended.year"
+            :month="recommended.month"
             :nb-views="recommended.nb_views"
             :nb-quotes="recommended.nb_citations"
             :keywords="recommended.keywords"
+            :reference="recommended.reference"
           ></article-slide>
         </slide>
       </carousel>
@@ -47,6 +50,8 @@ import ArticleSlide from "@/components/accueil/ArticleSlide";
 
 import Search from "@/components/navbar/Search";
 
+import dummyArticles from "@/services/dummy/articles.json";
+
 export default {
   name: "Accueil",
   components: {
@@ -59,7 +64,7 @@ export default {
     return {
       searchInput: null,
       msg: "",
-      list: []
+      articles: dummyArticles,
     };
   },
   searchIt() {}
@@ -71,7 +76,7 @@ img {
   float: left;
 }
 
-.central {
+/* .central {
   position: absolute;
   top: 30%;
   left: 50%;
@@ -80,9 +85,17 @@ img {
   width: 75%;
   height: 35%;
   overflow: auto;
+} */
+
+.central {
+  margin: 10%;
 }
 
-.logoimg {
+/* .l {
+  position: relative;
+} */
+
+/* .logoimg {
   width: 10%;
   height: 10%;
   position: absolute;
@@ -92,23 +105,23 @@ img {
 .title {
   position: absolute;
   left: 35%;
-}
+} */
 
-h1 {
+/* h1 {
   margin-left: 50px;
   margin-top: 35px;
-}
+} */
 
-#search {
+/* #search {
   margin-top: 140px;
-}
+} */
 
 p {
   margin-left: 15px;
   width: 20%;
 }
 
-.recommended {
+/* .recommended {
   margin: 0;
   position: absolute;
   top: 75%;
@@ -117,12 +130,14 @@ p {
   transform: translate(-50%, -50%);
   width: 75%;
   height: 47%;
+} */
+
+.recommended {
+  margin: 10%;
 }
 
 .slides {
-  border: 1px solid gray;
-  margin: 1%;
-  padding: 1%;
+  margin: 3px;
 }
 
 /*.switch-news {
