@@ -1,16 +1,15 @@
 <template>
-  <div class="infoNav">
-    <div>
+<div class="infoNav">
+    <div v-if="info">
       <md-tabs md-alignment="fixed">
-        <md-tab id="tab-info" md-label="Info">
+        <md-tab id="tab-info" md-label="Info" md-disabled>
           <Info :info="info"/>
         </md-tab>
-
-        <md-tab id="tab-ref" md-label="Reference">
-          <Tag :tags="tags"/>
-        </md-tab>
-
-        <md-tab id="tab-tag" md-label="Tag">
+      </md-tabs>
+    </div>
+    <div v-else>
+      <md-tabs md-alignment="fixed">
+        <md-tab id="tab-ref" md-label="References" md-disabled>
           <Ref :refs="refs"/>
         </md-tab>
       </md-tabs>
@@ -20,19 +19,16 @@
 
 <script>
 import Info from "@/components/article/Info";
-import Tag from "@/components/article/Ref";
-import Ref from "@/components/article/Tag";
+import Ref from "@/components/article/Ref";
 
 export default {
   name: "InfoNav",
   props: {
     info: Object,
-    tags: Array,
     refs: Array
   },
   components: {
     Info,
-    Tag,
     Ref
   }
 };
