@@ -9,6 +9,7 @@ import { getAuthToken } from './storage';
 // Properties
 const KEY_AUTH_TOKEN = 'AUTH_TOKEN';
 const KEY_USERNAME = 'AUTH_USERNAME';
+const SEARCH_FOR_VALUES = ['all', 'sotas', 'authors', 'user', 'articles'];
 
 // -------------------------------------------------------------------
 // Exports
@@ -33,6 +34,10 @@ export function getTeam() {
 }
 
 export function getSearchResults(searchQuery) {
+  const isSearchValid = SEARCH_FOR_VALUES.includes(searchQuery['only']);
+  if (!isSearchValid) {
+    searchQuery['only'] = SEARCH_FOR_VALUES[0];
+  }
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
 
@@ -44,7 +49,6 @@ export function getArticlesByCategories(categories) {
   if (categories.length <= 0) {
     return;
   }
-
   return Vue.http
     .get('/api/article', {
       params: {
@@ -52,4 +56,24 @@ export function getArticlesByCategories(categories) {
       }
     })
     .then(res => res.body);
+}
+
+export function exportAsJson(data, filename) {
+  if (filename && filename.endsWith('.json')) {
+    filename += '.json';
+  }
+  const fileToSave = new Blob([JSON.stringify(data, undefined, 2)], {
+    type: 'application/json'
+  });
+  return URL.createObjectURL(fileToSave);
+}
+
+export function exportAsBibtex(data, filename) {
+  if (filename && filename.endsWith('.bib')) {
+    filename += '.bib';
+  }
+  const fileToSave = new Blob([data], {
+    type: 'application/x-bibtex'
+  });
+  return URL.createObjectURL(fileToSave);
 }

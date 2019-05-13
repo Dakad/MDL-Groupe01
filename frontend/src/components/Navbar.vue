@@ -43,9 +43,9 @@
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true; showRegisterDialog = false">LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true; showLoginDialog = false;">SIGN IN</b-button>
         </div>
       </div>
     </md-toolbar>
@@ -65,25 +65,22 @@
       </md-dialog-title>
       <register @error="handleError('register', $event)" @success="handleSuccess('signin',$event)"/>
     </md-dialog>
-    <md-snackbar
-      md-position="center"
-      :md-duration="snackbarTime"
-      :md-active.sync="showSnackbar"
-      md-persistent
-    >
-      <span>{{snackbarMsg}}</span>
-      <!-- <md-button class="md-primary" @click="showSnackbar = false">Retry</md-button> -->
-    </md-snackbar>
   </header>
 </template>
 
 <script>
 import Login from "./navbar/Login.vue";
 import Register from "./navbar/Register.vue";
-import { ping as sendPing } from "@/services/api";
 import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
 import { isLogged, logout, getProfileBase } from "@/services/api-user";
-import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
+import {
+  EventBus,
+  EVENT_USER_LOGGED,
+  EVENT_USER_LOGOUT,
+  EVENT_USER_SIGNIN,
+  EVENT_APP_MESSAGE,
+  EVENT_BYE_REDIRECTION
+} from "@/services/event-bus.js";
 
 export default {
   name: "Navbar",
@@ -97,12 +94,9 @@ export default {
       },
       showLoginDialog: false,
       showRegisterDialog: false,
-      isAuthenticated: false,
+      isAuthenticated: isLogged(),
       loginFailed: false,
       signinFailed: false,
-      showSnackbar: false,
-      snackbarMsg: null,
-      snackbarTime: 5000,
       avatar: null
     };
   },
@@ -114,14 +108,14 @@ export default {
     "$route.query": function(route) {}
   },
   created() {
-    this.isAuthenticated = isLogged();
-    EventBus.$on(EVENT_BYE_REDIRECTION, _ => {
-      this.snackbarMsg = "You have been logged out, please log back in !";
-      this.showSnackbar = true;       
-      })
-  },
-  mounted() {
-    this.getProfile();
+    if (this.isAuthenticated) {
+      this.getProfile();
+    }
+    EventBus.$emit(EVENT_USER_LOGGED, this.isAuthenticated);
+
+    EventBus.$on(EVENT_USER_LOGGED, this.getProfile);
+
+    // Disable the search in in the navbar on page 'accueil'
     this.searchBar.show = this.$route.name != "accueil";
     switch (this.$route.query["action"]) {
       case "login":
@@ -131,54 +125,48 @@ export default {
       default:
         break;
     }
-    sendPing().catch(err => {
-      this.snackbarMsg = "API Error - API doesn't respond";
-      this.showSnackbar = true;
-    });
   },
+  mounted() {
+    // Send a event to say this user is logged or not
+  },
+
   methods: {
     handleError(component, error) {
       switch (component) {
         case "login":
           this.loginFailed = true;
+          EventBus.$emit(EVENT_APP_MESSAGE, error);
           break;
         case "register":
         case "signin":
           this.signinFailed = true;
+          EventBus.$emit(EVENT_APP_MESSAGE, error);
+
         default:
           break;
       }
-      this.showSnackbar = true;
-      this.snackbarMsg = error;
     },
     handleSuccess(component, msg) {
       switch (component) {
         case "login":
           this.showLoginDialog = false;
-          msg = `Hello ${msg} ! Welcome BACK :-D !!`;
           this.isAuthenticated = true;
-          if (this.$route.query["redirect"]) {
-            this.$router.replace(this.$route.query["redirect"]);
-          }
+          this.loginFailed = false;
+          EventBus.$emit(EVENT_USER_LOGGED, { username: msg });
           break;
         case "register":
         case "signin":
           this.showRegisterDialog = false;
-          if (!msg) {
-            msg = "Welcome on board !! Please login with your credentials !";
-          }
+          this.loginFailed = false;
+          EventBus.$emit(EVENT_USER_SIGNIN, true);
+          break;
         default:
           break;
       }
-      this.showSnackbar = true;
-      this.snackbarMsg = msg;
     },
     logout() {
       logout();
       this.isAuthenticated = false;
-      this.snackbarMsg = "Bye, see you !";
-      this.showSnackbar = true;
-
       EventBus.$emit(EVENT_USER_LOGOUT, true);
     },
     getProfile() {

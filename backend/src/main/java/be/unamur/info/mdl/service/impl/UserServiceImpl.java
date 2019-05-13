@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
+    // TODO At the same time, init it profile
+
     this.userRepository.save(UserEntity.of(userData));
 
     return true;
@@ -75,17 +77,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public String login(@Valid CredentialDTO credential) throws InvalidCredentialException {
     if (this.userRepository.existsByUsername(credential.getUsername())) {
-      CredentialDTO userCredential = userRepository.findByUsername(credential.getUsername())
-        .toDTO();
-      if (checkPassword(credential, userCredential)) {
-        return SecurityUtils.generateToken(userCredential.getUsername());
+      UserEntity dbUser = userRepository.findByUsername(credential.getUsername());
+      if (this.passwordEncoder.matches(credential.getPassword(), dbUser.getPassword())) {
+        return SecurityUtils.generateToken(dbUser.getUsername());
       }
     }
     throw new InvalidCredentialException("Invalid username or password provided");
-  }
-
-  private boolean checkPassword(CredentialDTO userLogin, CredentialDTO userEntity) {
-    return this.passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
   }
 
 
