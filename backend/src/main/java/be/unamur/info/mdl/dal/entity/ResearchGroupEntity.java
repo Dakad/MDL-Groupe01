@@ -1,6 +1,7 @@
 package be.unamur.info.mdl.dal.entity;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,11 +34,18 @@ public class ResearchGroupEntity {
   @Column(unique = true, nullable = false)
   private String slug;
 
+  @Column(name = "nb_members")
+  @Min(1)
+  private int nbMembers;
+
+  @Column(name = "url_link")
+  private String link;
+
   @Column(name = "created_at")
   private LocalDate createdAt = LocalDate.now();
 
   @ManyToMany(mappedBy = "researchGroup")
-  private Set<UserEntity> users;
+  private Set<UserEntity> users = new LinkedHashSet<>();
 
 
 }

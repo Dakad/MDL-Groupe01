@@ -166,7 +166,7 @@ public class ProfileServiceImpl implements ProfileService {
     user.setEmail(updateDTO.getEmail());
 
     //UPDATING DOMAIN
-    user.setDomain(updateDTO.getDomain());
+    user.setDomain(ServiceUtils.getOrCreateTag(updateDTO.getDomain(),tagRepository));
 
     //UPDATING INTERESTS
     //need to transform a list of strings into a set of tags
