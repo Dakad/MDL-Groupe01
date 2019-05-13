@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h5>List of reference:</h5>
+    <h6>List of references:</h6>
     <ul id="refList">
       <li v-for="(item, index) in refs" :key="index">{{ item }}</li>
     </ul>
-    <h5>List of SoTA using it:</h5>
+    <h6>List of SoTA using it:</h6>
     <ul id="refList">
       <li v-for="(item,index) in sotas" :key="index">{{ item }}</li>
     </ul>

@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-gutter md-alignment-center-space-around">
+  <div class="md-layout md-alignment-top-space-around">
     <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
       <md-card md-with-hover id="article-container">
         <md-card-header>
@@ -24,15 +24,16 @@
 
           <div class="article-keywords">
             <!-- <label>Keywords</label>: -->
-            <md-chip :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
-            <md-chip v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
+            <md-chip class="chip-c" :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
+            <md-chip class="chip" v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
           </div>
         </md-card-header>
         <md-card-media-actions>
           <md-card-area>
             <md-content class="article-abstract">
               <!-- <p>{{ article.content}}</p> -->
-              <p v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
+              <h4 v-if="abstract.length==0"><md-icon class="md-size-2x">mood_bad</md-icon>&nbsp;Oops, abstract missing !</h4>
+              <p v-else v-for="(paragraph, i) in abstract" :key="i" class="md-subheading">{{ paragraph }}</p>
             </md-content>
           </md-card-area>
 
@@ -54,9 +55,12 @@
       </md-card>
     </div>
 
-    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100">
-      <div class="info-container">
-        <info-nav :info="info" :tags="article.keywords" :refs="article.refs"></info-nav>
+    <div class="md-layout-item md-size-25 md-medium-size-25 md-small-size-100 md-layout">
+      <div class="info-container md-layout-item md-size-90">
+        <info-nav :info="info"></info-nav>
+      </div>
+      <div class="ref-container md-layout-item md-size-90">
+        <info-nav :refs="article.refs"></info-nav>
       </div>
     </div>
   </div>
@@ -176,6 +180,7 @@ export default {
 </script>
 
 <style  lang="css" scoped>
+
 #article-container {
   margin-top: 15px;
   cursor: auto;
@@ -195,6 +200,15 @@ export default {
 
 #article-container .article-abstract {
   margin: 15px 0;
+}
+
+.chip-c {
+  margin-bottom: 4px;
+  margin-left: 5px;
+}
+
+.chip {
+  margin-bottom: 4px;
 }
 </style>
 
