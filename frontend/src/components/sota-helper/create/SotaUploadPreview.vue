@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: "SotaUploadListItem",
+  name: "SotaUploadPreview",
   props: {
     preview: {
       required: true,
