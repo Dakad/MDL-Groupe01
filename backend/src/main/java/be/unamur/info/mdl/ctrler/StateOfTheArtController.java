@@ -6,7 +6,9 @@ import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import io.swagger.annotations.Api;
@@ -59,7 +61,6 @@ public class StateOfTheArtController {
   })
   @PostMapping({"", "/"})
   public ResponseEntity create(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser) {
-<<<<<<< HEAD
     try {
       String username = authUser.getName();
       UserDTO currentUser = new UserDTO();
@@ -72,13 +73,6 @@ public class StateOfTheArtController {
     } catch (ArticleNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-=======
-    String username = authUser.getName();
-    UserDTO currentUser = new UserDTO();
-    currentUser.setUsername(username);
-
-    StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-    return ResponseEntity.status(HttpStatus.CREATED).body(sota);
   }
 
 
@@ -124,23 +118,10 @@ public class StateOfTheArtController {
       .body(DefaultResponseDTO.builder().done(done)
         .message("This article is " + (done ? "" : "not") + " present your bookmarks").build()
       );
->>>>>>> develop
   }
 
   @DeleteMapping({"/{reference}"})
-<<<<<<< HEAD
-  public ResponseEntity delete (@PathVariable String reference, Principal authUser)
-    throws UsernameNotFoundException {
-    try {
-      sotaService.delete(reference, authUser.getName());
-      return ResponseEntity.noContent().build();
 
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }catch (UsernameNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-=======
   public ResponseEntity delete(@PathVariable String reference, Principal authUser)
     throws UserNotFoundException {
 
@@ -148,7 +129,7 @@ public class StateOfTheArtController {
     String msg = "SoTA " + (!done ? "not" : "") + " removed";
     return ResponseEntity.status(HttpStatus.OK)
       .body(DefaultResponseDTO.builder().done(done).message(msg).build());
->>>>>>> develop
+
   }
 
   @PutMapping({"/{reference}"})
@@ -157,7 +138,7 @@ public class StateOfTheArtController {
     try {
       sotaService.put(reference, authUser.getName(),data);
       return ResponseEntity.status(HttpStatus.OK).body(data);
-    } catch (UsernameNotFoundException e) {
+    } catch (UserNotFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
