@@ -41,7 +41,7 @@
       <br>
       <md-field>
         <label>Import bibtex file</label>
-        <md-file multiple accept=".bib, .bibtex" @md-change="onUploadFiles($event)"/>
+        <md-file multiple accept=".bib, .bibtex" @md-change="onUploadFiles"/>
       </md-field>
 
       <!-- Upload btn -->
@@ -55,23 +55,15 @@
     <!-- Dialog box to confirm Sota creation -->
     <md-dialog-confirm
       class="sota-create-dialog"
-      :md-active.sync="showAcceptMessage"
+      :md-active.sync="showConfirmDialog"
       md-title="Confirm this sota creation ?!"
       md-content="&nbsp;Do you really want to upload this SoTA ?"
       md-confirm-text="Agree"
       md-cancel-text="No, return"
-      @md-cancel="showAcceptMessage = false"
-      @md-confirm="$emit('submit', sota)"
+      @md-cancel="showConfirmDialog = false"
+      @md-confirm="onConfirmSubmit()"
     />
     <md-dialog-alert md-title="SoTA created!" md-content="Your SoTA has been uploaded."/>
-
-    <!-- Dialog box for created SoTA -->
-    <md-dialog :md-active.sync="showCreatedMessage">
-      <md-dialog-title>SoTA created</md-dialog-title>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showCreatedMessage = false">Okay</md-button>
-      </md-dialog-actions>
-    </md-dialog>
   </div>
 </template>
 
@@ -90,11 +82,7 @@ export default {
   mixins: [validationMixin],
 
   props: {
-    disabled: Boolean,
-    done: {
-      type: Boolean,
-      default: () => false
-    }
+    disabled: Boolean
   },
   data() {
     return {
@@ -104,8 +92,7 @@ export default {
         subject: ""
       },
       invalid: {},
-      showAcceptMessage: false,
-      showCreatedMessage: this.done
+      showConfirmDialog: false
     };
   },
   validations: {
@@ -135,17 +122,20 @@ export default {
     clearForm() {
       this.$v.$reset();
       this.sota.title = null;
-      this.sota.domain = null;
+      this.sota.subject = null;
     },
     validateSota() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.invalid = {};
-        this.showAcceptMessage = true;
+        this.showConfirmDialog = true;
       }
     },
     onUploadFiles(files) {
       this.$emit("upload", files);
+    },
+    onConfirmSubmit() {
+      this.$emit("submit", this.sota);
     }
   }
 };

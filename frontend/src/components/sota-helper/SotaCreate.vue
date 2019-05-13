@@ -1,6 +1,6 @@
 <template>
   <div class="app-sota-create md-layout md-gutter md-alignment-top-space-between">
-    <sota-create-form class="md-layout-item md-size-45">
+    <sota-create-form class="md-layout-item md-size-45" @upload="onFileUpload" @submit="sendSota">
       <hr v-if="uploads.length">
 
       <md-list class="upload-file-list md-scrollbar">
@@ -32,6 +32,17 @@
         @edit="showUploadEdit = true"
       ></sota-upload-preview>
     </div>
+
+    <!-- Dialog box for be redirect to created SoTA -->
+    <md-dialog-confirm
+      :md-active.sync="showRedirectDialog"
+      md-title="SoTA created"
+      md-content="Your <strong>SoTA</strong> has been created.\n Do you want to be redirect to it page"
+      md-confirm-text="Okay"
+      md-cancel-text="Disagree"
+      @md-cancel="showRedirectDialog = false"
+      @md-confirm="showRedirectDialog = false"
+    />
   </div>
 </template>
 
@@ -39,7 +50,7 @@
 import { createSota } from "../../services/api-sota";
 import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
-
+import { EventBus, EVENT_APP_MESSAGE } from "@/services/event-bus";
 import {
   SotaUploadListItem,
   SotaUploadPreview,
@@ -58,7 +69,8 @@ export default {
         filename: null,
         upload: null
       },
-      showUploadEdit: false
+      showUploadEdit: false,
+      showRedirectDialog: false
     };
   },
 
@@ -118,30 +130,40 @@ export default {
       window.alert("Edit me : " + filename);
     },
 
-    sendSota() {
+    sendSota(sota) {
       this.apiErrors = [];
       const articleRefs = [];
-      const createArticleRequests = this.articlesUploaded.map(article => {
-        articleRefs.push(article["reference"]);
-        // If the article category is missing, assign the one from the Sota
-        if (!article["category"] || article["category"].length == 0) {
-          article["category"] = this.sota["subject"];
-        }
-        return createArticle(article);
+
+      if (this.uploads.length == 0) {
+        EventBus.$emit(
+          EVENT_APP_MESSAGE,
+          "Import the bibtex files before create the SoTA."
+        );
+        return;
+      }
+      const createArticleRequests = this.uploads.map(filename => {
+        this.articlesUploaded[filename]["bibtex"].forEach(article => {
+          articleRefs.push(article["reference"]);
+          // If the article category is missing, assign the one from the Sota
+          if (!article["category"] || article["category"].length == 0) {
+            article["category"] = sota["subject"];
+          }
+          return createArticle(article);
+        });
       });
 
-      // Send all request to create an article, fail
+      // Send all request to create an article, one fails ==> all failed
       Promise.race(createArticleRequests)
         .then(values => {
           // Split the keywords, to get each keywords
-          this.sota["keywords"] = this.sota.keywords
+          sota["keywords"] = sota.keywords
             .split(",")
             .map(k => k.trim())
             .filter(k => k.length > 0);
 
-          this.sota["articles"] = articleRefs;
+          sota["articles"] = articleRefs;
 
-          return createSota(this.sota).then(data => {});
+          return createSota(sota).then(data => {});
         })
         .catch(err => {
           console.log(err);
