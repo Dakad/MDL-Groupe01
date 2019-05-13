@@ -128,10 +128,10 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
       //THIS IS WHAT I'VE UNDERSTOOD OF WHAT THE METHOD IS SUPPOSED TO DO, IT IS NOT DOCUMENTED
       //Take all the references from the articles in the sota DTO and get a list of optional articles
-      List<Optional<ArticleEntity>> optArticles = data.getArticles().stream().
-        map(a-> articleRepository.findByReference(a.getReference())).collect(Collectors.toList());
-      //Remove all the empty optionals from the list and take the articles from the rest
-      List<ArticleEntity> articles = optArticles.stream().filter(a -> a.isPresent()).map(a->a.get()).collect(Collectors.toList());
+      //then remove the empty ones and take the articles
+      List<ArticleEntity>articles = data.getArticles().stream().
+        map(a-> articleRepository.findByReference(a.getReference())).
+        filter(a->a.isPresent()).map(a->a.get()).collect(Collectors.toList());
       //and finally, set the sota's articles list to these articles
       sota.setArticles(articles);
       //setting the article doesn't require any workaround
