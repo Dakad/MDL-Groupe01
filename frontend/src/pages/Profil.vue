@@ -62,6 +62,7 @@ import {
   getProfileInfoPro,
   getProfileSota
 } from "../services/api-user";
+import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
 export default {
   name: "profil",
@@ -83,6 +84,11 @@ export default {
     this.fetchBookmark()
     //this.fetchSota();
     this.fetchDataPro();
+        EventBus.$on(EVENT_USER_LOGOUT, _ => {
+      this.$router.replace({ name : 'accueil' }, function onComplete() {
+        EventBus.$emit(EVENT_BYE_REDIRECTION, true)       
+      })
+    })
   },
   methods: {
     fetchProfile() {
