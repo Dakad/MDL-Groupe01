@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-alignment-center-space-around">
+  <div class="md-layout md-alignment-top-space-around">
     <div class="md-layout-item md-size-66 md-medium-size-66 md-small-size-100">
       <md-card md-with-hover id="article-container">
         <md-card-header>
@@ -24,7 +24,7 @@
 
           <div class="article-keywords">
             <!-- <label>Keywords</label>: -->
-            <md-chip class="chip" :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
+            <md-chip class="chip-c" :style="colorCategory" title="Category : ">{{article.category}}</md-chip>
             <md-chip class="chip" v-for="keyword in article.keywords" :key="keyword.slug">{{keyword.name}}</md-chip>
           </div>
         </md-card-header>
@@ -200,6 +200,11 @@ export default {
 
 #article-container .article-abstract {
   margin: 15px 0;
+}
+
+.chip-c {
+  margin-bottom: 4px;
+  margin-left: 5px;
 }
 
 .chip {
