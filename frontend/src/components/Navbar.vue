@@ -151,11 +151,13 @@ export default {
         case "login":
           this.showLoginDialog = false;
           this.isAuthenticated = true;
+          this.loginFailed = false;
           EventBus.$emit(EVENT_USER_LOGGED, { username: msg });
           break;
         case "register":
         case "signin":
           this.showRegisterDialog = false;
+          this.loginFailed = false;
           EventBus.$emit(EVENT_USER_SIGNIN, true);
           break;
         default:
