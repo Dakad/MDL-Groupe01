@@ -147,6 +147,7 @@
           , 'domain':this.domain, 'researchGroups':[this.rGroup], 'email': this.emailAddress
           , 'description': this.bio};
         this.postData(dataToSend)
+
       }
 
     },
