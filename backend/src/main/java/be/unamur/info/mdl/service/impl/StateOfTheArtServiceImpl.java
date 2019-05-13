@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,9 +126,19 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
         throw new UsernameNotFoundException("The user is not the owner of the sota");
       }
 
-      sota.toDTO().setArticles(data.getArticles());
+      //THIS IS WHAT I'VE UNDERSTOOD OF WHAT THE METHOD IS SUPPOSED TO DO, IT IS NOT DOCUMENTED
+      //Take all the references from the articles in the sota DTO and get a list of optional articles
+      List<Optional<ArticleEntity>> optArticles = data.getArticles().stream().
+        map(a-> articleRepository.findByReference(a.getReference())).collect(Collectors.toList());
+      //Remove all the empty optionals from the list and take the articles from the rest
+      List<ArticleEntity> articles = optArticles.stream().filter(a -> a.isPresent()).map(a->a.get()).collect(Collectors.toList());
+      //and finally, set the sota's articles list to these articles
+      sota.setArticles(articles);
+      //setting the article doesn't require any workaround
       sota.setTitle(data.getTitle());
-      sota.toDTO().setKeywords(data.getKeywords());
+      //same as the articles except using ServiceUtils getOrCreateTag does all the work
+      List<TagEntity> tags = data.getKeywords().stream().map(t -> ServiceUtils.getOrCreateTag(t.getSlug(),tagRepository)).collect(Collectors.toList());
+      sota.setKeywords(tags);
       this.sotaRepository.save(sota);
       return sota.toDTO();
     }}
