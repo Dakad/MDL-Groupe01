@@ -12,10 +12,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @Entity
 @Table(name = "research_group")
 @AllArgsConstructor
@@ -28,6 +30,9 @@ public class ResearchGroupEntity {
 
   @Column(unique = true, nullable = false)
   private String name;
+
+  @Column(unique = true, nullable = false)
+  private String slug;
 
   @Column(name = "nb_members")
   @Min(1)

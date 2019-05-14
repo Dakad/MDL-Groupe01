@@ -1,9 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
-import be.unamur.info.mdl.dto.ArticleDTO;
-import be.unamur.info.mdl.dto.BookmarkDTO;
-import be.unamur.info.mdl.dto.DefaultResponseDTO;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.ArticleService;
 import io.swagger.annotations.Api;
@@ -155,6 +152,11 @@ public class ArticleController {
     String username =
       (request.getUserPrincipal() != null) ? request.getUserPrincipal().getName() : null;
     return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username, page));
+  }
+
+  @GetMapping(path = "/types")
+  public ResponseEntity getBibTexTypes(){
+    return ResponseEntity.status(HttpStatus.OK).body(BibtexType.values());
   }
 
 }

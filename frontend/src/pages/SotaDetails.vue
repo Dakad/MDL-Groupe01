@@ -64,7 +64,7 @@
           class="md-dense md-raised"
           :href="downloadData.json"
           :download="this.sota.reference +'.json'"
-          :md-ripple="false"
+          :md-ripple="true"
           @click="onDownloadFormatChoiceBtnClick('JSON')"
         >JSON</md-button>
 
@@ -72,7 +72,7 @@
           :href="downloadData.bibtex"
           :download="this.sota.reference +'.bib'"
           class="md-dense md-raised md-primary"
-          :md-ripple="false"
+          :md-ripple="true"
           @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
         >BIBTEX</md-button>
       </md-content>
@@ -185,7 +185,7 @@ export default {
         sotaDeleteBookmark(this.reference)
           .then(x => (this.isBookmarked = false))
           .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"SoTA removed from bookmarks"})
           );
       } else {
         sotaPostBookmark(this.reference)

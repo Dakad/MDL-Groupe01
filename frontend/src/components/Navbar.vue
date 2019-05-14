@@ -43,9 +43,9 @@
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true">LOGIN</b-button>&nbsp; &nbsp;
+          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true; showRegisterDialog = false">LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true">SIGN IN</b-button>
+          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true; showLoginDialog = false;">SIGN IN</b-button>
         </div>
       </div>
     </md-toolbar>
@@ -69,124 +69,129 @@
 </template>
 
 <script>
-import Login from "./navbar/Login.vue";
-import Register from "./navbar/Register.vue";
-import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
-import { isLogged, logout, getProfileBase } from "@/services/api-user";
-import {
-  EventBus,
-  EVENT_USER_LOGGED,
-  EVENT_USER_LOGOUT,
-  EVENT_USER_SIGNIN,
-  EVENT_APP_MESSAGE,
-  EVENT_BYE_REDIRECTION
-} from "@/services/event-bus.js";
+  import Login from "./navbar/Login.vue";
+  import Register from "./navbar/Register.vue";
+  import Search, { MODE_NAVBAR } from "@/components/navbar/Search";
+  import { isLogged, logout, getProfileBase } from "@/services/api-user";
+  import {
+    EventBus,
+    EVENT_USER_LOGGED,
+    EVENT_USER_LOGOUT,
+    EVENT_USER_SIGNIN,
+    EVENT_APP_MESSAGE,
+    EVENT_BYE_REDIRECTION
+  } from "@/services/event-bus.js";
 
-export default {
-  name: "Navbar",
-  components: { Login, Register, Search },
-  data: function() {
-    return {
-      searchBar: {
-        mode: MODE_NAVBAR,
-        show: true,
-        input: this.$route.query["search"] || null
+  export default {
+    name: "Navbar",
+    components: { Login, Register, Search },
+    data: function() {
+      return {
+        searchBar: {
+          mode: MODE_NAVBAR,
+          show: true,
+          input: this.$route.query["search"] || null
+        },
+        showLoginDialog: false,
+        showRegisterDialog: false,
+        isAuthenticated: isLogged(),
+        loginFailed: false,
+        signinFailed: false,
+        avatar: null
+      };
+    },
+    watch: {
+      "$route.name": function(route) {
+        this.searchBar.show = route != "accueil";
+        this.searchBar.input = this.$route.query["search"];
       },
-      showLoginDialog: false,
-      showRegisterDialog: false,
-      isAuthenticated: isLogged(),
-      loginFailed: false,
-      signinFailed: false,
-      avatar: null
-    };
-  },
-  watch: {
-    "$route.name": function(route) {
-      this.searchBar.show = route != "accueil";
-      this.searchBar.input = this.$route.query["search"];
+      "$route.query": function(route) {}
     },
-    "$route.query": function(route) {}
-  },
-  created() {
-    if (this.isAuthenticated) {
-      this.getProfile();
-    }
-    EventBus.$emit(EVENT_USER_LOGGED, this.isAuthenticated);
+    created() {
+      if (this.isAuthenticated) {
+        this.getProfile();
+      }
+      EventBus.$emit(EVENT_USER_LOGGED, this.isAuthenticated);
 
-    EventBus.$on(EVENT_USER_LOGGED, this.getProfile);
+      EventBus.$on(EVENT_USER_LOGGED, this.getProfile);
 
-    // Disable the search in in the navbar on page 'accueil'
-    this.searchBar.show = this.$route.name != "accueil";
-    switch (this.$route.query["action"]) {
-      case "login":
-        this.showLoginDialog = true;
-        break;
-
-      default:
-        break;
-    }
-  },
-  mounted() {
-    // Send a event to say this user is logged or not
-  },
-
-  methods: {
-    handleError(component, error) {
-      switch (component) {
+      // Disable the search in in the navbar on page 'accueil'
+      this.searchBar.show = this.$route.name != "accueil";
+      switch (this.$route.query["action"]) {
         case "login":
-          this.loginFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
+          this.showLoginDialog = true;
           break;
-        case "register":
-        case "signin":
-          this.signinFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
 
         default:
           break;
       }
     },
-    handleSuccess(component, msg) {
-      switch (component) {
-        case "login":
-          this.showLoginDialog = false;
-          this.isAuthenticated = true;
-          EventBus.$emit(EVENT_USER_LOGGED, { username: msg });
-          break;
-        case "register":
-        case "signin":
-          this.showRegisterDialog = false;
-          EventBus.$emit(EVENT_USER_SIGNIN, true);
-          break;
-        default:
-          break;
+    mounted() {
+      // Send a event to say this user is logged or not
+    },
+
+    methods: {
+      handleError(component, error) {
+        switch (component) {
+          case "login":
+            this.loginFailed = true;
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
+            break;
+          case "register":
+          case "signin":
+            this.signinFailed = true;
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
+            break;
+          case "search":
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
+            break;
+          default:
+            break;
+        }
+      },
+      handleSuccess(component, msg) {
+        switch (component) {
+          case "login":
+            this.showLoginDialog = false;
+            this.isAuthenticated = true;
+            this.loginFailed = false;
+            EventBus.$emit(EVENT_USER_LOGGED, { username: msg });
+            break;
+          case "register":
+          case "signin":
+            this.showRegisterDialog = false;
+            this.loginFailed = false;
+            EventBus.$emit(EVENT_USER_SIGNIN, true);
+            break;
+          default:
+            break;
+        }
+      },
+      logout() {
+        logout();
+        this.isAuthenticated = false;
+        EventBus.$emit(EVENT_USER_LOGOUT, true);
+      },
+      getProfile() {
+        getProfileBase().then(profile => {
+          this.avatar = profile.avatar;
+        });
       }
-    },
-    logout() {
-      logout();
-      this.isAuthenticated = false;
-      EventBus.$emit(EVENT_USER_LOGOUT, true);
-    },
-    getProfile() {
-      getProfileBase().then(profile => {
-        this.avatar = profile.avatar;
-      });
     }
-  }
-};
+  };
 </script>
 
 <style lang="css" scoped>
-.signin-dialog {
-  width: 55%;
-}
-.app-name {
-  text-decoration: none !important;
-}
-.flex {
-  flex: 1;
-}
-.search {
-  margin: 0 40px;
-}
+  .signin-dialog {
+    width: 55%;
+  }
+  .app-name {
+    text-decoration: none !important;
+  }
+  .flex {
+    flex: 1;
+  }
+  .search {
+    margin: 0 40px;
+  }
 </style>

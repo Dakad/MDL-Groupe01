@@ -57,108 +57,108 @@
 </template>
 
 <script>
-import { validationMixin } from "vuelidate";
-import {
-  required,
-  email,
-  minLength,
-  maxLength,
-  not,
-  sameAs
-} from "vuelidate/lib/validators";
-import { postLogin } from "@/services/api-user";
+  import { validationMixin } from "vuelidate";
+  import {
+    required,
+    email,
+    minLength,
+    maxLength,
+    not,
+    sameAs
+  } from "vuelidate/lib/validators";
+  import { postLogin } from "@/services/api-user";
 
-export default {
-  name: "Login",
-  mixins: [validationMixin],
-  props: {},
-  data: function() {
-    return {
+  export default {
+    name: "Login",
+    mixins: [validationMixin],
+    props: {},
+    data: function() {
+      return {
+        login: {
+          username: null,
+          password: null
+        },
+        sending: false,
+        invalid: {}
+      };
+    },
+    validations: {
       login: {
-        username: null,
-        password: null
+        username: {
+          required,
+          minLength: minLength(2)
+        },
+        password: {
+          required,
+          sameAsUsername: not(sameAs("username"))
+        }
+      }
+    },
+    methods: {
+      getValidationClass(fieldName) {
+        const field = this.$v.login[fieldName];
+        if (field) {
+          return {
+            "md-invalid": field.$invalid && field.$dirty
+          };
+        }
       },
-      sending: false,
-      invalid: {}
-    };
-  },
-  validations: {
-    login: {
-      username: {
-        required,
-        minLength: minLength(2)
+      clearForm() {
+        this.$v.$reset();
+        this.login.username = null;
+        this.login.password = null;
       },
-      password: {
-        required,
-        sameAsUsername: not(sameAs("username"))
-      }
-    }
-  },
-  methods: {
-    getValidationClass(fieldName) {
-      const field = this.$v.login[fieldName];
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty
-        };
-      }
-    },
-    clearForm() {
-      this.$v.$reset();
-      this.login.username = null;
-      this.login.password = null;
-    },
-    validateLogin() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        this.invalid = {};
-        this.auth();
-      } else {
-        this.$emit("error", this.msg);
-      }
-    },
-    auth() {
-      this.sending = true;
-      postLogin(this.login)
-        .then(res => {
-          this.sending = false;
-          this.$emit("success", this.login.username);
-          this.clearForm();
-        })
-        .catch(err => {
-          this.msg = "Authentication denied - Please correct your credentials";
-          this.invalid = Object.assign({}, err.body["validation"]);
-          // this.msg = "Authentication denied - " + err.body["error"];
-          // }
-          console.error(err);
-          this.sending = false;
+      validateLogin() {
+        this.$v.$touch();
+        if (!this.$v.$invalid) {
+          this.invalid = {};
+          this.auth();
+        } else {
           this.$emit("error", this.msg);
-        });
+        }
+      },
+      auth() {
+        this.sending = true;
+        postLogin(this.login)
+          .then(res => {
+            this.sending = false;
+            this.$emit("success", this.login.username);
+            this.clearForm();
+          })
+          .catch(err => {
+            this.msg = "Authentication denied - Please correct your credentials";
+            this.invalid = Object.assign({}, err.body["validation"]);
+            // this.msg = "Authentication denied - " + err.body["error"];
+            // }
+            console.error(err);
+            this.sending = false;
+            this.$emit("error", this.msg);
+          });
+      }
     }
-  }
-};
+  };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="css" scoped>
-.md-content {
-  z-index: 1;
-  padding: 40px;
-  width: 100%;
-  max-width: 400px;
-  position: relative;
-}
-.loading-overlay {
-  z-index: 10;
-  top: 0;
-  left: 0;
-  right: 0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .md-content {
+    z-index: 1;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+  .loading-overlay {
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

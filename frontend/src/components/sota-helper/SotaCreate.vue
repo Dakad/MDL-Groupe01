@@ -187,6 +187,24 @@ export default {
           console.log(err);
           this.apiErrors.push(err.body["message"]);
         });
+
+      // Send all request to create an article, fail
+      Promise.race(createArticleRequests)
+        .then(values => {
+          // Split the keywords, to get each keywords
+          this.sota["keywords"] = this.sota.keywords
+            .split(",")
+            .map(k => k.trim())
+            .filter(k => k.length > 0);
+
+          this.sota["articles"] = articleRefs;
+
+          return createSota(this.sota).then(data => {});
+        })
+        .catch(err => {
+          console.log(err);
+          this.apiErrors.push(err.body["message"]);
+        });
     }
   }
 };

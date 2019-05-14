@@ -10,11 +10,15 @@ import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
 import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.exceptions.SotaNotFoundException;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
+
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -74,11 +78,9 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
     UserEntity creator = userRepository.findByUsername(currentUser.getUsername());
     newSota.setCreator(creator);
+    newSota.setCreatedAt(LocalDate.now());
 
-    // Set the category or create a new one
-    this.attachCategory(newSota, sotaData.getCategory());
-
-    this.attachArticles(newSota, sotaData.getArticleList());
+    this.attachReference(newSota, sotaData.getArticleList());
 
     this.attachKeywords(newSota, sotaData.getKeywordList());
 
@@ -109,6 +111,36 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     return true;
   }
 
+  @Override
+  public  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data) throws UserNotFoundException{
+    Optional<StateOfTheArtEntity> dbSota = sotaRepository.findByReference(reference);
+
+    if (!dbSota.isPresent()) {
+      throw new SotaNotFoundException("The referenced article was not found");
+    } else {
+      StateOfTheArtEntity sota = dbSota.get();
+
+      if (!sota.getCreator().getUsername().equals(username)) {
+        throw new UserNotFoundException("The user is not the owner of the sota");
+      }
+
+      //THIS IS WHAT I'VE UNDERSTOOD OF WHAT THE METHOD IS SUPPOSED TO DO, IT IS NOT DOCUMENTED
+      //Take all the references from the articles in the sota DTO and get a list of optional articles
+      //then remove the empty ones and take the articles
+      List<ArticleEntity>articles = data.getArticles().stream().
+        map(a-> articleRepository.findByReference(a.getReference())).
+        filter(a->a.isPresent()).map(a->a.get()).collect(Collectors.toList());
+      //and finally, set the sota's articles list to these articles
+      sota.setArticles(articles);
+      //setting the article doesn't require any workaround
+      sota.setTitle(data.getTitle());
+      //same as the articles except using ServiceUtils getOrCreateTag does all the work
+      List<TagEntity> tags = data.getKeywords().stream().map(t -> ServiceUtils.getOrCreateTag(t.getSlug(),tagRepository)).collect(Collectors.toList());
+      sota.setKeywords(tags);
+      this.sotaRepository.save(sota);
+      return sota.toDTO();
+    }}
+
   /**
    * Generate a MD5 Hash based on the provided string
    *
@@ -120,19 +152,6 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     return DigestUtils.md5DigestAsHex(titleBytes);
   }
 
-
-  /**
-   * Attach a new category or the one persisted in DB.
-   *
-   * @param newSota The new SoTA being created
-   * @param categoryName - The category name
-   */
-  private void attachCategory(StateOfTheArtEntity newSota, String categoryName) {
-    TagEntity category = ServiceUtils.getOrCreateTag(categoryName, this.tagRepository);
-    category.getStatesOfTheArts().add(newSota);
-    newSota.setCategory(category);
-  }
-
   /**
    * Attach the corresponding Article (persisted) to the new SoTA
    *
@@ -140,7 +159,7 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
    * @param references The article's reference list
    * @throws ArticleNotFoundException The article reference is not in persistence.
    */
-  private void attachArticles(StateOfTheArtEntity newSota, List<String> references)
+  private void attachReference(StateOfTheArtEntity newSota, List<String> references)
     throws ArticleNotFoundException {
     List<ArticleEntity> list = new LinkedList<>();
     Optional<ArticleEntity> entity;
@@ -150,7 +169,6 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
       if (!entity.isPresent()) {
         throw new ArticleNotFoundException("The referenced article was not found : " + reference);
       } else {
-        entity.get().getSotas().add(newSota);
         list.add(entity.get());
       }
     }

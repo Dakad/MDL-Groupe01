@@ -42,33 +42,33 @@
 </template>
 
 <script>
-export default {
-  props: {
-    sort: String,
-    order: String,
-    activetTab: String
-  },
-  data() {
-    return {
-      sortBy: this.sort,
-      orderBy: this.order
-    };
-  },
-  computed: {},
-  methods: {
-    onChangeSortBy(by) {
-      this.$emit("change:sort", this.sortBy);
+  export default {
+    props: {
+      sort: String,
+      order: String,
+      activetTab: String
     },
-    onChangeOrderBy(by) {
-      this.$emit("change:order", this.orderBy);
+    data() {
+      return {
+        sortBy: this.sort,
+        orderBy: this.order
+      };
+    },
+    computed: {},
+    methods: {
+      onChangeSortBy(by) {
+        this.$emit("change:sort", this.sortBy);
+      },
+      onChangeOrderBy(by) {
+        this.$emit("change:order", this.orderBy);
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>
-.md-list {
-  margin: 10px;
-  display: inline-block;
-}
+  .md-list {
+    margin: 10px;
+    display: inline-block;
+  }
 </style>
