@@ -7,23 +7,23 @@
 </template>
 
 <script>
-export default {
-  name: "MenuArticle",
-  props: {
-    articleReference: String
-  },
-  methods: {
-    downloadRef() {
-      // TODO add the download function
+  export default {
+    name: "MenuArticle",
+    props: {
+      articleReference: String
     },
-    bookmark() {
-      // TODO add to the bookmark function
-    },
-    addToSOTA() {
-      // TODO add the add to SOTA function
+    methods: {
+      downloadRef() {
+        // TODO add the download function
+      },
+      bookmark() {
+        // TODO add to the bookmark function
+      },
+      addToSOTA() {
+        // TODO add the add to SOTA function
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>

@@ -27,33 +27,34 @@
 </template>
 
 <script>
-import authorList from "@/components/resultat/AuthorList";
+  import authorList from "@/components/resultat/AuthorList";
 
-export default {
-  components: {
-    /*authorList*/
-  },
-  data() {
-    return {
-      loading: false
-    };
-  },
-  computed: {
-    nbrFollowers: function() {
-      return this.jsonFollow.Follower.length;
+  export default {
+    components: {
+      /*authorList*/
     },
-    nbrFollowed: function() {
-      return this.jsonFollow.Followed.length;
+    data() {
+      return {
+        loading: false
+      };
+    },
+    computed: {
+      nbrFollowers: function() {
+        return this.jsonFollow.Follower.length;
+      },
+      nbrFollowed: function() {
+        return this.jsonFollow.Followed.length;
+      }
     }
-  }
-};
+  };
 </script>
+
 <style scoped>
-.column {
-  float: left;
-  width: 33.33%;
-  padding: 5px;
-}
+  .column {
+    float: left;
+    width: 33.33%;
+    padding: 5px;
+  }
 </style>
 
 
