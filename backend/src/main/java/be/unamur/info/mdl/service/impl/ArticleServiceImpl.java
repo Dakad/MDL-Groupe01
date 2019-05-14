@@ -309,4 +309,9 @@ public class ArticleServiceImpl implements ArticleService {
     articleRepository.saveAll(articles);
   }
 
+  @Override
+  public Map<String,String> getAll(){
+    return articleRepository.findAll().stream().collect(Collectors.toMap(ArticleEntity::getReference,ArticleEntity::getTitle));
+  }
+
 }

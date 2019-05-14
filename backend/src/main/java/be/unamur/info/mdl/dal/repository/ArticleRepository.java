@@ -5,6 +5,7 @@ import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
@@ -41,4 +42,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
   Stream<ArticleEntity> findByReferenceNotIn(List<String> references, Pageable p);
 
   Stream<ArticleEntity> findByCategoryAndReferenceNotIn(TagEntity domain, List<String> references, Pageable pageable);
+
+
 }
