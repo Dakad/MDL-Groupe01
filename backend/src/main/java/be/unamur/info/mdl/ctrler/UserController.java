@@ -2,13 +2,9 @@ package be.unamur.info.mdl.ctrler;
 
 import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
 
-import be.unamur.info.mdl.dto.BookmarkDTO;
-import be.unamur.info.mdl.dto.PasswordChangeDTO;
-import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
-import be.unamur.info.mdl.dto.ProfileProInfoDTO;
-import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
-import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.exceptions.AutoFollowedException;
+import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserAlreadyFollowedException;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.service.UserService;
@@ -180,5 +176,14 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
   }
 
+  @PostMapping(path = "/profile/update")
+  public ResponseEntity updateProfile(@RequestBody ProfileUpdateDTO updateDTO, Principal authUser){
+    try{
+      profileService.update(updateDTO, authUser.getName());
+      return ResponseEntity.status(HttpStatus.OK).body("Profile updated");
+    }catch (InvalidProfilePictureLinkException e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+    }
+  }
 }
 

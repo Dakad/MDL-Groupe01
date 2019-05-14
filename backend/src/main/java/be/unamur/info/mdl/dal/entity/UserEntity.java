@@ -8,6 +8,7 @@ import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,10 +65,12 @@ public class UserEntity {
   private String lastname;
 
   @Column(name = "created_at")
-  private LocalDate createdAt;
+  @Builder.Default
+  private LocalDate createdAt = LocalDate.now();
 
-  @Column(name = "domain")
-  private String domain;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "domain")
+  private TagEntity domain;
 
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -94,7 +97,8 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<StateOfTheArtEntity> stateOfTheArts;
+  @Builder.Default
+  private Set<StateOfTheArtEntity> stateOfTheArts = new LinkedHashSet<>();
 
 
   @OneToMany(
@@ -102,11 +106,18 @@ public class UserEntity {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private Set<BookmarkEntity> bookmarks;
+  @Builder.Default
+  private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
 
-  @OneToMany(mappedBy = "user")
-  private List<UniversityCurrent> universities;
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE})
+  @JoinTable(name = "user_university",
+    joinColumns = {@JoinColumn(name = "user_id")},
+    inverseJoinColumns = {@JoinColumn(name = "university_id")})
+  private List<UniversityEntity> universities;
+
 
 
   @ManyToMany(cascade = {
@@ -129,13 +140,15 @@ public class UserEntity {
   private List<UserEntity> follows = new LinkedList<>();
 
 
-  @ManyToOne(cascade = {
+  @ManyToMany(cascade = {
     CascadeType.PERSIST,
     CascadeType.MERGE})
   @JoinTable(name = "user_group",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "group_id")})
-  private ResearchGroupEntity researchGroup;
+  @Builder.Default
+  private Set<ResearchGroupEntity> researchGroup = new LinkedHashSet<>();
+
 
 
   @ManyToMany(cascade = {
@@ -144,7 +157,8 @@ public class UserEntity {
   @JoinTable(name = "follower_tags",
     joinColumns = {@JoinColumn(name = "follower_id")},
     inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-  private Set<TagEntity> tags;
+  @Builder.Default
+  private Set<TagEntity> tags = new HashSet<>();
 
 
   public static UserEntity of(UserDTO dto) {
@@ -156,12 +170,25 @@ public class UserEntity {
 
 
   public UserDTO toDTO() {
-    UserProfileEntity profile = getUserProfile();
-    String profilePic = "https://i.imgur.com/0MC7ZG4.jpg";
-    if(getUserProfile() != null) profilePic = getUserProfile().getProfilePictureURL();
-    String organisation = "Not defined";
-    if(getCurrentUniversity() != null) organisation = getCurrentUniversity().getName();
-    return new UserDTO(username, password, lastname, firstname, email, profilePic, domain, organisation);
+    UserDTO dto = new UserDTO();
+    dto.setUsername(username);
+    dto.setLastname(lastname);
+    dto.setFirstname(firstname);
+    dto.setEmail(email);
+
+    if (getUserProfile() != null) {
+      dto.setProfilePicUrl(getUserProfile().getProfilePictureURL());
+    }
+
+    if (getCurrentUniversity() != null) {
+      dto.setOrganization(getCurrentUniversity().getName());
+    }
+
+    if(getDomain() != null){
+      dto.setDomain(getDomain().getName());
+    }
+
+    return dto;
   }
 
 
@@ -177,7 +204,8 @@ public class UserEntity {
     } else {
       avatar = "https://i.imgur.com/0MC7ZG4.jpg";
     }
-    return new ProfileBasicInfoDTO(lastname, firstname, domain, universityInfoDTO, email, avatar);
+    String dom = (domain != null) ? domain.getName() : null;
+    return new ProfileBasicInfoDTO(lastname, firstname, dom, universityInfoDTO, email, avatar);
   }
 
 
@@ -188,9 +216,6 @@ public class UserEntity {
 
     if (this.userProfile != null) {
       dto.bio(userProfile.getDescription());
-      dto.facebookURL(this.userProfile.getFacebookURL())
-        .linkedinURL(this.userProfile.getLinkedInURL())
-        .twitterURL(this.userProfile.getTwitterURL());
     }
     return dto.build();
   }

@@ -39,40 +39,40 @@
 </template>
 
 <script>
-export default {
-  name: "SotAGestion",
-  data() {
-    return {
-      data: {},
-      articles: [],
-      sortBy: "name",
-      orderBy: "asc"
-    };
-  }
-};
+  export default {
+    name: "SotAGestion",
+    data() {
+      return {
+        data: {},
+        articles: [],
+        sortBy: "name",
+        orderBy: "asc"
+      };
+    }
+  };
 </script>
 
 <style scoped>
-.left {
-  position: relative;
-  float: left;
-  width: 47%;
-  height: 75%;
-  margin: 1%;
-}
-.right {
-  position: relative;
-  float: left;
-  width: 47%;
-  height: 75%;
-  margin: 1%;
-}
-.md-radio {
-  display: flex;
-}
-.md-button {
-  position: relative;
-  display: flex;
-  margin: 1%;
-}
+  .left {
+    position: relative;
+    float: left;
+    width: 47%;
+    height: 75%;
+    margin: 1%;
+  }
+  .right {
+    position: relative;
+    float: left;
+    width: 47%;
+    height: 75%;
+    margin: 1%;
+  }
+  .md-radio {
+    display: flex;
+  }
+  .md-button {
+    position: relative;
+    display: flex;
+    margin: 1%;
+  }
 </style>
