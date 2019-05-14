@@ -1,16 +1,19 @@
 package be.unamur.info.mdl.config;
 
 import be.unamur.info.mdl.dal.entity.TagEntity;
+import be.unamur.info.mdl.dal.entity.UniversityEntity;
 import be.unamur.info.mdl.dal.repository.TagRepository;
+import be.unamur.info.mdl.dal.repository.UniversityRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.ArticleService;
-import be.unamur.info.mdl.service.StateOfTheArtService;
-import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.exceptions.RegistrationException;
 import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.service.ArticleService;
+import be.unamur.info.mdl.service.StateOfTheArtService;
+import be.unamur.info.mdl.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +41,9 @@ public class DbDataLoaderRunner implements CommandLineRunner {
 
   @Autowired
   private StateOfTheArtService sotaService;
+
+  @Autowired
+  private UniversityRepository universityRepository;
 
 
 
@@ -100,11 +106,12 @@ public class DbDataLoaderRunner implements CommandLineRunner {
       int userIndex = Math.random() < 0.5 ? 0 : 1;
       authUser = users.get(userIndex);
       try {
+        article.setContent(article.getTitle());
         this.articleService.create(article, authUser);
         LOGGER.info(String.format("Article %s : registred !", article.getReference()));
       } catch (ArticleAlreadyExistException e) {
         LOGGER.info(String.format("Article %s : Already registred !", article.getReference()));
-      }catch (DbException e){
+      } catch (DbException e) {
         LOGGER.info(" Sota insert failed : " + article.getReference());
       }
     }
@@ -128,12 +135,23 @@ public class DbDataLoaderRunner implements CommandLineRunner {
         LOGGER.info(String.format("Sota %s : Already registred !", sota.getReference()));
       } catch (ArticleAlreadyExistException e) {
         LOGGER.info(String.format(e.getMessage()));
-      } catch (DbException e){
-        LOGGER.info(" Sota insert failed : "+sota.getTitle());
+      } catch (DbException e) {
+        LOGGER.info(" Sota insert failed : " + sota.getTitle());
       }
     }
 
     LOGGER.info("DB data loaded");
-  }
 
+    TypeReference<List<UniversityInfoDTO>> universityTypeReference = new TypeReference<List<UniversityInfoDTO>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/university.data.json");
+    List<UniversityInfoDTO> universities = mapper.readValue(inputStream, universityTypeReference);
+    LOGGER.info("Saving " + universities.size() + " universities into DB");
+
+    for (UniversityInfoDTO university : universities) {
+      this.universityRepository.save(UniversityEntity.of(university));
+
+
+    }
+  }
 }

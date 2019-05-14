@@ -1,26 +1,27 @@
 [
-
-  {"name": "UNamur",
-    "website": "https://www.unamur.be/"},
-  {"name": "Ulg",
-   "website":"https://www.uliege.be"
+  { "name": "Université de Namur",
+    "abbreviation": "UNamur",
+    "website": "https://www.unamur.be/"
   },
-  {"name":"Umons",
-    "website":"https://web.umons.ac.be/fr/"
-
+  {"name": "Université de Liège",
+    "abbreviation": "Ulg",
+    "website": "https://www.uliege.be"
   },
-  {
-    "name": "Kul",
-    "website":"https://www.kuleuven.be"},
-  {
-    "name":"Oxford",
-    "website":"http://www.ox.ac.uk/"
-
+  {"name": "Université de Mons",
+    "abbreviation": "Umons",
+    "website": "https://web.umons.ac.be/fr/"
   },
-
-  {
-    "name": "MIT",
+  {"name": "Université catholique de louvain",
+    "abbreviation": "Kul",
+    "website": "https://www.kuleuven.be"
+  },
+  {"name":"Université d'Oxford",
+    "abbreviation": "Oxford",
+    "website": "http://www.ox.ac.uk/"
+  },
+  {"name": "Massachusetts Institute of Technology",
+    "abbreviation": "MIT",
     "website": "http://www.mit.edu/"
-
-  }]
+  }
+]
 
