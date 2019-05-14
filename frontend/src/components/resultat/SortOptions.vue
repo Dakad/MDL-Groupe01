@@ -43,10 +43,11 @@
 
 <script>
 export default {
+  name: "SortOptions",
   props: {
     sort: String,
     order: String,
-    activetTab: String
+    active: String
   },
   data() {
     return {
