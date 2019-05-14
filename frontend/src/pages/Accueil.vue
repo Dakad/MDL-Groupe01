@@ -22,7 +22,7 @@
         :autoplayTimeout="5000"
         :navigationEnabled="true"
       >
-        <slide class="slides" v-once v-for="(recommended,index) in articles" :key="index">
+        <slide class="slides" v-for="(recommended, index) in articles" :key="index">
           <article-slide
             :title="recommended.title"
             :authors="recommended.authors"
@@ -31,7 +31,7 @@
             :month="recommended.month"
             :nb-views="recommended.nb_views"
             :nb-quotes="recommended.nb_citations"
-            :keywords="recommended.keywords"
+            :keywords="recommended.keywords.slice(0,4)"
             :reference="recommended.reference"
           ></article-slide>
         </slide>
@@ -47,7 +47,7 @@ import ArticleSlide from "@/components/accueil/ArticleSlide";
 
 import Search from "@/components/navbar/Search";
 
-import dummyArticles from "@/services/dummy/articles.json";
+import { getRecommanded } from "../services/api-article";
 
 import {
   EventBus,
@@ -65,15 +65,26 @@ export default {
   data() {
     return {
       searchInput: null,
-      articles: dummyArticles,
+      msg: "",
+      articles: {},
     };
   },
 
-  methods : {
+  created() {
+    this.fetchRecommanded();
+  },
+
+  methods:{
+    fetchRecommanded(){
+      return getRecommanded()
+        .then(data => {
+          this.articles = data;
+        });
+    },
     notifyError(msg){
       EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', msg});
     }
-  }
+  },
 };
 </script>
 
