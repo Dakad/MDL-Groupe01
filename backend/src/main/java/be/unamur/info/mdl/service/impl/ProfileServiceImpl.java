@@ -167,11 +167,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     //UPDATING INTERESTS
     //need to transform a list of strings into a set of tags
-
-    Stream<String> interests = updateDTO.getInterests().stream();
-    Set<TagEntity> tags = interests.map(e -> ServiceUtils.getOrCreateTag(e, tagRepository))
-      .collect(Collectors.toSet());
-    user.setTags(tags);
+    if(updateDTO.getInterests() != null){
+      Stream<String> interests = updateDTO.getInterests().stream();
+      Set<TagEntity> tags = interests.map(e -> ServiceUtils.getOrCreateTag(e, tagRepository))
+        .collect(Collectors.toSet());
+      user.setTags(tags);
+    }
 
     //UPDATING PROFILE PICTURE
     if (updateDTO.getProfilePictureURL() != null) {
@@ -182,9 +183,9 @@ public class ProfileServiceImpl implements ProfileService {
 
         // Check if the link is an image
         if (ImageIO.read(link) == null) {
-          throw new InvalidProfilePictureLinkException("the provided link does not redirect to an image");
+          throw new InvalidProfilePictureLinkException("The provided link does not redirect to an image");
         }
-        user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
+        // user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
       } catch (IOException e) {
         throw new InvalidProfilePictureLinkException(
           "The provided avatar URL is invalid (not found)");

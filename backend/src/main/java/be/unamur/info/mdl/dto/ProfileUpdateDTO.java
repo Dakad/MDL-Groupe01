@@ -18,7 +18,7 @@ public class ProfileUpdateDTO {
   @JsonProperty("avatar_url")
   private String profilePictureURL;
 
-  @JsonProperty("current_university")
+  @JsonProperty("university")
   private String currentUniversity;
 
   private String domain;

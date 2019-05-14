@@ -51,7 +51,7 @@ public class ArticleEntity {
   @EqualsAndHashCode.Include
   private String title;
 
-  @Column(name = "abstract", nullable = false)
+  @Column(name = "abstract")
   @Lob
   private String content;
 
