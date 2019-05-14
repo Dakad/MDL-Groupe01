@@ -47,7 +47,7 @@
               <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" title="Go the article source">
+            <md-button class="md-icon-button" title="Go the article source" :href="info.link" target="_blank">
               <md-icon>launch</md-icon>
             </md-button>
           </md-card-actions>
