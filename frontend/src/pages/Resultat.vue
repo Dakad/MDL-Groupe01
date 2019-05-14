@@ -88,7 +88,7 @@
               md-icon="cloud"
               md-label="No word cloud to display"
             ></md-empty-state>
-            <word-cloud v-else :tags="articlesTags" :moreTags='tags'></word-cloud>
+            <word-cloud v-else :tags='tags'></word-cloud>
           </md-tab>
         </md-tabs>
       </div>

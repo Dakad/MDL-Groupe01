@@ -1,13 +1,12 @@
 <template>
   <div class="wordcloud">
-    
       <wordcloud
       :data="tagList"
       nameKey="name"
       valueKey="value"
       :color="myColors"
       :showTooltip="false"
-      :fontSize=[15,30]
+      :fontSize=[13,40]
       :wordClick="wordClickHandler">
       ></wordcloud>
       <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
@@ -22,13 +21,7 @@ import wordcloud from 'vue-wordcloud';
 
 export default {
   name: "WordCloud",
-  props: {
-    tags: {
-      type: Object,
-      required: true,
-      default: () => []
-    },moreTags:{}
-  },
+  props: {tags:{}},
   components: {
     Cloud,
     wordcloud
@@ -50,9 +43,9 @@ export default {
     tagList: function(){
       var list=[]
 
-      for (let i = 0;i< this.moreTags.length; i++){
-          list.push({"name": this.moreTags[i][0], 
-                     "value":this.moreTags[i][1]*1000
+      for (let i = 0;i< this.tags.length; i++){
+          list.push({"name": this.tags[i][0], 
+                     "value":this.tags[i][1]*1000
                      })
       }
 
@@ -65,7 +58,7 @@ export default {
     },
         wordClickHandler(name, value, vm) {
           this.showSnackbar=true;
-          this.snackMsg="Tag: "+name+" Occurence: "+value/1000
+          this.snackMsg="Tag: \""+name+"\" Occurence: "+value/1000
       console.log('wordClickHandler', name, value, vm);
     }
   }
