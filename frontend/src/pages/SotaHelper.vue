@@ -7,7 +7,7 @@
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="overview">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
-          <sota-overview :list="articles" @selected="selectedArticles = $event"/>
+          <sota-overview :bookmarked="bookmarked" @selected="selectedArticles = $event"/>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
@@ -38,6 +38,7 @@ import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
 import { getRecommanded } from "../services/api-article";
+import { getBookmark } from "../services/api-user";
 
 import dummyResults from "@/services/dummy/results.json";
 
@@ -58,13 +59,21 @@ export default {
   data() {
     return {
       articles: {},
-      selectedArticles: dummyResults.articles
+      selectedArticles: dummyResults.articles,
+      bookmarked: {},
     };
   },
   methods: {
     fetchRecommanded() {
       return getRecommanded().then(data => {
         this.articles = data;
+      });
+    },
+
+    fetchBookmarks() {
+      return getBookmark().then(data => {
+        console.log(data)
+        this.bookmarked = data;
       });
     }
   },
@@ -77,6 +86,7 @@ export default {
     });
 
     this.fetchRecommanded();
+    this.fetchBookmarks();
   }
 };
 </script>
