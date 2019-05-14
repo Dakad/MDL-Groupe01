@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -157,4 +158,8 @@ public class ArticleController {
     return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username, page));
   }
 
+  @GetMapping(path = "/list")
+  public ResponseEntity getAll(){
+    return ResponseEntity.ok(articleService.getAll());
+  }
 }
