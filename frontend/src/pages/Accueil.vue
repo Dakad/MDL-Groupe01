@@ -10,7 +10,7 @@
 
       <div class="search md-layout-item md-size-80">
 
-        <search id="search" @error="msg = $event"></search>
+        <search id="search" @error="notifyError"></search>
       </div>
     </div>  
 
@@ -49,6 +49,11 @@ import Search from "@/components/navbar/Search";
 
 import dummyArticles from "@/services/dummy/articles.json";
 
+import {
+  EventBus,
+  EVENT_APP_MESSAGE
+} from "@/services/event-bus.js";
+
 export default {
   name: "Accueil",
   components: {
@@ -60,10 +65,15 @@ export default {
   data() {
     return {
       searchInput: null,
-      msg: "",
       articles: dummyArticles,
     };
   },
+
+  methods : {
+    notifyError(msg){
+      EventBus.$emit(EVENT_APP_MESSAGE, msg);
+    }
+  }
 };
 </script>
 
