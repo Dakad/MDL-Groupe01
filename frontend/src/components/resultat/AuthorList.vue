@@ -27,42 +27,42 @@
 </template>
 
 <script>
-export default {
-  props: {
-    list: Array
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    authors() {
-      console.log(this.list)
-      return this.list || [];
+  export default {
+    props: {
+      list: Array
     },
-  }
-};
+    data() {
+      return {};
+    },
+    computed: {
+      authors() {
+        console.log(this.list)
+        return this.list || [];
+      },
+    }
+  };
 </script>
 
 
 <style scoped>
-.md-list {
-  margin: 10px;
-  display: inline-block;
-}
-  .contProfil{
-    float: left;
+  .md-list {
+    margin: 10px;
+    display: inline-block;
   }
-  .contInfo{
-    float: left;
-  }
-  .contOrga{
-    float: left;
-    margin-left: 5px;
-    margin-right: 30px;
-  }
-  .contDom{
-    float: left;
-    margin-left: 30px;
-    margin-right: 30px;
-  }
+    .contProfil{
+      float: left;
+    }
+    .contInfo{
+      float: left;
+    }
+    .contOrga{
+      float: left;
+      margin-left: 5px;
+      margin-right: 30px;
+    }
+    .contDom{
+      float: left;
+      margin-left: 30px;
+      margin-right: 30px;
+    }
 </style>

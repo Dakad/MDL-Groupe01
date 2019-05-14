@@ -16,11 +16,6 @@
   </div>
 </template>
 
-
-<style lang="css" scoped>
-</style>
-
-
 <script>
 export const MODE_NAVBAR = "in_navbar";
 export const DEFAULT_MIN_LENGTH = 2;
@@ -78,5 +73,5 @@ export default {
 };
 </script>
 
-<style>
+<style lang="css" scoped>
 </style>

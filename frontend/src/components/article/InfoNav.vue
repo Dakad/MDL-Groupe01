@@ -1,5 +1,5 @@
 <template>
-<div class="infoNav">
+  <div class="infoNav">
     <div v-if="info">
       <md-tabs md-alignment="fixed">
         <md-tab id="tab-info" md-label="Info" md-disabled>
@@ -18,20 +18,20 @@
 </template>
 
 <script>
-import Info from "@/components/article/Info";
-import Ref from "@/components/article/Ref";
+  import Info from "@/components/article/Info";
+  import Ref from "@/components/article/Ref";
 
-export default {
-  name: "InfoNav",
-  props: {
-    info: Object,
-    refs: Array
-  },
-  components: {
-    Info,
-    Ref
-  }
-};
+  export default {
+    name: "InfoNav",
+    props: {
+      info: Object,
+      refs: Array
+    },
+    components: {
+      Info,
+      Ref
+    }
+  };
 </script>
 
 <style scoped>

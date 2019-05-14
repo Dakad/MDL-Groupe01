@@ -12,15 +12,15 @@
 </template>
 
 <script>
-export default {
-  name: "Ref",
-  props: ["refs", "sotas"],
-  data() {
-    return {
-      data: {}
-    };
-  }
-};
+  export default {
+    name: "Ref",
+    props: ["refs", "sotas"],
+    data() {
+      return {
+        data: {}
+      };
+    }
+  };
 </script>
 
 <style>
