@@ -162,6 +162,7 @@ public class UserEntity {
 
 
   public static UserEntity of(UserDTO dto) {
+
     UserEntityBuilder entity = UserEntity.builder();
     entity.username(dto.getUsername()).password(dto.getPassword());
     entity.firstname(dto.getFirstname()).lastname(dto.getLastname()).email(dto.getEmail());

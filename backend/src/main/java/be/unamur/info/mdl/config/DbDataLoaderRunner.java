@@ -165,7 +165,7 @@ public class DbDataLoaderRunner implements CommandLineRunner {
     LOGGER.info("Saving " + domain.size() + " added into DB");
 
 
-    for (String name : domain) {
+    /*for (String name : domain) {
       try {
         String slug = slugify.slugify(name);
         TagEntity tag = TagEntity.builder().name(name).slug(slug).build();
@@ -174,7 +174,7 @@ public class DbDataLoaderRunner implements CommandLineRunner {
         LOGGER.info(String.format("Category/Tag (%s) :Doublon Detected !", name));
       }
     }
-
+*/
     TypeReference<List<ResearchGroupDTO>> researchGroupTypeReference = new TypeReference<List<ResearchGroupDTO>>() {
     };
     inputStream = TypeReference.class.getResourceAsStream("/json/researchGroup.data.json");
@@ -186,7 +186,7 @@ public class DbDataLoaderRunner implements CommandLineRunner {
       try {
 
      this.researchGroupRepository.save(ResearchGroupEntity.of(group));
-        LOGGER.info("add " + group.getName() + "  from ResearchGroup DB");
+        LOGGER.info("add " + group.getName() + " from ResearchGroup DB");
       }
      catch(Exception e ){
        LOGGER.info(" YOU FAILED");

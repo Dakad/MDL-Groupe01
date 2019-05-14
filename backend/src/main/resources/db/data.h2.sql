@@ -182,8 +182,20 @@ INSERT INTO PUBLIC.TAG(ID, NAME, SLUG) VALUES
 (381, 'product quality', 'product-quality'),
 (382, 'hybrid systems development', 'hybrid-systems-development'),
 (383, 'agile methods', 'agile-methods'),
-(384, 'deployment', 'deployment');
-
+(384, 'deployment', 'deployment'),
+(427, 'ComputerScience', 'computerscience'),
+(428, 'Literature', 'literature'),
+(429, 'Chemistry', 'chemistry'),
+(430, 'Biology', 'biology'),
+(431, 'Medicine', 'medicine'),
+(432, 'Economics', 'economics'),
+(433, 'Psychology', 'psychology'),
+(434, 'Laws', 'laws'),
+(435, 'Mathematics', 'mathematics'),
+(436, 'Veterinary', 'veterinary'),
+(437, 'History', 'history'),
+(438, 'Engineering', 'engineering'),
+(439, 'Language', 'language');
 
 
 -- 196 +/- SELECT COUNT(*) FROM PUBLIC.AUTHOR;
@@ -846,3 +858,19 @@ INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
 (419, 154),
 (419, 142),
 (419, 127);
+
+INSERT INTO PUBLIC.USER(ID, CREATED_AT, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, USERNAME, CURRENT_UNIVERSITY_ID, DOMAIN, PROFILE_ID) VALUES
+(3, DATE '2019-05-14', 'JeanCive@mail.dom', 'Jean', 'Cive', '$2a$10$xf0yls5V5FzVdj0S8RVU0u7tV0E/O2426Q.11Y489SyrXJbCIgLLK', 'JeanCive', NULL, NULL, NULL);
+
+INSERT INTO PUBLIC.UNIVERSITY(ID, ABBREVIATION, NAME, WEBSITE_URL) VALUES
+(421, 'UNamur', STRINGDECODE('Universit\u00e9 de Namur'), 'https://www.unamur.be/'),
+(422, 'Ulg', STRINGDECODE('Universit\u00e9 de Li\u00e8ge'), 'https://www.uliege.be'),
+(423, 'Umons', STRINGDECODE('Universit\u00e9 de Mons'), 'https://web.umons.ac.be/fr/'),
+(424, 'Kul', STRINGDECODE('Universit\u00e9 catholique de louvain'), 'https://www.kuleuven.be'),
+(425, 'Oxford', STRINGDECODE('Universit\u00e9 d''Oxford'), 'http://www.ox.ac.uk/'),
+(426, 'MIT', 'Massachusetts Institute of Technology', 'http://www.mit.edu/');
+
+INSERT INTO PUBLIC.RESEARCH_GROUP(ID, CREATED_AT, URL_LINK, NAME, NB_MEMBERS, SLUG) VALUES
+(440, DATE '2019-05-14', 'https://nadi.unamur.be/', 'Namur Digital Institute ', 5, 'Nadi'),
+(441, DATE '2019-05-14', 'http://code.ulb.ac.be/iridia.home.php', STRINGDECODE('Institut de Recherches Interdisciplinaires et de D\u00e9veloppements en Intelligence Artificielle'), 3, 'IRIDIA'),
+(442, DATE '2019-05-14', 'unamur.be', 'Big Race under house', 9, 'Bruh');      
