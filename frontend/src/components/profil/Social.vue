@@ -1,7 +1,7 @@
 <template>
   <div class="social">
     <div class="column">
-      <h2>Biography</h2>
+      <h3>Biography</h3>
       <md-card>
         <md-card-header>
           <div class="md-title"></div>
@@ -11,14 +11,14 @@
       </md-card>
     </div>
     <div class="column">
-      <h2>Followed : </h2>
+      <h3>Following</h3>
       <!--TODO: Use authorList component-->
-      <ul id="Followed">
+      <ul id="Following">
          <!--<li v-for="people in jsonFollow.Followed" :key="people">{{ people }}</li>-->
       </ul>
     </div>
     <div class="column">
-      <h2>Followers : </h2>
+      <h3>Followers</h3>
       <ul id="Follower">
         <!--<li v-for="people in jsonFollow.Follower" :key="people">{{ people }}</li>-->
       </ul>
@@ -42,7 +42,7 @@ export default {
     nbrFollowers: function() {
       //return this.jsonFollow.Follower.length;
     },
-    nbrFollowed: function() {
+    nbrFollowing: function() {
       //return this.jsonFollow.Followed.length;
     }
   }
@@ -51,8 +51,9 @@ export default {
 <style scoped>
 .column {
   float: left;
-  width: 33.33%;
+  width: 32%;
   padding: 5px;
+  margin: 0.5%;
 }
 </style>
 

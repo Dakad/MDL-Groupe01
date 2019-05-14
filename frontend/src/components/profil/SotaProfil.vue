@@ -45,8 +45,4 @@
 </script>
 
 <style scoped>
-  .ownedSota {
-  }
-  .followedSota {
-  }
 </style>
