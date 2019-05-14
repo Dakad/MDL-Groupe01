@@ -7,10 +7,10 @@
       valueKey="value"
       :color="myColors"
       :showTooltip="false"
-      :fontSize=[30,50]
+      :fontSize=[15,30]
       :wordClick="wordClickHandler">
       ></wordcloud>
-      <md-snackbar :md-active.sync="showSnackbar" :md-duration="2000">
+      <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
         <span>{{snackMsg}}</span>
     </md-snackbar>
   </div>
