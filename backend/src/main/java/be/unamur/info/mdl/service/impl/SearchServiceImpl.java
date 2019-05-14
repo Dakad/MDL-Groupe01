@@ -226,7 +226,7 @@ public class SearchServiceImpl implements SearchService {
         pageSort = Sort.by(SORT_BY_TITLE);
         break;
       case "date":
-        pageSort = Sort.by("createdAt");
+        pageSort = Sort.by("year");
         break;
       case "name":
         break;
