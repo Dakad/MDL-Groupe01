@@ -7,19 +7,19 @@
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="overview">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
-          <sota-overview :bookmarked="bookmarked" @selected="selectedArticles = $event"/>
+          <sota-overview :bookmarked="bookmarked"/>
         </md-tab>
         <md-tab id="recommanded" md-label="Recommended" md-icon="thumb_up">
-          <article-list v-show="!loading" :list="articles"></article-list>
+          <article-list v-show="!loading" :list="recommended"></article-list>
           <md-empty-state
-            v-if="!articles || articles.length == 0"
+            v-if="!recommended || recommended.length == 0"
             md-icon="description"
             md-label="No articles found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic :articles="selectedArticles"/>
+          <sota-graphic v-if="!loading" :articles="recommended"/>
         </md-tab>
         <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
@@ -55,22 +55,26 @@ export default {
   },
   data() {
     return {
-      articles: {},
-      selectedArticles: dummyResults.articles,
-      bookmarked: {},
+      loading: false,
+      recommended: [],
+      bookmarked: {}
     };
   },
   methods: {
     fetchRecommanded() {
+      this.loading = true;
       return getRecommanded().then(data => {
-        this.articles = data;
+        this.recommended = data;
+        this.loading = false;
       });
     },
 
     fetchBookmarks() {
+      this.loading = true;
       return getBookmark().then(data => {
-        console.log(data)
+        console.log(data);
         this.bookmarked = data;
+        this.loading = false;
       });
     }
   },
