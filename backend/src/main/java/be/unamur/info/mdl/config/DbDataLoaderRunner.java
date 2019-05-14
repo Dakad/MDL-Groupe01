@@ -150,8 +150,32 @@ public class DbDataLoaderRunner implements CommandLineRunner {
 
     for (UniversityInfoDTO university : universities) {
       this.universityRepository.save(UniversityEntity.of(university));
-
-
     }
+
+    TypeReference<List<String>> domainTypeReference = new TypeReference<List<String>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/domain.data.json");
+    List<String> domain = mapper.readValue(inputStream, domainTypeReference);
+
+    LOGGER.info("Saving " + domain.size() + " added into DB");
+
+
+    for (String name : domain) {
+      try {
+        String slug = slugify.slugify(name);
+        TagEntity tag = TagEntity.builder().name(name).slug(slug).build();
+        this.tagRepository.save(tag);
+      } catch (Exception e) {
+        LOGGER.info(String.format("Category/Tag (%s) :Doublon Detected !", name));
+      }
+    }
+
+
+
+
   }
 }
+
+
+
+
