@@ -6,9 +6,16 @@
         <span class="md-list-item-text">Sort By</span>
       </md-subheader>
 
-      <md-list-item>
+      <md-list-item v-if="active == 'authors' ">
+        >
         <md-radio v-model="sortBy" value="name" @change="onChangeSortBy($event)"/>
         <span class="md-list-item-text">Name</span>
+      </md-list-item>
+
+      <md-list-item v-if="active == 'users' ">
+        >
+        <md-radio v-model="sortBy" value="username" @change="onChangeSortBy($event)"/>
+        <span class="md-list-item-text">Username</span>
       </md-list-item>
 
       <md-list-item>
@@ -38,6 +45,7 @@
         <span class="md-list-item-text">Descending</span>
       </md-list-item>
     </md-list>
+    <slot></slot>
   </div>
 </template>
 
