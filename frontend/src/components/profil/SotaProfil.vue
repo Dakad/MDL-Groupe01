@@ -34,19 +34,15 @@
 </template>
 
 <script>
-import sota from "@/components/resultat/SotaList";
+  import sota from "@/components/resultat/SotaList";
 
-export default {
-  components: {
-    sota
-  },
-  name: "Sota"
-};
+  export default {
+    components: {
+      sota
+    },
+    name: "Sota"
+  };
 </script>
 
 <style scoped>
-.ownedSota {
-}
-.followedSota {
-}
 </style>
