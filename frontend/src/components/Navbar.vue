@@ -141,7 +141,10 @@ export default {
         case "signin":
           this.signinFailed = true;
           EventBus.$emit(EVENT_APP_MESSAGE, error);
-
+          break;
+        case "search":
+          EventBus.$emit(EVENT_APP_MESSAGE, error);
+          break;
         default:
           break;
       }
