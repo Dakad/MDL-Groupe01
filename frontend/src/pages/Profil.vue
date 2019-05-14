@@ -37,13 +37,13 @@
           <Social/>
         </md-tab>
         <md-tab id="Bookmarks" md-label="Bookmarks">
-          <!--<sota-list v-show="!loading" :list="bookmarkList"></sota-list>
+          <Bookmarks :bookmarked="bookmarkList"/>
         <md-empty-state
           v-if="!bookmarkList || bookmarkList == 0"
           md-icon="view_module"
-          md-label="No bookmark found"
-          md-description="Search for article to bookmark them."
-          ></md-empty-state>-->
+          md-label="No bookmarks found"
+          md-description="Search for article/state of the art to bookmark them."
+          ></md-empty-state>
         </md-tab>
       </md-tabs>
     </div>
@@ -55,6 +55,7 @@ import InfoBase from "@/components/profil/InfoBase";
 import MyProfile from "../components/profil/MyProfile";
 import Social from "../components/profil/Social";
 import StatsLink from "../components/profil/StatsLink";
+import Bookmarks from "../components/profil/Bookmarks"
 import {
   getProfileBase,
   getBookmark,
@@ -65,12 +66,13 @@ import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/e
 
 export default {
   name: "profil",
-  components: { MyProfile, InfoBase, Social, StatsLink },
+  components: { MyProfile, InfoBase, Social, StatsLink, Bookmarks },
   data() {
     return {
       profil: {},
       bookmarkList: {},
-      sotaList: {},
+      sota: {},
+      reference:null,
       infoPro: {},
       username: {},
       loading: false
@@ -79,10 +81,10 @@ export default {
   created() {
     this.username = this.$route.params["username"];
     this.fetchProfile();
-    //this.fetchBookmark()
-    //this.fetchSota()
-    //this.fetchDataPro()
-    EventBus.$on(EVENT_USER_LOGOUT, _ => {
+    this.fetchBookmark()
+    //this.fetchSota();
+    this.fetchDataPro();
+        EventBus.$on(EVENT_USER_LOGOUT, _ => {
       this.$router.replace({ name : 'accueil' }, function onComplete() {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true)       
       })
@@ -90,28 +92,22 @@ export default {
   },
   methods: {
     fetchProfile() {
-      console.log(this.username);
       getProfileBase(this.username).then(data => {
         this.profil = data;
-        console.log(this.profil);
       });
     },
     fetchBookmark() {
-      getBookmark(this.username).then(function(data) {
+      getBookmark(this.username).then(data => {
         this.bookmarkList = data;
-        console.log(this.bookmarkList);
       });
     },
     fetchSota() {
-      getProfileSota(this.username).then(function(data) {
-        this.sotaList = data;
-        console.log(this.sotaList);
-      });
+      getSota(this.reference).then(data =>{ 
+      this.sota = data});
     },
     fetchDataPro() {
-      getProfileInfoPro(this.username).then(function(data) {
+      getProfileInfoPro(this.username).then(data => {
         this.infoPro = data;
-        console.log(this.infoPro);
       });
     }
   }
