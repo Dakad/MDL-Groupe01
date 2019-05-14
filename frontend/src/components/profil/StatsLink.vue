@@ -4,23 +4,6 @@
     <h4>Number of papers: {{nbrPaper}}</h4>
     <h4>H-index: {{hIndex}}</h4>
     <h4>Number of quotes {{nbrQuotes}}</h4>
-    <ul class="social-icons">
-      <li>
-        <a href="http://www.facebook.com">
-          <img src="@/assets/Facebook_Logo.png">
-        </a>
-      </li>
-      <li>
-        <a href="http://www.twitter.com">
-          <img src="@/assets/Twitter_Logo.png">
-        </a>
-      </li>
-      <li>
-        <a href="http://www.linkedin.com">
-          <img src="@/assets/Linkedin_logo.png">
-        </a>
-      </li>
-    </ul>
   </div>
 </template>
 
