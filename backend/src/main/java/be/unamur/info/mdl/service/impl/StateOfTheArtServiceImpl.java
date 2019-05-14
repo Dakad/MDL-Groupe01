@@ -105,8 +105,8 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     }
 
     sota.getCreator().getStateOfTheArts().remove(sota);
-
-    this.sotaRepository.save(sota);
+    userRepository.save(sota.getCreator());
+    sotaRepository.delete(sota);
 
     return true;
   }
