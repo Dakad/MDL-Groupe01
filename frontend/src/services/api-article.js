@@ -47,3 +47,8 @@ export function getRecommanded(){
     return Vue.http.get('/api/article/recommended', headers).then(res => res.body)
   }
 }
+
+export function getSubscriptions(){
+  const headers = getAuthHeaders();
+  return Vue.http.get('/api/article/subscriptions',headers).then(res => res.body)
+}
