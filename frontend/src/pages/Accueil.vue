@@ -26,7 +26,7 @@
         :autoplayTimeout="5000"
         :navigationEnabled="true"
       >
-        <slide class="slides" v-once v-for="(recommended,index) in articles" :key="index">
+        <slide class="slides" v-once v-for="recommended in articles" :key="index">
           <article-slide
             :title="recommended.title"
             :authors="recommended.authors"
@@ -35,7 +35,7 @@
             :month="recommended.month"
             :nb-views="recommended.nb_views"
             :nb-quotes="recommended.nb_citations"
-            :keywords="recommended.keywords"
+            :keywords="recommended.keywords.slice(0, 4)"
             :reference="recommended.reference"
           ></article-slide>
         </slide>
@@ -53,6 +53,8 @@ import Search from "@/components/navbar/Search";
 
 import dummyArticles from "@/services/dummy/articles.json";
 
+import { getRecommanded } from "../services/api-article";
+
 export default {
   name: "Accueil",
   components: {
@@ -61,13 +63,31 @@ export default {
     ArticleSlide,
     Search
   },
+
+  methods:{
+    fetchRecommanded(){
+      return getRecommanded()
+        .then(data => {
+          console.log(data);
+          this.articles = data;
+        });
+    }
+  },
+
   data() {
     return {
       searchInput: null,
       msg: "",
-      articles: dummyArticles,
+      articles: {},
     };
   },
+
+  created() {
+    this.fetchRecommanded();
+  },
+
+
+
   searchIt() {}
 };
 </script>
