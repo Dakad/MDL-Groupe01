@@ -9,7 +9,7 @@
           <div class="Name">
             <h5>
               <router-link :to="{name: 'userProfile', params : {username : author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
-              {{authors.name}}
+              {{author.name}}
             </h5>
           </div>
         </md-card-header>
