@@ -68,8 +68,20 @@ export default {
     onChangeSortBy(by) {
       this.$emit("change:sort", this.sortBy);
     },
-    onChangeOrderBy(by) {
-      this.$emit("change:order", this.orderBy);
+    data() {
+      return {
+        sortBy: this.sort,
+        orderBy: this.order
+      };
+    },
+    computed: {},
+    methods: {
+      onChangeSortBy(by) {
+        this.$emit("change:sort", this.sortBy);
+      },
+      onChangeOrderBy(by) {
+        this.$emit("change:order", this.orderBy);
+      }
     }
   }
 };

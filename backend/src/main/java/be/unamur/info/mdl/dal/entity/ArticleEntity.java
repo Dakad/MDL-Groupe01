@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
+import be.unamur.info.mdl.dto.BibtexType;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -89,6 +90,9 @@ public class ArticleEntity {
   @Column(name = "nb_views")
   @PositiveOrZero
   private int nbViews;
+
+  @Column(name = "type")
+  private BibtexType type;
 
   @Column(name = "created_at")
   @Builder.Default

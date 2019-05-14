@@ -57,7 +57,7 @@ export function getBookmark(username) {
     username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http
-    .get('/api/user/' + username + '/profile/bookmark')
+    .get('/api/user/' + username + '/profile/bookmarks')
     .then(response => response.body);
 }
 

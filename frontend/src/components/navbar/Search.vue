@@ -16,11 +16,6 @@
   </div>
 </template>
 
-
-<style lang="css" scoped>
-</style>
-
-
 <script>
 export const MODE_NAVBAR = "in_navbar";
 export const DEFAULT_MIN_LENGTH = 2;
@@ -65,7 +60,7 @@ export default {
       if (!this.searchInput || this.searchInput.length < this.minLength) {
         this.$emit(
           "error",
-          `At least ${this.minLength} characters to run search !`
+          `You need at least ${this.minLength} characters to run a search !`
         );
       } else {
         this.$router.push({
@@ -78,5 +73,5 @@ export default {
 };
 </script>
 
-<style>
+<style lang="css" scoped>
 </style>

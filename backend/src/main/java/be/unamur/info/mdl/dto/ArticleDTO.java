@@ -81,6 +81,8 @@ public class ArticleDTO {
 
   private UserDTO creator;
 
+  private BibtexType type;
+
   @Builder.Default
   private List<@NotBlank(message = "The author(s) must be defined") String> authors = new LinkedList<>();
 

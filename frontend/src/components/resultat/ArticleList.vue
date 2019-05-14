@@ -16,7 +16,7 @@
               class="md-primary"
               v-for="(author, i) in article.authors"
               :key="i"
-              :md-ripple="false"
+              :md-ripple="true"
             >{{author}}</md-button>
           </div>
           <div class="journal">
@@ -42,77 +42,76 @@
 </template>
 
 <script>
-import { Pagination } from "@/components";
+  import { Pagination } from "@/components";
 
-export default {
-  name: "ArticleList",
-  components: {
-    Pagination
-  },
-  props: {
-    hasPagination: {
-      type: Boolean,
-      default: _ => true
+  export default {
+    name: "ArticleList",
+    components: {
+      Pagination
     },
-    list: {
-      type: Array,
-      default: _ => []
+    props: {
+      hasPagination: {
+        type: Boolean,
+        default: _ => true
+      },
+      list: {
+        type: Array,
+        default: _ => []
+      },
+      meta: {
+        type: Object,
+        default: () => {}
+      }
     },
-    meta: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  data() {
-    return {
-      currentPage: 1
+    data() {
+      return {
+        currentPage: 1
+        
+      };
+    },
+    watch: {
       
-    };
-  },
-  watch: {
-    
-    currentPage: function() {
-      this.$emit("pagination", this.currentPage);
-    }
-  },
-  computed: {
-    articles() {
-      return this.list;
-      
+      currentPage: function() {
+        this.$emit("pagination", this.currentPage);
+      }
     },
-    page() {
-      return this.meta || {};
-    }
-  },
-  methods: {}
-};
-
+    computed: {
+      articles() {
+        return this.list;
+        
+      },
+      page() {
+        return this.meta || {};
+      }
+    },
+    methods: {}
+  };
 </script>
 
 <style scoped>
-.md-list {
-  margin: 2px;
-}
-.md-list-item{
-  margin: 0px;
-}
-.article-authors button {
-  cursor: default;
-}
-.journal{
-  display: flex;
-}
-.journal p{
-  margin-right: 1%;
-}
-.date{
-  display: flex;
-}
-.date p{
-  margin-right: 1%;
-}
+  .md-list {
+    margin: 2px;
+  }
+  .md-list-item{
+    margin: 0px;
+  }
+  .article-authors button {
+    cursor: default;
+  }
+  .journal{
+    display: flex;
+  }
+  .journal p{
+    margin-right: 1%;
+  }
+  .date{
+    display: flex;
+  }
+  .date p{
+    margin-right: 1%;
+  }
 
-#article-pagination {
-  margin: 20px;
-}
+  #article-pagination {
+    margin: 20px;
+  }
 </style>
