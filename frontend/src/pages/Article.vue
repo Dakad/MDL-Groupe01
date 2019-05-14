@@ -118,10 +118,10 @@ export default {
       };
     },
     abstract() {
-      if (!this.article.content) {
+      if (!this.article.abstract || this.article.abstract == this.article.title) {
         return [];
       }
-      return this.article.content.split("\n");
+      return this.article.abstract.split("\n");
     },
     info() {
       const {
