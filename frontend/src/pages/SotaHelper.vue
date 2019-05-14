@@ -36,7 +36,6 @@ import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
 import { getRecommanded } from "../services/api-article";
 
-import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
 import {
@@ -59,7 +58,6 @@ export default {
     fetchRecommanded(){
       return getRecommanded()
         .then(data => {
-          console.log(data);
           this.articles = data;
         });
     }
