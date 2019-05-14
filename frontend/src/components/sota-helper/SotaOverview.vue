@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-gutter">
+  <div class="cont">
       <h4>Current articles in the SotA</h4>
       <Bookmarks :bookmarked="bookmarked"/>
   </div>
