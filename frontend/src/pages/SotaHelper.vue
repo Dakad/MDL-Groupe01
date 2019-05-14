@@ -7,7 +7,7 @@
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="visu">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
-           <SotaGestion @selected="selectedArticles = $event"/>
+          <sota-overview @selected="selectedArticles = $event"/>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import SotaGestion from "../components/sota-helper/SotaGestion";
+import SotaOverview from "../components/sota-helper/SotaOverview";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
@@ -38,11 +38,20 @@ import articleList from "@/components/resultat/ArticleList";
 import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
-import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
+import {
+  EventBus,
+  EVENT_USER_LOGOUT,
+  EVENT_BYE_REDIRECTION
+} from "@/services/event-bus.js";
 
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
+  components: {
+    createSota: SotaCreate,
+    SotaGraphic,
+    SotaOverview,
+    articleList
+  },
   data() {
     return {
       articles: dummyArticles,
