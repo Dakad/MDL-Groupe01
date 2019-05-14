@@ -118,10 +118,10 @@ export default {
       };
     },
     abstract() {
-      if (!this.article.content) {
+      if (!this.article.abstract || this.article.abstract == this.article.title) {
         return [];
       }
-      return this.article.content.split("\n");
+      return this.article.abstract.split("\n");
     },
     info() {
       const {
@@ -171,7 +171,7 @@ export default {
         deleteBookmark(this.reference)
           .then(x => (this.isBookmarked = false))
           .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, "Article removed from bookmarks")
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"Article removed from bookmarks"})
           );
       }
     }
