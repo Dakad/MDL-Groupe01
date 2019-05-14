@@ -8,17 +8,17 @@
         <md-card-header>
           <div class="Name">
             <h5>
-              <router-link :to="{name: 'profil', params : {slug : author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
-              {{author.name}}
+              <router-link :to="{name: 'userProfile', params : {username : author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
+              {{authors.name}}
             </h5>
           </div>
         </md-card-header>
         <md-card-content>
           <div class="contOrga">
-            <p>{{author.organization}}</p>
+            <p>Organisation: {{author.organisation}}</p>
           </div>
           <div class="contDom">
-            <p>{{author.domain}}</p>
+            <p>Domaine: {{author.domain}}</p>
           </div>
         </md-card-content>
       </div>
