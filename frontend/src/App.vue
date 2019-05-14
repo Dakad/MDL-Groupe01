@@ -12,7 +12,7 @@
       md-persistent
     >
       <span class="md-layout-item md-subheading">{{flashMsg.msg}}</span>
-      <md-button class="md-icon-button md-accent" :md-ripple="false" @click="flashMsg.show = false">
+      <md-button class="md-icon-button md-accent" title="Dismiss message" :md-ripple="false" @click="flashMsg.show = false">
         <md-icon>clear</md-icon>
       </md-button>
     </md-snackbar>
