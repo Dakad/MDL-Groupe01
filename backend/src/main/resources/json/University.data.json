@@ -1,0 +1,26 @@
+[
+
+  {"name": "UNamur",
+    "website": "https://www.unamur.be/"},
+  {"name": "Ulg",
+   "website":"https://www.uliege.be"
+  },
+  {"name":"Umons",
+    "website":"https://web.umons.ac.be/fr/"
+
+  },
+  {
+    "name": "Kul",
+    "website":"https://www.kuleuven.be"},
+  {
+    "name":"Oxford",
+    "website":"http://www.ox.ac.uk/"
+
+  },
+
+  {
+    "name": "MIT",
+    "website": "http://www.mit.edu/"
+
+  }]
+
