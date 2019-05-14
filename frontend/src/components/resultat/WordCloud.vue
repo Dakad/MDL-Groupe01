@@ -10,6 +10,9 @@
       :fontSize=[30,50]
       :wordClick="wordClickHandler">
       ></wordcloud>
+      <md-snackbar :md-active.sync="showSnackbar" :md-duration="2000">
+        <span>{{snackMsg}}</span>
+    </md-snackbar>
   </div>
 </template>
 
@@ -32,7 +35,9 @@ export default {
   },
   data() {
     return {
-      myColors: "Category10"
+      myColors: "Category10",
+      snackMsg:null,
+      showSnackbar:false
     };
   },
   computed: {
@@ -59,6 +64,8 @@ export default {
       return Math.log2(word.value) * 4;
     },
         wordClickHandler(name, value, vm) {
+          this.showSnackbar=true;
+          this.snackMsg="Tag: "+name+" Occurence: "+value/1000
       console.log('wordClickHandler', name, value, vm);
     }
   }
