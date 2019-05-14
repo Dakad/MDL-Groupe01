@@ -132,4 +132,14 @@ public class MainController {
     return ResponseEntity.status(HttpStatus.OK).body(searchService.getTags(k));
   }
 
+  @GetMapping(path = "/tags/list")
+  public ResponseEntity getAllTags(){
+    return ResponseEntity.ok(searchService.getAllTags());
+  }
+
+  @GetMapping(path = "/authors/list")
+  public ResponseEntity getAllAuthors(){
+    return ResponseEntity.ok(searchService.getAllAuthors());
+  }
+
 }

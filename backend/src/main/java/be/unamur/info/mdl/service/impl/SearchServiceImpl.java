@@ -1,9 +1,6 @@
 package be.unamur.info.mdl.service.impl;
 
-import be.unamur.info.mdl.dal.entity.ArticleEntity;
-import be.unamur.info.mdl.dal.entity.AuthorEntity;
-import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
-import be.unamur.info.mdl.dal.entity.UserEntity;
+import be.unamur.info.mdl.dal.entity.*;
 import be.unamur.info.mdl.dal.repository.*;
 import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.dto.SearchResultDTO.MetaField;
@@ -279,5 +276,15 @@ public class SearchServiceImpl implements SearchService {
   @Override
   public List<Object[]> getTags(String keyword) {
     return tagRepository.findByTerm(keyword);
+  }
+
+  @Override
+  public Map<String,String> getAllTags(){
+    return tagRepository.findAll().stream().collect(Collectors.toMap(TagEntity::getSlug,TagEntity::getName));
+  }
+
+  @Override
+  public List<String> getAllAuthors(){
+    return authorRepository.findAll().stream().map(a->a.getName()).collect(Collectors.toList());
   }
 }
