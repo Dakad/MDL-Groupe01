@@ -1,7 +1,11 @@
 package be.unamur.info.mdl.service;
 
 import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 public interface ProfileService {
@@ -28,5 +32,7 @@ public interface ProfileService {
   List<UserDTO> getFollows(String username, int page) throws UserNotFoundException;
 
   List<BookmarkDTO> getBookmarks(String username, int page) throws UserNotFoundException;
+
+  boolean update(ProfileUpdateDTO updateDTO, String username) throws InvalidProfilePictureLinkException;
 
 }

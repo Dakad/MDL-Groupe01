@@ -57,7 +57,7 @@
 
           <!-- Upload btn -->
           <div class="md-layout-item md-size-100" id="upload-btn-container">
-            <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
+            <md-button class="md-raised md-primary" type="submit" :md-ripple="true">Upload the SoTA</md-button>
           </div>
 
           <div>
@@ -105,164 +105,164 @@
 </template>
 
 <script>
-import { validationMixin } from "vuelidate";
-import {
-  required,
-  minLength,
-  maxLength,
-  not,
-  sameAs
-} from "vuelidate/lib/validators";
+  import { validationMixin } from "vuelidate";
+  import {
+    required,
+    minLength,
+    maxLength,
+    not,
+    sameAs
+  } from "vuelidate/lib/validators";
 
-import { createSota } from "../../services/api-sota";
-import { createArticle } from "@/services/api-article";
-import { parse as bibParser } from "@/services/bibtex-parse";
+  import { createSota } from "../../services/api-sota";
+  import { createArticle } from "@/services/api-article";
+  import { parse as bibParser } from "@/services/bibtex-parse";
 
-export default {
-  name: "SotaCreate",
-  mixins: [validationMixin],
-  data() {
-    return {
+  export default {
+    name: "SotaCreate",
+    mixins: [validationMixin],
+    data() {
+      return {
+        sota: {
+          title: "",
+          keywords: "",
+          subject: ""
+        },
+        sending: false,
+        invalid: {},
+        apiErrors: [],
+        articlesUploaded: [],
+        preview: {
+          json: null,
+          bibtex: null
+        },
+        showAcceptMessage: false,
+        showCreatedMessage: false
+      };
+    },
+    validations: {
       sota: {
-        title: "",
-        keywords: "",
-        subject: ""
-      },
-      sending: false,
-      invalid: {},
-      apiErrors: [],
-      articlesUploaded: [],
-      preview: {
-        json: null,
-        bibtex: null
-      },
-      showAcceptMessage: false,
-      showCreatedMessage: false
-    };
-  },
-  validations: {
-    sota: {
-      title: {
-        required,
-        minLength: minLength(5),
-        maxLength: maxLength(255)
-      },
-      subject: {
-        required,
-        minLength: minLength(5),
-        sameAsTitle: not(sameAs("title"))
-      }
-    }
-  },
-
-  computed: {
-    listAuthors() {
-      return [
-        { name: "Aqua", color: "#00ffff" },
-        { name: "Olive", color: "#808000" },
-        { name: "Orange", color: "#ffa500" },
-        { name: "Orange Red", color: "#ff4500" },
-        { name: "Pale Golden Rod", color: "#eee8aa" },
-        { name: "Pale Green", color: "#98fb98" },
-        { name: "Teal", color: "#008080" },
-        { name: "Turquoise", color: "#40e0d0" },
-        { name: "Violet", color: "#ee82ee" },
-        { name: "White", color: "#ffffff" },
-        { name: "Yellow", color: "#ffff00" }
-      ];
-    }
-  },
-
-  methods: {
-    getValidationClass(fieldName) {
-      const field = this.$v.sota[fieldName];
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty
-        };
-      }
-    },
-    clearForm() {
-      this.$v.$reset();
-      this.sota.title = null;
-      this.sota.domain = null;
-    },
-    validateSota() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        this.invalid = {};
-        this.showAcceptMessage = true;
-      }
-    },
-
-    onFileUpload(event) {
-      for (let i = 0; i < event.length; i++) {
-        const evt = event[i];
-        debugger;
-
-        let reader = new FileReader();
-        reader.onload = e => {
-          this.preview["bibtex"] = e.target.result;
-          const bib2Json = bibParser(e.target.result);
-          this.preview["json"] = bib2Json;
-          this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
-          console.log(this.articlesUploaded);
-        };
-        reader.readAsText(evt);
-      }
-    },
-
-    sendSota() {
-      this.apiErrors = [];
-      const articleRefs = [];
-      const createArticleRequests = this.articlesUploaded.map(article => {
-        articleRefs.push(article["reference"]);
-        // If the article category is missing, assign the one from the Sota
-        if (!article["category"] || article["category"].length == 0) {
-          article["category"] = this.sota["subject"];
+        title: {
+          required,
+          minLength: minLength(5),
+          maxLength: maxLength(255)
+        },
+        subject: {
+          required,
+          minLength: minLength(5),
+          sameAsTitle: not(sameAs("title"))
         }
-        return createArticle(article);
-      });
+      }
+    },
 
-      // Send all request to create an article, fail
-      Promise.race(createArticleRequests)
-        .then(values => {
-          // Split the keywords, to get each keywords
-          this.sota["keywords"] = this.sota.keywords
-            .split(",")
-            .map(k => k.trim())
-            .filter(k => k.length > 0);
+    computed: {
+      listAuthors() {
+        return [
+          { name: "Aqua", color: "#00ffff" },
+          { name: "Olive", color: "#808000" },
+          { name: "Orange", color: "#ffa500" },
+          { name: "Orange Red", color: "#ff4500" },
+          { name: "Pale Golden Rod", color: "#eee8aa" },
+          { name: "Pale Green", color: "#98fb98" },
+          { name: "Teal", color: "#008080" },
+          { name: "Turquoise", color: "#40e0d0" },
+          { name: "Violet", color: "#ee82ee" },
+          { name: "White", color: "#ffffff" },
+          { name: "Yellow", color: "#ffff00" }
+        ];
+      }
+    },
 
-          this.sota["articles"] = articleRefs;
+    methods: {
+      getValidationClass(fieldName) {
+        const field = this.$v.sota[fieldName];
+        if (field) {
+          return {
+            "md-invalid": field.$invalid && field.$dirty
+          };
+        }
+      },
+      clearForm() {
+        this.$v.$reset();
+        this.sota.title = null;
+        this.sota.domain = null;
+      },
+      validateSota() {
+        this.$v.$touch();
+        if (!this.$v.$invalid) {
+          this.invalid = {};
+          this.showAcceptMessage = true;
+        }
+      },
 
-          return createSota(this.sota).then(data => {});
-        })
-        .catch(err => {
-          console.log(err);
-          this.apiErrors.push(err.body["message"]);
+      onFileUpload(event) {
+        for (let i = 0; i < event.length; i++) {
+          const evt = event[i];
+          debugger;
+
+          let reader = new FileReader();
+          reader.onload = e => {
+            this.preview["bibtex"] = e.target.result;
+            const bib2Json = bibParser(e.target.result);
+            this.preview["json"] = bib2Json;
+            this.articlesUploaded = this.articlesUploaded.concat(bib2Json);
+            console.log(this.articlesUploaded);
+          };
+          reader.readAsText(evt);
+        }
+      },
+
+      sendSota() {
+        this.apiErrors = [];
+        const articleRefs = [];
+        const createArticleRequests = this.articlesUploaded.map(article => {
+          articleRefs.push(article["reference"]);
+          // If the article category is missing, assign the one from the Sota
+          if (!article["category"] || article["category"].length == 0) {
+            article["category"] = this.sota["subject"];
+          }
+          return createArticle(article);
         });
+
+        // Send all request to create an article, fail
+        Promise.race(createArticleRequests)
+          .then(values => {
+            // Split the keywords, to get each keywords
+            this.sota["keywords"] = this.sota.keywords
+              .split(",")
+              .map(k => k.trim())
+              .filter(k => k.length > 0);
+
+            this.sota["articles"] = articleRefs;
+
+            return createSota(this.sota).then(data => {});
+          })
+          .catch(err => {
+            console.log(err);
+            this.apiErrors.push(err.body["message"]);
+          });
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>
-#upload-btn-container {
-  text-align: center;
-  margin: 40px;
-}
+  #upload-btn-container {
+    text-align: center;
+    margin: 40px;
+  }
 
-#bibtex-preview {
-  padding: 10px;
-  height: 90%;
-  max-height: 450px;
-  white-space: pre-wrap;
-  font-size: 13px;
-  /* border: 3px solid gray; */
-  overflow-y: hidden;
-}
+  #bibtex-preview {
+    padding: 10px;
+    height: 90%;
+    max-height: 450px;
+    white-space: pre-wrap;
+    font-size: 13px;
+    /* border: 3px solid gray; */
+    overflow-y: hidden;
+  }
 
-#bibtex-preview:hover {
-  overflow-y: visible;
-}
+  #bibtex-preview:hover {
+    overflow-y: visible;
+  }
 </style>
