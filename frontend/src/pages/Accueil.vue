@@ -12,7 +12,13 @@
 
         <search id="search" @error="notifyError"></search>
       </div>
-    </div>  
+    </div> 
+
+    <!-- <div class="feed md-layout-item md-size-100 md-layout md-alignment-center-right">
+      <div class="md-layout-item md-size-20">
+        <md-button class="md-raised md-primary">News Feed</md-button>
+      </div>
+    </div> -->
 
     <div class="recommended md-layout-item md-size-80">
       <carousel
@@ -102,6 +108,10 @@ h1 {
 
 .search {
   margin-top: 2%;
+}
+
+.feed {
+  margin-top: 1%;
 }
 
 .recommended {
