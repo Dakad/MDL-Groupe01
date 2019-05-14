@@ -1,7 +1,6 @@
 <template>
   <section class="md-layout">
     <div class="md-layout-item">
-      {{searchTagList}}
       <result-sort
         class="sort-container"
         :sort="sortBy"
