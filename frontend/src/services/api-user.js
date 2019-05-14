@@ -90,5 +90,5 @@ export function postUnFollow(username) {
 
 export function getFollow(username) {
   const headers = getAuthHeaders();
-  return Vue.http.get('/api/user/' + username + '/followed', headers).then(response => response.body);
+  return Vue.http.get('/api/user/' + username + '/followed', headers).then(response => response);
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="cont" v-if="!(this.username==null)" >
-  <md-button class="md-raised md-primary" md-ripple="false" v-if="isFollowed" @click="follow">
+  <md-button class="md-raised md-accent" :md-ripple="false" v-if="isFollowed" @click="follow">
     Stop following
   </md-button>
-   <md-button class="md-raised md-accent" md-ripple="false" v-if="!isFollowed" @click="follow">
+   <md-button class="md-raised md-primary" :md-ripple="false" v-if="!isFollowed" @click="follow">
      Follow
    </md-button>
   </div>
@@ -23,7 +23,6 @@ export default {
   methods:{
     fetchFollowed(){
       getFollow(this.username).then(data => {
-        console.log(data)
         this.isFollowed = data;
       });
     },
@@ -32,13 +31,9 @@ export default {
       if (!this.isFollowed) {
         postFollow(this.username)
           .then(x => (this.isFollowed = true))
-          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "User followed"));
       } else if (this.isFollowed) {
         postUnFollow(this.username)
           .then(x => (this.isFollowed = false))
-          .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"User unfollowed"})
-          );
       }
     },
 
