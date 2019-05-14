@@ -23,12 +23,4 @@ public class ProfileSocialInfoDTO {
   @JsonAlias("num_followers")
   private int numFollowers;
 
-  @JsonAlias("facebook_url")
-  private String facebookURL;
-
-  @JsonAlias("twitter_url")
-  private String twitterURL;
-
-  @JsonAlias("linkedin_url")
-  private String linkedinURL;
 }
