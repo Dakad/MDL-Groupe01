@@ -123,6 +123,11 @@ public class StateOfTheArtController {
       .body(DefaultResponseDTO.builder().done(done).message(msg).build());
   }
 
+  @GetMapping(path = "/list")
+  public ResponseEntity getAll(){
+    return ResponseEntity.ok(sotaService.getAll());
+  }
+
 }
 
 
