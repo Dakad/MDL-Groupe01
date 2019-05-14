@@ -185,7 +185,7 @@ export default {
         sotaDeleteBookmark(this.reference)
           .then(x => (this.isBookmarked = false))
           .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, "SoTA removed from bookmarks")
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"SoTA removed from bookmarks"})
           );
       } else {
         sotaPostBookmark(this.reference)
