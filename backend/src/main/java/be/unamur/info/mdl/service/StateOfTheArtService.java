@@ -65,5 +65,9 @@ public interface StateOfTheArtService {
     throws UserNotFoundException;
 
   Map<String,String> getAll();
+
+  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data)
+  throws  UserNotFoundException;
+
 }
 

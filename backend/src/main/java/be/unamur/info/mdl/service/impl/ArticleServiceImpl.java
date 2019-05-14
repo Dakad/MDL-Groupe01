@@ -281,7 +281,8 @@ public class ArticleServiceImpl implements ArticleService {
         .collect(Collectors.toList());
     }
     //case of user domain defined, looking at domain and bookmarks
-    return articleRepository.findByCategoryAndReferenceNotIn(user.getDomain(), references, pageable)
+    return articleRepository.findByCategoryLikeOrCategoryInAndReferenceNotIn(user.getDomain(),
+      user.getTags(), references, pageable)
       .map(a -> a.toDTO()).collect(Collectors.toList());
   }
 
