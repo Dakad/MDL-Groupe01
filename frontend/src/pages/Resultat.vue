@@ -96,8 +96,7 @@
               valueKey="value"
               :color="myColors"
               :showTooltip="false"
-              :fontSize=[13,40]
-              :wordClick="wordClickHandler"></wordcloud>
+              :fontSize=[13,40]></wordcloud>
             <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
               <span>{{snackMsgWc}}</span>
             </md-snackbar>
