@@ -54,6 +54,7 @@ export default {
 
     };
   },
+
   methods:{
     fetchRecommanded(){
       return getRecommanded()
