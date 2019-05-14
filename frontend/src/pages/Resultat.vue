@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import ResultSort from "@/components/resultat/ResultSort";
+import SortOptions from "@/components/resultat/SortOptions";
 import SotaList from "@/components/resultat/SotaList";
 import AuthorList from "@/components/resultat/AuthorList";
 import ArticleList from "@/components/resultat/ArticleList";
@@ -109,7 +109,7 @@ import { getSearchResults } from "@/services/api";
 export default {
   name: "Resultat",
   components: {
-    ResultSort,
+    "result-sort": SortOptions,
     SotaList,
     AuthorList,
     ArticleList,
@@ -265,7 +265,7 @@ export default {
   margin-left: 40px; */
 }
 
-.sort-container {
+.sort-options {
   position: fixed;
   /* top: 0;
   left: 0;

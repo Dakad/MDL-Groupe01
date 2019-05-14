@@ -6,20 +6,20 @@
 
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="upload-one">
-        <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
-          <!-- <SotaGestion @selected="selectedArticles = $event"/> -->
+        <md-tab id="overview" md-label="Overview" md-icon="view_module">
+          <sota-overview :bookmarked="bookmarked"/>
         </md-tab>
-        <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
-          <article-list :list="articles"></article-list>
+        <md-tab id="recommanded" md-label="Recommended" md-icon="thumb_up">
+          <article-list v-show="!loading" :list="recommended"></article-list>
           <md-empty-state
-            v-if="!articles || articles.length == 0"
+            v-if="!recommended || recommended.length == 0"
             md-icon="description"
             md-label="No articles found"
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic :articles="selectedArticles"/>
+          <sota-graphic v-if="!loading" :articles="recommended"/>
         </md-tab>
         <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
@@ -30,11 +30,12 @@
 </template>
 
 <script>
-import SotaGestion from "../components/sota-helper/SotaGestion";
+import SotaOverview from "../components/sota-helper/SotaOverview";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
 import { getRecommanded } from "../services/api-article";
+import { getBookmark } from "../services/api-user";
 
 import dummyResults from "@/services/dummy/results.json";
 
@@ -46,17 +47,34 @@ import {
 
 export default {
   name: "SotaHelper",
-  components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
+  components: {
+    createSota: SotaCreate,
+    SotaGraphic,
+    SotaOverview,
+    articleList
+  },
   data() {
     return {
-      articles: {},
-      selectedArticles: dummyResults.articles
+      loading: false,
+      recommended: [],
+      bookmarked: {}
     };
   },
   methods: {
     fetchRecommanded() {
+      this.loading = true;
       return getRecommanded().then(data => {
-        this.articles = data;
+        this.recommended = data;
+        this.loading = false;
+      });
+    },
+
+    fetchBookmarks() {
+      this.loading = true;
+      return getBookmark().then(data => {
+        console.log(data);
+        this.bookmarked = data;
+        this.loading = false;
       });
     }
   },
@@ -69,6 +87,7 @@ export default {
     });
 
     this.fetchRecommanded();
+    this.fetchBookmarks();
   }
 };
 </script>
