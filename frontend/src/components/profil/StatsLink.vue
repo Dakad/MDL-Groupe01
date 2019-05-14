@@ -3,7 +3,7 @@
     <h4>Number of cited articles: {{nbrCitedArticles}}</h4>
     <h4>Number of papers: {{nbrPaper}}</h4>
     <h4>H-index: {{hIndex}}</h4>
-    <h4>Number of quotes {{nbrQuotes}}</h4>
+    <h4>Number of quotes: {{nbrQuotes}}</h4>
   </div>
 </template>
 
