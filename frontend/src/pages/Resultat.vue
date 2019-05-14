@@ -1,6 +1,7 @@
 <template>
   <section class="md-layout">
     <div class="md-layout-item">
+      {{searchTagList}}
       <result-sort
         class="sort-container"
         :sort="sortBy"
@@ -14,6 +15,7 @@
         <md-progress-bar md-mode="indeterminate"/>
       </div>
       <div class="results-container">
+        
         <md-tabs
           md-alignment="fixed"
           :md-active-tab="activeTab"
@@ -88,7 +90,17 @@
               md-icon="cloud"
               md-label="No word cloud to display"
             ></md-empty-state>
-            <word-cloud v-else :tags='tags'></word-cloud>
+            <wordcloud
+              :data="tagList"
+              nameKey="name"
+              valueKey="value"
+              :color="myColors"
+              :showTooltip="false"
+              :fontSize=[13,40]
+              :wordClick="wordClickHandler"></wordcloud>
+            <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
+              <span>{{snackMsgWc}}</span>
+            </md-snackbar>
           </md-tab>
         </md-tabs>
       </div>
@@ -102,7 +114,7 @@ import SotaList from "@/components/resultat/SotaList";
 import AuthorList from "@/components/resultat/AuthorList";
 import ArticleList from "@/components/resultat/ArticleList";
 import Graphics from "@/components/resultat/Graphics";
-import WordCloud from "@/components/resultat/WordCloud";
+import wordcloud from 'vue-wordcloud';
 
 import { getSearchResults, getTags } from "@/services/api";
 
@@ -114,7 +126,7 @@ export default {
     AuthorList,
     ArticleList,
     Graphics,
-    WordCloud
+    wordcloud
   },
   data() {
     return {
@@ -128,7 +140,11 @@ export default {
       metas: {},
       results: {},
       pages: {},
-      tags:{}
+      tags:{},
+      myColors: "Category10",
+      snackMsgWc:null,
+      showSnackbar:false,
+      searchTagList:[]
     };
   },
   created() {
@@ -140,9 +156,24 @@ export default {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
 
-    activeTab: newTab => updateSearchURL("tab", newTab)
+    activeTab: newTab => updateSearchURL("tab", newTab),
+    searchTagList: function(){
+      this.fetchSearchResult();
+    }
   },
   computed: {
+      tagList: function(){
+        var list=[]
+
+        for (let i = 0;i< this.tags.length; i++){
+            list.push({"name": this.tags[i][0], 
+                       "value":this.tags[i][1]*1000
+                       })
+        }
+
+        return(list)
+      },
+
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
     },
@@ -235,11 +266,15 @@ export default {
 
       const searchQuery = {
         term: this.searchTerm,
+        tag:this.searchTagList.join("+"),
         sort: this.sortBy,
         order: this.orderBy,
         page: !this.changingTab ? this.page : 1,
-        only: !this.changingTab ? this.activeTab : undefined
+        only: !this.changingTab ? this.activeTab : undefined,
+
       };
+
+      //console.log(searchQuery)
 
       this.fetchTags();
 
@@ -260,6 +295,16 @@ export default {
       getTags(this.searchTerm).then(res => {
         this.tags=res;
       })
+    },
+     wordClickHandler(name, value, vm) {
+          this.showSnackbar=true;
+          this.snackMsgWc="Tag: \""+name+"\" Occurence: "+value/1000
+
+      if(!this.searchTagList.includes(name)){
+          this.searchTagList.push(name);
+          this.activeTab= "articles";
+      }
+
     }
   }
 };
