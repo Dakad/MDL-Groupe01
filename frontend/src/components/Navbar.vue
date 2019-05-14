@@ -12,7 +12,7 @@
         id="search"
         class="flex"
       ></search>
-      <div class="buttons" style="float: right">
+      <div class="buttons">
         <div v-if="isAuthenticated">
           <md-menu md-align-trigger v-if="avatar != null">
             <md-button class="md-icon-button" md-menu-trigger>
@@ -32,7 +32,7 @@
                 <span>SoTA Helper</span>
               </md-menu-item>
 
-              <md-menu-item @click="$router.push({ name : 'modifyProfil' })">
+              <md-menu-item @click="$router.push({ name : 'updateProfile' })">
                 <md-icon>info</md-icon>
                 <span>Change my information's</span>
               </md-menu-item>
@@ -48,9 +48,17 @@
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true; showRegisterDialog = false">LOGIN</b-button>&nbsp; &nbsp;
+          <b-button
+            size="lg"
+            variant="outline-info"
+            @click="showLoginDialog = true; showRegisterDialog = false"
+          >LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true; showLoginDialog = false;">SIGN IN</b-button>
+          <b-button
+            size="lg"
+            variant="outline-primary"
+            @click="showRegisterDialog = true; showLoginDialog = false;"
+          >SIGN IN</b-button>
         </div>
       </div>
     </md-toolbar>
@@ -176,7 +184,7 @@ export default {
     },
     getProfile() {
       getProfileBase().then(profile => {
-        this.avatar = profile.avatar;
+        this.avatar = profile["avatar_url"];
       });
     }
   }

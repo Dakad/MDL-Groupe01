@@ -11,8 +11,7 @@ import Article from './pages/Article';
 import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
 import SotaHelper from './pages/SotaHelper';
-import ProfilModif from './pages/ProfilModif';
-
+import ProfileUpdate from './pages/ProfileUpdate';
 
 Vue.use(Router);
 
@@ -29,9 +28,20 @@ const routes = [
 
   { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
 
-  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true }, props: true },
+  {
+    name: 'userProfile',
+    path: '/profile/:username',
+    component: Profil,
+    meta: { requiresAuth: true },
+    props: true
+  },
 
-  { name: 'modifyProfil', path: '/modify', component: ProfilModif, meta: { requiresAuth: true } },
+  {
+    name: 'updateProfile',
+    path: '/manage/profile',
+    component: ProfileUpdate,
+    meta: { requiresAuth: true }
+  },
 
   { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
 
