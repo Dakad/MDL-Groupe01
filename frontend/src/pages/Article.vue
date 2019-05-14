@@ -11,7 +11,7 @@
               class="md-primary"
               v-for="(author, i) in article.authors"
               :key="i"
-              :md-ripple="false"
+              :md-ripple="true"
             >{{author}}</md-button>
           </div>
 
@@ -47,7 +47,7 @@
               <md-icon>{{isBookmarked ? "bookmark" : "bookmark_border"}}</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" title="Go the article source">
+            <md-button class="md-icon-button" title="Go the article source" @click="onClick" :disable="info.link==null">
               <md-icon>launch</md-icon>
             </md-button>
           </md-card-actions>
@@ -67,76 +67,63 @@
 </template>
 
 <script>
-import ColorHash from "color-hash";
-import InfoNav from "@/components/article/InfoNav";
-import MenuArticle from "@/components/article/MenuArticle";
-import { getArticleByReference } from "@/services/api";
-import { isLogged } from "@/services/api-user";
+  import ColorHash from "color-hash";
+  import InfoNav from "@/components/article/InfoNav";
+  import MenuArticle from "@/components/article/MenuArticle";
+  import { getArticleByReference } from "@/services/api";
+  import { isLogged } from "@/services/api-user";
+  import {
+    getBookmarked,
+    postBookmark,
+    deleteBookmark
+  } from "@/services/api-article";
+  import {
+    EventBus,
+    EVENT_USER_LOGOUT,
+    EVENT_APP_MESSAGE
+  } from "@/services/event-bus.js";
 
-import {
-  getBookmarked,
-  postBookmark,
-  deleteBookmark
-} from "@/services/api-article";
-import {
-  EventBus,
-  EVENT_USER_LOGOUT,
-  EVENT_APP_MESSAGE
-} from "@/services/event-bus.js";
+  const colorHash = new ColorHash();
 
-const colorHash = new ColorHash();
-
-export default {
-  name: "Article",
-  props: ["reference"],
-  components: {
-    InfoNav
-    //MenuArticle
-  },
-  data() {
-    return {
-      article: {},
-      isLogged: isLogged(),
-      isBookmarked: false
-    };
-  },
-  watch: {
-    $route: "fetchArticle"
-  },
-  mounted() {
-    EventBus.$on(EVENT_USER_LOGOUT, _ => (this.isLogged = false));
-
-    // fetch the data when the view is created
-    this.fetchArticle();
-    getBookmarked(this.reference).then(data => (this.isBookmarked = data.done));
-  },
-
-  computed: {
-    colorCategory() {
+  export default {
+    name: "Article",
+    props: ["reference"],
+    components: {
+      InfoNav
+      //MenuArticle
+    },
+    data() {
       return {
-        "background-color": colorHash.hex(this.article.category)
+        article: {},
+        isLogged: isLogged(),
+        isBookmarked: false
       };
     },
-    abstract() {
-      if (!this.article.content) {
-        return [];
-      }
-      return this.article.content.split("\n");
+    watch: {
+      $route: "fetchArticle"
     },
-    info() {
-      const {
-        created_at,
-        category,
-        nb_citations,
-        nb_views,
-        year,
-        month,
-        pages,
-        url
-      } = this.article;
-      return Object.assign(
-        {},
-        {
+    mounted() {
+      EventBus.$on(EVENT_USER_LOGOUT, _ => (this.isLogged = false));
+
+      // fetch the data when the view is created
+      this.fetchArticle();
+      getBookmarked(this.reference).then(data => (this.isBookmarked = data.done));
+    },
+
+    computed: {
+      colorCategory() {
+        return {
+          "background-color": colorHash.hex(this.article.category)
+        };
+      },
+      abstract() {
+        if (!this.article.abstract || this.article.abstract == this.article.title) {
+          return [];
+        }
+        return this.article.abstract.split("\n");
+      },
+      info() {
+        const {
           created_at,
           category,
           nb_citations,
@@ -144,71 +131,89 @@ export default {
           year,
           month,
           pages,
-          link: url
+          url
+        } = this.article;
+        return Object.assign(
+          {},
+          {
+            created_at,
+            category,
+            nb_citations,
+            nb_views,
+            year,
+            month,
+            pages,
+            link: url
+          }
+        );
+      }
+    },
+
+    methods: {
+      fetchArticle() {
+        return getArticleByReference(this.reference).then(
+          data => (this.article = data)
+        );
+      },
+      getBookmarkState() {
+        getBookmarked(this.reference).then(
+          data => (this.isBookmarked = data.done)
+        );
+      },
+
+      setBookmark() {
+        if (!this.isBookmarked) {
+          postBookmark(this.reference)
+            .then(x => (this.isBookmarked = true))
+            .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "Article bookmarked"));
+        } else if (this.isBookmarked) {
+          deleteBookmark(this.reference)
+            .then(x => (this.isBookmarked = false))
+            .then(_ =>
+              EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"Article removed from bookmarks"})
+            );
         }
-      );
-    }
-  },
+      },
 
-  methods: {
-    fetchArticle() {
-      return getArticleByReference(this.reference).then(
-        data => (this.article = data)
-      );
-    },
-    getBookmarkState() {
-      getBookmarked(this.reference).then(
-        data => (this.isBookmarked = data.done)
-      );
-    },
-
-    setBookmark() {
-      if (!this.isBookmarked) {
-        postBookmark(this.reference)
-          .then(x => (this.isBookmarked = true))
-          .then(_ => EventBus.$emit(EVENT_APP_MESSAGE, "Article bookmarked"));
-      } else if (this.isBookmarked) {
-        deleteBookmark(this.reference)
-          .then(x => (this.isBookmarked = false))
-          .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, "Article removed from bookmarks")
-          );
+      onClick() {
+        if (this.info.link!=null) {
+          window.open(this.info.link,'_blank')
+        } else {
+          EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"Oops, link missing !"})
+        }
       }
     }
-  }
-};
+  };
 </script>
 
 <style  lang="css" scoped>
+  #article-container {
+    margin-top: 15px;
+    cursor: auto;
+  }
 
-#article-container {
-  margin-top: 15px;
-  cursor: auto;
-}
+  #article-container .article-title {
+    margin: 3vh 0;
+  }
 
-#article-container .article-title {
-  margin: 3vh 0;
-}
+  #article-container .article-authors button {
+    cursor: default;
+  }
 
-#article-container .article-authors button {
-  cursor: default;
-}
+  #article-container .article-keywords {
+    margin: 1vh 0;
+  }
 
-#article-container .article-keywords {
-  margin: 1vh 0;
-}
+  #article-container .article-abstract {
+    margin: 15px 0;
+  }
 
-#article-container .article-abstract {
-  margin: 15px 0;
-}
+  .chip-c {
+    margin-bottom: 4px;
+    margin-left: 5px;
+  }
 
-.chip-c {
-  margin-bottom: 4px;
-  margin-left: 5px;
-}
-
-.chip {
-  margin-bottom: 4px;
-}
+  .chip {
+    margin-bottom: 4px;
+  }
 </style>
-

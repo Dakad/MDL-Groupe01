@@ -21,7 +21,10 @@
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
-        <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
+        <md-tab id="visu" md-label="Visualisation" md-icon="share">
+          <sota-graphic :articles="selectedArticles"/>
+        </md-tab>
+        <md-tab id="uploadOne" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
       </md-tabs>
@@ -34,8 +37,8 @@ import SotaOverview from "../components/sota-helper/SotaOverview";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
+import { getRecommanded } from "../services/api-article";
 
-import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
 import {
@@ -54,9 +57,16 @@ export default {
   },
   data() {
     return {
-      articles: dummyArticles,
+      articles: {},
       selectedArticles: dummyResults.articles
     };
+  },
+  methods: {
+    fetchRecommanded() {
+      return getRecommanded().then(data => {
+        this.articles = data;
+      });
+    }
   },
 
   created() {
@@ -65,6 +75,8 @@ export default {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true);
       });
     });
+
+    this.fetchRecommanded();
   }
 };
 </script>
