@@ -1,3 +1,4 @@
+
 <template>
   <div class="info md-layout md-alignment-top-center">
     <div class="infotop md-layout-item md-size-80 md-layout md-alignment-center-left">

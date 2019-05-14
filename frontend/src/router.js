@@ -11,6 +11,7 @@ import Article from './pages/Article';
 import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
 import SotaHelper from './pages/SotaHelper';
+import Subscriptions from './pages/Subscriptions';
 
 Vue.use(Router);
 
@@ -38,6 +39,9 @@ const routes = [
 
   { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true,
         title: 'froggosaure - sota-helper' }},
+
+  { name: 'subscriptions', path: '/subscriptions', component: Subscriptions, meta: { requiresAuth : true,
+        title: 'bastien chie dans le frontend' }},
 
   { name: '404', path: '/404', component: NotFound, meta: {
       title: 'froggosaure - 404' } },
