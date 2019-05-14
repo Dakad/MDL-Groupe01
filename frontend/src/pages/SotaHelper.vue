@@ -34,8 +34,8 @@ import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
+import { getRecommanded } from "../services/api-article";
 
-import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
 import {
@@ -49,16 +49,28 @@ export default {
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
   data() {
     return {
-      articles: dummyArticles,
+      articles: {},
       selectedArticles: dummyResults.articles
+
     };
   },
+  methods:{
+    fetchRecommanded(){
+      return getRecommanded()
+        .then(data => {
+          this.articles = data;
+        });
+    }
+  },
+
   created() {
     EventBus.$on(EVENT_USER_LOGOUT, _ => {
       this.$router.replace({ name: "accueil" }, function onComplete() {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true);
       });
     });
+
+    this.fetchRecommanded();
   }
 };
 </script>
