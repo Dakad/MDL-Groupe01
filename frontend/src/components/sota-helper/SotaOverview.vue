@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: "SotAGestion",
+  name: "SotaOverview",
   data() {
     return {
       data: {},
