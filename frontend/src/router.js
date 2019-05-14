@@ -15,23 +15,32 @@ import SotaHelper from './pages/SotaHelper';
 Vue.use(Router);
 
 const routes = [
-  { name: 'accueil', path: '/', component: Accueil },
+  { name: 'accueil', path: '/', component: Accueil, meta: {
+      title: 'froggosaure - home' }},
 
-  { name: 'about', path: '/about', component: About },
+  { name: 'about', path: '/about', component: About, meta: {
+      title: 'froggosaure - about' } },
 
-  { name: 'resultat', path: '/result', component: Resultat },
+  { name: 'resultat', path: '/result', component: Resultat, meta: {
+      title: 'froggosaure - result' } },
 
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true },
+  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true, meta: {
+      title: 'froggosaure - sotaDetails' } },
 
-  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
+  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true, meta: {
+      title: 'froggosaure - articleDetails' } },
 
-  { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
+  { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true,
+  title: 'froggosaure - my profile' }},
 
-  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true }, props: true },
+  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true,
+  title: 'froggosaure - user profile' }, props: true },
 
-  { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
+  { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true,
+        title: 'froggosaure - sota-helper' }},
 
-  { name: '404', path: '/404', component: NotFound },
+  { name: '404', path: '/404', component: NotFound, meta: {
+      title: 'froggosaure - 404' } },
 
   { name: '', path: '*', redirect: '/404' }
 ];

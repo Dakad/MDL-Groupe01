@@ -8,29 +8,29 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        nbrCitedArticles: 14,
-        nbrPaper: 15,
-        hIndex: 15,
-        nbrQuotes: 8
-      };
-    }
-  };
+export default {
+  data() {
+    return {
+      nbrCitedArticles: 14,
+      nbrPaper: 15,
+      hIndex: 15,
+      nbrQuotes: 8
+    };
+  }
+};
 </script>
 
 <style scoped>
-  .social-icons li {
-    list-style-type: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    display: inline;
-  }
+.social-icons li {
+  list-style-type: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  display: inline;
+}
 
-  .social-icons li img {
-    width: 50px;
-    height: 50px;
-    margin-right: 30px;
-  }
+.social-icons li img {
+  width: 50px;
+  height: 50px;
+  margin-right: 30px;
+}
 </style>
