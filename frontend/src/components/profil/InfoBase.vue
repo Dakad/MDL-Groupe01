@@ -28,8 +28,8 @@ export default {
 <style scoped>
 .pdp {
   float: left;
-  height: 10%;
-  width: 10%;
+  height: 25%;
+  width: 25%;
   margin: 20px;
 }
 

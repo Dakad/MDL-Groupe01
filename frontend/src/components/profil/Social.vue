@@ -11,14 +11,14 @@
       </md-card>
     </div>
     <div class="column">
-      <h2>Followed : </h2>
+      <h2>Following</h2>
       <!--TODO: Use authorList component-->
-      <ul id="Followed">
+      <ul id="Following">
          <!--<li v-for="people in jsonFollow.Followed" :key="people">{{ people }}</li>-->
       </ul>
     </div>
     <div class="column">
-      <h2>Followers : </h2>
+      <h2>Followers</h2>
       <ul id="Follower">
         <!--<li v-for="people in jsonFollow.Follower" :key="people">{{ people }}</li>-->
       </ul>
@@ -42,7 +42,7 @@ export default {
     nbrFollowers: function() {
       //return this.jsonFollow.Follower.length;
     },
-    nbrFollowed: function() {
+    nbrFollowing: function() {
       //return this.jsonFollow.Followed.length;
     }
   }
