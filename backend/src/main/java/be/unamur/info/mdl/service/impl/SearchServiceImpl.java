@@ -68,7 +68,8 @@ public class SearchServiceImpl implements SearchService {
 
     // USERS
     if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
-      .equalsIgnoreCase("USERS")) {
+      .equalsIgnoreCase("USERS") || searchQuery.getOnly()
+      .equalsIgnoreCase("AUTHORS")) {
       pageSort = this.getSortForUser(searchQuery.getSort(), searchQuery.getOrder());
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
       searchForUsers(searchResult, searchTerm, resultMeta, pageable);
@@ -76,7 +77,8 @@ public class SearchServiceImpl implements SearchService {
 
     // AUTHORS
     if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
-      .equalsIgnoreCase("AUTHORS")) {
+      .equalsIgnoreCase("AUTHORS") || searchQuery.getOnly()
+      .equalsIgnoreCase("USERS") ) {
       pageSort = this.getSortForAuthor(sort, order);
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
       searchForAuthors(searchResult, searchTerm, resultMeta, pageable);
@@ -224,7 +226,7 @@ public class SearchServiceImpl implements SearchService {
         pageSort = Sort.by(SORT_BY_TITLE);
         break;
       case "date":
-        pageSort = Sort.by("createdAt");
+        pageSort = Sort.by("year");
         break;
       case "name":
         break;

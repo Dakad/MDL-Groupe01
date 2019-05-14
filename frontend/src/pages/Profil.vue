@@ -1,15 +1,16 @@
 <template>
-  <div class="info">
-    <div class="right"></div>
-    <div class="infotop">
-      <InfoBase :profil="profil"></InfoBase>
+  <div class="info md-layout md-alignment-top-center">
+    <div class="infotop md-layout-item md-size-80 md-layout md-alignment-center-left">
+      <div class="base md-layout-item md-size-50">
+        <InfoBase :profil="profil"></InfoBase>
+        </div>
+
+      <div class="stats md-layout-item md-size-40">
+        <StatsLink/>
+      </div>
     </div>
 
-    <div class="stats">
-      <StatsLink/>
-    </div>
-
-    <div class="tabs">
+    <div class="tabs md-layout-item md-size-90">
       <md-tabs>
         <md-tab id="profile" md-label="My profile">
           <MyProfile :infoPro="infoPro"></MyProfile>
@@ -115,29 +116,35 @@ export default {
 </script>
 
 <style scoped>
-.info {
+/* .info {
   position: absolute;
   height: 100%;
   width: 100%;
-}
+} */
 
 .infotop {
+  margin-top: 2%;
+}
+
+/* .infotop {
   position: relative;
   height: 30%;
   width: 100%;
-}
-.stats {
+} */
+/* .stats {
   position: relative;
   left: 40%;
   bottom: 28%;
   width: 40%;
   height: 15%;
-}
+  margin-top: 2%;
+} */
 
 .tabs {
-  position: relative;
+  /* position: relative;
   height: 60%;
-  width: 100%;
+  width: 100%; */
+  margin-top: 2%;
 }
 
 #profile {

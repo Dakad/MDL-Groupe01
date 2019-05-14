@@ -6,6 +6,7 @@ import Vue from 'vue';
 
 // Mine
 import { getAuthHeaders } from './api';
+import { isLogged } from './api-user';
 
 // -------------------------------------------------------------------
 // Properties
@@ -35,4 +36,14 @@ export function postBookmark(reference){
 export function deleteBookmark(reference){
   const headers = getAuthHeaders();
   return Vue.http.delete('/api/article/' + reference + '/bookmark', headers).then(res => res.body)
+}
+
+export function getRecommanded(){
+  let headers = {};
+  if (isLogged() == false){
+    return Vue.http.get('/api/article/recommended', headers).then(res => res.body)
+  } else {
+    headers = getAuthHeaders()
+    return Vue.http.get('/api/article/recommended', headers).then(res => res.body)
+  }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.swagger.annotations.ApiModel;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,6 +80,8 @@ public class ArticleDTO {
 
 
   private UserDTO creator;
+
+  private BibtexType type;
 
   @Builder.Default
   private List<@NotBlank(message = "The author(s) must be defined") String> authors = new LinkedList<>();
