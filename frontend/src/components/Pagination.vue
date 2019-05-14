@@ -6,7 +6,7 @@
     <li class="page-item prev-page" :class="{ disabled: value === 1, 'no-arrows': noArrows }">
       <md-button
         :class="{'md-icon-button' : !withText}"
-        :md-ripple="false"
+        :md-ripple="true"
         :disabled="value === 1"
         aria-label="Previous"
         @click="prevPage()"
@@ -19,7 +19,7 @@
       <md-button
         class="md-icon-button"
         :class="{'md-accent' : value === item, 'md-raised' : value === item}"
-        :md-ripple="false"
+        :md-ripple="true"
         @click="changePage(item)"
       >{{ item }}</md-button>
 
@@ -32,7 +32,7 @@
       <md-button
         :class="{'md-icon-button' : !withText, disabled: value === totalPages}"
         :disabled="value === totalPages"
-        :md-ripple="false"
+        :md-ripple="true"
         aria-label="Next"
         @click="nextPage()"
       >

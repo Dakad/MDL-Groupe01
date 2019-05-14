@@ -57,7 +57,7 @@
 
           <!-- Upload btn -->
           <div class="md-layout-item md-size-100" id="upload-btn-container">
-            <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
+            <md-button class="md-raised md-primary" type="submit" :md-ripple="true">Upload the SoTA</md-button>
           </div>
 
           <div>
