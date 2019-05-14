@@ -100,7 +100,18 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Les packages utilisés
 
-* Vue.js
-* Vue-Material
-* Bootstrap
-* D3.js
+   * "bibtex-parse-js": "0.0.24",
+   * "bootstrap": "^4.3.1",
+   * "bootstrap-vue": "^2.0.0-rc.13",
+   * "color-hash": "^1.0.3",
+   * "d3": "^5.9.2",
+   * "swiper": "^4.5.0",
+   * "vue": "^2.6.6",
+   * "vue-awesome-swiper": "^3.1.3",
+   * "vue-carousel": "^0.18.0",
+   * "vue-d3-cloud": "^0.1.6",
+   * "vue-material": "latest",
+   * "vue-resource": "^1.5.1",
+   * "vue-router": "^3.0.1",
+   * "vued3tree": "^3.7.1",
+   * "vuelidate": "^0.7.4"
