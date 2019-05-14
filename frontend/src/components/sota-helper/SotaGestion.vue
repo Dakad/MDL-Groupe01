@@ -30,7 +30,6 @@
         <h2>Order by :</h2>
         <md-radio v-model="orderBy" value="asc">Ascending</md-radio>
         <md-radio v-model="orderBy" value="desc">Descending</md-radio>
-        <small>{{ sortBy }} + {{ orderBy }}</small>
       </div>
       <md-button class="md-raised md-primary">Export all refs in bibTex</md-button>
     </div>
