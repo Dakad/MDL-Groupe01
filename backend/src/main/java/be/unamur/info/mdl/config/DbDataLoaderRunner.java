@@ -1,10 +1,13 @@
 package be.unamur.info.mdl.config;
 
+import be.unamur.info.mdl.dal.entity.ResearchGroupEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UniversityEntity;
+import be.unamur.info.mdl.dal.repository.ResearchGroupRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.dal.repository.UniversityRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.ResearchGroupDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
@@ -44,6 +47,8 @@ public class DbDataLoaderRunner implements CommandLineRunner {
 
   @Autowired
   private UniversityRepository universityRepository;
+  @Autowired
+  private ResearchGroupRepository researchGroupRepository;
 
 
 
@@ -170,11 +175,27 @@ public class DbDataLoaderRunner implements CommandLineRunner {
       }
     }
 
+    TypeReference<List<ResearchGroupDTO>> researchGroupTypeReference = new TypeReference<List<ResearchGroupDTO>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/researchGroup.data.json");
+    List<ResearchGroupDTO> groups = mapper.readValue(inputStream, researchGroupTypeReference);
 
+    LOGGER.info("Saving " + groups.size() + " articles into DB");
 
+    for (ResearchGroupDTO group : groups) {
+      try {
 
+     this.researchGroupRepository.save(ResearchGroupEntity.of(group));
+        LOGGER.info("add " + group.getName() + "  from ResearchGroup DB");
+      }
+     catch(Exception e ){
+       LOGGER.info(" YOU FAILED");
+     }
+
+      }
+    }
   }
-}
+
 
 
 
