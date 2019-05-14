@@ -88,7 +88,7 @@
               md-icon="cloud"
               md-label="No word cloud to display"
             ></md-empty-state>
-            <word-cloud v-else :tags="articlesTags"></word-cloud>
+            <word-cloud v-else :tags="articlesTags" :moreTags='tags'></word-cloud>
           </md-tab>
         </md-tabs>
       </div>
@@ -104,7 +104,7 @@ import ArticleList from "@/components/resultat/ArticleList";
 import Graphics from "@/components/resultat/Graphics";
 import WordCloud from "@/components/resultat/WordCloud";
 
-import { getSearchResults } from "@/services/api";
+import { getSearchResults, getTags } from "@/services/api";
 
 export default {
   name: "Resultat",
@@ -127,7 +127,8 @@ export default {
       page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
-      pages: {}
+      pages: {},
+      tags:{}
     };
   },
   created() {
@@ -240,6 +241,8 @@ export default {
         only: !this.changingTab ? this.activeTab : undefined
       };
 
+      this.fetchTags();
+
       return getSearchResults(searchQuery)
         .then(res => {
           this.loading = false;
@@ -252,6 +255,11 @@ export default {
             });
         })
         .catch(console.error);
+    },
+    fetchTags(){
+      getTags(this.searchTerm).then(res => {
+        this.tags=res;
+      })
     }
   }
 };
