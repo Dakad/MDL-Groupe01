@@ -12,7 +12,7 @@
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
         </md-tab>
-        <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
+        <md-tab id="recommanded" md-label="Recommended" md-icon="thumb_up">
           <article-list v-show="!loading" :list="articles"></article-list>
           <md-empty-state
             v-if="!articles || articles.length == 0"
