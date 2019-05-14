@@ -64,7 +64,7 @@
           class="md-dense md-raised"
           :href="downloadData.json"
           :download="this.sota.reference +'.json'"
-          :md-ripple="true"
+          :md-ripple="false"
           @click="onDownloadFormatChoiceBtnClick('JSON')"
         >JSON</md-button>
 
@@ -72,7 +72,7 @@
           :href="downloadData.bibtex"
           :download="this.sota.reference +'.bib'"
           class="md-dense md-raised md-primary"
-          :md-ripple="true"
+          :md-ripple="false"
           @click="onDownloadFormatChoiceBtnClick('BiBTEX')"
         >BIBTEX</md-button>
       </md-content>
