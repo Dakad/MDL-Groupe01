@@ -71,7 +71,7 @@ export default {
 
   methods : {
     notifyError(msg){
-      EventBus.$emit(EVENT_APP_MESSAGE, msg);
+      EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', msg});
     }
   }
 };

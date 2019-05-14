@@ -171,7 +171,7 @@ export default {
         deleteBookmark(this.reference)
           .then(x => (this.isBookmarked = false))
           .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, "Article removed from bookmarks")
+            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"Article removed from bookmarks"})
           );
       }
     }
