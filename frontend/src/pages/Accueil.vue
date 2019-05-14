@@ -3,7 +3,7 @@
     <div class="central md-layout-item md-size-70 md-layout md-alignment-top-center">
       
       <div class="head md-layout-item md-size-80 md-layout md-gutter md-alignment-top-center">
-        <img class="logoimg md-layout-item md-extra-small-40 md-small-size-35 md-medium-size-30 md-large-size-25 md-extra-large-20 md-size-10" src="../assets/logo-app.png" style="width:40px;height:100px;">
+        <img class="logoimg md-layout-item md-extra-small-40 md-small-size-30 md-medium-size-20 md-large-size-20 md-extra-large-20 md-size-15" src="../assets/logo-app.png" style="width:20px;height:100px;">
         <div class="title md-layout-item md-size-40"><h1>Froggosaur</h1></div>
         <!-- ou md-size-35? -->
       </div>
