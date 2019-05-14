@@ -8,7 +8,7 @@
         <div class="zoneText">
           <md-field>
             <label>Change your avatar</label>
-            <md-input v-model="avatarimg"></md-input>
+            <md-input v-model="profile.avatar_url"/>
           </md-field>
         </div>
 
@@ -16,7 +16,7 @@
           <md-icon class="material-icons">home</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="university" :md-options="universities">
+          <md-autocomplete v-model="profile.university" :md-options="listUniversities">
             <label>Change your university</label>
           </md-autocomplete>
         </div>
@@ -25,7 +25,7 @@
           <md-icon class="material-icons">keyboard</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="domain" :md-options="domains">
+          <md-autocomplete v-model="profile.domain" :md-options="listDomains">
             <label>Change your domain</label>
           </md-autocomplete>
         </div>
@@ -39,7 +39,7 @@
       <div class="zoneText">
         <md-field>
           <label>Change your email address</label>
-          <md-input v-model="emailAddress"></md-input>
+          <md-input v-model="profile.email"></md-input>
         </md-field>
       </div>
 
@@ -49,20 +49,19 @@
       <div class="zoneText">
         <md-field>
           <label>Change your research groups</label>
-          <md-input v-model="rGroup" md-autogrow></md-input>
+          <md-input v-model="profile.researchGroup" md-autogrow></md-input>
         </md-field>
       </div>
 
       <md-field>
         <label>Change your bio</label>
-        <md-textarea v-model="bio"></md-textarea>
+        <md-textarea v-model="profile.bio"></md-textarea>
       </md-field>
     </div>
 
     <div class="centeredButton">
       <md-button class="md-raised md-primary" @click="wantToChange = true">Save changes</md-button>
     </div>
-
     <!--  ask if ok to change  -->
 
     <md-dialog :md-active.sync="wantToChange">
@@ -70,7 +69,7 @@
       <md-content class="md-layout md-alignment-center-space-around">
         <md-button class="md-dense md-raised" @click="wantToChange = false">No</md-button>
 
-        <md-button class="md-dense md-raised md-primary" :md-ripple="false" @click="saveData()">Yes</md-button>
+        <md-button class="md-dense md-raised md-primary" :md-ripple="false" @click="updateData">Yes</md-button>
       </md-content>
     </md-dialog>
   </div>
@@ -86,98 +85,93 @@ import {
 import {
   EventBus,
   EVENT_USER_LOGOUT,
-  EVENT_BYE_REDIRECTION
+  EVENT_PROFILE_UPDATED,
+  EVENT_BYE_REDIRECTION,
+  EVENT_APP_MESSAGE
 } from "@/services/event-bus.js";
 
 export default {
-  name: "ProfilModif",
-  data: () => ({
-    wantToChange: false,
-    university: null,
-    domain: null,
-    emailAddress: null,
-    rGroup: "Nadi, IRIDIA, BRUH",
-    avatarimg: "link to image",
-    domains: [
-      "ComputerScience",
-      "Literature",
-      "Chemistry",
-      "Physics",
-      "Biology",
-      "Medicine",
-      "Economics",
-      "Economics",
-      "Psychology",
-      "Laws",
-      "Mathematics",
-      "Veterinary",
-      "History",
-      "Engineering",
-      "Language"
-    ],
-    universities: ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"],
-    bio: "BLELBLE",
-    username: null
-  }),
+  name: "ProfileUpdate",
+  data() {
+    return {
+      wantToChange: false,
+      sending: false,
+      profile: {}
+    };
+  },
 
-  methods: {
-    fetchProfileBase() {
-      getProfileBase(this.username).then(data => {
-        this.emailAddress = data.email;
-        this.domain = data.domain;
-        this.university = data.university;
-        this.avatarimg = data.avatar;
-      });
+  computed: {
+    listDomains() {
+      return [
+        "ComputerScience",
+        "Literature",
+        "Chemistry",
+        "Physics",
+        "Biology",
+        "Medicine",
+        "Economics",
+        "Economics",
+        "Psychology",
+        "Laws",
+        "Mathematics",
+        "Veterinary",
+        "History",
+        "Engineering",
+        "Language"
+      ];
     },
 
-    fetchDataPro() {
-      getProfileInfoPro(this.username).then(data => {
-        this.rGroup = data.researchGroup;
-      });
+    listUniversities() {
+      return ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"];
     },
-
-    fetchSocial() {
-      getProfileSocial(this.username).then(data => {
-        this.bio = data.bio;
-      });
-    },
-
-    postData(modifiedData) {
-      postModificationProfile(modifiedData).then((this.wantToChange = false));
-    },
-
-    saveData() {
-      let dataToSend = {
-        profilePicURL: this.avatarimg,
-        currentUniversity: this.university,
-        domain: this.domain,
-        researchGroups: [this.rGroup],
-        email: this.emailAddress,
-        description: this.bio
-      };
-      this.postData(dataToSend);
+    listResearchGroups() {
+      return ["Nadi", "IRIDIA", "BRUH"];
     }
   },
 
-  computed: {},
-
   created() {
-    //todo get the information from BD
-    this.username = this.$route.params["username"];
-
-    this.fetchProfileBase();
-    this.fetchDataPro();
-    this.fetchSocial();
-
-    this.emailAddress = this.profil.email;
-    this.university = this.profil.university;
-    this.domain = this.profil.domain;
+    // Fetch the needed profile info (base, social, info)
+    this.fetchProfileInfo();
 
     EventBus.$on(EVENT_USER_LOGOUT, _ => {
       this.$router.replace({ name: "accueil" }, function onComplete() {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true);
       });
     });
+  },
+  methods: {
+    fetchProfileInfo() {
+      getProfileBase().then(data => {
+        console.log(data);
+        this.profile = Object.assign({}, data);
+        if (this.profile.university == null) {
+          this.profile.university = "";
+        }
+        if (this.profile.domain == null) {
+          this.profile.domain = "";
+        }
+      });
+      getProfileInfoPro().then(data => {
+        console.log(data);
+        this.profile["researchGroup"] = data.researchGroup;
+      });
+      getProfileSocial().then(data => {
+        console.log(data);
+        this.profile["bio"] = data.bio;
+      });
+    },
+
+    updateData() {
+      this.sending = true;
+      let dataToSend = Object.assign(this.profile, {});
+      postModificationProfile(dataToSend)
+        .then(_ => {
+          this.wantToChange = false;
+          this.sending = false;
+          EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile info updated");
+        })
+        .catch(({ body }) => console.log(body.message));
+    }
   }
 };
 </script>
