@@ -13,42 +13,42 @@
 </template>
 
 <script>
-export default {
-  name: "InfoBase",
-  props: ["profil"],
-  data() {
-    return {
-      firstLastName: null,
-      university: null,
-      domain: null,
-      email: null,
-      pdpUrl: null
-    };
-  },
+  export default {
+    name: "InfoBase",
+    props: ["profil"],
+    data() {
+      return {
+        firstLastName: null,
+        university: null,
+        domain: null,
+        email: null,
+        pdpUrl: null
+      };
+    },
 
-  created() {
-    this.firstLastName = this.profil.firstname + " " + this.profil.name;
-    this.university = this.profil.university;
-    this.domain = this.profil.domain;
-    this.email = this.profil.email;
-    this.pdpUrl = this.profil.profilePictureURL;
-  },
-  mounted() {
-    this.$nextTick(function() {});
-  }
-};
+    created() {
+      this.firstLastName = this.profil.firstname + " " + this.profil.name;
+      this.university = this.profil.university;
+      this.domain = this.profil.domain;
+      this.email = this.profil.email;
+      this.pdpUrl = this.profil.profilePictureURL;
+    },
+    mounted() {
+      this.$nextTick(function() {});
+    }
+  };
 </script>
 
 <style scoped>
-.pdp {
-  float: left;
-  height: 10%;
-  width: 10%;
-  margin: 20px;
-}
+  .pdp {
+    float: left;
+    height: 10%;
+    width: 10%;
+    margin: 20px;
+  }
 
-.info {
-  float: left;
-  margin: 20px;
-}
+  .info {
+    float: left;
+    margin: 20px;
+  }
 </style>
