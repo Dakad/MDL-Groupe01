@@ -12,4 +12,8 @@ public interface SearchService {
   SearchResultDTO getSearchResults(SearchQueryDTO searchQuerry);
 
   List<Object[]> getTags(String keyword);
+
+  Map<String,String> getAllTags();
+
+  List<String> getAllAuthors();
 }
