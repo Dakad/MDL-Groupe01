@@ -61,5 +61,10 @@ public interface StateOfTheArtService {
 
   boolean delete (String reference, String username)
     throws UserNotFoundException;
+
+  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data)
+  throws  UserNotFoundException;
+
+
 }
 
