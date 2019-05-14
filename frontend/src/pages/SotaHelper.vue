@@ -9,9 +9,6 @@
         <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
           <!-- <SotaGestion @selected="selectedArticles = $event"/> -->
         </md-tab>
-        <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic :articles="selectedArticles"/>
-        </md-tab>
         <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
           <article-list v-show="!loading" :list="articles"></article-list>
           <md-empty-state
@@ -21,7 +18,10 @@
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
-        <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
+        <md-tab id="visu" md-label="Visualisation" md-icon="share">
+          <sota-graphic :articles="selectedArticles"/>
+        </md-tab>
+        <md-tab id="uploadOne" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
       </md-tabs>
