@@ -24,25 +24,25 @@
 </template>
 
 <script>
-export default {
-  name: "Person",
-  props: ["position", "image", "name", "role", "descr"]
-};
+  export default {
+    name: "Person",
+    props: ["position", "image", "name", "role", "descr"]
+  };
 </script>
 
 
 <style scoped>
-.title {
-  text-align: center;
-}
-.card-expansion {
-  height: 480px;
-  text-align: center;
-}
-.md-card {
-  width: 320px;
-  margin: 4px;
-  display: inline-block;
-  vertical-align: top;
-}
+  .title {
+    text-align: center;
+  }
+  .card-expansion {
+    height: 480px;
+    text-align: center;
+  }
+  .md-card {
+    width: 320px;
+    margin: 4px;
+    display: inline-block;
+    vertical-align: top;
+  }
 </style>

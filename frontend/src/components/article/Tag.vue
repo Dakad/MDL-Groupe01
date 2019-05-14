@@ -8,13 +8,13 @@
 </template>
 
 <script>
-export default {
-  name: "Tag",
-  props: ["tags"],
-  data() {
-    return {};
-  }
-};
+  export default {
+    name: "Tag",
+    props: ["tags"],
+    data() {
+      return {};
+    }
+  };
 </script>
 
 <style>

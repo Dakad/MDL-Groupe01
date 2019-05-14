@@ -13,28 +13,28 @@
 </template>
 
 <script>
-export default {
-  name: "Info",
-  props: {
-    info: {
-      type: Object,
-      required: true,
-      default: () => {}
-    }
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    publicationDate() {
-      let str = this.info.year;
-      if (this.info.month) {
-        str += "-" + this.info.month;
+  export default {
+    name: "Info",
+    props: {
+      info: {
+        type: Object,
+        required: true,
+        default: () => {}
       }
-      return str;
+    },
+    data() {
+      return {};
+    },
+    computed: {
+      publicationDate() {
+        let str = this.info.year;
+        if (this.info.month) {
+          str += "-" + this.info.month;
+        }
+        return str;
+      }
     }
-  }
-};
+  };
 </script>
 
 <style>
