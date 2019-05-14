@@ -1,6 +1,6 @@
 <template>
   <div class="author">
-    <md-card v-for="author in list" >
+    <md-card v-for="(author,index) in list" :key="index" >
       <div class="contProfil">
         <img :src="author.pp">
       </div>
@@ -8,14 +8,14 @@
         <md-card-header>
           <div class="Name">
             <h5>
-              <router-link :to="{name: 'userProfile', params : {username : author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
-              {{authors.name}}
+              <router-link v-if="author.username" :to="{name: 'userProfile', params : {username: author.username}}">{{author.firstname}} {{author.lastname}}</router-link>
+              <span v-else>{{author.name}}</span>
             </h5>
           </div>
         </md-card-header>
-        <md-card-content>
+        <md-card-content  v-if="author.username" >
           <div class="contOrga">
-            <p>Organisation: {{author.organisation}}</p>
+            <p>Organization: {{author.organization}}</p>
           </div>
           <div class="contDom">
             <p>Domaine: {{author.domain}}</p>

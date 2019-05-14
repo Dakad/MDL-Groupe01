@@ -9,9 +9,6 @@
         <md-tab id="gestion" md-label="Gestion" md-icon="view_module">
           <!-- <SotaGestion @selected="selectedArticles = $event"/> -->
         </md-tab>
-        <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic :articles="selectedArticles"/>
-        </md-tab>
         <md-tab id="recommanded" md-label="Recommanded" md-icon="thumb_up">
           <article-list v-show="!loading" :list="articles"></article-list>
           <md-empty-state
@@ -21,7 +18,10 @@
             md-description="Creating project, you'll be able to upload your design and collaborate with people."
           ></md-empty-state>
         </md-tab>
-        <md-tab id="uploadOne" md-label="Upload new SotA" md-icon="plus_one">
+        <md-tab id="visu" md-label="Visualisation" md-icon="share">
+          <sota-graphic :articles="selectedArticles"/>
+        </md-tab>
+        <md-tab id="uploadOne" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
       </md-tabs>
@@ -34,8 +34,8 @@ import SotaGestion from "../components/sota-helper/SotaGestion";
 import SotaCreate from "../components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
+import { getRecommanded } from "../services/api-article";
 
-import dummyArticles from "@/services/dummy/articles.json";
 import dummyResults from "@/services/dummy/results.json";
 
 import {
@@ -49,16 +49,28 @@ export default {
   components: { createSota: SotaCreate, SotaGraphic, SotaGestion, articleList },
   data() {
     return {
-      articles: dummyArticles,
+      articles: {},
       selectedArticles: dummyResults.articles
+
     };
   },
+  methods:{
+    fetchRecommanded(){
+      return getRecommanded()
+        .then(data => {
+          this.articles = data;
+        });
+    }
+  },
+
   created() {
     EventBus.$on(EVENT_USER_LOGOUT, _ => {
       this.$router.replace({ name: "accueil" }, function onComplete() {
         EventBus.$emit(EVENT_BYE_REDIRECTION, true);
       });
     });
+
+    this.fetchRecommanded();
   }
 };
 </script>

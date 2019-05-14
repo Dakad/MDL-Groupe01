@@ -135,13 +135,16 @@ export default {
       switch (component) {
         case "login":
           this.loginFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
+          EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
           break;
         case "register":
         case "signin":
           this.signinFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
-
+          EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
+          break;
+        case "search":
+          EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':error});
+          break;
         default:
           break;
       }

@@ -65,7 +65,7 @@ export default {
       if (!this.searchInput || this.searchInput.length < this.minLength) {
         this.$emit(
           "error",
-          `At least ${this.minLength} characters to run search !`
+          `You need at least ${this.minLength} characters to run a search !`
         );
       } else {
         this.$router.push({
