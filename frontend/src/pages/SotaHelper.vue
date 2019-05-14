@@ -7,7 +7,7 @@
     <div class="tabs">
       <md-tabs md-alignment="fixed" md-active-tab="visu">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
-          <sota-overview @selected="selectedArticles = $event"/>
+          <sota-overview :list="articles" @selected="selectedArticles = $event"/>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
