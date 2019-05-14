@@ -9,9 +9,6 @@
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
           <sota-overview :bookmarked="bookmarked" @selected="selectedArticles = $event"/>
         </md-tab>
-        <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic :articles="selectedArticles"/>
-        </md-tab>
         <md-tab id="recommanded" md-label="Recommended" md-icon="thumb_up">
           <article-list v-show="!loading" :list="articles"></article-list>
           <md-empty-state
@@ -24,7 +21,7 @@
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
           <sota-graphic :articles="selectedArticles"/>
         </md-tab>
-        <md-tab id="uploadOne" md-label="Create a new SotA" md-icon="plus_one">
+        <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
         </md-tab>
       </md-tabs>
