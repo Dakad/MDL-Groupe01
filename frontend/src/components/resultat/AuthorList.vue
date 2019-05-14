@@ -15,10 +15,10 @@
         </md-card-header>
         <md-card-content  v-if="author.username" >
           <div class="contOrga">
-            <p title="Organization">{{author.organization}}</p>
+            <p>Organization: {{author.organization}}</p>
           </div>
           <div class="contDom">
-            <p title="Domain">{{author.domain}}</p>
+            <p>Domaine: {{author.domain}}</p>
           </div>
         </md-card-content>
       </div>
