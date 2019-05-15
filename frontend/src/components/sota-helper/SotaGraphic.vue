@@ -34,6 +34,11 @@ const cutString = function(title) {
   return !overflow ? title : title.substr(0, 75) + "...";
 };
 
+const unduplicatedCategories = function(list) {
+  const setList = new Set(list.map(a => a["category"]));
+  return [...setList].sort();
+};
+
 export default {
   name: "SotaGraphic",
   components: { tree },
@@ -59,33 +64,12 @@ export default {
     };
   },
   created() {
-    this.treeData = Object.assign(dataTreeBase, {
-      name: this.sotaName
-    });
-
-    // Insert the categories as node in the tree data
-    this.categoriesFromArticles.forEach(category => {
-      const child = {
-        name: category,
-        children: [
-          { name: "Articles", children: [] },
-          { name: "Sotas", children: [] }
-        ]
-      };
-      this.treeData["children"].push(child);
-    });
-
     this.fetchArticlesByCategories();
   },
   computed: {
-    categoriesFromArticles() {
-      const categorySet = new Set(this.articles.map(a => a["category"]));
-      return [...categorySet].sort();
-    }
-
     // treeDataFromArticles() {
     //   const tree = Object.assign(dataTreeBase);
-    //   this.categoriesFromArticles.forEach(cat => {
+    //   unduplicatedCategories(this.articles).forEach(cat => {
     //     tree["children"].push({
     //       name: cat,
     //       children: [
@@ -94,18 +78,15 @@ export default {
     //       ]
     //     });
     //   });
-
     //   this.articles.forEach(({ title, category, reference }) => {
     //     const overflow = title.length > 75;
     //     const name = !overflow ? title : title.substr(0, 75) + "...";
-
     //     const categoryChild = tree["children"].find(c => c["name"] == category);
     //     categoryChild["children"][0]["children"].push({
     //       name,
     //       reference
     //     });
     //   });
-
     //   return tree;
     // }
   },
@@ -121,7 +102,25 @@ export default {
       }
     },
     fetchArticlesByCategories: function() {
-      const categories = this.categoriesFromArticles;
+      this.treeData = Object.assign(dataTreeBase, {
+        name: this.sotaName
+      });
+
+      const categories = unduplicatedCategories(this.articles);
+
+      // Insert the categories as node in the tree data
+      categories(this.articles).forEach(category => {
+        const child = {
+          name: category,
+          children: [
+            { name: "Articles", children: [] },
+            { name: "Sotas", children: [] }
+          ]
+        };
+        this.treeData["children"].push(child);
+      });
+
+      console.log(this.articles, categories);
 
       // Send APi request to retrieve articles matching the provided categories
       getArticlesByCategories(categories)

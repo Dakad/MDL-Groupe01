@@ -23,4 +23,5 @@ public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEnti
   Optional<StateOfTheArtEntity> findByReference(String reference);
 
   boolean existsByReference(String reference);
+
 }
