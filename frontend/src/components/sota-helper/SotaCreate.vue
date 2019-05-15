@@ -166,45 +166,39 @@ export default {
           if (!article["category"] || article["category"].length == 0) {
             article["category"] = sota["subject"];
           }
-          return createArticle(article);
+          return createArticle(article).catch(e =>
+            this.apiErrors.push(err.body["message"])
+          );
         });
       });
 
-      // Send all request to create an article, one fails ==> all failed
-      Promise.race(createArticleRequests)
-        .then(values => {
-          // Split the keywords, to get each keywords
-          sota["keywords"] = sota.keywords
-            .split(",")
-            .map(k => k.trim())
-            .filter(k => k.length > 0);
-
-          sota["articles"] = articleRefs;
-
-          return createSota(sota).then(data => {});
-        })
-        .catch(err => {
-          console.log(err);
-          this.apiErrors.push(err.body["message"]);
-        });
-
       // Send all request to create an article, fail
-      Promise.race(createArticleRequests)
-        .then(values => {
-          // Split the keywords, to get each keywords
-          this.sota["keywords"] = this.sota.keywords
-            .split(",")
-            .map(k => k.trim())
-            .filter(k => k.length > 0);
+      Promise.all(createArticleRequests).then(values => {
+        // Split the keywords, to get each keywords
+        this.sota["keywords"] = this.sota.keywords
+          .split(",")
+          .map(k => k.trim())
+          .filter(k => k.length > 0);
 
-          this.sota["articles"] = articleRefs;
+        this.sota["articles"] = articleRefs;
 
-          return createSota(this.sota).then(data => {});
-        })
-        .catch(err => {
-          console.log(err);
-          this.apiErrors.push(err.body["message"]);
-        });
+        return createSota(this.sota)
+          .then(newSota => {
+            console.log(newSota);
+            EventBus.$emit(EVENT_APP_MESSAGE, {
+              type: "info",
+              message: "New SoTA created"
+            });
+          })
+          .catch(err => {
+            // Send a flash error msg about theh sota creation
+            EventBus.$emit(EVENT_APP_MESSAGE, {
+              type: "error",
+              message:
+                err.body["message"] || "Operation failed : creation failed"
+            });
+          });
+      });
     }
   }
 };
