@@ -11,36 +11,95 @@ import Article from './pages/Article';
 import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
 import SotaHelper from './pages/SotaHelper';
+import Subscriptions from './pages/Subscriptions';
 
 Vue.use(Router);
 
 const routes = [
-  { name: 'accueil', path: '/', component: Accueil, meta: {
-      title: 'froggosaure - home' }},
+  {
+    name: 'accueil',
+    path: '/',
+    component: Accueil,
+    meta: {
+      title: 'Froggosaur - Home'
+    }
+  },
 
-  { name: 'about', path: '/about', component: About, meta: {
-      title: 'froggosaure - about' } },
+  {
+    name: 'about',
+    path: '/about',
+    component: About,
+    meta: {
+      title: 'Froggosaur - About'
+    }
+  },
 
-  { name: 'resultat', path: '/result', component: Resultat, meta: {
-      title: 'froggosaure - result' } },
+  {
+    name: 'resultat',
+    path: '/result',
+    component: Resultat,
+    meta: {
+      title: 'Froggosaur - Result'
+    }
+  },
 
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true, meta: {
-      title: 'froggosaure - sotaDetails' } },
+  {
+    name: 'sotaDetails',
+    path: '/sota/:reference',
+    component: SotaDetails,
+    props: true,
+    meta: {
+      title: 'Froggosaur - SotaDetails'
+    }
+  },
 
-  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true, meta: {
-      title: 'froggosaure - articleDetails' } },
+  {
+    name: 'articleDetails',
+    path: '/article/:reference',
+    component: Article,
+    props: true,
+    meta: {
+      title: 'Froggosaur - Article details'
+    }
+  },
 
-  { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true,
-  title: 'froggosaure - my profile' }},
+  {
+    name: 'myProfile',
+    path: '/profile',
+    component: Profil,
+    meta: { requiresAuth: true, title: 'Froggosaur - My profile' }
+  },
 
-  { name: 'userProfile', path: '/profile/:username', component: Profil, meta: { requiresAuth: true,
-  title: 'froggosaure - user profile' }, props: true },
+  {
+    name: 'userProfile',
+    path: '/profile/:username',
+    component: Profil,
+    meta: { requiresAuth: true, title: 'Froggosaur - User profile' },
+    props: true
+  },
 
-  { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true,
-        title: 'froggosaure - sota-helper' }},
+  {
+    name: 'sotaHelper',
+    path: '/sotahelper',
+    component: SotaHelper,
+    meta: { requiresAuth: true, title: 'Froggosaur - Sota-helper' }
+  },
 
-  { name: '404', path: '/404', component: NotFound, meta: {
-      title: 'froggosaure - 404' } },
+  {
+    name: 'subscriptions',
+    path: '/subscriptions',
+    component: Subscriptions,
+    meta: { requiresAuth: true, title: 'Froggosaur - Subscriptions' }
+  },
+
+  {
+    name: '404',
+    path: '/404',
+    component: NotFound,
+    meta: {
+      title: 'Froggosaur - Page not found'
+    }
+  },
 
   { name: '', path: '*', redirect: '/404' }
 ];
