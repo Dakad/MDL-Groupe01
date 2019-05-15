@@ -5,8 +5,10 @@
         class="sort-container"
         :sort="sortBy"
         :order="orderBy"
+        :tags="searchTagList"
         @change:sort="sortBy = $event; updateSearchURL('sort', $event)"
         @change:order="orderBy = $event; updateSearchURL('order', $event)"
+        @tag:remove="removeTagFromSearchList($event)"
       ></result-sort>
     </div>
     <div class="md-layout-item md-size-80">
@@ -50,7 +52,7 @@
               v-if="!loading &&  (!results.articles || results.articles.length == 0)"
               md-icon="description"
               md-label="No articles found"
-              :md-description="'Sorry, we didn\'t find any articles matching your search for \'\''+searchTerm+'\'\''"
+              :md-description="articleEmptyStateMsg"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
@@ -88,7 +90,19 @@
               md-icon="cloud"
               md-label="No word cloud to display"
             ></md-empty-state>
-            <word-cloud v-else :tags="articlesTags"></word-cloud>
+            <wordcloud
+              :data="tagList"
+              nameKey="name"
+              valueKey="value"
+              :color="myColors"
+              :showTooltip="false"
+              :fontSize="[13,40]"
+              :wordClick="wordClickHandler"
+              :rotate="{from: 0, to: 0, numOfOrientation: 5 }"
+            ></wordcloud>
+            <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
+              <span>{{snackMsgWc}}</span>
+            </md-snackbar>
           </md-tab>
         </md-tabs>
       </div>
@@ -97,37 +111,42 @@
 </template>
 
 <script>
-import ResultSort from "@/components/resultat/ResultSort";
+import SortOptions from "@/components/resultat/SortOptions";
 import SotaList from "@/components/resultat/SotaList";
 import AuthorList from "@/components/resultat/AuthorList";
 import ArticleList from "@/components/resultat/ArticleList";
 import Graphics from "@/components/resultat/Graphics";
-import WordCloud from "@/components/resultat/WordCloud";
+import wordcloud from "vue-wordcloud";
 
-import { getSearchResults } from "@/services/api";
+import { getSearchResults, getTags } from "@/services/api";
 
 export default {
   name: "Resultat",
   components: {
-    ResultSort,
+    "result-sort": SortOptions,
     SotaList,
     AuthorList,
     ArticleList,
     Graphics,
-    WordCloud
+    wordcloud
   },
   data() {
     return {
       loading: false,
       changingTab: false,
       searchTerm: null,
-      sortBy: this.$route.query["sort"] || "name",
+      sortBy: this.$route.query["sort"] || "title",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
       page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
-      pages: {}
+      pages: {},
+      tags: {},
+      myColors: "Category10",
+      snackMsgWc: null,
+      showSnackbar: false,
+      searchTagList: []
     };
   },
   created() {
@@ -139,9 +158,31 @@ export default {
     // call it again the method if the route changes
     $route: "fetchSearchResult",
 
-    activeTab: newTab => updateSearchURL("tab", newTab)
+    activeTab: newTab => updateSearchURL("tab", newTab),
+    searchTagList: function() {
+      this.fetchSearchResult();
+    }
   },
   computed: {
+    articleEmptyStateMsg() {
+      let msg = `Sorry, we didn't find any articles matching your search for '${
+        this.searchTerm
+      }'`;
+      if (this.searchTagList.length > 0) {
+        msg += "with those tags : " + this.searchTagList.join(",");
+      }
+      return msg;
+    },
+    tagList: function() {
+      var list = [];
+
+      for (let i = 0; i < this.tags.length; i++) {
+        list.push({ name: this.tags[i][0], value: this.tags[i][1] * 1000 });
+      }
+
+      return list;
+    },
+
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
     },
@@ -224,6 +265,12 @@ export default {
       query[type] = by;
       this.$router.push({ query });
     },
+    removeTagFromSearchList(tagName) {
+      const index = this.searchTagList.indexOf(tagName);
+      if (index < 0) return;
+      this.$delete(this.searchTagList, index);
+      this.updateSearchURL("tags", this.searchTagList);
+    },
     fetchSearchResult() {
       // if (this.changingTab) {
       //   this.changingTab = false;
@@ -234,11 +281,16 @@ export default {
 
       const searchQuery = {
         term: this.searchTerm,
+        tag: this.searchTagList.join("+"),
         sort: this.sortBy,
         order: this.orderBy,
         page: !this.changingTab ? this.page : 1,
         only: !this.changingTab ? this.activeTab : undefined
       };
+
+      //console.log(searchQuery)
+
+      this.fetchTags();
 
       return getSearchResults(searchQuery)
         .then(res => {
@@ -252,6 +304,21 @@ export default {
             });
         })
         .catch(console.error);
+    },
+    fetchTags() {
+      getTags(this.searchTerm).then(res => {
+        this.tags = res;
+      });
+    },
+    wordClickHandler(name, value, vm) {
+      this.showSnackbar = true;
+      this.snackMsgWc = 'Tag: "' + name + '" Occurence: ' + value / 1000;
+
+      if (!this.searchTagList.includes(name)) {
+        this.searchTagList.push(name);
+        this.activeTab = "articles";
+        this.updateSearchURL("tags", this.searchTagList.join("+"));
+      }
     }
   }
 };
@@ -265,7 +332,7 @@ export default {
   margin-left: 40px; */
 }
 
-.sort-container {
+.sort-options {
   position: fixed;
   /* top: 0;
   left: 0;

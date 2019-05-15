@@ -14,6 +14,7 @@
       ></search>
       <div class="buttons" style="float: right">
         <div v-if="isAuthenticated">
+          <md-button class="md-raised md-primary" :md-ripple="false" @click="$router.push({ name : 'subscriptions' })"><md-icon>list_alt</md-icon>&nbsp;&nbsp;Subscriptions</md-button>&nbsp;&nbsp;
           <md-menu md-align-trigger v-if="avatar != null">
             <md-button class="md-icon-button" md-menu-trigger>
               <md-avatar>
