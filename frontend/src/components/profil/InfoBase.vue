@@ -32,8 +32,11 @@ export default {
   },
   computed: {
     colorDomain() {
+      const [bgColor, txtColor] = getColorHashOf(this.profil.domain);
+
       return {
-        "background-color": getColorHashOf(this.profil.domain)
+        "background-color": bgColor,
+        color: txtColor
       };
     }
   }

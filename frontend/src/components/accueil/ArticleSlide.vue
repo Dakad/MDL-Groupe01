@@ -48,8 +48,10 @@ export default {
   ],
   computed: {
     colorCategory() {
+      const [bgColor, txtColor] = getColorHashOf(this.category);
       return {
-        "background-color": getColorHashOf(this.category)
+        "background-color": bgColor,
+        color: txtColor
       };
     }
   }

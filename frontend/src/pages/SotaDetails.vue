@@ -137,8 +137,11 @@ export default {
       }
     },
     subjectColor() {
+      const [bgColor, txtColor] = getColorHashOf(this.category);
+
       return {
-        "background-color": getColorHashOf(this.sota.subject)
+        "background-color": bgColor,
+        color: txtColor
       };
     },
     jsonData() {

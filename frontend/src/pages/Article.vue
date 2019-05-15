@@ -126,8 +126,11 @@ export default {
 
   computed: {
     colorCategory() {
+      const [bgColor, txtColor] = getColorHashOf(this.article.category);
+
       return {
-        "background-color": getColorHashOf(this.article.category)
+        "background-color": bgColor,
+        color: txtColor
       };
     },
     abstract() {
