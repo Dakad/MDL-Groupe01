@@ -79,7 +79,7 @@ function parseToBibtex([reference, article]) {
   if (typeof article != 'object') {
     return '';
   }
-  const { type = 'article' } = article;
+  const { type = 'inproceedings' } = article;
 
   let bibtex = `@${type.toLowerCase()}{${reference},\n`;
   // Loop over the fields of the article
