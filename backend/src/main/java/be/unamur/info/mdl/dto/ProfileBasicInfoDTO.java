@@ -31,6 +31,6 @@ public class ProfileBasicInfoDTO {
   @NotBlank(message = "The email is required")
   private String email;
 
-  @JsonProperty("avatar")
+  @JsonProperty("avatar_url")
   private String profilePictureURL;
 }

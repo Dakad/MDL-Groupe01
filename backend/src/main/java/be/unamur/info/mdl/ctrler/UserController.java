@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.ctrler;
 
+import be.unamur.info.mdl.dto.DefaultResponseDTO.DefaultResponseDTOBuilder;
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
@@ -8,6 +9,7 @@ import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.ProfileUpdateDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.exceptions.AutoFollowedException;
 import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserAlreadyFollowedException;
@@ -51,16 +53,17 @@ public class UserController {
     @ApiResponse(code = 409, message = "If the username or password is not recognized")
   })
   @PutMapping(path = "/changepwd")
-  public String changePassword(
+  public ResponseEntity changePassword(
     @ApiParam(value = "The new && old password", required = true)
     @Valid @RequestBody PasswordChangeDTO passwordChangeDTO,
     Principal authUser
   ) {
     String authUsername = authUser.getName();
-    if (userService.changePassword(authUsername, passwordChangeDTO)) {
-      return "OK";
-    }
-    return "ERROR : 409 CONFLICT";
+    userService.changePassword(authUsername, passwordChangeDTO);
+    DefaultResponseDTO response = DefaultResponseDTO.builder().done(true)
+      .message("Password changed").build();
+    return ResponseEntity.ok(response);
+
   }
 
 
