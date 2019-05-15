@@ -16,7 +16,7 @@
           <md-icon class="material-icons">home</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="profile.university" :md-options="listUniversities">
+          <md-autocomplete v-model="profile.university.abbreviation" :md-options="listUniversities">
             <label>Change your university</label>
           </md-autocomplete>
         </div>
@@ -163,7 +163,9 @@ export default {
 
     updateData() {
       this.sending = true;
-      let dataToSend = Object.assign(this.profile, {});
+      let dataToSend = Object.assign(this.profile, {
+        research_groups: this.profile.researchGroup.join(",")
+      });
       postModificationProfile(dataToSend)
         .then(_ => {
           this.wantToChange = false;
