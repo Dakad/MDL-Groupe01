@@ -284,7 +284,7 @@ export default {
 
       const searchQuery = {
         term: this.searchTerm,
-        tag: this.searchTagList.join("+"),
+        tag: this.searchTagList.join(","),
         sort: this.sortBy,
         order: this.orderBy,
         page: !this.changingTab ? this.page : 1,
