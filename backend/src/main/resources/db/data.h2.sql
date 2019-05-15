@@ -867,6 +867,7 @@ INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
 (419, 127);
 
 
+
 INSERT INTO PUBLIC.UNIVERSITY(ID, ABBREVIATION, NAME, WEBSITE_URL) VALUES
 (421, 'UNamur', STRINGDECODE('Universit\u00e9 de Namur'), 'https://www.unamur.be/'),
 (422, 'Ulg', STRINGDECODE('Universit\u00e9 de Li\u00e8ge'), 'https://www.uliege.be'),
