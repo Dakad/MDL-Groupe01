@@ -49,7 +49,7 @@
       <div class="zoneText">
         <md-field>
           <label>Change your research groups</label>
-          <md-input v-model="profile.researchGroup" md-autogrow></md-input>
+          <md-input v-model="selected['research_groups']" md-autogrow></md-input>
         </md-field>
       </div>
 
@@ -97,7 +97,9 @@ export default {
       wantToChange: false,
       sending: false,
       selected: {
-        university: null
+        university: null,
+        domain: null,
+        research_groups: null
       },
       profile: {}
     };
@@ -119,7 +121,8 @@ export default {
         "Veterinary",
         "History",
         "Engineering",
-        "Language"
+        "Language",
+        "Unknown"
       ];
     },
 
@@ -146,24 +149,29 @@ export default {
       getProfileBase().then(data => {
         console.log(data);
         this.profile = Object.assign({}, data);
-        if (this.profile.university == null) {
-          this.profile.university = "";
-        } else {
+
+        if (this.profile.university != null) {
           this.$set(
             this.selected,
             "university",
             this.profile.university.abbreviation
           );
         }
+
         if (this.profile.domain == null) {
-          this.profile.domain = "";
-        } else {
-          this.$set(this.selected, "domain", this.profile.domain);
+          this.profile.domain = "Unknown";
         }
+        this.$set(this.selected, "domain", this.profile.domain);
       });
       getProfileInfoPro().then(data => {
-        console.log(data);
-        this.profile["researchGroup"] = data.researchGroup.join(",");
+        if (data.researchGroup) {
+          this.profile["researchGroup"] = data.researchGroup || "";
+          this.$set(
+            this.selected,
+            "research_groups",
+            this.profile.researchGroup.join(",")
+          );
+        }
       });
       getProfileSocial().then(data => {
         console.log(data);
@@ -173,10 +181,11 @@ export default {
 
     updateData() {
       this.sending = true;
-      let dataToSend = Object.assign(this.profile, {
-        domain: this.selected.domain,
-        university: this.selected.university,
-        research_groups: this.profile.researchGroup.split(",")
+      let dataToSend = Object.assign(this.profile, this.selected, {
+        researchGroup: undefined,
+        research_groups: this.selected.research_groups
+          .split(",")
+          .filter(r => r.length)
       });
       // dataToSend["university"] = this.profile.university.abbreviation;
       postModificationProfile(dataToSend)

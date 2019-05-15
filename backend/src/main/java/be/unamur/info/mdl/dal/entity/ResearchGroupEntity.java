@@ -37,6 +37,7 @@ public class ResearchGroupEntity {
 
   @Column(name = "nb_members")
   @Min(1)
+  @Builder.Default
   private int nbMembers = 1;
 
   @Column(name = "url_link")
