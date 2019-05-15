@@ -1,0 +1,20 @@
+[
+  {"name":"Namur Digital Institute ",
+    "slug":"Nadi",
+    "link":"https://nadi.unamur.be/",
+    "nbMembers": 5
+  },
+
+  {"name": "Institut de Recherches Interdisciplinaires et de Développements en Intelligence Artificielle",
+    "slug":"IRIDIA",
+    "link":"http://code.ulb.ac.be/iridia.home.php",
+    "nbMembers": 3
+
+  },
+  {"name": "Big Race under house",
+    "slug":"Bruh",
+    "link": "unamur.be",
+    "nbMembers": 9
+
+  }
+  ]

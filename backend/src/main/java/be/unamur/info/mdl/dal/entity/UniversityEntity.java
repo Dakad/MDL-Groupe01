@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +24,8 @@ public class UniversityEntity {
 
   @Column(unique = true, nullable = false)
   private String name;
+  @Column(unique = true, nullable = false)
+  private String abbreviation;
 
 
   @Column(name = "website_url", unique = true, nullable = false)
@@ -42,6 +45,12 @@ public class UniversityEntity {
   private Set<UserEntity> currentMembers = new LinkedHashSet<>();
 
 
-  public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(name, websiteUrl); }
+  public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(name,abbreviation, websiteUrl); }
 
+  public static UniversityEntity of(UniversityInfoDTO dto) {
+    UniversityEntityBuilder entity = UniversityEntity.builder();
+    entity.name(dto.getName()).websiteUrl(dto.getWebsite()).abbreviation(dto.getAbbreviation());
+    return entity.build();
+
+  }
 }

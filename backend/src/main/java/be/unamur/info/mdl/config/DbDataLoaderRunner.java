@@ -1,16 +1,22 @@
 package be.unamur.info.mdl.config;
 
+import be.unamur.info.mdl.dal.entity.ResearchGroupEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
+import be.unamur.info.mdl.dal.entity.UniversityEntity;
+import be.unamur.info.mdl.dal.repository.ResearchGroupRepository;
 import be.unamur.info.mdl.dal.repository.TagRepository;
+import be.unamur.info.mdl.dal.repository.UniversityRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.ResearchGroupDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.UniversityInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.ArticleService;
-import be.unamur.info.mdl.service.StateOfTheArtService;
-import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.exceptions.RegistrationException;
 import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
+import be.unamur.info.mdl.service.ArticleService;
+import be.unamur.info.mdl.service.StateOfTheArtService;
+import be.unamur.info.mdl.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +44,11 @@ public class DbDataLoaderRunner implements CommandLineRunner {
 
   @Autowired
   private StateOfTheArtService sotaService;
+
+  @Autowired
+  private UniversityRepository universityRepository;
+  @Autowired
+  private ResearchGroupRepository researchGroupRepository;
 
 
 
@@ -100,11 +111,12 @@ public class DbDataLoaderRunner implements CommandLineRunner {
       int userIndex = Math.random() < 0.5 ? 0 : 1;
       authUser = users.get(userIndex);
       try {
+        article.setContent(article.getTitle());
         this.articleService.create(article, authUser);
         LOGGER.info(String.format("Article %s : registred !", article.getReference()));
       } catch (ArticleAlreadyExistException e) {
         LOGGER.info(String.format("Article %s : Already registred !", article.getReference()));
-      }catch (DbException e){
+      } catch (DbException e) {
         LOGGER.info(" Sota insert failed : " + article.getReference());
       }
     }
@@ -128,12 +140,63 @@ public class DbDataLoaderRunner implements CommandLineRunner {
         LOGGER.info(String.format("Sota %s : Already registred !", sota.getReference()));
       } catch (ArticleAlreadyExistException e) {
         LOGGER.info(String.format(e.getMessage()));
-      } catch (DbException e){
-        LOGGER.info(" Sota insert failed : "+sota.getTitle());
+      } catch (DbException e) {
+        LOGGER.info(" Sota insert failed : " + sota.getTitle());
       }
     }
 
     LOGGER.info("DB data loaded");
+
+    TypeReference<List<UniversityInfoDTO>> universityTypeReference = new TypeReference<List<UniversityInfoDTO>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/university.data.json");
+    List<UniversityInfoDTO> universities = mapper.readValue(inputStream, universityTypeReference);
+    LOGGER.info("Saving " + universities.size() + " universities into DB");
+
+    for (UniversityInfoDTO university : universities) {
+      this.universityRepository.save(UniversityEntity.of(university));
+    }
+
+    TypeReference<List<String>> domainTypeReference = new TypeReference<List<String>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/domain.data.json");
+    List<String> domain = mapper.readValue(inputStream, domainTypeReference);
+
+    LOGGER.info("Saving " + domain.size() + " added into DB");
+
+
+    /*for (String name : domain) {
+      try {
+        String slug = slugify.slugify(name);
+        TagEntity tag = TagEntity.builder().name(name).slug(slug).build();
+        this.tagRepository.save(tag);
+      } catch (Exception e) {
+        LOGGER.info(String.format("Category/Tag (%s) :Doublon Detected !", name));
+      }
+    }
+*/
+    TypeReference<List<ResearchGroupDTO>> researchGroupTypeReference = new TypeReference<List<ResearchGroupDTO>>() {
+    };
+    inputStream = TypeReference.class.getResourceAsStream("/json/researchGroup.data.json");
+    List<ResearchGroupDTO> groups = mapper.readValue(inputStream, researchGroupTypeReference);
+
+    LOGGER.info("Saving " + groups.size() + " articles into DB");
+
+    for (ResearchGroupDTO group : groups) {
+      try {
+
+     this.researchGroupRepository.save(ResearchGroupEntity.of(group));
+        LOGGER.info("add " + group.getName() + " from ResearchGroup DB");
+      }
+     catch(Exception e ){
+       LOGGER.info(" YOU FAILED");
+     }
+
+      }
+    }
   }
 
-}
+
+
+
+
