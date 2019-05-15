@@ -60,6 +60,7 @@ export default {
       bookmarked: {}
     };
   },
+
   methods: {
     fetchRecommanded() {
       this.loading = true;
@@ -108,7 +109,7 @@ h2 {
   margin-top: 3%;
 }
 
-#uploadOne {
+#upload-one {
   width: 100%;
   /* height: 550px; */
 }
