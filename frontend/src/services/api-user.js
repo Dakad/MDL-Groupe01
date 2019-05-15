@@ -92,3 +92,10 @@ export function getFollow(username) {
   const headers = getAuthHeaders();
   return Vue.http.get('/api/user/' + username + '/followed', headers).then(response => response.body);
 }
+
+export function getProfileSocial(username) {
+  if (username == undefined) {
+    username = getFromStorage(KEY_USERNAME);
+  }
+  return Vue.http.get('/api/user/' + username + '/profile/social').then(response => response.body);
+}
