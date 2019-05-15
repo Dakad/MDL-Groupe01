@@ -50,7 +50,6 @@ export default {
     },
     categories: {
       type: Array,
-      required: true,
       default: () => []
     },
     sotaName: {
@@ -69,31 +68,19 @@ export default {
     };
   },
   created() {
+    this.treeData = Object.assign(dataTreeBase, {
+      name: this.sotaName
+    });
     this.fetchArticlesByCategories();
   },
   computed: {
-    // treeDataFromArticles() {
-    //   const tree = Object.assign(dataTreeBase);
-    //   unduplicatedCategories(this.articles).forEach(cat => {
-    //     tree["children"].push({
-    //       name: cat,
-    //       children: [
-    //         { name: "Articles", children: [] },
-    //         { name: "Sota", children: [] }
-    //       ]
-    //     });
-    //   });
-    //   this.articles.forEach(({ title, category, reference }) => {
-    //     const overflow = title.length > 75;
-    //     const name = !overflow ? title : title.substr(0, 75) + "...";
-    //     const categoryChild = tree["children"].find(c => c["name"] == category);
-    //     categoryChild["children"][0]["children"].push({
-    //       name,
-    //       reference
-    //     });
-    //   });
-    //   return tree;
-    // }
+    categoriesFromArticles() {
+      if (this.categories) {
+        return this.categories;
+      }
+      const categorySet = new Set(this.articles.map(a => a["category"]));
+      return [...categorySet].sort();
+    }
   },
   methods: {
     onSelectNode: function(node) {
@@ -107,14 +94,10 @@ export default {
       }
     },
     fetchArticlesByCategories: function() {
-      this.treeData = Object.assign(dataTreeBase, {
-        name: this.sotaName
-      });
-
-      //const categories = unduplicatedCategories(this.articles);
+      const categories = unduplicatedCategories(this.articles);
 
       // Insert the categories as node in the tree data
-      this.categories.forEach(category => {
+      categories.forEach(category => {
         const child = {
           name: category,
           children: [
@@ -125,14 +108,14 @@ export default {
         this.treeData["children"].push(child);
       });
 
-      console.log(this.articles, this.categories);
+      console.log(this.articles, categories);
 
-      if (this.categories.length == 0) {
+      if (categories.length == 0) {
         return;
       }
 
       // Send APi request to retrieve articles matching the provided categories
-      getArticlesByCategories(this.categories)
+      getArticlesByCategories(categories)
         // After receive the API data, construct the node for the category's articles
         .then(respData => {
           categories.forEach(category => {
