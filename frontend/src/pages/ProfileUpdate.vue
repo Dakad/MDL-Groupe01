@@ -153,7 +153,7 @@ export default {
       });
       getProfileInfoPro().then(data => {
         console.log(data);
-        this.profile["researchGroup"] = data.researchGroup;
+        this.profile["researchGroup"] = data.researchGroup.join(",");
       });
       getProfileSocial().then(data => {
         console.log(data);
@@ -164,7 +164,7 @@ export default {
     updateData() {
       this.sending = true;
       let dataToSend = Object.assign(this.profile, {
-        research_groups: this.profile.researchGroup.join(",")
+        research_groups: this.profile.researchGroup.split(",")
       });
       postModificationProfile(dataToSend)
         .then(_ => {
