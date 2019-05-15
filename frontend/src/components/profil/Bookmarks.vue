@@ -21,7 +21,7 @@
     </div>
     <h5 class="sota-bookmark" v-if="sota.length!=0">Bookmarked states of the art</h5>
     <div class="sota">
-      <div v-for="item in sota" :key="item">
+      <div v-for="item in sota" :key="item.reference">
         <md-card md-with-hover>
           <md-card-header>
             <router-link :to="{ name: 'sotaDetails', params: { reference: item.reference }}">
