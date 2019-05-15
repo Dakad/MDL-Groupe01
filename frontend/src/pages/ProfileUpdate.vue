@@ -170,7 +170,15 @@ export default {
           this.sending = false;
           EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile info updated");
         })
-        .catch(({ body }) => console.log(body.message));
+        .catch(({ body }) => {
+          const { message } = body;
+          this.wantToChange = false;
+          this.sending = false;
+          EventBus.$emit(EVENT_APP_MESSAGE, {
+            type: "error",
+            message
+          });
+        });
     }
   }
 };

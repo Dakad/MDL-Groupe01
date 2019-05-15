@@ -99,6 +99,7 @@ import {
   EVENT_USER_LOGOUT,
   EVENT_USER_SIGNIN,
   EVENT_APP_MESSAGE,
+  EVENT_PROFILE_UPDATED,
   EVENT_BYE_REDIRECTION
 } from "@/services/event-bus.js";
 
@@ -134,6 +135,8 @@ export default {
     EventBus.$emit(EVENT_USER_LOGGED, this.isAuthenticated);
 
     EventBus.$on(EVENT_USER_LOGGED, this.getProfile);
+
+    EventBus.$on(EVENT_PROFILE_UPDATED, this.getProfile);
 
     // Disable the search in in the navbar on page 'accueil'
     this.searchBar.show = this.$route.name != "accueil";

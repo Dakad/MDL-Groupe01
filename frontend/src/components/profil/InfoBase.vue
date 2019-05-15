@@ -6,7 +6,7 @@
     <div class="info">
       <h3>{{profil.firstname + " "+ profil.name}}</h3>
       <p v-if="profil.university==null">No University Registered</p>
-      <p v-else>{{profil.university}}</p>
+      <p v-else>{{profil.university.name}} ({{profil.university.abbreviation}})</p>
       <p v-if="profil.domain==null">No Domain Registered</p>
       <p v-else>{{profil.domain}}</p>
       <p>{{profil.email}}</p>

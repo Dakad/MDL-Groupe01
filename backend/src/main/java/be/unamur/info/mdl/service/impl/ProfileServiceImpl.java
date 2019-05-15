@@ -141,7 +141,7 @@ public class ProfileServiceImpl implements ProfileService {
     if (!Strings.isNullOrEmpty(updateDTO.getCurrentUniversity())) {
       //find the corresponding university entity
       UniversityEntity university = universityRepository
-        .findByName(updateDTO.getCurrentUniversity());
+        .findByAbbreviation(updateDTO.getCurrentUniversity());
       //add the old current university to the list of universities
       user.getUniversities().add(user.getCurrentUniversity());
 
@@ -186,7 +186,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (ImageIO.read(link) == null) {
           throw new InvalidProfilePictureLinkException("The provided link does not redirect to an image");
         }
-        // user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
+        user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
       } catch (IOException e) {
         throw new InvalidProfilePictureLinkException(
           "The provided avatar URL is invalid (not found)");
