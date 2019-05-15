@@ -48,6 +48,11 @@ export default {
       required: true,
       default: () => []
     },
+    categories: {
+      type: Array,
+      required: true,
+      default: () => []
+    },
     sotaName: {
       type: String,
       default: () => "My SoTA"
@@ -106,10 +111,10 @@ export default {
         name: this.sotaName
       });
 
-      const categories = unduplicatedCategories(this.articles);
+      //const categories = unduplicatedCategories(this.articles);
 
       // Insert the categories as node in the tree data
-      categories(this.articles).forEach(category => {
+      this.categories.forEach(category => {
         const child = {
           name: category,
           children: [
@@ -120,10 +125,14 @@ export default {
         this.treeData["children"].push(child);
       });
 
-      console.log(this.articles, categories);
+      console.log(this.articles, this.categories);
+
+      if (this.categories.length == 0) {
+        return;
+      }
 
       // Send APi request to retrieve articles matching the provided categories
-      getArticlesByCategories(categories)
+      getArticlesByCategories(this.categories)
         // After receive the API data, construct the node for the category's articles
         .then(respData => {
           categories.forEach(category => {

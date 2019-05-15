@@ -9,7 +9,6 @@ import be.unamur.info.mdl.dto.ProfileProInfoDTO;
 import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
 import be.unamur.info.mdl.dto.ProfileUpdateDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.exceptions.AutoFollowedException;
 import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserAlreadyFollowedException;

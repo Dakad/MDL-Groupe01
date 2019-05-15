@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="app-sota-helper">
     <div class="title">
       <h2>State of the Art Helper</h2>
     </div>
 
     <div class="tabs">
-      <md-tabs md-alignment="fixed" md-active-tab="overview">
+      <md-tabs md-alignment="fixed" md-active-tab="upload-one">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
           <sota-overview :bookmarked="bookmarked"/>
         </md-tab>
@@ -19,7 +19,7 @@
           ></md-empty-state>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic v-if="!loading" :articles="recommended"/>
+          <sota-graphic v-if="!loading" :articles="recommended" :categories="articlesCategories"/>
         </md-tab>
         <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
@@ -60,7 +60,12 @@ export default {
       bookmarked: {}
     };
   },
-
+  computed: {
+    articlesCategories() {
+      const setList = new Set(this.recommended.map(a => a["category"]));
+      return [...setList].sort();
+    }
+  },
   methods: {
     fetchRecommanded() {
       this.loading = true;
