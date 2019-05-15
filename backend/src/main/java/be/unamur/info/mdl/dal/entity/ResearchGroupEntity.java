@@ -42,6 +42,7 @@ public class ResearchGroupEntity {
   private String link;
 
   @Column(name = "created_at")
+  @Builder.Default
   private LocalDate createdAt = LocalDate.now();
 
   @ManyToMany(mappedBy = "researchGroup")

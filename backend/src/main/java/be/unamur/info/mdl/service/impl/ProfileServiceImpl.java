@@ -7,6 +7,7 @@ import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -137,7 +138,7 @@ public class ProfileServiceImpl implements ProfileService {
     UserEntity user = userRepository.findByUsername(username);
 
     //UPDATING UNIVERSITIES
-    if (updateDTO.getCurrentUniversity() != null) {
+    if (!Strings.isNullOrEmpty(updateDTO.getCurrentUniversity())) {
       //find the corresponding university entity
       UniversityEntity university = universityRepository
         .findByName(updateDTO.getCurrentUniversity());
@@ -155,12 +156,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //UPDATING EMAIL ADDRESS
-    if(updateDTO.getDomain() != null){
+    if(!Strings.isNullOrEmpty(updateDTO.getEmail()){
       user.setEmail(updateDTO.getEmail());
     }
 
     //UPDATING DOMAIN
-    if(updateDTO.getDomain() != null){
+    if(!Strings.isNullOrEmpty(updateDTO.getDomain())){
       user.setDomain(ServiceUtils.getOrCreateTag(updateDTO.getDomain(), tagRepository));
     }
 
