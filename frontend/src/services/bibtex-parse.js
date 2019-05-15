@@ -79,8 +79,9 @@ function parseToBibtex([reference, article]) {
   if (typeof article != 'object') {
     return '';
   }
+  const { type = 'article' } = article;
 
-  let bibtex = `@article{${reference},\n`;
+  let bibtex = `@${type.toLowerCase()}{${reference},\n`;
   // Loop over the fields of the article
   bibtex += Object.entries(article)
     .map(([field, value]) => `${field} = ${JSON.stringify(value)}`)
