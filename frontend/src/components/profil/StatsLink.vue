@@ -45,7 +45,6 @@ export default {
         });
       } else if (this.isFollowed) {
         postUnFollow(this.username).then(x => {
-          console.log(x);
           this.isFollowed = false;
           EventBus.$emit(EVENT_APP_MESSAGE, {
             type: "info",

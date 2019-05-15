@@ -29,6 +29,7 @@ import {
   EVENT_USER_LOGOUT,
   EVENT_USER_SIGNIN,
   EVENT_BYE_REDIRECTION,
+  EVENT_PROFILE_UPDATED,
   EVENT_APP_MESSAGE
 } from "@/services/event-bus.js";
 
@@ -115,6 +116,11 @@ export default {
         EVENT_APP_MESSAGE,
         "You have been logged out, please log back in !"
       );
+    });
+
+    EventBus.$on(EVENT_PROFILE_UPDATED, payload => {
+      let msg = payload || "Update done";
+      EventBus.$emit(EVENT_APP_MESSAGE, msg);
     });
   },
   beforeDestroy() {

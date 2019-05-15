@@ -12,7 +12,7 @@
         id="search"
         class="flex"
       ></search>
-      <div class="buttons" style="float: right">
+      <div class="buttons">
         <div v-if="isAuthenticated">
           <md-button
             class="md-raised md-primary"
@@ -37,6 +37,11 @@
               <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
                 <md-icon>view_module</md-icon>
                 <span>SoTA Helper</span>
+              </md-menu-item>
+
+              <md-menu-item @click="$router.push({ name : 'updateProfile' })">
+                <md-icon>info</md-icon>
+                <span>Change my information's</span>
               </md-menu-item>
 
               <md-divider></md-divider>
