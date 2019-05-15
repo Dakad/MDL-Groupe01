@@ -182,7 +182,7 @@ public class UserEntity {
     }
 
     if (getCurrentUniversity() != null) {
-      dto.setOrganisation(getCurrentUniversity().getName());
+      dto.setOrganization(getCurrentUniversity().getName());
     }
 
     if(getDomain() != null){

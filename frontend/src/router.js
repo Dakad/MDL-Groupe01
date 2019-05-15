@@ -11,41 +11,96 @@ import Article from './pages/Article';
 import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
 import SotaHelper from './pages/SotaHelper';
-import ProfileUpdate from './pages/ProfileUpdate';
+// import ProfileUpdate from './pages/ProfileUpdate';
+import Subscriptions from './pages/Subscriptions';
 
 Vue.use(Router);
 
 const routes = [
-  { name: 'accueil', path: '/', component: Accueil },
+  {
+    name: 'accueil',
+    path: '/',
+    component: Accueil,
+    meta: {
+      title: 'Froggosaur - Home'
+    }
+  },
 
-  { name: 'about', path: '/about', component: About },
+  {
+    name: 'about',
+    path: '/about',
+    component: About,
+    meta: {
+      title: 'Froggosaur - About'
+    }
+  },
 
-  { name: 'resultat', path: '/result', component: Resultat },
+  {
+    name: 'resultat',
+    path: '/result',
+    component: Resultat,
+    meta: {
+      title: 'Froggosaur - Result'
+    }
+  },
 
-  { name: 'sotaDetails', path: '/sota/:reference', component: SotaDetails, props: true },
+  {
+    name: 'sotaDetails',
+    path: '/sota/:reference',
+    component: SotaDetails,
+    props: true,
+    meta: {
+      title: 'Froggosaur - SotaDetails'
+    }
+  },
 
-  { name: 'articleDetails', path: '/article/:reference', component: Article, props: true },
+  {
+    name: 'articleDetails',
+    path: '/article/:reference',
+    component: Article,
+    props: true,
+    meta: {
+      title: 'Froggosaur - Article details'
+    }
+  },
 
-  { name: 'myProfile', path: '/profile', component: Profil, meta: { requiresAuth: true } },
+  {
+    name: 'myProfile',
+    path: '/profile',
+    component: Profil,
+    meta: { requiresAuth: true, title: 'Froggosaur - My profile' }
+  },
 
   {
     name: 'userProfile',
     path: '/profile/:username',
     component: Profil,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: 'Froggosaur - User profile' },
     props: true
   },
 
   {
-    name: 'updateProfile',
-    path: '/manage/profile',
-    component: ProfileUpdate,
-    meta: { requiresAuth: true }
+    name: 'sotaHelper',
+    path: '/sotahelper',
+    component: SotaHelper,
+    meta: { requiresAuth: true, title: 'Froggosaur - Sota-helper' }
   },
 
-  { name: 'sotaHelper', path: '/sotahelper', component: SotaHelper, meta: { requiresAuth: true } },
+  {
+    name: 'subscriptions',
+    path: '/subscriptions',
+    component: Subscriptions,
+    meta: { requiresAuth: true, title: 'Froggosaur - Subscriptions' }
+  },
 
-  { name: '404', path: '/404', component: NotFound },
+  {
+    name: '404',
+    path: '/404',
+    component: NotFound,
+    meta: {
+      title: 'Froggosaur - Page not found'
+    }
+  },
 
   { name: '', path: '*', redirect: '/404' }
 ];

@@ -2,10 +2,8 @@ package be.unamur.info.mdl.dal.repository;
 
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import be.unamur.info.mdl.dto.TagsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

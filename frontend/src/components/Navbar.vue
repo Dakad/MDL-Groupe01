@@ -14,6 +14,13 @@
       ></search>
       <div class="buttons">
         <div v-if="isAuthenticated">
+          <md-button
+            class="md-raised md-primary"
+            :md-ripple="false"
+            @click="$router.push({ name : 'subscriptions' })"
+          >
+            <md-icon>list_alt</md-icon>&nbsp;&nbsp;Subscriptions
+          </md-button>&nbsp;&nbsp;
           <md-menu md-align-trigger v-if="avatar != null">
             <md-button class="md-icon-button" md-menu-trigger>
               <md-avatar>
@@ -148,13 +155,16 @@ export default {
       switch (component) {
         case "login":
           this.loginFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
           break;
         case "register":
         case "signin":
           this.signinFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
-
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
+          break;
+        case "search":
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
+          break;
         default:
           break;
       }
@@ -184,7 +194,7 @@ export default {
     },
     getProfile() {
       getProfileBase().then(profile => {
-        this.avatar = profile["avatar_url"];
+        this.avatar = profile.avatar;
       });
     }
   }

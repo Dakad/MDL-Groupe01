@@ -1,12 +1,12 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import be.unamur.info.mdl.service.StateOfTheArtService;
 import io.swagger.annotations.Api;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +50,6 @@ public class StateOfTheArtController {
     return ResponseEntity.status(HttpStatus.OK).body(sota);
   }
 
-
   @ApiOperation(value = "Create a new SoTA")
   @ApiResponses(value = {
     @ApiResponse(code = 201, message = "Successfully created"),
@@ -59,12 +59,18 @@ public class StateOfTheArtController {
   })
   @PostMapping({"", "/"})
   public ResponseEntity create(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser) {
-    String username = authUser.getName();
-    UserDTO currentUser = new UserDTO();
-    currentUser.setUsername(username);
+    try {
+      String username = authUser.getName();
+      UserDTO currentUser = new UserDTO();
+      currentUser.setUsername(username);
 
-    StateOfTheArtDTO sota = sotaService.create(data, currentUser);
-    return ResponseEntity.status(HttpStatus.CREATED).body(sota);
+      StateOfTheArtDTO sota = sotaService.create(data, currentUser);
+      return ResponseEntity.status(HttpStatus.OK).body(sota);
+    } catch (SotaAlreadyExistException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    } catch (ArticleNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
   }
 
 
@@ -121,8 +127,24 @@ public class StateOfTheArtController {
     String msg = "SoTA " + (!done ? "not" : "") + " removed";
     return ResponseEntity.status(HttpStatus.OK)
       .body(DefaultResponseDTO.builder().done(done).message(msg).build());
+
   }
 
+  @PutMapping({"/{reference}"})
+  public ResponseEntity put(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,
+    @PathVariable String reference) {
+    sotaService.put(reference, authUser.getName(), data);
+    return ResponseEntity.status(HttpStatus.OK).body(data);
+  }
+
+  @ApiOperation(value = "Retrieve a list of all created SoTA grouped by it reference")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of grouped SoTA"),
+  })
+  @GetMapping(path = "/list")
+  public ResponseEntity getAll() {
+    return ResponseEntity.ok(sotaService.getAll());
+  }
 }
 
 

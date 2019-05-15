@@ -1,9 +1,15 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
-import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.dto.DefaultResponseDTO.DefaultResponseDTOBuilder;
+import be.unamur.info.mdl.dto.BookmarkDTO;
+import be.unamur.info.mdl.dto.DefaultResponseDTO;
+import be.unamur.info.mdl.dto.PasswordChangeDTO;
+import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
+import be.unamur.info.mdl.dto.ProfileProInfoDTO;
+import be.unamur.info.mdl.dto.ProfileSocialInfoDTO;
+import be.unamur.info.mdl.dto.ProfileUpdateDTO;
+import be.unamur.info.mdl.dto.UserDTO;
+import be.unamur.info.mdl.dto.*;
 import be.unamur.info.mdl.exceptions.AutoFollowedException;
 import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.exceptions.UserAlreadyFollowedException;
@@ -130,12 +136,9 @@ public class UserController {
       throw new AutoFollowedException();
     }
     boolean done = userService.follow(username, user);
-    if (!done) {
-      throw new UserAlreadyFollowedException("User already followed");
-    }
+    String msg = "User " + (done ? "now" : "already") + "followed";
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "User now followed");
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
   }
 
   @PostMapping(path = "/{username}/unfollow")
@@ -149,8 +152,8 @@ public class UserController {
       throw new UserAlreadyFollowedException("User already not followed");
     }
 
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, "User now unfollowed");
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(new DefaultResponseDTO(done, "User now unfollowed"));
   }
 
 
@@ -160,14 +163,14 @@ public class UserController {
       throw new AutoFollowedException();
     }
 
+    boolean done = userService.isFollowed(username, authUser.getName());
     String msg;
-    if (userService.isFollowed(username, authUser.getName())) {
+    if (done) {
       msg = "You follow " + username;
     } else {
       msg = "You do not follow " + username;
     }
-    String responsesMsg = ApiControllerUtils.formatToJSON(KEY_MESSAGE, msg);
-    return ResponseEntity.status(HttpStatus.OK).body(responsesMsg);
+    return ResponseEntity.status(HttpStatus.OK).body(new DefaultResponseDTO(done, msg));
   }
 
 
@@ -179,11 +182,13 @@ public class UserController {
   }
 
   @PostMapping(path = "/profile/update")
-  public ResponseEntity updateProfile(@Valid @RequestBody ProfileUpdateDTO updateDTO, Principal authUser) {
-    boolean isDone = profileService.update(updateDTO, authUser.getName());
-    DefaultResponseDTO response = DefaultResponseDTO.builder()
-      .done(isDone).message("Profile updated").build();
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+  public ResponseEntity updateProfile(@RequestBody ProfileUpdateDTO updateDTO, Principal authUser) {
+    try {
+      profileService.update(updateDTO, authUser.getName());
+      return ResponseEntity.status(HttpStatus.OK).body("Profile updated");
+    } catch (InvalidProfilePictureLinkException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+    }
   }
 }
 
