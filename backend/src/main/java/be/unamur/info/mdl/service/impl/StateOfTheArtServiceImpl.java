@@ -14,6 +14,7 @@ import be.unamur.info.mdl.exceptions.UserNotFoundException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -250,6 +251,11 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     sotaRepository.save(sota.get());
     bookmarkRepository.delete(bookmark.get());
     return true;
+  }
+
+  @Override
+  public Map<String,String> getAll(){
+    return sotaRepository.findAll().stream().collect(Collectors.toMap(StateOfTheArtEntity::getReference,StateOfTheArtEntity::getTitle));
   }
 }
 

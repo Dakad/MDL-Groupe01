@@ -3,12 +3,22 @@ package be.unamur.info.mdl.service.impl;
 import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.AuthorEntity;
 import be.unamur.info.mdl.dal.entity.StateOfTheArtEntity;
+import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
-import be.unamur.info.mdl.dal.repository.*;
-import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.dal.repository.ArticleRepository;
+import be.unamur.info.mdl.dal.repository.AuthorRepository;
+import be.unamur.info.mdl.dal.repository.StateOfTheArtRepository;
+import be.unamur.info.mdl.dal.repository.TagRepository;
+import be.unamur.info.mdl.dal.repository.UserRepository;
+import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.AuthorDTO;
+import be.unamur.info.mdl.dto.SearchQueryDTO;
+import be.unamur.info.mdl.dto.SearchResultDTO;
 import be.unamur.info.mdl.dto.SearchResultDTO.MetaField;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultDTOBuilder;
 import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
+import be.unamur.info.mdl.dto.StateOfTheArtDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
 import java.util.EnumMap;
 import java.util.List;
@@ -39,8 +49,8 @@ public class SearchServiceImpl implements SearchService {
 
   @Autowired
   public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-                           StateOfTheArtRepository stateOfTheArtRepository,
-                           AuthorRepository authorRepository, TagRepository tagRepository) {
+    StateOfTheArtRepository stateOfTheArtRepository,
+    AuthorRepository authorRepository, TagRepository tagRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
@@ -68,7 +78,8 @@ public class SearchServiceImpl implements SearchService {
 
     // USERS
     if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
-      .equalsIgnoreCase("USERS")) {
+      .equalsIgnoreCase("USERS") || searchQuery.getOnly()
+      .equalsIgnoreCase("AUTHORS")) {
       pageSort = this.getSortForUser(searchQuery.getSort(), searchQuery.getOrder());
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
       searchForUsers(searchResult, searchTerm, resultMeta, pageable);
@@ -76,7 +87,8 @@ public class SearchServiceImpl implements SearchService {
 
     // AUTHORS
     if (searchQuery.getOnly().equalsIgnoreCase("ALL") || searchQuery.getOnly()
-      .equalsIgnoreCase("AUTHORS")) {
+      .equalsIgnoreCase("AUTHORS") || searchQuery.getOnly()
+      .equalsIgnoreCase("USERS")) {
       pageSort = this.getSortForAuthor(sort, order);
       pageable = PageRequest.of(page, PAGE_SIZE_MAX, pageSort);
       searchForAuthors(searchResult, searchTerm, resultMeta, pageable);
@@ -133,12 +145,12 @@ public class SearchServiceImpl implements SearchService {
   private void searchForArticles(SearchResultDTOBuilder searchResult, String searchTerm,
     SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
     Page<ArticleEntity> articles;
-    if(tags.isEmpty()){
+    if (tags.isEmpty()) {
       articles = articleRepository
-      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);}
-    else{
+        .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
+    } else {
       articles = articleRepository
-        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm,tags,pageable);
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(searchTerm,tags,pageable);
     }
 
     List<ArticleDTO> articleList = articles.stream().map(a -> a.toDTO())
@@ -152,12 +164,12 @@ public class SearchServiceImpl implements SearchService {
   private void searchForSotas(SearchResultDTOBuilder searchResult, String searchTerm,
     SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
     Page<StateOfTheArtEntity> sotas;
-    if(tags.isEmpty()){
-     sotas = stateOfTheArtRepository
-      .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);}
-    else {
+    if (tags.isEmpty()) {
       sotas = stateOfTheArtRepository
-        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm, tags, pageable);
+        .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
+    } else {
+      sotas = stateOfTheArtRepository
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(searchTerm, tags, pageable);
     }
 
     List<StateOfTheArtDTO> sotaList = sotas.get().map(s -> s.toDTO())
@@ -177,6 +189,9 @@ public class SearchServiceImpl implements SearchService {
         return Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
       }
     }
+    if(sort.equalsIgnoreCase("date")){
+      return Sort.by("lastname","firstname").ascending();
+    }
     return this.getSort(sort, order);
   }
 
@@ -189,9 +204,11 @@ public class SearchServiceImpl implements SearchService {
         } else {
           return Sort.by("name").ascending();
         }
+      case "date" : return Sort.by("name").ascending();
       default:
         return this.getSort(sort, order);
     }
+
   }
 
   private Sort getSortForArticle(final String sort, final String order) {
@@ -204,7 +221,9 @@ public class SearchServiceImpl implements SearchService {
 
   private Sort getSortForSota(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
-      return this.getSort(SORT_BY_TITLE, order);
+      return this.getSort(SORT_BY_TITLE, order);}
+    else if(sort.equalsIgnoreCase("date")){
+      return Sort.by("createdAt");
     } else {
       return this.getSort(sort, order);
     }
@@ -224,7 +243,7 @@ public class SearchServiceImpl implements SearchService {
         pageSort = Sort.by(SORT_BY_TITLE);
         break;
       case "date":
-        pageSort = Sort.by("createdAt");
+        pageSort = Sort.by("publicationYear");
         break;
       case "name":
         break;
@@ -266,7 +285,7 @@ public class SearchServiceImpl implements SearchService {
     meta.put(MetaField.TOTAL_PAGE_SIZE, totalSize);
 
     Optional<Order> order = pageSort.get().findFirst();
-    if(order.isPresent()){
+    if (order.isPresent()) {
       meta.put(MetaField.ORDER_BY, order.get().getProperty());
       meta.put(MetaField.SORT_BY, order.get().getDirection().name());
     }
@@ -277,5 +296,16 @@ public class SearchServiceImpl implements SearchService {
   @Override
   public List<Object[]> getTags(String keyword) {
     return tagRepository.findByTerm(keyword);
+  }
+
+  @Override
+  public Map<String, String> getAllTags() {
+    return tagRepository.findAll().stream()
+      .collect(Collectors.toMap(TagEntity::getSlug, TagEntity::getName));
+  }
+
+  @Override
+  public List<String> getAllAuthors() {
+    return authorRepository.findAll().stream().map(a -> a.getName()).collect(Collectors.toList());
   }
 }

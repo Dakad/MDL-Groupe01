@@ -1,7 +1,5 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
@@ -118,29 +116,30 @@ public class StateOfTheArtController {
   }
 
   @DeleteMapping({"/{reference}"})
-  public ResponseEntity delete (@PathVariable String reference, Principal authUser)
+  public ResponseEntity delete(@PathVariable String reference, Principal authUser)
     throws UserNotFoundException {
-    try {
-      sotaService.delete(reference, authUser.getName());
-      return ResponseEntity.noContent().build();
 
-    } catch (SotaNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }catch (UserNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
+    boolean done = sotaService.removeBookmark(reference, authUser.getName());
+    String msg = "SoTA " + (!done ? "not" : "") + " removed";
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(DefaultResponseDTO.builder().done(done).message(msg).build());
   }
 
+  
   @PutMapping({"/{reference}"})
-  public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
-  {
-    try {
-      sotaService.put(reference, authUser.getName(),data);
-      return ResponseEntity.status(HttpStatus.OK).body(data);
-    } catch (UserNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
+  public ResponseEntity put(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,
+    @PathVariable String reference) {
+    sotaService.put(reference, authUser.getName(), data);
+    return ResponseEntity.status(HttpStatus.OK).body(data);
+  }
 
+  @ApiOperation(value = "Retrieve a list of all created SoTA grouped by it reference")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of grouped SoTA"),
+  })
+  @GetMapping(path = "/list")
+  public ResponseEntity getAll() {
+    return ResponseEntity.ok(sotaService.getAll());
   }
 }
 

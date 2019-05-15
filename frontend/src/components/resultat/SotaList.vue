@@ -49,72 +49,72 @@
 </template>
 
 <script>
-import { Pagination } from "@/components";
-import { isLogged } from "@/services/api-user";
+  import { Pagination } from "@/components";
+  import { isLogged } from "@/services/api-user";
 
-export default {
-  name: "SotaList",
-  components: {
-    Pagination
-  },
-  props: {
-    list: {
-      type: Array,
-      default: _ => []
+  export default {
+    name: "SotaList",
+    components: {
+      Pagination
     },
-    meta: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  data() {
-    return {
-      currentPage: 1,
-      logged: false
-    };
-  },
-  watch: {
-    currentPage: function() {
-      this.$emit("pagination", this.currentPage);
-    }
-  },
-  created() {
-    this.logged = isLogged();
-  },
-  computed: {
-    sotas() {
-      return this.list;
+    props: {
+      list: {
+        type: Array,
+        default: _ => []
+      },
+      meta: {
+        type: Object,
+        default: () => {}
+      }
     },
-    page() {
-      return this.meta || {};
+    data() {
+      return {
+        currentPage: 1,
+        logged: false
+      };
+    },
+    watch: {
+      currentPage: function() {
+        this.$emit("pagination", this.currentPage);
+      }
+    },
+    created() {
+      this.logged = isLogged();
+    },
+    computed: {
+      sotas() {
+        return this.list;
+      },
+      page() {
+        return this.meta || {};
+      }
     }
-  }
-};
+  };
 </script>
 
 <style scoped>
-.md-list {
-  margin: 10px;
-  display: inline-block;
-}
+  .md-list {
+    margin: 10px;
+    display: inline-block;
+  }
 
-.author {
-  float: left;
-  margin-left: 5px;
-  margin-right: 30px;
-}
-.keyword {
-  float: left;
-  margin-left: 5px;
-  margin-right: 30px;
-}
-.date {
-  float: left;
-  margin-left: 5px;
-  margin-right: 30px;
-}
+  .author {
+    float: left;
+    margin-left: 5px;
+    margin-right: 30px;
+  }
+  .keyword {
+    float: left;
+    margin-left: 5px;
+    margin-right: 30px;
+  }
+  .date {
+    float: left;
+    margin-left: 5px;
+    margin-right: 30px;
+  }
 
-#sota-pagination {
-  margin: 20px;
-}
+  #sota-pagination {
+    margin: 20px;
+  }
 </style>
