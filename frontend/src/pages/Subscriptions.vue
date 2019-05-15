@@ -12,6 +12,9 @@ import ArticleList from "@/components/resultat/ArticleList"
 import { getSubscriptions } from '../services/api-article';
 export default {
     name: 'Subscriptions',
+    components: {
+        ArticleList
+    },
 
     data() {
         return {
@@ -39,9 +42,9 @@ h2{
     margin-left : 40px;
 }
 
-article-list{
-    margin-top : 25px;
-    margin-left : 40px;
-    margin-right: 40px;
+.articles{
+    margin-top : 35px;
+    margin-left : 5%;
+    margin-right: 15%;
 }
 </style>
