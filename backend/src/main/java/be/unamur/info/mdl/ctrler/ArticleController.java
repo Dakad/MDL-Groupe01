@@ -1,6 +1,10 @@
 package be.unamur.info.mdl.ctrler;
 
-import be.unamur.info.mdl.dto.*;
+import be.unamur.info.mdl.dto.ArticleDTO;
+import be.unamur.info.mdl.dto.BibtexType;
+import be.unamur.info.mdl.dto.BookmarkDTO;
+import be.unamur.info.mdl.dto.DefaultResponseDTO;
+import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.service.ArticleService;
 import io.swagger.annotations.Api;
@@ -123,7 +127,11 @@ public class ArticleController {
 
   }
 
-
+  @ApiOperation(value = "Check if an articles have been boomarked by the auth user")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Present or not in yoour bookmarks"),
+    @ApiResponse(code = 404, message = "The provided reference doesn't exist"),
+  })
   @GetMapping(path = "/{reference}/bookmarked")
   public ResponseEntity isBookmarked(@PathVariable String reference, Principal authUser) {
     boolean done = articleService.isBookmarked(reference, authUser.getName());
@@ -142,7 +150,10 @@ public class ArticleController {
       .body(articleService.getSubscriptions(authUser.getName(), page));
   }
 
-
+  @ApiOperation(value = "Retrieve a list for recommended articles")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Successfully removed"),
+  })
   @GetMapping(path = "/recommended")
   public ResponseEntity recommandations(
     @Min(value = 1, message = "Page number cannot be less than 1")
@@ -154,6 +165,21 @@ public class ArticleController {
     return ResponseEntity.status(HttpStatus.OK).body(articleService.getRecommended(username, page));
   }
 
+
+  @ApiOperation(value = "Retrieve a list of all created articles grouped by it reference")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of grouped articles"),
+  })
+  @GetMapping(path = "/list")
+  public ResponseEntity getAll(){
+    return ResponseEntity.ok(articleService.getAll());
+  }
+
+
+  @ApiOperation(value = "Retrieve list of accepted types for an article")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of types"),
+  })
   @GetMapping(path = "/types")
   public ResponseEntity getBibTexTypes(){
     return ResponseEntity.status(HttpStatus.OK).body(BibtexType.values());
