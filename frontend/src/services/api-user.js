@@ -101,10 +101,3 @@ export function getProfileSocial(username) {
   }
   return Vue.http.get('/api/user/' + username + '/profile/social').then(response => response.body);
 }
-
-export function getProfileSocial(username) {
-  if (username == undefined) {
-    username = getFromStorage(KEY_USERNAME);
-  }
-  return Vue.http.get('/api/user/' + username + '/profile/social').then(response => response.body);
-}
