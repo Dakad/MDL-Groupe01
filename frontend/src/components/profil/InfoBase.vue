@@ -5,22 +5,38 @@
     </div>
     <div class="info">
       <h3>{{profil.firstname + " "+ profil.name}}</h3>
+      <h5>{{profil.email}}</h5>
       <p v-if="profil.university==null">No University Registered</p>
       <p v-else>{{profil.university.name}} ({{profil.university.abbreviation}})</p>
       <p v-if="profil.domain==null">No Domain Registered</p>
-      <p v-else>{{profil.domain}}</p>
-      <p>{{profil.email}}</p>
+      <md-chip
+        v-else
+        class="chip-c"
+        :style="colorCategory"
+        title="Activity domain : "
+      >{{profil.domain}}</md-chip>
+      <p></p>
     </div>
   </div>
 </template>
 
 <script>
+import ColorHash from "color-hash";
+const colorHash = new ColorHash();
+
 export default {
   name: "InfoBase",
   props: ["profil"],
 
   mounted() {
     this.$nextTick(function() {});
+  },
+  computed: {
+    colorDomain() {
+      return {
+        "background-color": colorHash.hex(this.article.category)
+      };
+    }
   }
 };
 </script>

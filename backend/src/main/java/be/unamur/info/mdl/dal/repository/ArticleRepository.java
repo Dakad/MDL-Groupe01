@@ -42,6 +42,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   Stream<ArticleEntity> findByReferenceNotIn(List<String> references, Pageable p);
 
+  @Query("select a from ArticleEntity a, TagEntity t, TagEntity c where a.title like ?1 and t in a.keywords and c = a.category and (t.name in ?2 or c.name in ?2)")
   Stream<ArticleEntity> findByCategoryAndReferenceNotIn(TagEntity domain, List<String> references, Pageable pageable);
 
   Stream<ArticleEntity> findByCategoryLikeOrCategoryInAndReferenceNotIn(TagEntity domain, Set<TagEntity> interests, List<String> references, Pageable pageable);

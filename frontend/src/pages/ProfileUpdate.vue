@@ -55,7 +55,7 @@
 
       <md-field>
         <label>Change your bio</label>
-        <md-textarea v-model="profile.bio"></md-textarea>
+        <md-textarea v-model="profile.bio" md-counter="250"></md-textarea>
       </md-field>
     </div>
 
