@@ -12,8 +12,15 @@
         id="search"
         class="flex"
       ></search>
-      <div class="buttons" style="float: right">
+      <div class="buttons">
         <div v-if="isAuthenticated">
+          <md-button
+            class="md-raised md-primary"
+            :md-ripple="false"
+            @click="$router.push({ name : 'subscriptions' })"
+          >
+            <md-icon>list_alt</md-icon>&nbsp;&nbsp;Subscriptions
+          </md-button>&nbsp;&nbsp;
           <md-menu md-align-trigger v-if="avatar != null">
             <md-button class="md-icon-button" md-menu-trigger>
               <md-avatar>
@@ -32,6 +39,11 @@
                 <span>SoTA Helper</span>
               </md-menu-item>
 
+              <md-menu-item @click="$router.push({ name : 'updateProfile' })">
+                <md-icon>info</md-icon>
+                <span>Change my information's</span>
+              </md-menu-item>
+
               <md-divider></md-divider>
 
               <md-menu-item @click="logout()">
@@ -43,9 +55,17 @@
         </div>
         <div v-else>
           <!--Login button open the login dialog-->
-          <b-button size="lg" variant="outline-info" @click="showLoginDialog = true; showRegisterDialog = false">LOGIN</b-button>&nbsp; &nbsp;
+          <b-button
+            size="lg"
+            variant="outline-info"
+            @click="showLoginDialog = true; showRegisterDialog = false"
+          >LOGIN</b-button>&nbsp; &nbsp;
           <!--Register button refer to the register page (RegisterVue)-->
-          <b-button size="lg" variant="outline-primary" @click="showRegisterDialog = true; showLoginDialog = false;">SIGN IN</b-button>
+          <b-button
+            size="lg"
+            variant="outline-primary"
+            @click="showRegisterDialog = true; showLoginDialog = false;"
+          >SIGN IN</b-button>
         </div>
       </div>
     </md-toolbar>
@@ -135,13 +155,16 @@ export default {
       switch (component) {
         case "login":
           this.loginFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
           break;
         case "register":
         case "signin":
           this.signinFailed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, error);
-
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
+          break;
+        case "search":
+          EventBus.$emit(EVENT_APP_MESSAGE, { type: "error", msg: error });
+          break;
         default:
           break;
       }
@@ -171,7 +194,7 @@ export default {
     },
     getProfile() {
       getProfileBase().then(profile => {
-        this.avatar = profile.avatar;
+        this.avatar = profile.avatar_url;
       });
     }
   }

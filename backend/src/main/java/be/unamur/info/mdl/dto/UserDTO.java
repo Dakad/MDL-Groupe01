@@ -27,6 +27,6 @@ public class UserDTO extends CredentialDTO {
 
   private String domain = "Unknown";
 
-  private String organisation = "Not defined";
+  private String organization = "Not defined";
 
 }

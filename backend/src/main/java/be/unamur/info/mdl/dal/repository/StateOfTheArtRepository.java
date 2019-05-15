@@ -15,7 +15,7 @@ public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEnti
   Page<StateOfTheArtEntity> findDistinctByTitleContainingIgnoreCase(String title,
     Pageable pageable);
 
-  Page<StateOfTheArtEntity> findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(
+  Page<StateOfTheArtEntity> findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(
     String title, List<String> keywords, Pageable pageable);
 
   Stream<StateOfTheArtEntity> findDistinctByCreator(UserEntity user, Pageable pageable);
@@ -23,4 +23,5 @@ public interface StateOfTheArtRepository extends JpaRepository<StateOfTheArtEnti
   Optional<StateOfTheArtEntity> findByReference(String reference);
 
   boolean existsByReference(String reference);
+
 }

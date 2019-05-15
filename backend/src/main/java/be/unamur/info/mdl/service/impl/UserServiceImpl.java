@@ -2,6 +2,8 @@ package be.unamur.info.mdl.service.impl;
 
 import be.unamur.info.mdl.config.security.SecurityUtils;
 import be.unamur.info.mdl.dal.entity.UserEntity;
+import be.unamur.info.mdl.dal.entity.UserProfileEntity;
+import be.unamur.info.mdl.dal.repository.UserProfileRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
@@ -28,13 +30,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
   private UserRepository userRepository;
-
+  private UserProfileRepository userProfileRepository;
   private PasswordEncoder passwordEncoder;
 
 
   @Autowired
-  public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+  public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, UserProfileRepository  userProfileRepository) {
     this.userRepository = userRepository;
+    this.userProfileRepository = userProfileRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -55,9 +58,12 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
-    // TODO At the same time, init it profile
+    UserEntity newUser = this.userRepository.save(UserEntity.of(userData));
 
-    this.userRepository.save(UserEntity.of(userData));
+    UserProfileEntity profile = new UserProfileEntity();
+    profile.setUser(newUser);
+
+    this.userProfileRepository.save(profile);
 
     return true;
   }

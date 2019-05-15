@@ -7,9 +7,7 @@ import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 
-import com.github.slugify.Slugify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,9 +36,9 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Autowired
   public ProfileServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-                            StateOfTheArtRepository stateOfTheArtRepository, BookmarkRepository bookmarkRepository,
-                            UniversityRepository universityRepository, UserProfileRepository userProfileRepository,
-                            TagRepository tagRepository, ResearchGroupRepository researchGroupRepository) {
+    StateOfTheArtRepository stateOfTheArtRepository, BookmarkRepository bookmarkRepository,
+    UniversityRepository universityRepository, UserProfileRepository userProfileRepository,
+    TagRepository tagRepository, ResearchGroupRepository researchGroupRepository) {
     this.userRepository = userRepository;
     this.articleRepository = articleRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
@@ -70,15 +67,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     PageRequest pagination = PageRequest.of(0, 3, Sort.by(Sort.Order.desc("createdAt")));
     UserEntity user = userRepository.findByUsername(username);
-    int bound = 20;
-
-    if (user.getUniversities().size() < bound) {
-      bound = user.getUniversities().size();
-    }
 
     List<UniversityInfoDTO> universities = new ArrayList<>();
-    user.getUniversities().subList(0, bound)
-      .forEach(u -> universities.add(u.toInfoDTO()));
+    user.getUniversities().forEach(u -> universities.add(u.toInfoDTO()));
 
     Map<String, String> articles = articleRepository
       .findDistinctByCreator(user, pagination)
@@ -88,7 +79,8 @@ public class ProfileServiceImpl implements ProfileService {
       .findDistinctByCreator(user, pagination)
       .collect(Collectors.toMap(StateOfTheArtEntity::getId, StateOfTheArtEntity::getTitle));
 
-    List<String> researchGroup = user.getResearchGroup().stream().map(e->e.getName()).collect(Collectors.toList());
+    List<String> researchGroup = user.getResearchGroup().stream().map(e -> e.getName())
+      .collect(Collectors.toList());
 
     return new ProfileProInfoDTO(
       researchGroup,
@@ -140,64 +132,73 @@ public class ProfileServiceImpl implements ProfileService {
   }
 
   @Override
-  public boolean update(ProfileUpdateDTO updateDTO, String username) throws InvalidProfilePictureLinkException {
+  public boolean update(ProfileUpdateDTO updateDTO, String username)
+    throws InvalidProfilePictureLinkException {
     UserEntity user = userRepository.findByUsername(username);
 
     //UPDATING UNIVERSITIES
     if (updateDTO.getCurrentUniversity() != null) {
       //find the corresponding university entity
-      UniversityEntity university = universityRepository.findByName(updateDTO.getCurrentUniversity());
+      UniversityEntity university = universityRepository
+        .findByName(updateDTO.getCurrentUniversity());
       //add the old current university to the list of universities
       user.getUniversities().add(user.getCurrentUniversity());
-      //clean the duplicates in the list
-      user.setUniversities(user.getUniversities().stream().distinct().collect(Collectors.toList()));
-      //remove the new current university from the list
-      user.getUniversities().remove(university);
-      //set the current university to the new one
+
       user.setCurrentUniversity(university);
     }
 
     //UPDATING RESEARCH GROUPS
-    Set<ResearchGroupEntity> researchGroups = updateDTO.getResearchGroups().stream().
-      map(e -> ServiceUtils.getOrCreateRG(e, researchGroupRepository)).collect(Collectors.toSet());
-    user.setResearchGroup(researchGroups);
+    if(updateDTO.getResearchGroups() != null && !updateDTO.getResearchGroups().isEmpty()){
+      Set<ResearchGroupEntity> researchGroups = updateDTO.getResearchGroups().stream().
+        map(e -> ServiceUtils.getOrCreateResearchGroup(e, researchGroupRepository)).collect(Collectors.toSet());
+      user.setResearchGroup(researchGroups);
+    }
 
     //UPDATING EMAIL ADDRESS
-    user.setEmail(updateDTO.getEmail());
+    if(updateDTO.getDomain() != null){
+      user.setEmail(updateDTO.getEmail());
+    }
 
     //UPDATING DOMAIN
-    user.setDomain(ServiceUtils.getOrCreateTag(updateDTO.getDomain(),tagRepository));
+    if(updateDTO.getDomain() != null){
+      user.setDomain(ServiceUtils.getOrCreateTag(updateDTO.getDomain(), tagRepository));
+    }
+
 
     //UPDATING INTERESTS
     //need to transform a list of strings into a set of tags
-    Stream<String> interests = updateDTO.getInterests().stream();
-    Set<TagEntity> tags = interests.map(e -> ServiceUtils.getOrCreateTag(e,tagRepository)).collect(Collectors.toSet());
-    user.setTags(tags);
+    if(updateDTO.getInterests() != null){
+      Stream<String> interests = updateDTO.getInterests().stream();
+      Set<TagEntity> tags = interests.map(e -> ServiceUtils.getOrCreateTag(e, tagRepository))
+        .collect(Collectors.toSet());
+      user.setTags(tags);
+    }
 
     //UPDATING PROFILE PICTURE
-    //first need to check if the link is accessible
-    try{
-      URL link = new URL(updateDTO.getProfilePicURL());
-      link.openConnection();
-      //then we check if the link is an image
-      Image img = ImageIO.read(link);
-      if(img == null) throw new InvalidProfilePictureLinkException("[INVALID URL] : Link does not direct to an image");
-    }catch(MalformedURLException e){
-      throw new InvalidProfilePictureLinkException("[INVALID URL] : " + e.getMessage());
-    }catch(IOException e){
-      throw new InvalidProfilePictureLinkException("[CONNECTION FAILURE] : "+ e.getMessage());
+    if (updateDTO.getProfilePictureURL() != null) {
+      try {
+        // Check if the link is accessible
+        URL link = new URL(updateDTO.getProfilePictureURL());
+        link.openConnection();
+
+        // Check if the link is an image
+        if (ImageIO.read(link) == null) {
+          throw new InvalidProfilePictureLinkException("The provided link does not redirect to an image");
+        }
+        // user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
+      } catch (IOException e) {
+        throw new InvalidProfilePictureLinkException(
+          "The provided avatar URL is invalid (not found)");
+      }
     }
-    //and if everything is fine, we set the user's profile picture url to the new one
-    user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePicURL());
 
-    //UPDATING USER BIO
-    user.getUserProfile().setDescription(updateDTO.getDescription());
+    if (updateDTO.getDescription() != null) {
+      user.getUserProfile().setDescription(updateDTO.getDescription());
+    }
 
-    //SAVING ENTITIES
     userRepository.save(user);
     userProfileRepository.save(user.getUserProfile());
 
     return true;
-
   }
 }

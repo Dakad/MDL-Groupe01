@@ -116,7 +116,8 @@ public class UserEntity {
   @JoinTable(name = "user_university",
     joinColumns = {@JoinColumn(name = "user_id")},
     inverseJoinColumns = {@JoinColumn(name = "university_id")})
-  private List<UniversityEntity> universities;
+  @Builder.Default
+  private Set<UniversityEntity> universities = new LinkedHashSet<>();
 
 
 
@@ -182,7 +183,7 @@ public class UserEntity {
     }
 
     if (getCurrentUniversity() != null) {
-      dto.setOrganisation(getCurrentUniversity().getName());
+      dto.setOrganization(getCurrentUniversity().getName());
     }
 
     if(getDomain() != null){
