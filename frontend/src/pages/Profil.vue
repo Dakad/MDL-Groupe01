@@ -36,7 +36,7 @@
           ></md-empty-state>-->
         </md-tab>
         <md-tab id="Social" md-label="Social">
-          <Social/>
+          <Social :bio="infoSocial"/>
         </md-tab>
         <md-tab id="Bookmarks" md-label="Bookmarks">
           <h5>Bookmarked article</h5>
@@ -63,7 +63,8 @@ import {
   getProfileBase,
   getBookmark,
   getProfileInfoPro,
-  getProfileSota
+  getProfileSota,
+  getProfileSocial
 } from "../services/api-user";
 import { EventBus, EVENT_USER_LOGOUT, EVENT_BYE_REDIRECTION } from '@/services/event-bus.js';
 
@@ -78,13 +79,15 @@ export default {
       reference:null,
       infoPro: {},
       username: {},
-      loading: false
+      loading: false,
+      infoSocial:{}
     };
   },
   created() {
     this.username = this.$route.params["username"];
     this.fetchProfile();
-    this.fetchBookmark()
+    this.fetchBookmark();
+    this.fetchSocial();
     //this.fetchSota();
     this.fetchDataPro();
         EventBus.$on(EVENT_USER_LOGOUT, _ => {
@@ -111,6 +114,12 @@ export default {
     fetchDataPro() {
       getProfileInfoPro(this.username).then(data => {
         this.infoPro = data;
+      });
+    },
+
+    fetchSocial(){
+      getProfileSocial(this.username).then(data => {
+        this.infoSocial = data;
       });
     }
   }
