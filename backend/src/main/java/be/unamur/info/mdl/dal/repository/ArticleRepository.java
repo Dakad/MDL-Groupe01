@@ -21,15 +21,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
-  Page<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
+  List<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-  @Query(value = "select distinct a.* from article a, tag t, article_keywords ak where upper(a.title) like upper('%:title%') " +
-    "and ((a.category_id = t.id and t.name in :keys) " +
-    "or (select count(distinct name) from tag t where a.id = ak.article_id and ak.tag_id = t.id and t.name in :keys) > 0) " +
+  @Query(value = "select distinct a.* from article a, tag t, article_keywords ak where a.title ilike %?1% " +
+    "and ((a.category_id = t.id and t.name in (?2)) " +
+    "or (select count(distinct name) from tag t where a.id = ak.article_id and ak.tag_id = t.id and t.name in (?2)) > 0) " +
     "group by a.id"
     , nativeQuery = true)
-  Page<ArticleEntity> findSearchTagsResults(
-    @Param("title") String title, @Param("keys") List<String> keywords, Pageable pageable);
+  List<ArticleEntity> findSearchTagsResults(
+    String title, List<String> keywords, Pageable pageable);
 
   ArticleEntity findByTitle(String title);
 

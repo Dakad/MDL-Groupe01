@@ -29,10 +29,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
@@ -146,7 +143,7 @@ public class SearchServiceImpl implements SearchService {
 
   private void searchForArticles(SearchResultDTOBuilder searchResult, String searchTerm,
                                  SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
-    Page<ArticleEntity> articles;
+    List<ArticleEntity> articles;
     if (tags.isEmpty()) {
       articles = articleRepository
         .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
@@ -159,7 +156,7 @@ public class SearchServiceImpl implements SearchService {
       .collect(Collectors.toList());
 
     searchResult.articles(articleList);
-    resultMeta.setArticlesMeta(this.createMeta(articles, pageable.getSort()));
+    resultMeta.setArticlesMeta(this.createMeta(new PageImpl<ArticleEntity>(articles), pageable.getSort()));
   }
 
 
