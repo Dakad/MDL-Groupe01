@@ -22,7 +22,7 @@
           <Social :bio="infoSocial"/>
         </md-tab>
         <md-tab id="Bookmarks" md-label="Bookmarks">
-          <h5>Bookmarked article</h5>
+          <h5>Bookmarked articles</h5>
           <Bookmarks :bookmarked="bookmarkList"/>
         <md-empty-state
           v-if="!bookmarkList || bookmarkList == 0"

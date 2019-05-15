@@ -20,12 +20,14 @@ import be.unamur.info.mdl.dto.SearchResultDTO.SearchResultMetaDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.SearchService;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,8 +51,8 @@ public class SearchServiceImpl implements SearchService {
 
   @Autowired
   public SearchServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-    StateOfTheArtRepository stateOfTheArtRepository,
-    AuthorRepository authorRepository, TagRepository tagRepository) {
+                           StateOfTheArtRepository stateOfTheArtRepository,
+                           AuthorRepository authorRepository, TagRepository tagRepository) {
     this.articleRepository = articleRepository;
     this.userRepository = userRepository;
     this.stateOfTheArtRepository = stateOfTheArtRepository;
@@ -117,7 +119,7 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForAuthors(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable) {
+                                SearchResultMetaDTO resultMeta, Pageable pageable) {
     Page<AuthorEntity> authors = authorRepository
       .findDistinctByNameContainingIgnoreCase(searchTerm, pageable);
 
@@ -130,7 +132,7 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForUsers(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable) {
+                              SearchResultMetaDTO resultMeta, Pageable pageable) {
     Page<UserEntity> users = userRepository
       .findDistinctByFirstnameContainingIgnoreCaseOrFirstnameContainingIgnoreCase(searchTerm,
         searchTerm, pageable);
@@ -143,14 +145,14 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForArticles(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
+                                 SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
     Page<ArticleEntity> articles;
     if (tags.isEmpty()) {
       articles = articleRepository
         .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
     } else {
       articles = articleRepository
-        .findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(searchTerm,tags,pageable);
+        .findSearchTagsResults(searchTerm, tags,pageable);
     }
 
     List<ArticleDTO> articleList = articles.stream().map(a -> a.toDTO())
@@ -162,7 +164,7 @@ public class SearchServiceImpl implements SearchService {
 
 
   private void searchForSotas(SearchResultDTOBuilder searchResult, String searchTerm,
-    SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
+                              SearchResultMetaDTO resultMeta, Pageable pageable, List<String> tags) {
     Page<StateOfTheArtEntity> sotas;
     if (tags.isEmpty()) {
       sotas = stateOfTheArtRepository
@@ -189,8 +191,8 @@ public class SearchServiceImpl implements SearchService {
         return Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
       }
     }
-    if(sort.equalsIgnoreCase("date")){
-      return Sort.by("lastname","firstname").ascending();
+    if (sort.equalsIgnoreCase("date")) {
+      return Sort.by("lastname", "firstname").ascending();
     }
     return this.getSort(sort, order);
   }
@@ -204,7 +206,8 @@ public class SearchServiceImpl implements SearchService {
         } else {
           return Sort.by("name").ascending();
         }
-      case "date" : return Sort.by("name").ascending();
+      case "date":
+        return Sort.by("name").ascending();
       default:
         return this.getSort(sort, order);
     }
@@ -221,8 +224,8 @@ public class SearchServiceImpl implements SearchService {
 
   private Sort getSortForSota(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
-      return this.getSort(SORT_BY_TITLE, order);}
-    else if(sort.equalsIgnoreCase("date")){
+      return this.getSort(SORT_BY_TITLE, order);
+    } else if (sort.equalsIgnoreCase("date")) {
       return Sort.by("createdAt");
     } else {
       return this.getSort(sort, order);
@@ -232,7 +235,7 @@ public class SearchServiceImpl implements SearchService {
   /**
    * Get the correct Sort based on the sortedBy term and sortedOrder
    *
-   * @param searchSortedBy What to sort on
+   * @param searchSortedBy  What to sort on
    * @param searchSortOrder Which order for the sort (ASC or DESC)
    * @return The correct Sort
    */
@@ -267,7 +270,7 @@ public class SearchServiceImpl implements SearchService {
   /**
    * Create the meta data about the search result based on the provided Page result and its Sort
    *
-   * @param page The provided Page used for the findBy
+   * @param page     The provided Page used for the findBy
    * @param pageSort The Sort used with the Pageable
    * @return the {@link EnumMap} to store the specific meta
    */

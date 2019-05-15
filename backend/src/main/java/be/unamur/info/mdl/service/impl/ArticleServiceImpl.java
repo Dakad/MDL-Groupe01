@@ -197,7 +197,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+    if (user.getBookmarks().stream().anyMatch(b -> {
+      if(b.getArticle()!=null)return b.getArticle().equals(article.get());
+      else return false;
+    })) {
       throw new AlreadyBookmarkedException("This article is already in your bookmarks");
     }
 

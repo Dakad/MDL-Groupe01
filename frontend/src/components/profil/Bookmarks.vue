@@ -19,13 +19,13 @@
         </md-card>
       </div>
     </div>
-    <h2 v-if="sota.length!=0">State of the art bookmarked</h2>
+    <h5 class="sota-bookmark" v-if="sota.length!=0">Bookmarked states of the art</h5>
     <div class="sota">
       <div v-for="item in sota" :key="item">
         <md-card md-with-hover>
           <md-card-header>
             <router-link :to="{ name: 'sotaDetails', params: { reference: item.reference }}">
-              <h4>{{item.title}}</h4>
+              <h6>{{item.title}}</h6>
             </router-link>
           </md-card-header>
         </md-card>
@@ -69,5 +69,8 @@ export default {
 .right1 {
   float: left;
   margin-left: 5%;
+}
+.sota-bookmark {
+  margin-top: 1%;
 }
 </style>

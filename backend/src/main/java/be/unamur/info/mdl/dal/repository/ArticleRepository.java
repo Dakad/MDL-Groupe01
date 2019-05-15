@@ -4,23 +4,32 @@ import be.unamur.info.mdl.dal.entity.ArticleEntity;
 import be.unamur.info.mdl.dal.entity.BookmarkEntity;
 import be.unamur.info.mdl.dal.entity.TagEntity;
 import be.unamur.info.mdl.dal.entity.UserEntity;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
   Page<ArticleEntity> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-  Page<ArticleEntity> findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(
-    String title, List<String> keywords, Pageable pageable);
+  @Query(value = "select distinct a.* from article a, tag t, article_keywords ak where upper(a.title) like upper('%:title%') " +
+    "and ((a.category_id = t.id and t.name in :keys) " +
+    "or (select count(distinct name) from tag t where a.id = ak.article_id and ak.tag_id = t.id and t.name in :keys) > 0) " +
+    "group by a.id"
+    , nativeQuery = true)
+  Page<ArticleEntity> findSearchTagsResults(
+    @Param("title") String title, @Param("keys") List<String> keywords, Pageable pageable);
 
   ArticleEntity findByTitle(String title);
 
