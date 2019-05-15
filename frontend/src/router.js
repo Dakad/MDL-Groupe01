@@ -11,7 +11,7 @@ import Article from './pages/Article';
 import SotaDetails from './pages/SotaDetails';
 import Profil from './pages/Profil';
 import SotaHelper from './pages/SotaHelper';
-// import ProfileUpdate from './pages/ProfileUpdate';
+import ProfileUpdate from './pages/ProfileUpdate';
 import Subscriptions from './pages/Subscriptions';
 
 Vue.use(Router);
@@ -69,6 +69,13 @@ const routes = [
     path: '/profile',
     component: Profil,
     meta: { requiresAuth: true, title: 'Froggosaur - My profile' }
+  },
+
+  {
+    name: 'updateProfile',
+    path: '/update/profile',
+    component: ProfileUpdate,
+    meta: { requiresAuth: true, title: 'Froggosaur - Update my profile' }
   },
 
   {
