@@ -16,7 +16,7 @@
               class="md-primary"
               v-for="(author, i) in article.authors"
               :key="i"
-              :md-ripple="true"
+              :md-ripple="false"
             >{{author}}</md-button>
           </div>
           <div class="journal">

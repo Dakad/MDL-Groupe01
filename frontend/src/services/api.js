@@ -51,7 +51,7 @@ export function getArticleByReference(reference) {
 
 export function getArticlesByCategories(categories) {
   if (categories.length <= 0) {
-    return;
+    return Promise.reject();
   }
   return Vue.http
     .get('/api/article', {
