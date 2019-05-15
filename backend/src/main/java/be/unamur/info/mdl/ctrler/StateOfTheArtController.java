@@ -1,7 +1,5 @@
 package be.unamur.info.mdl.ctrler;
 
-import static be.unamur.info.mdl.ctrler.ApiControllerUtils.KEY_MESSAGE;
-
 import be.unamur.info.mdl.dto.BookmarkDTO;
 import be.unamur.info.mdl.dto.DefaultResponseDTO;
 import be.unamur.info.mdl.dto.StateOfTheArtDTO;
@@ -120,8 +118,8 @@ public class StateOfTheArtController {
       );
   }
 
-  @DeleteMapping({"/{reference}"})
 
+  @DeleteMapping({"/{reference}"})
   public ResponseEntity delete(@PathVariable String reference, Principal authUser)
     throws UserNotFoundException {
 
@@ -133,15 +131,18 @@ public class StateOfTheArtController {
   }
 
   @PutMapping({"/{reference}"})
-  public ResponseEntity put (@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,@PathVariable String reference)
-  {
-      sotaService.put(reference, authUser.getName(),data);
-      return ResponseEntity.status(HttpStatus.OK).body(data);
+  public ResponseEntity put(@Valid @RequestBody StateOfTheArtDTO data, Principal authUser,
+    @PathVariable String reference) {
+    sotaService.put(reference, authUser.getName(), data);
+    return ResponseEntity.status(HttpStatus.OK).body(data);
   }
-  
-  
+
+  @ApiOperation(value = "Retrieve a list of all created SoTA grouped by it reference")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of grouped SoTA"),
+  })
   @GetMapping(path = "/list")
-  public ResponseEntity getAll(){
+  public ResponseEntity getAll() {
     return ResponseEntity.ok(sotaService.getAll());
   }
 }
