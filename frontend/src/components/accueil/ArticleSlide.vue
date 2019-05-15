@@ -2,7 +2,7 @@
   <md-card class="size">
     <md-card-header>
       <router-link class="md-title" :to="{ name: 'articleDetails', params: { reference: reference }}">
-        {{ title }}
+        <h5>{{ title }}</h5>
       </router-link>
       <div class="md-subhead">
         <span v-for="(name,index) in authors" :key="name">
@@ -12,29 +12,15 @@
     </md-card-header>
 
     <md-card-content>
-      <h5>
+      <h6>
         <md-chip :style="colorCategory" title="Category : ">
           {{category}}
         </md-chip>&nbsp;&nbsp;
         {{ year }}<b v-if="month">, {{ month }}</b>
-      </h5><br>
-      <h6>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</h6><br>
+      </h6><br>
+      <p>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</p>
       <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
     </md-card-content>
-
-    <!-- <md-card-expand>
-      <md-card-actions>
-        <md-card-expand-trigger>
-          <md-button :md-ripple="false">Keywords</md-button>
-        </md-card-expand-trigger>
-      </md-card-actions>
-
-      <md-card-expand-content>
-        <md-card-content>
-          <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
-        </md-card-content>
-      </md-card-expand-content>
-    </md-card-expand> -->
   </md-card>
 </template>
 

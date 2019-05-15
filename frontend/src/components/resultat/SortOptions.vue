@@ -6,9 +6,16 @@
         <span class="md-list-item-text">Sort By</span>
       </md-subheader>
 
-      <md-list-item>
+      <md-list-item v-if="active == 'authors' ">
+        >
         <md-radio v-model="sortBy" value="name" @change="onChangeSortBy($event)"/>
         <span class="md-list-item-text">Name</span>
+      </md-list-item>
+
+      <md-list-item v-if="active == 'users' ">
+        >
+        <md-radio v-model="sortBy" value="username" @change="onChangeSortBy($event)"/>
+        <span class="md-list-item-text">Username</span>
       </md-list-item>
 
       <md-list-item>
@@ -38,15 +45,17 @@
         <span class="md-list-item-text">Descending</span>
       </md-list-item>
     </md-list>
+    <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
+  name: "SortOptions",
   props: {
     sort: String,
     order: String,
-    activetTab: String
+    active: String
   },
   data() {
     return {
@@ -59,8 +68,20 @@ export default {
     onChangeSortBy(by) {
       this.$emit("change:sort", this.sortBy);
     },
-    onChangeOrderBy(by) {
-      this.$emit("change:order", this.orderBy);
+    data() {
+      return {
+        sortBy: this.sort,
+        orderBy: this.order
+      };
+    },
+    computed: {},
+    methods: {
+      onChangeSortBy(by) {
+        this.$emit("change:sort", this.sortBy);
+      },
+      onChangeOrderBy(by) {
+        this.$emit("change:order", this.orderBy);
+      }
     }
   }
 };
