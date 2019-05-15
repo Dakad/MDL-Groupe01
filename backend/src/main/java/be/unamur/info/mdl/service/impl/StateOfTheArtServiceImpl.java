@@ -219,7 +219,10 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(sota.get()))) {
+    if (user.getBookmarks().stream().anyMatch(b -> {
+      if(b.getArticle() != null)  return b.getArticle().equals(sota.get());
+      else return false;
+    })) {
       return false;
     }
 
