@@ -41,6 +41,10 @@ export function getSearchResults(searchQuery) {
   return Vue.http.get('/api/search', { params: searchQuery }).then(res => res.body);
 }
 
+export function getTags(searchTerm){
+  return Vue.http.get('/api/tags?k='+searchTerm).then(res =>res.body);
+}
+
 export function getArticleByReference(reference) {
   return Vue.http.get('/api/article/' + reference).then(res => res.body);
 }
