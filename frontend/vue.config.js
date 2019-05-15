@@ -21,7 +21,7 @@ if (isProd && process.env.PUBLIC_PATH) {
   apiURL = process.env.API_URL || DEFAULT_API_URL;
 }
 
-// console.log(publicPath, apiURL);
+console.log(publicPath, apiURL);
 
 module.exports = {
   // proxy all webpack dev-server requests starting with /api

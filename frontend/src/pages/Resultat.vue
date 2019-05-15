@@ -228,6 +228,9 @@ export default {
     relatedArticles() {
       let relatedArticlesList = [];
       const { articles } = this.results;
+      if (!articles) {
+        return [];
+      }
       for (let i = 0; i < articles.length; i++) {
         let keywords = articles[i].keywords;
         for (let j = i + 1; j < articles.length; j++) {
@@ -295,7 +298,8 @@ export default {
       return getSearchResults(searchQuery)
         .then(res => {
           this.loading = false;
-
+          if (!res["metas"]) {
+          }
           Object.keys(res["metas"])
             .filter(type => res["metas"][type] != null)
             .forEach(type => {
