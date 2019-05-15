@@ -12,7 +12,7 @@
       <md-chip
         v-else
         class="chip-c"
-        :style="colorCategory"
+        :style="colorDomain"
         title="Activity domain : "
       >{{profil.domain}}</md-chip>
       <p></p>
@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import ColorHash from "color-hash";
-const colorHash = new ColorHash();
+import { getColorHashOf } from "@/services/util";
 
 export default {
   name: "InfoBase",
@@ -34,7 +33,7 @@ export default {
   computed: {
     colorDomain() {
       return {
-        "background-color": colorHash.hex(this.article.category)
+        "background-color": getColorHashOf(this.article.category)
       };
     }
   }
