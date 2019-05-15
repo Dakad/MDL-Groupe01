@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dal.entity;
 
+import be.unamur.info.mdl.dto.ResearchGroupDTO;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -48,5 +49,11 @@ public class ResearchGroupEntity {
   @ManyToMany(mappedBy = "researchGroup")
   private Set<UserEntity> users = new LinkedHashSet<>();
 
+  public static ResearchGroupEntity of(ResearchGroupDTO dto) {
+    ResearchGroupEntityBuilder entity = ResearchGroupEntity.builder();
+    entity.name(dto.getName()).link(dto.getLink()).slug(dto.getSlug()).nbMembers(dto.getNbMembers());
+    return entity.build();
+
+  }
 
 }

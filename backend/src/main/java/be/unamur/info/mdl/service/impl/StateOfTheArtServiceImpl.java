@@ -83,6 +83,8 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
     this.attachReference(newSota, sotaData.getArticleList());
 
+    this.attachCategory(newSota, sotaData.getCategory());
+
     this.attachKeywords(newSota, sotaData.getKeywordList());
 
     this.sotaRepository.save(newSota);
@@ -177,7 +179,19 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   }
 
   /**
-   * Attach the corresponding Author(created or persisted) to the new SoTA
+   * Attach the corresponding Tag(created or persisted) to the new SoTA
+   *
+   * @param newSota The new SoTA being created
+   * @param keywordName - The keyword's name.
+   */
+  private void attachCategory(StateOfTheArtEntity newSota, String keywordName) {
+    TagEntity keyword = ServiceUtils.getOrCreateTag(keywordName, this.tagRepository);
+    newSota.setCategory(keyword);
+  }
+
+
+  /**
+   * Attach the corresponding Keyword(created or persisted) to the new SoTA
    *
    * @param newSota The new SoTA being created
    * @param keywords - The keyword's name list.

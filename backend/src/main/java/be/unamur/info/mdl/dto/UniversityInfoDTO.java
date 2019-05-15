@@ -13,4 +13,5 @@ public class UniversityInfoDTO {
 
   private String name;
   private String website;
+  private String abbreviation;
 }

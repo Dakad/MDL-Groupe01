@@ -7,6 +7,7 @@ import be.unamur.info.mdl.dal.repository.UserProfileRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.CredentialDTO;
 import be.unamur.info.mdl.dto.PasswordChangeDTO;
+import be.unamur.info.mdl.dto.ProfileBasicInfoDTO;
 import be.unamur.info.mdl.dto.UserDTO;
 import be.unamur.info.mdl.service.UserService;
 import be.unamur.info.mdl.exceptions.InvalidCredentialException;
@@ -35,7 +36,8 @@ public class UserServiceImpl implements UserService {
 
 
   @Autowired
-  public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, UserProfileRepository  userProfileRepository) {
+  public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
+    UserProfileRepository userProfileRepository) {
     this.userRepository = userRepository;
     this.userProfileRepository = userProfileRepository;
     this.passwordEncoder = passwordEncoder;
@@ -58,13 +60,16 @@ public class UserServiceImpl implements UserService {
 
     userData.setPassword(this.passwordEncoder.encode(userData.getPassword()));
 
-    UserEntity newUser = this.userRepository.save(UserEntity.of(userData));
+    // Create a new Profile
+    UserProfileEntity profile = UserProfileEntity.builder()
+      .profilePictureURL(ProfileBasicInfoDTO.DEFAULT_PROFILE_PICTURE_URL).build();
 
-    UserProfileEntity profile = new UserProfileEntity();
-    profile.setUser(newUser);
+    profile = this.userProfileRepository.save(profile);
 
-    this.userProfileRepository.save(profile);
+    UserEntity newUser = UserEntity.of(userData);
+    newUser.setUserProfile(profile);
 
+    this.userRepository.save(newUser);
     return true;
   }
 
@@ -108,7 +113,9 @@ public class UserServiceImpl implements UserService {
       UserEntity userFollower = userRepository.findByUsername(follower);
       UserEntity userFollowed = userRepository.findByUsername(username);
       userFollower.getFollows().add(userFollowed);
-      if(!userFollowed.getFollowers().contains(userFollower))userFollowed.getFollowers().add(userFollower);
+      if (!userFollowed.getFollowers().contains(userFollower)) {
+        userFollowed.getFollowers().add(userFollower);
+      }
       userRepository.save(userFollower);
       userRepository.save(userFollower);
       return true;

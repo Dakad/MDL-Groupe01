@@ -156,7 +156,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //UPDATING EMAIL ADDRESS
-    if(!Strings.isNullOrEmpty(updateDTO.getEmail()){
+    if(!Strings.isNullOrEmpty(updateDTO.getEmail())){
       user.setEmail(updateDTO.getEmail());
     }
 

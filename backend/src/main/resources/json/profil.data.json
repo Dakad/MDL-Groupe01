@@ -1,0 +1,36 @@
+[{
+  "name": "Cive",
+  "firstname": "Jean",
+  "domain": "dentis",
+  "university": "Unamur",
+  "email": "JeanCive@gmail.com",
+  "profilePictureURL":"https://www.macsf.fr/var/macsf/storage/images/macsf.fr/actualites/comment-s-installer-comme-chirurgien-dentiste-liberal/131456-5-fre-FR/Comment-s-installer-comme-chirurgien-dentiste-liberal.jpg"
+},
+  {"researchGroup": [
+    "ComputerScience",
+    "Literature",
+    "Chemistry",
+    "Physics",
+    "Biology",
+    "Medicine"
+  ],
+    "universities": ["UNamur", "ULB"]
+
+  },
+  {
+    "bio":"J'ai fait beaucoup d'étude dans ma vie, j'ai 28 ans et je travaille",
+    "numFollows": 3,
+    "numFollowers":5
+  },
+  {
+    "profilePicURL" :"https://www.pornic.com/medias/images/prestataires/multitailles/640x480_chirurgien-dentiste-4400.jpg",
+    "currentUniversity" : "MIT",
+    "domain" : "Chemistry",
+    "researchGroups": ["Chemistry"],
+    "interests": ["Chemistry", "Biology"],
+    "email":"MarineMarchand@gmail.com",
+    "description": "J'aime la science et la biologie sous-marine "
+
+
+  }
+  ]
