@@ -16,25 +16,8 @@
         <md-tab id="profile" md-label="My profile">
           <MyProfile :infoPro="infoPro"></MyProfile>
         </md-tab>
-        <md-tab id="Sota" md-label="State Of The Art">
-          <!-- TODO avoir la fonction envoyer les SOTA et adapter le code à la list reçues
-        <h5>Owned SotA</h5>
-        <sota-list v-show="!loading" :list="sotaList.owned"></sota-list>
-        <md-empty-state
-          v-if="!sotaList.owned || sotaList.owned == 0"
-          md-icon="view_module"
-          md-label="No owned state of the art found"
-          md-description="Create State of the art to see them here."
-        ></md-empty-state>
-        <h5>Followed SotA</h5>
-        <sota-list v-show="!loading" :list="sotaList.followed"></sota-list>
-        <md-empty-state
-          v-if="!sotaList.followed || sotaList.followed == 0"
-          md-icon="view_module"
-          md-label="No owned state of the art found"
-          md-description="Create State of the art to see them here."
-          ></md-empty-state>-->
-        </md-tab>
+        <!-- <md-tab id="Sota" md-label="State Of The Art">
+        </md-tab> -->
         <md-tab id="Social" md-label="Social">
           <Social :bio="infoSocial"/>
         </md-tab>
@@ -108,7 +91,7 @@ export default {
       });
     },
     fetchSota() {
-      getSota(this.reference).then(data =>{ 
+      getSota(this.reference).then(data =>{
       this.sota = data});
     },
     fetchDataPro() {
