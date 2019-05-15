@@ -25,12 +25,16 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -126,19 +130,34 @@ public class MainController {
     return ResponseEntity.status(HttpStatus.OK).body(resultDTO);
   }
 
+  @ApiOperation(value = "Perform an search based on a bunch of tags")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of tags"),
+  })
   @GetMapping(value = "/tags")
-  public ResponseEntity getTags(@NotBlank(message = "Search term cannot be empty") @RequestParam String k){
-    if(k == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Search term must be specified");
+  public ResponseEntity getTags(
+    @NotBlank(message = "Search term cannot be empty") @RequestParam String k) {
+    if (k == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Search term must be specified");
+    }
     return ResponseEntity.status(HttpStatus.OK).body(searchService.getTags(k));
   }
 
+  @ApiOperation(value = "Retrieve a list of all created tags")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of tags"),
+  })
   @GetMapping(path = "/tags/list")
-  public ResponseEntity getAllTags(){
+  public ResponseEntity getAllTags() {
     return ResponseEntity.ok(searchService.getAllTags());
   }
 
+  @ApiOperation(value = "Retrieve a list of all created authors")
+  @ApiResponses(value = {
+    @ApiResponse(code = 200, message = "List of authors"),
+  })
   @GetMapping(path = "/authors/list")
-  public ResponseEntity getAllAuthors(){
+  public ResponseEntity getAllAuthors() {
     return ResponseEntity.ok(searchService.getAllAuthors());
   }
 
