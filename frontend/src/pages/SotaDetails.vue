@@ -50,7 +50,7 @@
         <article-list :list="sota.articles"></article-list>
       </md-tab>
 
-      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
+      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="share">
         <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
       </md-tab>
     </md-tabs>

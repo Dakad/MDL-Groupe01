@@ -85,7 +85,7 @@ function parseToBibtex([reference, article]) {
   // Loop over the fields of the article
   bibtex += Object.entries(article)
     .map(([field, value]) => `${field} = ${JSON.stringify(value)}`)
-    .join('\n');
+    .join(',\n');
 
   // Close the  bibtex
   bibtex += '\n}';

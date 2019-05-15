@@ -95,7 +95,9 @@ export default {
     },
     fetchArticlesByCategories: function() {
       const categories = unduplicatedCategories(this.articles);
-
+      this.treeData = Object.assign(dataTreeBase, {
+        name: this.sotaName
+      });
       // Insert the categories as node in the tree data
       categories.forEach(category => {
         const child = {
