@@ -36,13 +36,21 @@ export default {
 
     follow() {
       if (!this.isFollowed) {
-        postFollow(this.username).then(x => {
-          this.isFollowed = true;
-          EventBus.$emit(EVENT_APP_MESSAGE, {
-            type: "info",
-            msg: "Your are now following " + this.username
+        postFollow(this.username)
+          .then(x => {
+            this.isFollowed = true;
+            EventBus.$emit(EVENT_APP_MESSAGE, {
+              type: "info",
+              msg: "Your are now following " + this.username
+            });
+          })
+          .catch(error => {
+            const { message } = error.body;
+            EventBus.$emit(EVENT_APP_MESSAGE, {
+              type: "error",
+              message
+            });
           });
-        });
       } else if (this.isFollowed) {
         postUnFollow(this.username).then(x => {
           this.isFollowed = false;

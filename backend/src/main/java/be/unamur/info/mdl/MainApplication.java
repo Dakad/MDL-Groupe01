@@ -23,11 +23,4 @@ public class MainApplication extends SpringBootServletInitializer {
   }
 
 
-  @Bean
-  public CommandLineRunner runDBFiller() {
-    return new DbDataLoaderRunner();
-  }
-
-
-
 }
