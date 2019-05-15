@@ -1,7 +1,7 @@
 <template>
   <div class="InfoBase">
     <div class="pdp">
-      <img :src="profil.avatar">
+      <img :src="profil.avatar_url">
     </div>
     <div class="info">
       <h3>{{profil.firstname + " "+ profil.name}}</h3>
@@ -15,26 +15,26 @@
 </template>
 
 <script>
-  export default {
-    name: "InfoBase",
-    props: ["profil"],
+export default {
+  name: "InfoBase",
+  props: ["profil"],
 
-    mounted() {
-      this.$nextTick(function() {});
-    }
-  };
+  mounted() {
+    this.$nextTick(function() {});
+  }
+};
 </script>
 
 <style scoped>
-  .pdp {
-    float: left;
-    height: 25%;
-    width: 25%;
-    margin: 20px;
-  }
+.pdp {
+  float: left;
+  height: 25%;
+  width: 25%;
+  margin: 20px;
+}
 
-  .info {
-    float: left;
-    margin: 20px;
-  }
+.info {
+  float: left;
+  margin: 20px;
+}
 </style>
