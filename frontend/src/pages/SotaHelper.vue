@@ -19,7 +19,7 @@
           ></md-empty-state>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic v-if="!loading" :articles="recommended"/>
+          <sota-graphic v-if="!loading" :articles="recommended" :categories="articlesCategories"/>
         </md-tab>
         <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
           <create-sota></create-sota>
@@ -59,6 +59,12 @@ export default {
       recommended: [],
       bookmarked: {}
     };
+  },
+  computed: {
+    articlesCategories() {
+      const setList = new Set(this.recommended.map(a => a["category"]));
+      return [...setList].sort();
+    }
   },
   methods: {
     fetchRecommanded() {
