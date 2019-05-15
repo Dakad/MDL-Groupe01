@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import { createSota } from "../../services/api-sota";
 import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
 import { EventBus, EVENT_APP_MESSAGE } from "@/services/event-bus";
@@ -161,13 +160,13 @@ export default {
       this.apiErrors = [];
       const articleRefs = [];
 
-      if (this.uploads.length == 0) {
-        EventBus.$emit(
-          EVENT_APP_MESSAGE,
-          "Import the bibtex files before create the SoTA."
-        );
-        return;
-      }
+      // if (this.uploads.length == 0) {
+      //   EventBus.$emit(
+      //     EVENT_APP_MESSAGE,
+      //     "Import the bibtex files before create the SoTA."
+      //   );
+      //   return;
+      // }
       const createArticleRequests = this.uploads.map(filename => {
         this.articlesUploaded[filename]["bibtex"].forEach(article => {
           // If the article category is missing, assign the one from the Sota
@@ -186,29 +185,14 @@ export default {
       // Send all request to create an article, fail
       Promise.all(createArticleRequests).then(values => {
         // Split the keywords, to get each keywords
-        this.sota["keywords"] = this.sota.keywords
+        sota["keywords"] = sota.keywords
           .split(",")
           .map(k => k.trim())
           .filter(k => k.length > 0);
 
-        this.sota["articles"] = articleRefs;
+        sota["articles"] = articleRefs;
 
-        return createSota(this.sota)
-          .then(newSota => {
-            console.log(newSota);
-            EventBus.$emit(EVENT_APP_MESSAGE, {
-              type: "info",
-              message: "New SoTA created"
-            });
-          })
-          .catch(err => {
-            // Send a flash error msg about theh sota creation
-            EventBus.$emit(EVENT_APP_MESSAGE, {
-              type: "error",
-              message:
-                err.body["message"] || "Operation failed : creation failed"
-            });
-          });
+        this.$emit("create", sota);
       });
     }
   }

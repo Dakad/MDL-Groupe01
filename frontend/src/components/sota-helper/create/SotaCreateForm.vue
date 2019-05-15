@@ -1,13 +1,13 @@
 <template>
   <div>
     <form novalidate @submit.prevent="validateSota">
-      <h2 class="create-sota-heading">Create a new SoTA via upload</h2>
+      <h2 class="create-sota-heading">Create a new SoTA</h2>
       <br>
       <md-field :class="[getValidationClass('title'), {'md-invalid': invalid['title'] != null}]">
         <md-icon>event</md-icon>
         <label for="title">
           Title of the SotA
-          <span class="md-subheading">(REQUIRED)</span>
+          <span class="md-subheading">*</span>
         </label>
         <md-input name="title" id="title" v-model.lazy.trim="sota.title" :disabled="disabled"></md-input>
         <span class="md-helper-text"></span>
@@ -21,7 +21,10 @@
         :class="[getValidationClass('subject'), {'md-invalid': invalid['subject'] != null}]"
       >
         <md-icon>event</md-icon>
-        <label for="subject">Main subject</label>
+        <label for="subject">
+          Main subject
+          <span class="md-subheading">*</span>
+        </label>
         <md-input name="subject" id="subject" v-model.lazy.trim="sota.subject"/>
         <span class="md-error" v-if="!$v.sota.subject.required">The subject is required</span>
         <span class="md-error" v-else-if="!$v.sota.subject.minLength">At least, 3 characters</span>
