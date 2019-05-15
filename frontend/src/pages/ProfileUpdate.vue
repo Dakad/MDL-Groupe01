@@ -106,13 +106,12 @@ export default {
   computed: {
     listDomains() {
       return [
-        "ComputerScience",
+        "Computer Science",
         "Literature",
         "Chemistry",
         "Physics",
         "Biology",
         "Medicine",
-        "Economics",
         "Economics",
         "Psychology",
         "Laws",
