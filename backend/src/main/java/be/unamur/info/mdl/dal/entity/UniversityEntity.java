@@ -46,6 +46,7 @@ public class UniversityEntity {
   private Set<UserEntity> currentMembers = new LinkedHashSet<>();
 
 
+
   public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(abbreviation,name, websiteUrl); }
 
   public static UniversityEntity of(UniversityInfoDTO dto) {
