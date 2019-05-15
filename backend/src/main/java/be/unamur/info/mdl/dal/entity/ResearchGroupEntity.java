@@ -37,7 +37,7 @@ public class ResearchGroupEntity {
 
   @Column(name = "nb_members")
   @Min(1)
-  private int nbMembers;
+  private int nbMembers = 1;
 
   @Column(name = "url_link")
   private String link;

@@ -16,7 +16,7 @@
           <md-icon class="material-icons">home</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="profile.university.abbreviation" :md-options="listUniversities">
+          <md-autocomplete v-model="selected.university" :md-options="listUniversities">
             <label>Change your university</label>
           </md-autocomplete>
         </div>
@@ -25,7 +25,7 @@
           <md-icon class="material-icons">keyboard</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="profile.domain" :md-options="listDomains">
+          <md-autocomplete v-model="selected.domain" :md-options="listDomains">
             <label>Change your domain</label>
           </md-autocomplete>
         </div>
@@ -96,6 +96,9 @@ export default {
     return {
       wantToChange: false,
       sending: false,
+      selected: {
+        university: null
+      },
       profile: {}
     };
   },
@@ -122,7 +125,7 @@ export default {
     },
 
     listUniversities() {
-      return ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"];
+      return ["UNamur", "Ulg", "UMons", "Kul", "Oxford", "MIT"];
     },
     listResearchGroups() {
       return ["Nadi", "IRIDIA", "BRUH"];
@@ -146,9 +149,17 @@ export default {
         this.profile = Object.assign({}, data);
         if (this.profile.university == null) {
           this.profile.university = "";
+        } else {
+          this.$set(
+            this.selected,
+            "university",
+            this.profile.university.abbreviation
+          );
         }
         if (this.profile.domain == null) {
           this.profile.domain = "";
+        } else {
+          this.$set(this.selected, "domain", this.profile.domain);
         }
       });
       getProfileInfoPro().then(data => {
@@ -164,8 +175,11 @@ export default {
     updateData() {
       this.sending = true;
       let dataToSend = Object.assign(this.profile, {
+        domain: this.selected.domain,
+        university: this.selected.university,
         research_groups: this.profile.researchGroup.split(",")
       });
+      // dataToSend["university"] = this.profile.university.abbreviation;
       postModificationProfile(dataToSend)
         .then(_ => {
           this.wantToChange = false;

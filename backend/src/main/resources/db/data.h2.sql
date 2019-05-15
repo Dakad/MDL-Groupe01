@@ -871,12 +871,12 @@ INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
 INSERT INTO PUBLIC.UNIVERSITY(ID, ABBREVIATION, NAME, WEBSITE_URL) VALUES
 (421, 'UNamur', STRINGDECODE('Universit\u00e9 de Namur'), 'https://www.unamur.be/'),
 (422, 'Ulg', STRINGDECODE('Universit\u00e9 de Li\u00e8ge'), 'https://www.uliege.be'),
-(423, 'Umons', STRINGDECODE('Universit\u00e9 de Mons'), 'https://web.umons.ac.be/fr/'),
+(423, 'UMons', STRINGDECODE('Universit\u00e9 de Mons'), 'https://web.umons.ac.be/fr/'),
 (424, 'Kul', STRINGDECODE('Universit\u00e9 catholique de louvain'), 'https://www.kuleuven.be'),
-(425, 'Oxford', STRINGDECODE('Universit\u00e9 d''Oxford'), 'http://www.ox.ac.uk/'),
+(425, 'Oxford', STRINGDECODE('Oxford University'), 'http://www.ox.ac.uk/'),
 (426, 'MIT', 'Massachusetts Institute of Technology', 'http://www.mit.edu/');
 
 INSERT INTO PUBLIC.RESEARCH_GROUP(ID, CREATED_AT, URL_LINK, NAME, NB_MEMBERS, SLUG) VALUES
-(440, DATE '2019-05-14', 'https://nadi.unamur.be/', 'Namur Digital Institute ', 5, 'Nadi'),
-(441, DATE '2019-05-14', 'http://code.ulb.ac.be/iridia.home.php', STRINGDECODE('Institut de Recherches Interdisciplinaires et de D\u00e9veloppements en Intelligence Artificielle'), 3, 'IRIDIA'),
-(442, DATE '2019-05-14', 'unamur.be', 'Big Race under house', 9, 'Bruh');
+(440, DATE '2019-05-14', 'https://nadi.unamur.be/', 'Namur Digital Institute ', 5, 'nadi'),
+(441, DATE '2019-05-14', 'http://code.ulb.ac.be/iridia.home.php', STRINGDECODE('Institut de Recherches Interdisciplinaires et de D\u00e9veloppements en Intelligence Artificielle'), 3, 'iridia'),
+(442, DATE '2019-05-14', 'http://unamur.be', 'Big Race under house', 9, 'bruh');
