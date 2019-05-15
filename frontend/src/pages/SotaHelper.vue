@@ -102,6 +102,12 @@ export default {
     postNewSota(newSota) {
       return createSota(newSota)
         .then(data => {
+          this.$router.push({
+            name: "sotaDetails",
+            params: {
+              reference: data["reference"]
+            }
+          });
           console.log(data);
           EventBus.$emit(EVENT_APP_MESSAGE, {
             type: "info",

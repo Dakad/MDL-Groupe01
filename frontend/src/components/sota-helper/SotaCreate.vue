@@ -184,15 +184,16 @@ export default {
 
       // Send all request to create an article, fail
       Promise.all(createArticleRequests).then(values => {
+        const newSota = Object.assign(sota, {
+          articles: articleRefs,
+          keywords: sota.keywords
+            .split(",")
+            .map(k => k.trim())
+            .filter(k => k.length)
+        });
         // Split the keywords, to get each keywords
-        sota["keywords"] = sota.keywords
-          .split(",")
-          .map(k => k.trim())
-          .filter(k => k.length > 0);
 
-        sota["articles"] = articleRefs;
-
-        this.$emit("create", sota);
+        this.$emit("create", newSota);
       });
     }
   }
