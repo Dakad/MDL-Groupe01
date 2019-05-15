@@ -5,8 +5,10 @@
         class="sort-container"
         :sort="sortBy"
         :order="orderBy"
+        :tags="searchTagList"
         @change:sort="sortBy = $event; updateSearchURL('sort', $event)"
         @change:order="orderBy = $event; updateSearchURL('order', $event)"
+        @tag:remove="removeTagFromSearchList($event)"
       ></result-sort>
     </div>
     <div class="md-layout-item md-size-80">
@@ -14,7 +16,6 @@
         <md-progress-bar md-mode="indeterminate"/>
       </div>
       <div class="results-container">
-        
         <md-tabs
           md-alignment="fixed"
           :md-active-tab="activeTab"
@@ -51,7 +52,7 @@
               v-if="!loading &&  (!results.articles || results.articles.length == 0)"
               md-icon="description"
               md-label="No articles found"
-              :md-description="'Sorry, we didn\'t find any articles matching your search for \'\''+searchTerm+'\'\''"
+              :md-description="articleEmptyStateMsg"
             ></md-empty-state>
           </md-tab>
           <md-tab id="authors" md-label="Authors/Users" md-icon="people">
@@ -95,9 +96,10 @@
               valueKey="value"
               :color="myColors"
               :showTooltip="false"
-              :fontSize=[13,40]
+              :fontSize="[13,40]"
               :wordClick="wordClickHandler"
-              :rotate="{from: 0, to: 0, numOfOrientation: 5 }"></wordcloud>
+              :rotate="{from: 0, to: 0, numOfOrientation: 5 }"
+            ></wordcloud>
             <md-snackbar :md-active.sync="showSnackbar" :md-duration="4000">
               <span>{{snackMsgWc}}</span>
             </md-snackbar>
@@ -114,7 +116,7 @@ import SotaList from "@/components/resultat/SotaList";
 import AuthorList from "@/components/resultat/AuthorList";
 import ArticleList from "@/components/resultat/ArticleList";
 import Graphics from "@/components/resultat/Graphics";
-import wordcloud from 'vue-wordcloud';
+import wordcloud from "vue-wordcloud";
 
 import { getSearchResults, getTags } from "@/services/api";
 
@@ -133,18 +135,18 @@ export default {
       loading: false,
       changingTab: false,
       searchTerm: null,
-      sortBy: this.$route.query["sort"] || "name",
+      sortBy: this.$route.query["sort"] || "title",
       orderBy: this.$route.query["order"] || "asc",
       activeTab: this.$route.query["tab"] || "articles",
       page: Number.parseInt(this.$route.query["page"]) || 1,
       metas: {},
       results: {},
       pages: {},
-      tags:{},
+      tags: {},
       myColors: "Category10",
-      snackMsgWc:null,
-      showSnackbar:false,
-      searchTagList:[]
+      snackMsgWc: null,
+      showSnackbar: false,
+      searchTagList: []
     };
   },
   created() {
@@ -157,22 +159,29 @@ export default {
     $route: "fetchSearchResult",
 
     activeTab: newTab => updateSearchURL("tab", newTab),
-    searchTagList: function(){
+    searchTagList: function() {
       this.fetchSearchResult();
     }
   },
   computed: {
-      tagList: function(){
-        var list=[]
+    articleEmptyStateMsg() {
+      let msg = `Sorry, we didn't find any articles matching your search for '${
+        this.searchTerm
+      }'`;
+      if (this.searchTagList.length > 0) {
+        msg += "with those tags : " + this.searchTagList.join(",");
+      }
+      return msg;
+    },
+    tagList: function() {
+      var list = [];
 
-        for (let i = 0;i< this.tags.length; i++){
-            list.push({"name": this.tags[i][0], 
-                       "value":this.tags[i][1]*1000
-                       })
-        }
+      for (let i = 0; i < this.tags.length; i++) {
+        list.push({ name: this.tags[i][0], value: this.tags[i][1] * 1000 });
+      }
 
-        return(list)
-      },
+      return list;
+    },
 
     isEmptyArticlesTags() {
       return Object.keys(this.articlesTags).length == 0;
@@ -256,6 +265,12 @@ export default {
       query[type] = by;
       this.$router.push({ query });
     },
+    removeTagFromSearchList(tagName) {
+      const index = this.searchTagList.indexOf(tagName);
+      if (index < 0) return;
+      this.$delete(this.searchTagList, index);
+      this.updateSearchURL("tags", this.searchTagList);
+    },
     fetchSearchResult() {
       // if (this.changingTab) {
       //   this.changingTab = false;
@@ -266,12 +281,11 @@ export default {
 
       const searchQuery = {
         term: this.searchTerm,
-        tag:this.searchTagList.join("+"),
+        tag: this.searchTagList.join("+"),
         sort: this.sortBy,
         order: this.orderBy,
         page: !this.changingTab ? this.page : 1,
-        only: !this.changingTab ? this.activeTab : undefined,
-
+        only: !this.changingTab ? this.activeTab : undefined
       };
 
       //console.log(searchQuery)
@@ -291,20 +305,20 @@ export default {
         })
         .catch(console.error);
     },
-    fetchTags(){
+    fetchTags() {
       getTags(this.searchTerm).then(res => {
-        this.tags=res;
-      })
+        this.tags = res;
+      });
     },
-     wordClickHandler(name, value, vm) {
-          this.showSnackbar=true;
-          this.snackMsgWc="Tag: \""+name+"\" Occurence: "+value/1000
+    wordClickHandler(name, value, vm) {
+      this.showSnackbar = true;
+      this.snackMsgWc = 'Tag: "' + name + '" Occurence: ' + value / 1000;
 
-      if(!this.searchTagList.includes(name)){
-          this.searchTagList.push(name);
-          this.activeTab= "articles";
+      if (!this.searchTagList.includes(name)) {
+        this.searchTagList.push(name);
+        this.activeTab = "articles";
+        this.updateSearchURL("tags", this.searchTagList.join("+"));
       }
-
     }
   }
 };

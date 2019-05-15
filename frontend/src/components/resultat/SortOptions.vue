@@ -44,6 +44,25 @@
         <md-radio v-model="orderBy" value="desc" @change="onChangeOrderBy($event)"/>
         <span class="md-list-item-text">Descending</span>
       </md-list-item>
+
+      <md-divider v-if="tags && tags.length > 0"></md-divider>
+
+      <md-subheader v-if="tags && tags.length > 0">
+        <md-icon>format_list_bulleted</md-icon>
+        <span class="md-list-item-text">Tags</span>
+      </md-subheader>
+
+      <md-list-item>
+        <div>
+          <md-chip
+            class="md-accent tag"
+            v-for="(tag,index) in tags"
+            :key="index"
+            md-deletable
+            @md-delete="$emit('tag:remove', tag)"
+          >{{tag}}</md-chip>
+        </div>
+      </md-list-item>
     </md-list>
     <slot></slot>
   </div>
@@ -55,7 +74,8 @@ export default {
   props: {
     sort: String,
     order: String,
-    active: String
+    active: String,
+    tags: Array
   },
   data() {
     return {
@@ -91,5 +111,9 @@ export default {
 .md-list {
   margin: 10px;
   display: inline-block;
+}
+.tag {
+  display: block;
+  margin: 5px;
 }
 </style>
