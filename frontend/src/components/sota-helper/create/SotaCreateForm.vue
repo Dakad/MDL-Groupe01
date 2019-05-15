@@ -13,7 +13,7 @@
         <span class="md-helper-text"></span>
         <span class="md-error" v-if="!$v.sota.title.required">The title is required</span>
         <span class="md-error" v-if="!$v.sota.title.minLength">At least, 5 characters</span>
-        <span class="md-error" v-if="!$v.sota.title.maxLength">250 characters should be enough</span>
+        <!-- <span class="md-error" v-if="!$v.sota.title.maxLength">250 characters should be enough</span> -->
         <span class="md-error" v-if="invalid['title'] != null">{{invalid['title']}}</span>
       </md-field>
 
@@ -24,9 +24,12 @@
         <label for="subject">Main subject</label>
         <md-input name="subject" id="subject" v-model.lazy.trim="sota.subject"/>
         <span class="md-error" v-if="!$v.sota.subject.required">The subject is required</span>
-        <span class="md-error" v-if="!$v.sota.subject.minLength">At least, 5 characters</span>
-        <span class="md-error" v-if="!$v.sota.subject.sameAsTitle">Cannot be the same as the title</span>
-        <span class="md-error" v-if="invalid['subject'] != null">{{invalid['subject']}}</span>
+        <span class="md-error" v-else-if="!$v.sota.subject.minLength">At least, 3 characters</span>
+        <span
+          class="md-error"
+          v-else-if="!$v.sota.subject.sameAsTitle"
+        >Cannot be the same as the title</span>
+        <span class="md-error" v-else-if="invalid['subject'] != null">{{invalid['subject']}}</span>
       </md-field>
 
       <md-field>
@@ -41,7 +44,7 @@
       <br>
       <md-field>
         <label>Import bibtex file</label>
-        <md-file multiple accept=".bib, .bibtex" @md-change="onUploadFiles"/>
+        <md-file multiple accept=".bib, .bibtex" v-model="uploadList" @md-change="onUploadFiles"/>
       </md-field>
 
       <!-- Upload btn -->
@@ -91,6 +94,7 @@ export default {
         keywords: "",
         subject: ""
       },
+      uploadList: null,
       invalid: {},
       showConfirmDialog: false
     };
@@ -99,12 +103,12 @@ export default {
     sota: {
       title: {
         required,
-        minLength: minLength(5),
-        maxLength: maxLength(255)
+        minLength: minLength(5)
+        // maxLength: maxLength(255)
       },
       subject: {
         required,
-        minLength: minLength(5),
+        minLength: minLength(3),
         sameAsTitle: not(sameAs("title"))
       }
     }
@@ -126,6 +130,8 @@ export default {
         keywords: "",
         subject: ""
       };
+      this.uploadList = null;
+      this.$emit("clear");
     },
     validateSota() {
       this.$v.$touch();

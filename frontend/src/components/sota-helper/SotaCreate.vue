@@ -1,6 +1,11 @@
 <template>
   <div class="app-sota-create md-layout md-gutter md-alignment-top-space-between">
-    <sota-create-form class="md-layout-item md-size-45" @upload="onFileUpload" @submit="sendSota">
+    <sota-create-form
+      class="md-layout-item md-size-45"
+      @upload="onFileUpload"
+      @submit="sendSota"
+      @clear="onClearForm"
+    >
       <hr v-if="uploads.length">
 
       <md-list class="upload-file-list md-scrollbar">
@@ -37,11 +42,11 @@
     <md-dialog :md-active.sync="showUploadEdit">
       <md-dialog-title>Editing {{selected['filename']}}</md-dialog-title>
       <md-dialog-content>
-        <!-- <sota-upload-list-edit
+        <sota-upload-list-edit
           id="upload-list-edit"
           :filename="selected.filname"
           :list="selected.bibtex"
-        />-->
+        />
       </md-dialog-content>
     </md-dialog>
 
@@ -148,6 +153,10 @@ export default {
       // window.alert("Edit me : " + filename);
     },
 
+    onClearForm() {
+      // this.articlesUploaded = Object.assign({});
+    },
+
     sendSota(sota) {
       this.apiErrors = [];
       const articleRefs = [];
@@ -161,14 +170,16 @@ export default {
       }
       const createArticleRequests = this.uploads.map(filename => {
         this.articlesUploaded[filename]["bibtex"].forEach(article => {
-          articleRefs.push(article["reference"]);
           // If the article category is missing, assign the one from the Sota
           if (!article["category"] || article["category"].length == 0) {
             article["category"] = sota["subject"];
           }
-          return createArticle(article).catch(e =>
-            this.apiErrors.push(err.body["message"])
-          );
+          return createArticle(article)
+            .catch(e => this.apiErrors.push(err.body["message"]))
+            .then(data => {
+              console.log(data);
+              articleRefs.push(data["reference"]);
+            });
         });
       });
 
