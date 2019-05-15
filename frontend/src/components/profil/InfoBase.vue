@@ -33,7 +33,7 @@ export default {
   computed: {
     colorDomain() {
       return {
-        "background-color": getColorHashOf(this.article.category)
+        "background-color": getColorHashOf(this.profil.domain)
       };
     }
   }
