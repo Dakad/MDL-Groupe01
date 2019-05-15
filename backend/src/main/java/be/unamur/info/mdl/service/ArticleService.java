@@ -70,4 +70,6 @@ public interface ArticleService {
    * Update the score of all articles
    */
   void updateScores();
+
+  Map<String,String> getAll();
 }
