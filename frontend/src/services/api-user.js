@@ -76,7 +76,6 @@ export function getProfileSota(username) {
   return Vue.http.get('/api/user/' + username + '/profile/sota').then(response => response.body);
 }
 
-
 export function postModificationProfile(data) {
   const headers = getAuthHeaders();
   return Vue.http.post('/api/user/profile/update', data, headers).then(response => response.body);
@@ -87,18 +86,24 @@ export function getProfileSocial(username) {
     username = getFromStorage(KEY_USERNAME);
   }
   return Vue.http.get('/api/user/' + username + '/profile/social').then(response => response.body);
-
-  export function postFollow(username) {
+}
+export function postFollow(username) {
   const headers = getAuthHeaders();
-  return Vue.http.post('/api/user/' + username + '/follow',{}, headers).then(response => response.body);
+  return Vue.http
+    .post('/api/user/' + username + '/follow', {}, headers)
+    .then(response => response.body);
 }
 
 export function postUnFollow(username) {
   const headers = getAuthHeaders();
-  return Vue.http.post('/api/user/' + username + '/unfollow',{}, headers).then(response => response.body);
+  return Vue.http
+    .post('/api/user/' + username + '/unfollow', {}, headers)
+    .then(response => response.body);
 }
 
 export function getFollow(username) {
   const headers = getAuthHeaders();
-  return Vue.http.get('/api/user/' + username + '/followed', headers).then(response => response.body);
+  return Vue.http
+    .get('/api/user/' + username + '/followed', headers)
+    .then(response => response.body);
 }

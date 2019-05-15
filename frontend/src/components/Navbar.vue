@@ -194,7 +194,7 @@ export default {
     },
     getProfile() {
       getProfileBase().then(profile => {
-        this.avatar = profile.avatar;
+        this.avatar = profile.avatar_url;
       });
     }
   }
