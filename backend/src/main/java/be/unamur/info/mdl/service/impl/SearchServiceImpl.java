@@ -150,7 +150,7 @@ public class SearchServiceImpl implements SearchService {
         .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
     } else {
       articles = articleRepository
-        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm, tags, pageable);
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(searchTerm,tags,pageable);
     }
 
     List<ArticleDTO> articleList = articles.stream().map(a -> a.toDTO())
@@ -169,7 +169,7 @@ public class SearchServiceImpl implements SearchService {
         .findDistinctByTitleContainingIgnoreCase(searchTerm, pageable);
     } else {
       sotas = stateOfTheArtRepository
-        .findDistinctByTitleContainingIgnoreCaseAndKeywords_SlugIn(searchTerm, tags, pageable);
+        .findDistinctByTitleContainingIgnoreCaseAndKeywords_NameIn(searchTerm, tags, pageable);
     }
 
     List<StateOfTheArtDTO> sotaList = sotas.get().map(s -> s.toDTO())
@@ -189,6 +189,9 @@ public class SearchServiceImpl implements SearchService {
         return Sort.by(Sort.Order.desc("lastname"), Sort.Order.desc("firstname"));
       }
     }
+    if(sort.equalsIgnoreCase("date")){
+      return Sort.by("lastname","firstname").ascending();
+    }
     return this.getSort(sort, order);
   }
 
@@ -201,9 +204,11 @@ public class SearchServiceImpl implements SearchService {
         } else {
           return Sort.by("name").ascending();
         }
+      case "date" : return Sort.by("name").ascending();
       default:
         return this.getSort(sort, order);
     }
+
   }
 
   private Sort getSortForArticle(final String sort, final String order) {
@@ -216,7 +221,9 @@ public class SearchServiceImpl implements SearchService {
 
   private Sort getSortForSota(final String sort, final String order) {
     if (sort.equalsIgnoreCase("name")) {
-      return this.getSort(SORT_BY_TITLE, order);
+      return this.getSort(SORT_BY_TITLE, order);}
+    else if(sort.equalsIgnoreCase("date")){
+      return Sort.by("createdAt");
     } else {
       return this.getSort(sort, order);
     }
@@ -236,7 +243,7 @@ public class SearchServiceImpl implements SearchService {
         pageSort = Sort.by(SORT_BY_TITLE);
         break;
       case "date":
-        pageSort = Sort.by("year");
+        pageSort = Sort.by("publicationYear");
         break;
       case "name":
         break;
