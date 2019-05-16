@@ -60,10 +60,6 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   @Override
   public StateOfTheArtDTO create(@Valid StateOfTheArtDTO sotaData, UserDTO currentUser)
     throws SotaAlreadyExistException, ArticleNotFoundException {
-    if (sotaRepository.existsByReference(sotaData.getReference())) {
-      throw new SotaAlreadyExistException(
-        "The SoTA reference is already saved : " + sotaData.getReference());
-    }
 
     if (articleRepository.existsByTitle(sotaData.getTitle())) {
       throw new SotaAlreadyExistException(
@@ -75,6 +71,11 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
 
     if (sotaData.getReference() == null || sotaData.getReference().isEmpty()) {
       newSota.setReference(this.generateReference(sotaData.getTitle()));
+    }
+
+    if (sotaRepository.existsByReference(sotaData.getReference())) {
+      throw new SotaAlreadyExistException(
+        "The SoTA reference is already saved : " + sotaData.getReference());
     }
 
     UserEntity creator = userRepository.findByUsername(currentUser.getUsername());

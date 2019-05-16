@@ -174,7 +174,9 @@ export default {
             article["category"] = sota["subject"];
           }
           return createArticle(article)
-            .catch(e => this.apiErrors.push(err.body["message"]))
+            .catch(e =>
+              EventBus.$emit(EVENT_APP_MESSAGE, "Error on article creation")
+            )
             .then(data => {
               console.log(data);
               articleRefs.push(data["reference"]);
