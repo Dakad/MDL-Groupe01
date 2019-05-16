@@ -54,7 +54,7 @@
     <md-dialog-confirm
       :md-active.sync="showRedirectDialog"
       md-title="SoTA created"
-      md-content="Your <strong>SoTA</strong> has been created.\n Do you want to be redirect to it page"
+      md-content="Your <strong>SoTA</strong> has been published.\n Do you want to be redirect to it page"
       md-confirm-text="Okay"
       md-cancel-text="Disagree"
       @md-cancel="showRedirectDialog = false"

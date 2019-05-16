@@ -52,7 +52,7 @@
 
       <!-- Upload btn -->
       <div class id="upload-btn-container">
-        <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Upload the SoTA</md-button>
+        <md-button class="md-raised md-primary" type="submit" :md-ripple="false">Publish the SoTA</md-button>
         <md-button class="md-raised md-accent" :md-ripple="false" @click="clearForm">Clear uploads</md-button>
       </div>
 
