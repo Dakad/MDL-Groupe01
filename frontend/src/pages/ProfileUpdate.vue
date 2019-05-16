@@ -192,7 +192,8 @@ export default {
         .then(_ => {
           this.wantToChange = false;
           this.sending = false;
-          EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile info updated");
+          EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile successfully updated");
+          this.$router.push({ name: "myProfile" });
         })
         .catch(({ body }) => {
           const { message } = body;
