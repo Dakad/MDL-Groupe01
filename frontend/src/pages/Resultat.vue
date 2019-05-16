@@ -399,7 +399,7 @@ export default {
   position: absolute;
   top: 2px;
   right: 2px;
-  background: red;
+  background: #ff5252;
   border-radius: 100%;
   color: #fff;
   font-size: 10px;
