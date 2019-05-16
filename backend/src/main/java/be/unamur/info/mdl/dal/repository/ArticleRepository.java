@@ -55,4 +55,6 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
   Stream<ArticleEntity> findByCategoryAndReferenceNotIn(TagEntity domain, List<String> references, Pageable pageable);
 
   Stream<ArticleEntity> findByCategoryLikeOrCategoryInAndReferenceNotIn(TagEntity domain, Set<TagEntity> interests, List<String> references, Pageable pageable);
+
+  Stream<ArticleEntity> findByCategory(TagEntity domain, Pageable pageable);
 }
