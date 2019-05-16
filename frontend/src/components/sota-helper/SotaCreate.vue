@@ -186,12 +186,11 @@ export default {
       Promise.all(createArticleRequests).then(values => {
         const newSota = Object.assign(sota, {
           articles: articleRefs,
-          keywords: sota.keywords
+          keywords: sota.keywords // Split the keywords, to get each keywords
             .split(",")
             .map(k => k.trim())
             .filter(k => k.length)
         });
-        // Split the keywords, to get each keywords
 
         this.$emit("create", newSota);
       });

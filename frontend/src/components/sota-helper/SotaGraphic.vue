@@ -2,7 +2,7 @@
   <div class="graph-container">
     <md-card>
       <md-card-header>
-        <div class="md-title center">Preview of the SoTA grouped by the categories</div>
+        <div class="md-title center">Preview of the SoTA grouped by their domains</div>
       </md-card-header>
 
       <md-card-content>
@@ -72,6 +72,9 @@ export default {
       name: this.sotaName
     });
     this.fetchArticlesByCategories();
+  },
+  beforeDestroy() {
+    this.treeData = Object.assign(dataTreeBase, {});
   },
   computed: {
     categoriesFromArticles() {

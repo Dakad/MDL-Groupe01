@@ -15,7 +15,7 @@
           <div class="info">
             <div class="author">
               <p>
-                Written By:
+                Created by:
                 <router-link
                   :to="{ name: 'userProfile', params: { reference: sota.creator.username }}"
                 >

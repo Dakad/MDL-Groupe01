@@ -68,7 +68,10 @@ export default {
       return [...setList].sort();
     },
     listBookmarkedRefs() {
-      return this.bookmarked.map(bk => bk["article"]["reference"]);
+      return this.bookmarked
+        .filter(b => b["article"] != null)
+        .map(({ article }) => article.reference);
+      // .map(b => b["article"]["reference"]);
     }
   },
   created() {
@@ -100,6 +103,11 @@ export default {
     },
 
     postNewSota(newSota) {
+      console.log(newSota);
+      newSota["articles"] = this.listBookmarkedRefs.concat(newSota["articles"]);
+
+      console.log(newSota);
+
       return createSota(newSota)
         .then(data => {
           this.$router.push({
