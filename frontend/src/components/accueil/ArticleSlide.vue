@@ -1,22 +1,69 @@
 <template>
-    <div class="slide">
-      <h3>{{ title }}</h3>
-      <h5 v-for="name in authors" :key="name">{{ name }}</h5>
-      <h5>{{ domain }}, {{ date }}</h5><br>
+  <md-card class="size">
+    <md-card-header>
+      <router-link
+        class="md-title"
+        :to="{ name: 'articleDetails', params: { reference: reference }}"
+      >
+        <h5>{{ title }}</h5>
+      </router-link>
+      <div class="md-subhead">
+        <span v-for="(name,index) in authors" :key="name">
+          {{ name }}&nbsp;
+          <b v-if="index<authors.length-1">,</b>
+        </span>
+      </div>
+    </md-card-header>
+
+    <md-card-content>
+      <h6>
+        <md-chip :style="colorCategory" title="Category : ">{{category}}</md-chip>
+        &nbsp;&nbsp;
+        {{ year }}
+        <b v-if="month">, {{ month }}</b>
+      </h6>
       <br>
-      <h6>Views: {{ nbViews }}     Quotes: {{ nbQuotes }}</h6>
-      <md-chip v-for="(word,index) in keywords" :key="index">{{ word }}</md-chip>
-    </div>
+      <p>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</p>
+      <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
+    </md-card-content>
+  </md-card>
 </template>
 
 <script>
 import { Slide } from "vue-carousel";
+import { getColorHashOf } from "@/services/util";
 
 export default {
   name: "ArticleSlide",
-  props: ["title", "authors", "domain", "date", "nbViews", "nbQuotes", "keywords"]
+  props: [
+    "title",
+    "authors",
+    "category",
+    "year",
+    "month",
+    "nbViews",
+    "nbQuotes",
+    "keywords",
+    "reference"
+  ],
+  computed: {
+    colorCategory() {
+      const [bgColor, txtColor] = getColorHashOf(this.category);
+      return {
+        "background-color": bgColor,
+        color: txtColor
+      };
+    }
+  }
 };
 </script>
 
 <style scoped>
+.chip {
+  margin: 4px;
+}
+
+.size {
+  min-height: 100%;
+}
 </style>

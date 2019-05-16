@@ -2,6 +2,7 @@ package be.unamur.info.mdl.dal.entity;
 
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.ArticleDTO.ArticleDTOBuilder;
+import be.unamur.info.mdl.dto.BibtexType;
 import be.unamur.info.mdl.dto.TagDTO;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -51,12 +52,11 @@ public class ArticleEntity {
   @EqualsAndHashCode.Include
   private String title;
 
-  @Column(name = "abstract", nullable = false)
+  @Column(name = "abstract")
   @Lob
   private String content;
 
-  @Column(name = "url", unique = true, nullable = false)
-  @EqualsAndHashCode.Include
+  @Column(name = "url")
   private String url;
 
   @Column(name = "journal", nullable = false)
@@ -91,9 +91,17 @@ public class ArticleEntity {
   @PositiveOrZero
   private int nbViews;
 
+  @Column(name = "type")
+  private BibtexType type;
+
   @Column(name = "created_at")
   @Builder.Default
   private LocalDate createdAt = LocalDate.now();
+
+  @Column(name = "recommendation_score")
+  @PositiveOrZero
+  @Builder.Default
+  private Float score = 0f;
 
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
@@ -117,7 +125,7 @@ public class ArticleEntity {
   private Set<AuthorEntity> authors = new LinkedHashSet<>();
 
 
-  @OneToMany(mappedBy = "article")
+  @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
   @Builder.Default
   private Set<BookmarkEntity> bookmarks = new LinkedHashSet<>();
 
@@ -146,6 +154,14 @@ public class ArticleEntity {
   @Builder.Default
   private Set<TagEntity> keywords = new LinkedHashSet<>();
 
+
+  public int getNbBookmarks() {
+    if (bookmarks != null && !bookmarks.isEmpty()) {
+      return bookmarks.size();
+    } else {
+      return 0;
+    }
+  }
 
   /**
    * Convert the current Entity to its DTO version.
@@ -203,5 +219,6 @@ public class ArticleEntity {
 
     return entity.build();
   }
+
 
 }

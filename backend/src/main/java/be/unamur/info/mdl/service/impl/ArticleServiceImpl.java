@@ -12,13 +12,14 @@ import be.unamur.info.mdl.dal.repository.TagRepository;
 import be.unamur.info.mdl.dal.repository.UserRepository;
 import be.unamur.info.mdl.dto.ArticleDTO;
 import be.unamur.info.mdl.dto.UserDTO;
-import be.unamur.info.mdl.service.ArticleService;
 import be.unamur.info.mdl.exceptions.AlreadyBookmarkedException;
 import be.unamur.info.mdl.exceptions.ArticleAlreadyExistException;
 import be.unamur.info.mdl.exceptions.ArticleNotFoundException;
 import be.unamur.info.mdl.exceptions.BookmarkNotFoundException;
+import be.unamur.info.mdl.service.ArticleService;
 import com.github.slugify.Slugify;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,6 +29,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     if (articleRepository.existsByReference(articleData.getReference())) {
       throw new ArticleAlreadyExistException(
-        "The reference : " + articleData.getTitle() + " is already saved.");
+        "This article is already saved : " + articleData.getReference());
     }
 
     if (articleRepository.existsByTitle(articleData.getTitle())) {
@@ -128,7 +131,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     this.attachKeywords(newArticle, articleData.getKeywordList());
 
-    newArticle.setCreatedAt(LocalDate.now());
     this.articleRepository.save(newArticle);
     return true;
   }
@@ -195,7 +197,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+    if (user.getBookmarks().stream().anyMatch(b -> {
+      if(b.getArticle()!=null)return b.getArticle().equals(article.get());
+      else return false;
+    })) {
       throw new AlreadyBookmarkedException("This article is already in your bookmarks");
     }
 
@@ -244,5 +249,78 @@ public class ArticleServiceImpl implements ArticleService {
     return true;
   }
 
+  @Override
+  public List<ArticleDTO> getSubscriptions(String username, int page) {
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("created_at").descending());
+    UserEntity user = userRepository.findByUsername(username);
+    return articleRepository.findDistinctByFollower(username, pageable).map(a -> a.toDTO())
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<ArticleDTO> getRecommended(String username, int page) {
+    //Pageable sorting on score, descending
+    Pageable pageable = PageRequest.of(page - 1, 20, Sort.by("score").descending());
+    //case of user not connected : get all articles
+    if (username == null) {
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+
+    UserEntity user = userRepository.findByUsername(username);
+
+    //The list of a user's bookmarked articles' references
+    List<String> references = user.getBookmarks().stream().map(a -> a.getArticle().getReference())
+      .collect(Collectors.toList());
+
+    //case where a user has no bookmarks and no domain -- this one exists because when the list is empty no article is returned
+    if (references.isEmpty() && user.getDomain() == null) {
+      return articleRepository.findAll(pageable).stream().map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case where a user has no bookmark but has a domain
+    if(references.isEmpty() && user.getDomain()!= null) {
+      return articleRepository.findByCategory(user.getDomain(), pageable).map(a->a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case of user domain not defined, only looking at bookmarks
+    if (user.getDomain() == null) {
+      return articleRepository.findByReferenceNotIn(references, pageable).map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case of user domain defined, looking at domain and bookmarks
+    return articleRepository.findByCategoryLikeOrCategoryInAndReferenceNotIn(user.getDomain(),
+      user.getTags(), references, pageable)
+      .map(a -> a.toDTO()).collect(Collectors.toList());
+  }
+
+  @Override
+  public void updateScores() {
+    List<ArticleEntity> articles = articleRepository.findAll();
+    articles.forEach(article -> {
+      int nbDays = 1;
+      int nbBookmarked = article.getNbBookmarks();
+
+      if (!article.getCreatedAt().equals(LocalDate.now())) {
+        // Older implies more relevant
+        nbDays = (int) article.getCreatedAt().until(LocalDate.now(), ChronoUnit.DAYS);
+      }
+
+      // More views, more juicy
+      float score = article.getNbViews() / nbDays;
+
+      score = score + 3 * (nbBookmarked / nbDays); // More bookmark, more relevant
+      score = score + 0.3f * (article.getNbCitations() / nbDays); // More citation, more relevant
+
+      article.setScore(score);
+    });
+
+    articleRepository.saveAll(articles);
+  }
+
+  @Override
+  public Map<String,String> getAll(){
+    return articleRepository.findAll().stream().collect(Collectors.toMap(ArticleEntity::getReference,ArticleEntity::getTitle));
+  }
 
 }

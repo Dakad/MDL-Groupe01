@@ -1,7 +1,19 @@
+DROP SEQUENCE IF EXISTS PUBLIC.HIBERNATE_SEQUENCE;
+
+CREATE SEQUENCE IF NOT EXISTS PUBLIC.HIBERNATE_SEQUENCE START WITH 20000;
+
+
+INSERT INTO PUBLIC.USER_PROFILE(ID, DESCRIPTION, AVATAR_URL, STATUS) VALUES
+(712, NULL, 'https://i.imgur.com/0MC7ZG4.jpg', 'STUDENT'),
+(714, NULL, 'https://www.w3schools.com/bootstrap/img_avatar1.png', 'RESEARCHER'),
+(715, NULL, 'https://www.w3schools.com/bootstrap/img_avatar1.png', 'PROFESSOR');
+
 -- 2 +/- SELECT COUNT(*) FROM PUBLIC.USER;
 INSERT INTO PUBLIC.USER(ID, CREATED_AT, DOMAIN, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, USERNAME, CURRENT_UNIVERSITY_ID, PROFILE_ID) VALUES
-(1, DATE '2019-02-04', NULL, 'groot@mail.dom', 'Groot', 'Mdl', '$2a$10$lmZNfJ9tnRGn4bQhzM7ZZOhFtKcuQO209mwtAdaiNxC6ndtAhkvky', 'groot', NULL, NULL),
-(2, DATE '2019-05-04', NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$aBl8ND8o3Z6nB52/UxDNSe7iulnyBZGIyxvg3um7ZFV4ikvvIRQGC', 'std', NULL, NULL);
+(1, DATE '2019-02-04', NULL, 'groot@mail.dom', 'Groot', 'Mdl', '$2a$10$lmZNfJ9tnRGn4bQhzM7ZZOhFtKcuQO209mwtAdaiNxC6ndtAhkvky', 'groot', NULL, 712),
+(2, DATE '2019-05-04', NULL, 'std@mail.dom', 'Std', 'Mdl', '$2a$10$aBl8ND8o3Z6nB52/UxDNSe7iulnyBZGIyxvg3um7ZFV4ikvvIRQGC', 'std', NULL, 714),
+(3, DATE '2019-05-14', NULL, 'JeanCive@mail.dom', 'Jean', 'Cive', '$2a$10$xf0yls5V5FzVdj0S8RVU0u7tV0E/O2426Q.11Y489SyrXJbCIgLLK', 'JeanCive', NULL, 715);
+
 
 
 -- 172 +/- SELECT COUNT(*) FROM PUBLIC.TAG;
@@ -177,8 +189,20 @@ INSERT INTO PUBLIC.TAG(ID, NAME, SLUG) VALUES
 (381, 'product quality', 'product-quality'),
 (382, 'hybrid systems development', 'hybrid-systems-development'),
 (383, 'agile methods', 'agile-methods'),
-(384, 'deployment', 'deployment');
-
+(384, 'deployment', 'deployment'),
+(427, 'ComputerScience', 'computerscience'),
+(428, 'Literature', 'literature'),
+(429, 'Chemistry', 'chemistry'),
+(430, 'Biology', 'biology'),
+(431, 'Medicine', 'medicine'),
+(432, 'Economics', 'economics'),
+(433, 'Psychology', 'psychology'),
+(434, 'Laws', 'laws'),
+(435, 'Mathematics', 'mathematics'),
+(436, 'Veterinary', 'veterinary'),
+(437, 'History', 'history'),
+(438, 'Engineering', 'engineering'),
+(439, 'Language', 'language');
 
 
 -- 196 +/- SELECT COUNT(*) FROM PUBLIC.AUTHOR;
@@ -841,3 +865,18 @@ INSERT INTO PUBLIC.STATE_OF_THE_ART_ARTICLES(SOTA_ID, ARTICLE_ID) VALUES
 (419, 154),
 (419, 142),
 (419, 127);
+
+
+
+INSERT INTO PUBLIC.UNIVERSITY(ID, ABBREVIATION, NAME, WEBSITE_URL) VALUES
+(421, 'UNamur', STRINGDECODE('Universit\u00e9 de Namur'), 'https://www.unamur.be/'),
+(422, 'Ulg', STRINGDECODE('Universit\u00e9 de Li\u00e8ge'), 'https://www.uliege.be'),
+(423, 'UMons', STRINGDECODE('Universit\u00e9 de Mons'), 'https://web.umons.ac.be/fr/'),
+(424, 'Kul', STRINGDECODE('Universit\u00e9 catholique de louvain'), 'https://www.kuleuven.be'),
+(425, 'Oxford', STRINGDECODE('Oxford University'), 'http://www.ox.ac.uk/'),
+(426, 'MIT', 'Massachusetts Institute of Technology', 'http://www.mit.edu/');
+
+INSERT INTO PUBLIC.RESEARCH_GROUP(ID, CREATED_AT, URL_LINK, NAME, NB_MEMBERS, SLUG) VALUES
+(440, DATE '2019-05-14', 'https://nadi.unamur.be/', 'Namur Digital Institute ', 5, 'nadi'),
+(441, DATE '2019-05-14', 'http://code.ulb.ac.be/iridia.home.php', STRINGDECODE('Institut de Recherches Interdisciplinaires et de D\u00e9veloppements en Intelligence Artificielle'), 3, 'iridia'),
+(442, DATE '2019-05-14', 'http://unamur.be', 'Big Race under house', 9, 'bruh');

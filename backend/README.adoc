@@ -4,13 +4,7 @@
 :icons: font
 :source-highlighter: prettify
 :project_id: gs-spring-boot
-This guide provides a sampling of how {spring-boot}[Spring Boot] helps you accelerate and facilitate application development. As you read more Spring Getting Started guides, you will see more use cases for Spring Boot.
-It is meant to give you a quick taste of Spring Boot. If you want to create your own Spring Boot-based project, visit
-http://start.spring.io/[Spring Initializr], fill in your project details, pick your options, and you can download either
-a Maven build file, or a bundled up project as a zip file.
 
-== What you'll build
-You'll build a simple web application with Spring Boot and add some useful services to it.
 
 == What you'll need
 
@@ -69,63 +63,16 @@ To run the application, execute:
 
 [subs="attributes"]
 ----
-./gradlew build && java -jar build/libs/{project_id}-0.1.0.jar
-----
-
-If you are using Maven, execute:
-
-[subs="attributes"]
-----
-mvn package && java -jar target/{project_id}-0.1.0.jar
+cd backend/ && mvn spring-boot:run
 ----
 
 You should see some output like this:
 
-....
-Let's inspect the beans provided by Spring Boot:
-application
-beanNameHandlerMapping
-defaultServletHandlerMapping
-dispatcherServlet
-embeddedServletContainerCustomizerBeanPostProcessor
-handlerExceptionResolver
-helloController
-httpRequestHandlerAdapter
-messageSource
-mvcContentNegotiationManager
-mvcConversionService
-mvcValidator
-org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration
-org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
-org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration
-org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$DispatcherServletConfiguration
-org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$EmbeddedTomcat
-org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration
-org.springframework.boot.context.embedded.properties.ServerProperties
-org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor
-org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor
-org.springframework.context.annotation.internalAutowiredAnnotationProcessor
-org.springframework.context.annotation.internalCommonAnnotationProcessor
-org.springframework.context.annotation.internalConfigurationAnnotationProcessor
-org.springframework.context.annotation.internalRequiredAnnotationProcessor
-org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration
-propertySourcesBinder
-propertySourcesPlaceholderConfigurer
-requestMappingHandlerAdapter
-requestMappingHandlerMapping
-resourceHandlerMapping
-simpleControllerHandlerAdapter
-tomcatEmbeddedServletContainerFactory
-viewControllerHandlerMapping
-....
-
-You can clearly see **org.springframework.boot.autoconfigure** beans. There is also a `tomcatEmbeddedServletContainerFactory`.
-
 Check out the service.
 
 ....
-$ curl localhost:8080
-Greetings from Spring Boot!
+$ curl localhost:8080/api/zen
+{message=Yello from MDL API !}
 ....
 
 == Add Unit Tests
@@ -134,25 +81,10 @@ You will want to add a test for the endpoint you added, and Spring Test already 
 
 Add this to your build file's list of dependencies:
 
-[source,groovy]
-----
-include::complete/build.gradle[tag=tests]
-----
-
-If you are using Maven, add this to your list of dependencies:
-
-[source,xml]
-----
-include::complete/pom.xml[tag=tests]
-----
 
 Now write a simple unit test that mocks the servlet request and response through your endpoint:
 
 `src/test/java/hello/HelloControllerTest.java`
-[source,java]
-----
-include::complete/src/test/java/hello/HelloControllerTest.java[]
-----
 
 The `MockMvc` comes from Spring Test and allows you, via a set of convenient builder classes, to send HTTP requests into the `DispatcherServlet` and make assertions about the result. Note the use of the `@AutoConfigureMockMvc` together with `@SpringBootTest` to inject a `MockMvc` instance. Having used `@SpringBootTest` we are asking for the whole application context to be created.  An alternative would be to ask Spring Boot to create only the web layers of the context using the `@WebMvcTest`. Spring Boot automatically tries to locate the main application class of your application in either case, but you can override it, or narrow it down, if you want to build something different.
 
@@ -170,45 +102,7 @@ The embedded server is started up on a random port by virtue of the `webEnvironm
 If you are building a web site for your business, you probably need to add some management services. Spring Boot provides several out of the box with its http://docs.spring.io/spring-boot/docs/{spring_boot_version}/reference/htmlsingle/#production-ready[actuator module], such as health, audits, beans, and more.
 
 Add this to your build file's list of dependencies:
-
-[source,groovy]
-----
-include::complete/build.gradle[tag=actuator]
-----
-
-If you are using Maven, add this to your list of dependencies:
-
-[source,xml]
-----
-include::complete/pom.xml[tag=actuator]
-----
-
-Then restart the app:
-
-[subs="attributes"]
-----
-./gradlew build && java -jar build/libs/{project_id}-0.1.0.jar
-----
-
-If you are using Maven, execute:
-
-[subs="attributes"]
-----
-mvn package && java -jar target/{project_id}-0.1.0.jar
-----
-
 You will see a new set of RESTful end points added to the application. These are management services provided by Spring Boot.
-
-....
-2018-03-17 15:42:20.088  ... : Mapped "{[/error],produces=[text/html]}" onto public org.s...
-2018-03-17 15:42:20.089  ... : Mapped "{[/error]}" onto public org.springframework.http.R...
-2018-03-17 15:42:20.121  ... : Mapped URL path [/webjars/**] onto handler of type [class ...
-2018-03-17 15:42:20.121  ... : Mapped URL path [/**] onto handler of type [class org.spri...
-2018-03-17 15:42:20.157  ... : Mapped URL path [/**/favicon.ico] onto handler of type [cl...
-2018-03-17 15:42:20.488  ... : Mapped "{[/actuator/health],methods=[GET],produces=[application/vnd...
-2018-03-17 15:42:20.490  ... : Mapped "{[/actuator/info],methods=[GET],produces=[application/vnd.s...
-2018-03-17 15:42:20.491  ... : Mapped "{[/actuator],methods=[GET],produces=[application/vnd.spring...
-....
 
 They include: errors, http://localhost:8080/actuator/health[actuator/health], http://localhost:8080/actuator/info[actuator/info], http://localhost:8080/actuator[actuator].
 
@@ -245,19 +139,6 @@ On top of that, Spring Boot also has Groovy support, allowing you to build Sprin
 
 Create a new file called **app.groovy** and put the following code in it:
 
-[source,groovy]
-----
-@RestController
-class ThisWillActuallyRun {
-
-    @RequestMapping("/")
-    String home() {
-        return "Hello World!"
-    }
-
-}
-----
-
 NOTE: It doesn't matter where the file is. You can even fit an application that small inside a https://twitter.com/rob_winch/status/364871658483351552[single tweet]!
 
 Next, http://docs.spring.io/spring-boot/docs/{spring_boot_version}/reference/htmlsingle/#getting-started-installing-the-cli[install Spring Boot's CLI].
@@ -272,7 +153,7 @@ NOTE: This assumes you shut down the previous application, to avoid a port colli
 
 From a different terminal window:
 ----
-$ curl localhost:8080
+$ curl localhost:8080/api/zen
 Hello World!
 ----
 

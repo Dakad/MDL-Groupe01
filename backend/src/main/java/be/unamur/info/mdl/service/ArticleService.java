@@ -61,4 +61,15 @@ public interface ArticleService {
    * @return The list of referenced articles
    */
   Map<String, List<ArticleDTO>> listArticleByCategories(List<String> categories);
+
+  List<ArticleDTO> getSubscriptions(String username, int page);
+
+  List<ArticleDTO> getRecommended(String username, int page);
+
+  /**
+   * Update the score of all articles
+   */
+  void updateScores();
+
+  Map<String,String> getAll();
 }

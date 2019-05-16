@@ -4,21 +4,26 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
-@Table(name = "user_profile")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "user_profile")
 public class UserProfileEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column
@@ -26,19 +31,11 @@ public class UserProfileEntity {
 
   @Enumerated(EnumType.STRING)
   @Column
-  private UserStatus status;
+  @Builder.Default
+  private UserStatus status = UserStatus.RESEARCHER;
 
   @Column(name = "avatar_url")
   private String profilePictureURL;
-
-  @Column(name="facebook_url")
-  private String facebookURL;
-
-  @Column(name="twitter_url")
-  private String twitterURL;
-
-  @Column(name = "linkedin_url")
-  private String linkedInURL;
 
   @OneToOne
   private UserEntity user;
