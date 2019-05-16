@@ -59,19 +59,20 @@
             md-icon="description"
             :md-template-data="badgeNumber('articles')"
           >
-            <article-list
-              v-show="!loading"
-              :list="results.articles"
-              :meta="metas['articles']"
-              :hasPagination="isPaginationVisible('articles')"
-              @pagination="page = $event; updateSearchURL('page', $event) "
-            ></article-list>
             <md-empty-state
               v-if="!loading &&  (!results.articles || results.articles.length == 0)"
               md-icon="description"
               md-label="No articles found"
               :md-description="articleEmptyStateMsg"
             ></md-empty-state>
+            <article-list
+              v-else
+              v-show="!loading"
+              :list="results.articles"
+              :meta="metas['articles']"
+              :hasPagination="isPaginationVisible('articles')"
+              @pagination="page = $event; updateSearchURL('page', $event) "
+            ></article-list>
           </md-tab>
           <md-tab
             id="authors"
@@ -114,6 +115,7 @@
               md-label="No word cloud to display"
             ></md-empty-state>
             <wordcloud
+              v-else
               :data="tagList"
               nameKey="name"
               valueKey="value"
