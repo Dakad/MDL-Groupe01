@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="app-sota-helper">
     <div class="title">
       <h2>State of the Art Helper</h2>
     </div>
 
     <div class="tabs">
-      <md-tabs md-alignment="fixed" md-active-tab="overview">
+      <md-tabs md-alignment="fixed" md-active-tab="upload-one">
         <md-tab id="overview" md-label="Overview" md-icon="view_module">
           <sota-overview :bookmarked="bookmarked"/>
         </md-tab>
@@ -19,10 +19,10 @@
           ></md-empty-state>
         </md-tab>
         <md-tab id="visu" md-label="Visualisation" md-icon="share">
-          <sota-graphic v-if="!loading" :articles="recommended"/>
+          <sota-graphic v-if="!loading" :articles="recommended" :categories="articlesCategories"/>
         </md-tab>
         <md-tab id="upload-one" md-label="Create a new SotA" md-icon="plus_one">
-          <create-sota></create-sota>
+          <sota-create @create="postNewSota"></sota-create>
         </md-tab>
       </md-tabs>
     </div>
@@ -30,17 +30,19 @@
 </template>
 
 <script>
-import SotaOverview from "../components/sota-helper/SotaOverview";
-import SotaCreate from "../components/sota-helper/SotaCreate";
+import SotaOverview from "@/components/sota-helper/SotaOverview";
+import SotaCreate from "@/components/sota-helper/SotaCreate";
 import SotaGraphic from "@/components/sota-helper/SotaGraphic";
 import articleList from "@/components/resultat/ArticleList";
-import { getRecommanded } from "../services/api-article";
-import { getBookmark } from "../services/api-user";
+import { getRecommanded } from "@/services/api-article";
+import { getBookmark } from "@/services/api-user";
+import { createSota } from "@/services/api-sota";
 
 import dummyResults from "@/services/dummy/results.json";
 
 import {
   EventBus,
+  EVENT_APP_MESSAGE,
   EVENT_USER_LOGOUT,
   EVENT_BYE_REDIRECTION
 } from "@/services/event-bus.js";
@@ -48,7 +50,7 @@ import {
 export default {
   name: "SotaHelper",
   components: {
-    createSota: SotaCreate,
+    SotaCreate,
     SotaGraphic,
     SotaOverview,
     articleList
@@ -57,10 +59,31 @@ export default {
     return {
       loading: false,
       recommended: [],
-      bookmarked: {}
+      bookmarked: []
     };
   },
+  computed: {
+    articlesCategories() {
+      const setList = new Set(this.recommended.map(a => a["category"]));
+      return [...setList].sort();
+    },
+    listBookmarkedRefs() {
+      return this.bookmarked
+        .filter(b => b["article"] != null)
+        .map(({ article }) => article.reference);
+      // .map(b => b["article"]["reference"]);
+    }
+  },
+  created() {
+    EventBus.$on(EVENT_USER_LOGOUT, _ => {
+      this.$router.replace({ name: "accueil" }, function onComplete() {
+        EventBus.$emit(EVENT_BYE_REDIRECTION, true);
+      });
+    });
 
+    this.fetchRecommanded();
+    this.fetchBookmarks();
+  },
   methods: {
     fetchRecommanded() {
       this.loading = true;
@@ -77,18 +100,36 @@ export default {
         this.bookmarked = data;
         this.loading = false;
       });
+    },
+
+    postNewSota(newSota) {
+      console.log(newSota);
+      newSota["articles"] = this.listBookmarkedRefs.concat(newSota["articles"]);
+
+      console.log(newSota);
+
+      return createSota(newSota)
+        .then(data => {
+          this.$router.push({
+            name: "sotaDetails",
+            params: {
+              reference: data["reference"]
+            }
+          });
+          console.log(data);
+          EventBus.$emit(EVENT_APP_MESSAGE, {
+            type: "info",
+            message: "New SoTA created"
+          });
+        })
+        .catch(err => {
+          // Send a flash error msg about theh sota creation
+          EventBus.$emit(EVENT_APP_MESSAGE, {
+            type: "error",
+            message: err.body["message"] || "Operation failed : creation failed"
+          });
+        });
     }
-  },
-
-  created() {
-    EventBus.$on(EVENT_USER_LOGOUT, _ => {
-      this.$router.replace({ name: "accueil" }, function onComplete() {
-        EventBus.$emit(EVENT_BYE_REDIRECTION, true);
-      });
-    });
-
-    this.fetchRecommanded();
-    this.fetchBookmarks();
   }
 };
 </script>

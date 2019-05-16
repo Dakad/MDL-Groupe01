@@ -42,10 +42,12 @@ public class UniversityEntity {
 
 
   @OneToMany(mappedBy = "currentUniversity")
+  @Builder.Default
   private Set<UserEntity> currentMembers = new LinkedHashSet<>();
 
 
-  public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(name,abbreviation, websiteUrl); }
+
+  public UniversityInfoDTO toInfoDTO(){ return new UniversityInfoDTO(abbreviation,name, websiteUrl); }
 
   public static UniversityEntity of(UniversityInfoDTO dto) {
     UniversityEntityBuilder entity = UniversityEntity.builder();

@@ -23,7 +23,7 @@ public class UserDTO extends CredentialDTO {
   private String firstname;
 
   @JsonProperty("avatar")
-  private String profilePicUrl = "https://i.imgur.com/0MC7ZG4.jpg";
+  private String profilePicUrl = "https://www.w3schools.com/bootstrap/img_avatar1.png";
 
   private String domain = "Unknown";
 

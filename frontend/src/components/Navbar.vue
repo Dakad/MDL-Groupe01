@@ -31,7 +31,7 @@
             <md-menu-content>
               <md-menu-item @click="$router.push({ name : 'myProfile' })">
                 <md-icon>perm_identity</md-icon>
-                <span>Profile</span>
+                <span>My profile</span>
               </md-menu-item>
 
               <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
@@ -40,8 +40,15 @@
               </md-menu-item>
 
               <md-menu-item @click="$router.push({ name : 'updateProfile' })">
+                <md-icon>how_to_reg</md-icon>
+                <span>Update my profile</span>
+              </md-menu-item>
+
+              <md-divider></md-divider>
+
+              <md-menu-item @click="$router.push({ name : 'about' })">
                 <md-icon>info</md-icon>
-                <span>Change my information's</span>
+                <span>About us</span>
               </md-menu-item>
 
               <md-divider></md-divider>
@@ -99,6 +106,7 @@ import {
   EVENT_USER_LOGOUT,
   EVENT_USER_SIGNIN,
   EVENT_APP_MESSAGE,
+  EVENT_PROFILE_UPDATED,
   EVENT_BYE_REDIRECTION
 } from "@/services/event-bus.js";
 
@@ -134,6 +142,8 @@ export default {
     EventBus.$emit(EVENT_USER_LOGGED, this.isAuthenticated);
 
     EventBus.$on(EVENT_USER_LOGGED, this.getProfile);
+
+    EventBus.$on(EVENT_PROFILE_UPDATED, this.getProfile);
 
     // Disable the search in in the navbar on page 'accueil'
     this.searchBar.show = this.$route.name != "accueil";

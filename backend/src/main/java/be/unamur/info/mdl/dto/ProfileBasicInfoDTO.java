@@ -1,5 +1,6 @@
 package be.unamur.info.mdl.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value = "ProfileBasicInfo", description = "Model representing an user's profile basic information")
 public class ProfileBasicInfoDTO {
+
+  @JsonIgnore
+  public static final String DEFAULT_PROFILE_PICTURE_URL = "https://www.w3schools.com/bootstrap/img_avatar1.png";
+
 
   @NotBlank(message = "The name is required")
   private String name;
@@ -32,5 +37,5 @@ public class ProfileBasicInfoDTO {
   private String email;
 
   @JsonProperty("avatar_url")
-  private String profilePictureURL;
+  private String profilePictureURL = DEFAULT_PROFILE_PICTURE_URL;
 }

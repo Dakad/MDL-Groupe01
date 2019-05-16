@@ -7,6 +7,7 @@ import be.unamur.info.mdl.exceptions.InvalidProfilePictureLinkException;
 import be.unamur.info.mdl.service.ProfileService;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -137,10 +138,10 @@ public class ProfileServiceImpl implements ProfileService {
     UserEntity user = userRepository.findByUsername(username);
 
     //UPDATING UNIVERSITIES
-    if (updateDTO.getCurrentUniversity() != null) {
+    if (!Strings.isNullOrEmpty(updateDTO.getCurrentUniversity())) {
       //find the corresponding university entity
       UniversityEntity university = universityRepository
-        .findByName(updateDTO.getCurrentUniversity());
+        .findByAbbreviation(updateDTO.getCurrentUniversity());
       //add the old current university to the list of universities
       user.getUniversities().add(user.getCurrentUniversity());
 
@@ -155,12 +156,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //UPDATING EMAIL ADDRESS
-    if(updateDTO.getDomain() != null){
+    if(!Strings.isNullOrEmpty(updateDTO.getEmail())){
       user.setEmail(updateDTO.getEmail());
     }
 
     //UPDATING DOMAIN
-    if(updateDTO.getDomain() != null){
+    if(!Strings.isNullOrEmpty(updateDTO.getDomain())){
       user.setDomain(ServiceUtils.getOrCreateTag(updateDTO.getDomain(), tagRepository));
     }
 
@@ -185,7 +186,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (ImageIO.read(link) == null) {
           throw new InvalidProfilePictureLinkException("The provided link does not redirect to an image");
         }
-        // user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
+        user.getUserProfile().setProfilePictureURL(updateDTO.getProfilePictureURL());
       } catch (IOException e) {
         throw new InvalidProfilePictureLinkException(
           "The provided avatar URL is invalid (not found)");

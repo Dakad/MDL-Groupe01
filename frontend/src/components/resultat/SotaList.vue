@@ -15,7 +15,7 @@
           <div class="info">
             <div class="author">
               <p>
-                Written By:
+                Created by:
                 <router-link
                   :to="{ name: 'userProfile', params: { reference: sota.creator.username }}"
                 >
@@ -24,7 +24,12 @@
               </p>
             </div>
             <div class="keyword">
-              <p>Main subject: {{sota.subject}}</p>
+              <p>
+                Main subject:
+                <span
+                  :style="{'color': getSubjectColor(sota.subject)}"
+                >{{sota.subject}}</span>
+              </p>
             </div>
             <div class="date">
               <p>Published on the: {{sota.created_at}}</p>
@@ -33,9 +38,9 @@
         </md-card-content>
       </div>
       <div class="md-layout-item md-size-10">
-        <md-button class="md-icon-button" v-if="logged">
+        <!-- <md-button class="md-icon-button" v-if="logged">
           <md-icon>bookmark</md-icon>
-        </md-button>
+        </md-button>-->
       </div>
     </md-card>
     <Pagination
@@ -49,72 +54,78 @@
 </template>
 
 <script>
-  import { Pagination } from "@/components";
-  import { isLogged } from "@/services/api-user";
+import { Pagination } from "@/components";
+import { isLogged } from "@/services/api-user";
+import { getColorHashOf } from "@/services/util";
 
-  export default {
-    name: "SotaList",
-    components: {
-      Pagination
+export default {
+  name: "SotaList",
+  components: {
+    Pagination
+  },
+  props: {
+    list: {
+      type: Array,
+      default: _ => []
     },
-    props: {
-      list: {
-        type: Array,
-        default: _ => []
-      },
-      meta: {
-        type: Object,
-        default: () => {}
-      }
-    },
-    data() {
-      return {
-        currentPage: 1,
-        logged: false
-      };
-    },
-    watch: {
-      currentPage: function() {
-        this.$emit("pagination", this.currentPage);
-      }
-    },
-    created() {
-      this.logged = isLogged();
-    },
-    computed: {
-      sotas() {
-        return this.list;
-      },
-      page() {
-        return this.meta || {};
-      }
+    meta: {
+      type: Object,
+      default: () => {}
     }
-  };
+  },
+  data() {
+    return {
+      currentPage: 1,
+      logged: false
+    };
+  },
+  watch: {
+    currentPage: function() {
+      this.$emit("pagination", this.currentPage);
+    }
+  },
+  created() {
+    this.logged = isLogged();
+  },
+  computed: {
+    sotas() {
+      return this.list;
+    },
+    page() {
+      return this.meta || {};
+    }
+  },
+  methods: {
+    getSubjectColor(subject) {
+      return getColorHashOf(subject)[0];
+    }
+  }
+};
 </script>
 
 <style scoped>
-  .md-list {
-    margin: 10px;
-    display: inline-block;
-  }
+.md-list {
+  margin: 10px;
+  display: inline-block;
+}
 
-  .author {
-    float: left;
-    margin-left: 5px;
-    margin-right: 30px;
-  }
-  .keyword {
-    float: left;
-    margin-left: 5px;
-    margin-right: 30px;
-  }
-  .date {
-    float: left;
-    margin-left: 5px;
-    margin-right: 30px;
-  }
+.author {
+  float: left;
+  margin-left: 5px;
+  margin-right: 30px;
+}
+.keyword {
+  float: left;
+  margin-left: 5px;
+  margin-right: 30px;
+}
+.date {
+  float: left;
+  margin-left: 5px;
+  margin-right: 30px;
+}
 
-  #sota-pagination {
-    margin: 20px;
-  }
+#sota-pagination {
+  margin: 20px;
+}
 </style>

@@ -22,7 +22,7 @@ const EXCLUDED_PROPS = [
  */
 function formatToJson(json) {
   const abstract = json.entryTags['abstract'];
-  if (abstract == undefined || abstract.trim().length()) {
+  if (abstract == undefined || abstract.trim().length == 0) {
     json.entryTags['abstract'] = json.entryTags['title'];
   }
   // delete json.entryTags['abstract'];
@@ -66,7 +66,9 @@ function formatToBibtex(article) {
  */
 function transformToJson(json) {
   return Object.assign({}, json.entryTags, {
+    type: json.entryType,
     reference: json.citationKey,
+    pages: json.entryTags['numpages'] || json.entryTags['pages'],
     authors: json.entryTags.author.split(', ').map(a => a.trim()),
     keywords: json.entryTags.keywords.split(', ').map(a => a.trim()),
     year: Number.parseInt(json.entryTags.year, 10)
@@ -77,12 +79,13 @@ function parseToBibtex([reference, article]) {
   if (typeof article != 'object') {
     return '';
   }
+  const { type = 'inproceedings' } = article;
 
-  let bibtex = `@article{${reference},\n`;
+  let bibtex = `@${type.toLowerCase()}{${reference},\n`;
   // Loop over the fields of the article
   bibtex += Object.entries(article)
     .map(([field, value]) => `${field} = ${JSON.stringify(value)}`)
-    .join('\n');
+    .join(',\n');
 
   // Close the  bibtex
   bibtex += '\n}';

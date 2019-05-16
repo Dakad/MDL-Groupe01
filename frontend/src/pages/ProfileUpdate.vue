@@ -16,7 +16,7 @@
           <md-icon class="material-icons">home</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="profile.university" :md-options="listUniversities">
+          <md-autocomplete v-model="selected.university" :md-options="listUniversities">
             <label>Change your university</label>
           </md-autocomplete>
         </div>
@@ -25,7 +25,7 @@
           <md-icon class="material-icons">keyboard</md-icon>
         </div>
         <div class="zoneText">
-          <md-autocomplete v-model="profile.domain" :md-options="listDomains">
+          <md-autocomplete v-model="selected.domain" :md-options="listDomains">
             <label>Change your domain</label>
           </md-autocomplete>
         </div>
@@ -49,13 +49,13 @@
       <div class="zoneText">
         <md-field>
           <label>Change your research groups</label>
-          <md-input v-model="profile.researchGroup" md-autogrow></md-input>
+          <md-input v-model="selected['research_groups']" md-autogrow></md-input>
         </md-field>
       </div>
 
       <md-field>
         <label>Change your bio</label>
-        <md-textarea v-model="profile.bio"></md-textarea>
+        <md-textarea v-model="profile.bio" md-counter="250"></md-textarea>
       </md-field>
     </div>
 
@@ -96,6 +96,11 @@ export default {
     return {
       wantToChange: false,
       sending: false,
+      selected: {
+        university: null,
+        domain: null,
+        research_groups: null
+      },
       profile: {}
     };
   },
@@ -103,13 +108,12 @@ export default {
   computed: {
     listDomains() {
       return [
-        "ComputerScience",
+        "Computer Science",
         "Literature",
         "Chemistry",
         "Physics",
         "Biology",
         "Medicine",
-        "Economics",
         "Economics",
         "Psychology",
         "Laws",
@@ -117,12 +121,13 @@ export default {
         "Veterinary",
         "History",
         "Engineering",
-        "Language"
+        "Language",
+        "Unknown"
       ];
     },
 
     listUniversities() {
-      return ["UNamur", "ULB", "Ulg", "UMons", "Kul", "Oxford", "MIT"];
+      return ["UNamur", "Ulg", "UMons", "Kul", "Oxford", "MIT"];
     },
     listResearchGroups() {
       return ["Nadi", "IRIDIA", "BRUH"];
@@ -144,16 +149,29 @@ export default {
       getProfileBase().then(data => {
         console.log(data);
         this.profile = Object.assign({}, data);
-        if (this.profile.university == null) {
-          this.profile.university = "";
+
+        if (this.profile.university != null) {
+          this.$set(
+            this.selected,
+            "university",
+            this.profile.university.abbreviation
+          );
         }
+
         if (this.profile.domain == null) {
-          this.profile.domain = "";
+          this.profile.domain = "Unknown";
         }
+        this.$set(this.selected, "domain", this.profile.domain);
       });
       getProfileInfoPro().then(data => {
-        console.log(data);
-        this.profile["researchGroup"] = data.researchGroup;
+        if (data.researchGroup) {
+          this.profile["researchGroup"] = data.researchGroup || "";
+          this.$set(
+            this.selected,
+            "research_groups",
+            this.profile.researchGroup.join(",")
+          );
+        }
       });
       getProfileSocial().then(data => {
         console.log(data);
@@ -163,14 +181,29 @@ export default {
 
     updateData() {
       this.sending = true;
-      let dataToSend = Object.assign(this.profile, {});
+      let dataToSend = Object.assign(this.profile, this.selected, {
+        researchGroup: undefined,
+        research_groups: this.selected.research_groups
+          .split(",")
+          .filter(r => r.length)
+      });
+      // dataToSend["university"] = this.profile.university.abbreviation;
       postModificationProfile(dataToSend)
         .then(_ => {
           this.wantToChange = false;
           this.sending = false;
-          EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile info updated");
+          EventBus.$emit(EVENT_PROFILE_UPDATED, "Profile successfully updated");
+          this.$router.push({ name: "myProfile" });
         })
-        .catch(({ body }) => console.log(body.message));
+        .catch(({ body }) => {
+          const { message } = body;
+          this.wantToChange = false;
+          this.sending = false;
+          EventBus.$emit(EVENT_APP_MESSAGE, {
+            type: "error",
+            message
+          });
+        });
     }
   }
 };

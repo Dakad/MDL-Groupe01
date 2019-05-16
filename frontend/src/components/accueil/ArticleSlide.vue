@@ -1,23 +1,28 @@
 <template>
   <md-card class="size">
     <md-card-header>
-      <router-link class="md-title" :to="{ name: 'articleDetails', params: { reference: reference }}">
+      <router-link
+        class="md-title"
+        :to="{ name: 'articleDetails', params: { reference: reference }}"
+      >
         <h5>{{ title }}</h5>
       </router-link>
       <div class="md-subhead">
         <span v-for="(name,index) in authors" :key="name">
-          {{ name }}&nbsp;<b v-if="index<authors.length-1">,</b>
+          {{ name }}&nbsp;
+          <b v-if="index<authors.length-1">,</b>
         </span>
       </div>
     </md-card-header>
 
     <md-card-content>
       <h6>
-        <md-chip :style="colorCategory" title="Category : ">
-          {{category}}
-        </md-chip>&nbsp;&nbsp;
-        {{ year }}<b v-if="month">, {{ month }}</b>
-      </h6><br>
+        <md-chip :style="colorCategory" title="Category : ">{{category}}</md-chip>
+        &nbsp;&nbsp;
+        {{ year }}
+        <b v-if="month">, {{ month }}</b>
+      </h6>
+      <br>
       <p>Views: {{ nbViews }}&nbsp;&nbsp;Quotes: {{ nbQuotes }}</p>
       <md-chip class="chip" v-for="(word) in keywords" :key="word.slug">{{ word.name }}</md-chip>
     </md-card-content>
@@ -25,30 +30,40 @@
 </template>
 
 <script>
-  import { Slide } from "vue-carousel";
-  import ColorHash from "color-hash";
+import { Slide } from "vue-carousel";
+import { getColorHashOf } from "@/services/util";
 
-  const colorHash = new ColorHash();
-
-  export default {
-    name: "ArticleSlide",
-    props: ["title", "authors", "category", "year", "month", "nbViews", "nbQuotes", "keywords", "reference"],
-    computed: {
-      colorCategory() {
-        return {
-          "background-color": colorHash.hex(this.category)
-        };
-      },
-    },
-  };
+export default {
+  name: "ArticleSlide",
+  props: [
+    "title",
+    "authors",
+    "category",
+    "year",
+    "month",
+    "nbViews",
+    "nbQuotes",
+    "keywords",
+    "reference"
+  ],
+  computed: {
+    colorCategory() {
+      const [bgColor, txtColor] = getColorHashOf(this.category);
+      return {
+        "background-color": bgColor,
+        color: txtColor
+      };
+    }
+  }
+};
 </script>
 
 <style scoped>
-  .chip {
-    margin: 4px;
-  }
+.chip {
+  margin: 4px;
+}
 
-  .size {
-    min-height: 100%;
-  }
+.size {
+  min-height: 100%;
+}
 </style>

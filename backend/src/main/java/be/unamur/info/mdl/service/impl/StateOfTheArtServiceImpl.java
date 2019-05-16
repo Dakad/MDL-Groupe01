@@ -60,10 +60,6 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   @Override
   public StateOfTheArtDTO create(@Valid StateOfTheArtDTO sotaData, UserDTO currentUser)
     throws SotaAlreadyExistException, ArticleNotFoundException {
-    if (sotaRepository.existsByReference(sotaData.getReference())) {
-      throw new SotaAlreadyExistException(
-        "The SoTA reference is already saved : " + sotaData.getReference());
-    }
 
     if (articleRepository.existsByTitle(sotaData.getTitle())) {
       throw new SotaAlreadyExistException(
@@ -77,11 +73,18 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
       newSota.setReference(this.generateReference(sotaData.getTitle()));
     }
 
+    if (sotaRepository.existsByReference(sotaData.getReference())) {
+      throw new SotaAlreadyExistException(
+        "The SoTA reference is already saved : " + sotaData.getReference());
+    }
+
     UserEntity creator = userRepository.findByUsername(currentUser.getUsername());
     newSota.setCreator(creator);
     newSota.setCreatedAt(LocalDate.now());
 
     this.attachReference(newSota, sotaData.getArticleList());
+
+    this.attachCategory(newSota, sotaData.getCategory());
 
     this.attachKeywords(newSota, sotaData.getKeywordList());
 
@@ -177,7 +180,19 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
   }
 
   /**
-   * Attach the corresponding Author(created or persisted) to the new SoTA
+   * Attach the corresponding Tag(created or persisted) to the new SoTA
+   *
+   * @param newSota The new SoTA being created
+   * @param keywordName - The keyword's name.
+   */
+  private void attachCategory(StateOfTheArtEntity newSota, String keywordName) {
+    TagEntity keyword = ServiceUtils.getOrCreateTag(keywordName, this.tagRepository);
+    newSota.setCategory(keyword);
+  }
+
+
+  /**
+   * Attach the corresponding Keyword(created or persisted) to the new SoTA
    *
    * @param newSota The new SoTA being created
    * @param keywords - The keyword's name list.
@@ -205,7 +220,10 @@ public class StateOfTheArtServiceImpl implements StateOfTheArtService {
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(sota.get()))) {
+    if (user.getBookmarks().stream().anyMatch(b -> {
+      if(b.getArticle() != null)  return b.getArticle().equals(sota.get());
+      else return false;
+    })) {
       return false;
     }
 

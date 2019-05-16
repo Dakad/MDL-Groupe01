@@ -31,7 +31,7 @@ import org.springframework.web.context.request.WebRequest;
 public class ApiErrorHandler {
 
   // @Validate For Validating Path Variables and Request Parameters
-  @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class,
+  @ExceptionHandler({ConstraintViolationException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class,
     BindException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody

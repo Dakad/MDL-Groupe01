@@ -2,7 +2,7 @@
   <div class="graph-container">
     <md-card>
       <md-card-header>
-        <div class="md-title center">Preview of the SoTA grouped by the categories</div>
+        <div class="md-title center">Preview of the SoTA grouped by their domains</div>
       </md-card-header>
 
       <md-card-content>
@@ -48,6 +48,10 @@ export default {
       required: true,
       default: () => []
     },
+    categories: {
+      type: Array,
+      default: () => []
+    },
     sotaName: {
       type: String,
       default: () => "My SoTA"
@@ -64,31 +68,22 @@ export default {
     };
   },
   created() {
+    this.treeData = Object.assign(dataTreeBase, {
+      name: this.sotaName
+    });
     this.fetchArticlesByCategories();
   },
+  beforeDestroy() {
+    this.treeData = Object.assign(dataTreeBase, {});
+  },
   computed: {
-    // treeDataFromArticles() {
-    //   const tree = Object.assign(dataTreeBase);
-    //   unduplicatedCategories(this.articles).forEach(cat => {
-    //     tree["children"].push({
-    //       name: cat,
-    //       children: [
-    //         { name: "Articles", children: [] },
-    //         { name: "Sota", children: [] }
-    //       ]
-    //     });
-    //   });
-    //   this.articles.forEach(({ title, category, reference }) => {
-    //     const overflow = title.length > 75;
-    //     const name = !overflow ? title : title.substr(0, 75) + "...";
-    //     const categoryChild = tree["children"].find(c => c["name"] == category);
-    //     categoryChild["children"][0]["children"].push({
-    //       name,
-    //       reference
-    //     });
-    //   });
-    //   return tree;
-    // }
+    categoriesFromArticles() {
+      if (this.categories) {
+        return this.categories;
+      }
+      const categorySet = new Set(this.articles.map(a => a["category"]));
+      return [...categorySet].sort();
+    }
   },
   methods: {
     onSelectNode: function(node) {
@@ -102,14 +97,12 @@ export default {
       }
     },
     fetchArticlesByCategories: function() {
+      const categories = unduplicatedCategories(this.articles);
       this.treeData = Object.assign(dataTreeBase, {
         name: this.sotaName
       });
-
-      const categories = unduplicatedCategories(this.articles);
-
       // Insert the categories as node in the tree data
-      categories(this.articles).forEach(category => {
+      categories.forEach(category => {
         const child = {
           name: category,
           children: [
@@ -121,6 +114,10 @@ export default {
       });
 
       console.log(this.articles, categories);
+
+      if (categories.length == 0) {
+        return;
+      }
 
       // Send APi request to retrieve articles matching the provided categories
       getArticlesByCategories(categories)

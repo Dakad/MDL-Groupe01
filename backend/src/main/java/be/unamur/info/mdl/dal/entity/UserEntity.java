@@ -200,12 +200,7 @@ public class UserEntity {
       universityInfoDTO = this.currentUniversity.toInfoDTO();
     }
 
-    String avatar;
-    if (userProfile != null) {
-      avatar = userProfile.getProfilePictureURL();
-    } else {
-      avatar = "https://i.imgur.com/0MC7ZG4.jpg";
-    }
+    String avatar = userProfile.getProfilePictureURL();
     String dom = (domain != null) ? domain.getName() : null;
     return new ProfileBasicInfoDTO(lastname, firstname, dom, universityInfoDTO, email, avatar);
   }

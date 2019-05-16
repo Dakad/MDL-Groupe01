@@ -197,7 +197,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
     //Check if the user has already bookmarked this article
     UserEntity user = userRepository.findByUsername(username);
-    if (user.getBookmarks().stream().anyMatch(b -> b.getArticle().equals(article.get()))) {
+    if (user.getBookmarks().stream().anyMatch(b -> {
+      if(b.getArticle()!=null)return b.getArticle().equals(article.get());
+      else return false;
+    })) {
       throw new AlreadyBookmarkedException("This article is already in your bookmarks");
     }
 
@@ -270,9 +273,14 @@ public class ArticleServiceImpl implements ArticleService {
     List<String> references = user.getBookmarks().stream().map(a -> a.getArticle().getReference())
       .collect(Collectors.toList());
 
-    //case where a user has no bookmarks -- this one exists because when the list is empty no article is returned
-    if (references.isEmpty()) {
+    //case where a user has no bookmarks and no domain -- this one exists because when the list is empty no article is returned
+    if (references.isEmpty() && user.getDomain() == null) {
       return articleRepository.findAll(pageable).stream().map(a -> a.toDTO())
+        .collect(Collectors.toList());
+    }
+    //case where a user has no bookmark but has a domain
+    if(references.isEmpty() && user.getDomain()!= null) {
+      return articleRepository.findByCategory(user.getDomain(), pageable).map(a->a.toDTO())
         .collect(Collectors.toList());
     }
     //case of user domain not defined, only looking at bookmarks

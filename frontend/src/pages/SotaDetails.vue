@@ -50,7 +50,7 @@
         <article-list :list="sota.articles"></article-list>
       </md-tab>
 
-      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="view_module">
+      <md-tab id="tree-visu" md-label="Articles-Tree" md-icon="share">
         <sota-graphic v-if="sota.articles" :sota-name="sota.title" :articles="sota.articles"/>
       </md-tab>
     </md-tabs>
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import ColorHash from "color-hash";
+import { getColorHashOf } from "@/services/util";
 
 // import InfoNav from "@/components/article/InfoNav";
 import SotaMenu from "@/components/sota-details/SotaMenu";
@@ -97,15 +97,12 @@ import { isLogged } from "@/services/api-user";
 import { exportAsJson, exportAsBibtex } from "@/services/api";
 import { toBibtex } from "@/services/bibtex-parse";
 
-
 import {
   EventBus,
   EVENT_USER_LOGGED,
   EVENT_USER_LOGOUT,
   EVENT_APP_MESSAGE
 } from "@/services/event-bus.js";
-
-const colorHash = new ColorHash();
 
 export default {
   name: "SotaDetails",
@@ -140,8 +137,11 @@ export default {
       }
     },
     subjectColor() {
+      const [bgColor, txtColor] = getColorHashOf(this.category);
+
       return {
-        "background-color": colorHash.hex(this.sota.subject)
+        "background-color": bgColor,
+        color: txtColor
       };
     },
     jsonData() {
@@ -185,7 +185,10 @@ export default {
         sotaDeleteBookmark(this.reference)
           .then(x => (this.isBookmarked = false))
           .then(_ =>
-            EventBus.$emit(EVENT_APP_MESSAGE, {type: 'error', 'msg':"SoTA removed from bookmarks"})
+            EventBus.$emit(EVENT_APP_MESSAGE, {
+              type: "error",
+              msg: "SoTA removed from bookmarks"
+            })
           );
       } else {
         sotaPostBookmark(this.reference)
@@ -197,7 +200,6 @@ export default {
       sotaGetBookmark(this.reference).then(
         data => (this.isBookmarked = data.done)
       );
-
     },
     download(format) {
       this.wantDownload = true;
@@ -210,7 +212,6 @@ export default {
     onDownloadFormatChoiceBtnClick(choice) {
       this.wantDownload = false;
       EventBus.$emit(EVENT_APP_MESSAGE, "SoTA downloaded as " + choice);
-
     }
   }
 };
