@@ -21,7 +21,20 @@
           :md-active-tab="activeTab"
           @md-changed="activeTab = $event; updateSearchURL('tab', $event)"
         >
-          <md-tab id="sotas" md-label="States Of The Art" md-icon="view_module">
+          <template slot="md-tab" slot-scope="{ tab }">
+            {{ tab.label }}
+            <i
+              class="badge"
+              v-if="tab.data.size"
+              :title="tab.data.size | pluralize(' result')"
+            >{{ tab.data.size }}</i>
+          </template>
+          <md-tab
+            id="sotas"
+            md-label="States Of The Art"
+            md-icon="view_module"
+            :md-template-data="badgeNumber('sotas')"
+          >
             <sota-list v-show="!loading" :list="results.sotas"></sota-list>
             <md-empty-state
               v-if="!loading && (!results.sotas || results.sotas.length == 0)"
@@ -40,7 +53,12 @@
               </ul>
             </md-empty-state>
           </md-tab>
-          <md-tab id="articles" md-label="Articles" md-icon="description">
+          <md-tab
+            id="articles"
+            md-label="Articles"
+            md-icon="description"
+            :md-template-data="badgeNumber('articles')"
+          >
             <article-list
               v-show="!loading"
               :list="results.articles"
@@ -55,7 +73,12 @@
               :md-description="articleEmptyStateMsg"
             ></md-empty-state>
           </md-tab>
-          <md-tab id="authors" md-label="Authors/Users" md-icon="people">
+          <md-tab
+            id="authors"
+            md-label="Authors/Users"
+            md-icon="people"
+            :md-template-data="badgeNumber('users')"
+          >
             <author-list v-show="!loading" :list="results.users"></author-list>
             <author-list v-show="!loading" :list="results.authors"></author-list>
             <md-empty-state
@@ -178,12 +201,33 @@ export default {
     },
     tagList: function() {
       var list = [];
-
       for (let i = 0; i < this.tags.length; i++) {
         list.push({ name: this.tags[i][0], value: this.tags[i][1] * 1000 });
       }
-
       return list;
+    },
+
+    badgeNumber: function(type) {
+      return type => {
+        let nb = 0;
+        if (type == "articles" && this.metas["articles"] != null) {
+          nb = this.metas["articles"]["total_size"];
+        }
+        if (type == "sotas" && this.metas["sotas"] != null) {
+          nb = this.metas["sotas"]["total_size"];
+        }
+        if (
+          (type == "users" || type == "authors") &&
+          (this.metas["users"] != null || this.metas["authors"])
+        ) {
+          const { total_size: authors_size = 0 } = this.metas["authors"];
+          const { total_size: users_size = 0 } = this.metas["users"];
+
+          nb = users_size + authors_size;
+        }
+
+        return { size: nb };
+      };
     },
 
     isEmptyArticlesTags() {
@@ -304,7 +348,7 @@ export default {
           if (!res["metas"]) {
           }
           Object.keys(res["metas"])
-            .filter(type => res["metas"][type] != null)
+            // .filter(type => res["metas"][type] != null)
             .forEach(type => {
               this.$set(this.metas, type, res["metas"][type]);
               this.$set(this.results, type, res[type]);
@@ -346,12 +390,24 @@ export default {
   margin-top: 75px; */
 }
 
-/* .tabs {
+.badge {
+  width: 19px;
+  height: 19px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  top: 15%;
-  left: 25%;
-  width: 75%;
-} */
+  top: 2px;
+  right: 2px;
+  background: red;
+  border-radius: 100%;
+  color: #fff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  font-family: "Roboto Mono", monospace;
+}
 
 .md-radio {
   display: flex;
