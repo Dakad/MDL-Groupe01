@@ -8,6 +8,8 @@ import be.unamur.info.mdl.exceptions.SotaAlreadyExistException;
 import be.unamur.info.mdl.exceptions.SotaNotFoundException;
 import be.unamur.info.mdl.exceptions.UserNotFoundException;
 
+import java.util.Map;
+
 public interface StateOfTheArtService {
 
 
@@ -61,5 +63,11 @@ public interface StateOfTheArtService {
 
   boolean delete (String reference, String username)
     throws UserNotFoundException;
+
+  Map<String,String> getAll();
+
+  StateOfTheArtDTO put (String reference, String username, StateOfTheArtDTO data)
+  throws  UserNotFoundException;
+
 }
 

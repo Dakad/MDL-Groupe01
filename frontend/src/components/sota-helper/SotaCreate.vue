@@ -1,134 +1,226 @@
 <template>
-  <div class="container">
-    <div class="left">
-      <md-field>
-        <label>Name of the SotA</label>
-        <md-input v-model="sotAName"></md-input>
-        <span class="md-helper-text">Helper text</span>
-      </md-field>
-      <md-field>
-        <label>Main subject</label>
-        <md-input v-model="domain"></md-input>
-        <span class="md-helper-text">Helper text</span>
-      </md-field>
-      <md-field>
-        <label>Authors</label>
-        <md-input v-model="author"></md-input>
-        <span class="md-helper-text">Helper text</span>
-      </md-field>
+  <div class="app-sota-create md-layout md-gutter md-alignment-top-space-between">
+    <sota-create-form
+      class="md-layout-item md-size-45"
+      @upload="onFileUpload"
+      @submit="sendSota"
+      @clear="onClearForm"
+    >
+      <hr v-if="uploads.length">
 
-      <md-field>
-        <label>Tags</label>
-        <md-textarea v-model="tags" md-autogrow></md-textarea>
-        <span class="md-helper-text">separate each tags with a coma</span>
-      </md-field>
-    </div>
-    <div class="right">
-      <md-field>
-        <label>Import bibtex file</label>
-        <md-file multiple accept=".bib, .bibtex" @md-change="onFileUpload($event)"/>
-      </md-field>
-    </div>
-    <div class="bottom">
-      <b-button size="lg" variant="outline-info" @click="showAcceptMessage = true">UPLOAD THE SotA</b-button>
+      <md-list class="upload-file-list md-scrollbar">
+        <sota-upload-list-item
+          v-for="upload in uploads"
+          :key="upload"
+          :item="articlesUploaded[upload]"
+          :selected="upload == selected['filename']"
+          @select="onSelectUpload"
+          @remove="onRemoveUpload"
+          @edit="onEditUpload"
+        />
+      </md-list>
+
+      <div>
+        <ul>
+          <li v-for="(error, index) in apiErrors" :key="index">
+            <span class="md-error">#{{index}} - {{error}}</span>
+          </li>
+        </ul>
+      </div>
+    </sota-create-form>
+
+    <!-- Preview of the imported bibtex -->
+    <div class="md-layout-item md-size" id="bibtex-preview-container">
+      <sota-upload-preview
+        :preview="previewJson"
+        @remove="onRemoveUpload()"
+        @edit="showUploadEdit = true"
+      ></sota-upload-preview>
     </div>
 
-    <md-dialog class="login-dialog" :md-active.sync="showAcceptMessage">
-      <md-dialog-title>
-        &nbsp;Are you sure you want to upload this SotA
-        <div class="bottom-acc">
-          <b-button size="lg" variant="outline-info" @click="sendSota()">Yes</b-button>
-          <b-button size="lg" variant="outline-info" @click="showAcceptMessage = false">No, return</b-button>
-        </div>
-      </md-dialog-title>
-      <!-- <login @error="handleError('login', $event)" @success="handleSuccess('login',$event)"/> -->
+    <!-- Dialog box to edit the parsed bibtex files -->
+    <md-dialog :md-active.sync="showUploadEdit">
+      <md-dialog-title>Editing {{selected['filename']}}</md-dialog-title>
+      <md-dialog-content>
+        <sota-upload-list-edit
+          id="upload-list-edit"
+          :filename="selected.filname"
+          :list="selected.bibtex"
+        />
+      </md-dialog-content>
     </md-dialog>
+
+    <!-- Dialog box for be redirect to created SoTA -->
+    <md-dialog-confirm
+      :md-active.sync="showRedirectDialog"
+      md-title="SoTA created"
+      md-content="Your <strong>SoTA</strong> has been published.\n Do you want to be redirect to it page"
+      md-confirm-text="Okay"
+      md-cancel-text="Disagree"
+      @md-cancel="showRedirectDialog = false"
+      @md-confirm="showRedirectDialog = false"
+    />
   </div>
 </template>
 
 <script>
-import { createSota } from "../../services/api-sota";
+import { createArticle } from "@/services/api-article";
 import { parse as bibParser } from "@/services/bibtex-parse";
+import { EventBus, EVENT_APP_MESSAGE } from "@/services/event-bus";
+import {
+  SotaUploadListItem,
+  SotaUploadPreview,
+  SotaCreateForm,
+  SotaUploadListEdit
+} from "@/components/sota-helper/create";
 
 export default {
-  name: "CreateSota",
-  data: () => ({
-    initial: "Initial Value",
-    sotAName: null,
-    withLabel: null,
-    inline: null,
-    number: null,
-    textarea: null,
-    autogrow: null,
-    disabled: null,
-    domain: null,
-    year: null,
-    author: null,
-    tags: null,
-    articlesUploaded: [],
-    showAcceptMessage: false
-  }),
+  name: "SotaCreate",
+  components: {
+    SotaUploadListItem,
+    SotaUploadPreview,
+    SotaCreateForm,
+    SotaUploadListEdit
+  },
+  data() {
+    return {
+      sending: false,
+      apiErrors: [],
+      articlesUploaded: {},
+      selected: {
+        filename: null,
+        bibtex: null
+      },
+      showUploadEdit: false,
+      showRedirectDialog: false
+    };
+  },
+
+  computed: {
+    uploads() {
+      return Object.keys(this.articlesUploaded);
+    },
+    previewJson() {
+      if (this.selected["filename"] == null) {
+        return null;
+      }
+      const filename = this.selected["filename"];
+      return this.articlesUploaded[filename]["bibtex"].slice(0, 3);
+    }
+  },
 
   methods: {
     onFileUpload(event) {
-      const reader = new FileReader();
+      for (let i = 0; i < event.length; i++) {
+        const evt = event[i];
 
-      reader.onload = e => {
-        this.bibtex.push(e.target.result);
-        this.articlesUploaded = this.articlesUploaded.concat(
-          bibParser(e.target.result)
-        );
-      };
-      reader.readAsText(event.item(0));
+        const reader = new FileReader();
+        reader.onload = e => {
+          const bib2Json = bibParser(e.target.result);
+          this.selected["filename"] = evt.name;
+          this.$set(this.articlesUploaded, evt.name, {
+            name: evt.name,
+            size: evt.size,
+            bibtex: bib2Json
+          });
+        };
+        reader.readAsText(evt);
+      }
     },
 
-    sendSota() {
-      let articlesArray = {};
-      console.log(this.articlesUploaded);
+    onSelectUpload(filename) {
+      this.selected["filename"] = filename;
+      this.selected["bibtex"] = this.articlesUploaded[filename]["bibtex"];
+    },
 
-      // TODO Create an api-article.js to create and get an article
+    onRemoveUpload(filename) {
+      if (!filename) {
+        filename = this.selected["filename"];
+      }
+      if (this.selected["filename"] == filename) {
+        this.selected = {
+          filename: null,
+          bibtex: null
+        };
+      }
+      this.$delete(this.articlesUploaded, filename);
+    },
+    onEditUpload(filename) {
+      this.selected["filename"] = filename;
+      this.selected["bibtex"] = this.articlesUploaded[filename]["bibtex"];
+      this.showUploadEdit = true;
+      // window.alert("Edit me : " + filename);
+    },
 
-      // TODO For each uploaded articles, create new Article via API call
-      this.articlesUploaded.forEach(article => {
-        // TODO Get the reference of the new article created
-        //  TODO Add this ref to the new Sota being created.
-        // createArticle(article).then()
+    onClearForm() {
+      // this.articlesUploaded = Object.assign({});
+    },
+
+    sendSota(sota) {
+      this.apiErrors = [];
+      const articleRefs = [];
+
+      // if (this.uploads.length == 0) {
+      //   EventBus.$emit(
+      //     EVENT_APP_MESSAGE,
+      //     "Import the bibtex files before create the SoTA."
+      //   );
+      //   return;
+      // }
+      const createArticleRequests = this.uploads.map(filename => {
+        this.articlesUploaded[filename]["bibtex"].forEach(article => {
+          // If the article category is missing, assign the one from the Sota
+          if (!article["category"] || article["category"].length == 0) {
+            article["category"] = sota["subject"];
+          }
+          return createArticle(article)
+            .catch(e =>
+              EventBus.$emit(EVENT_APP_MESSAGE, "Error on article creation")
+            )
+            .then(data => {
+              console.log(data);
+              articleRefs.push(data["reference"]);
+            });
+        });
       });
 
-      // TODO Send an API call to create the new SoTA
+      // Send all request to create an article, fail
+      Promise.all(createArticleRequests).then(values => {
+        const newSota = Object.assign(sota, {
+          articles: articleRefs,
+          keywords: sota.keywords // Split the keywords, to get each keywords
+            .split(",")
+            .map(k => k.trim())
+            .filter(k => k.length)
+        });
+
+        this.$emit("create", newSota);
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-.container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.app-sota-create {
+  padding: 2%;
 }
 
-.left {
-  position: relative;
-  float: left;
-  width: 47%;
-  height: 75%;
-  margin: 1%;
+.upload-file-list {
+  max-height: 150px;
+  /* max-width: 110%; */
+  overflow: hidden;
 }
 
-.right {
-  position: relative;
-  float: left;
-  width: 47%;
-  height: 75%;
-  margin: 1%;
+.upload-file-list:hover {
+  overflow-y: visible;
 }
 
-.bottom {
-  position: relative;
-  width: 99%;
-  height: 9%;
-  float: bottom;
-  padding-left: 40%;
+#bibtex-preview-container {
+  max-width: 55%;
+}
+
+#upload-list-edit {
+  width: 900px;
 }
 </style>

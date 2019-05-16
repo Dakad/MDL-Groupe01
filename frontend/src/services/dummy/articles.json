@@ -1,5 +1,4 @@
-﻿{
-  "articles": [
+﻿[
     {
       "reference": "Vogel:2004:IPA:1029632.1029656",
       "title": "Interactive Public Ambient Displays: Transitioning from Implicit to Explicit, Public to Personal, Interaction with Multiple Users",
@@ -240,21 +239,4 @@
       "created_at": null,
       "keywords": []
     }
-  ],
-  "authors": [],
-  "users": [
-    {
-      "username": "Std",
-      "email": "std@mail.dom",
-      "lastname": "Mdl",
-      "firstname": "Std"
-    },
-    {
-      "username": "Groot",
-      "email": "root@mail.dom",
-      "lastname": "Mdl",
-      "firstname": "Root"
-    }
-  ],
-  "sotas": []
-}
+ ]

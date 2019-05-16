@@ -1,14 +1,13 @@
 package be.unamur.info.mdl;
 
-import be.unamur.info.mdl.config.DbDataLoaderRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class MainApplication extends SpringBootServletInitializer {
 
   @Override
@@ -19,13 +18,6 @@ public class MainApplication extends SpringBootServletInitializer {
   public static void main(String[] args) {
     SpringApplication.run(MainApplication.class, args);
   }
-
-/*
-  @Bean
-  public CommandLineRunner runDBFiller() {
-    return new DbDataLoaderRunner();
-  }
-*/
 
 
 }

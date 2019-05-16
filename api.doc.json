@@ -1,0 +1,2261 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1.0.0",
+    "title": " REST API"
+  },
+  "host": "localhost:8088",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "article-controller",
+      "description": "Article Controller"
+    },
+    {
+      "name": "main-controller",
+      "description": "Main Controller"
+    },
+    {
+      "name": "state-of-the-art-controller",
+      "description": "State Of The Art Controller"
+    },
+    {
+      "name": "user-controller",
+      "description": "User Controller"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Ping endpoint to ensure, the API is effectively online",
+        "operationId": "yelloUsingGET",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve a list of article by their references",
+        "operationId": "listByReferencesUsingGET",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "query",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of the matching articles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Article"
+              }
+            }
+          },
+          "400": {
+            "description": "The list of provided references is empty"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Register a new article",
+        "operationId": "createUsingPOST",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "articleData",
+            "description": "articleData",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Article"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully registered",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "Some required fields are invalid or missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "If the article already exists",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve a list of article by their references",
+        "operationId": "listByReferencesUsingGET_1",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "query",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of the matching articles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Article"
+              }
+            }
+          },
+          "400": {
+            "description": "The list of provided references is empty"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Register a new article",
+        "operationId": "createUsingPOST_1",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "articleData",
+            "description": "articleData",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Article"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully registered",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "Some required fields are invalid or missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "If the article already exists",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/list": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve a list of all created articles grouped by it reference",
+        "operationId": "getAllUsingGET",
+        "responses": {
+          "200": {
+            "description": "List of grouped articles",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/recommended": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve a list for recommended articles",
+        "operationId": "recommandationsUsingGET",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully removed",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/subscriptions": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "subscriptions",
+        "operationId": "subscriptionsUsingGET",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/types": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve list of accepted types for an article",
+        "operationId": "getBibTexTypesUsingGET",
+        "responses": {
+          "200": {
+            "description": "List of types",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/{reference}": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Retrieve a specific article by it reference",
+        "operationId": "getUsingGET",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully registered",
+            "schema": {
+              "$ref": "#/definitions/Article"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/{reference}/bookmark": {
+      "post": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Create a new bookmark on an article",
+        "operationId": "addBookmarkUsingPOST",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "note",
+            "description": "A note about the bookmark",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BookmarkDTO"
+            }
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully created",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "The referenced article is already bookmarked"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Remove a bookmark on an article",
+        "operationId": "removeBookmarkUsingDELETE",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "The article reference",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully removed",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/article/{reference}/bookmarked": {
+      "get": {
+        "tags": [
+          "article-controller"
+        ],
+        "summary": "Check if an articles have been boomarked by the auth user",
+        "operationId": "isBookmarkedUsingGET",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Present or not in yoour bookmarks",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/authors/list": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Retrieve a list of all created authors",
+        "operationId": "getAllAuthorsUsingGET",
+        "responses": {
+          "200": {
+            "description": "List of authors",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Authentication",
+        "operationId": "loginUsingPOST",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userDTO",
+            "description": "Credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Tag"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated user",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Some required fields are invalid"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "If the username or password is not recognized"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/search": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Search articles, S.O.T.A or authors",
+        "operationId": "searchUsingGET",
+        "parameters": [
+          {
+            "name": "only",
+            "in": "query",
+            "description": "Only search for ",
+            "required": false,
+            "type": "string",
+            "default": "ALL",
+            "enum": [
+              "ALL",
+              "ARTICLES",
+              "SOTAS",
+              "USERS"
+            ]
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Order by",
+            "required": false,
+            "type": "string",
+            "default": "ASC",
+            "enum": [
+              "ASC",
+              "DESC"
+            ]
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination",
+            "required": false,
+            "type": "integer",
+            "default": 1,
+            "format": "int32"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by",
+            "required": false,
+            "type": "string",
+            "default": "DATE",
+            "enum": [
+              "DATE",
+              "TITLE",
+              "NAME"
+            ]
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Tags",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "term",
+            "in": "query",
+            "description": "Search term",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of each searched elements",
+            "schema": {
+              "$ref": "#/definitions/SearchResult"
+            }
+          },
+          "400": {
+            "description": "Some required fields are invalid or missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/signin": {
+      "post": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Registration",
+        "operationId": "signinUsingPOST",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "userData",
+            "description": "userData",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully registered user",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "Some required fields are invalid"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "If the username or email is already taken"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota": {
+      "post": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Create a new SoTA",
+        "operationId": "createUsingPOST_2",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SOTA"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully created",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "The SoTA reference is missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided article reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota/": {
+      "post": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Create a new SoTA",
+        "operationId": "createUsingPOST_3",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SOTA"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully created",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "400": {
+            "description": "The SoTA reference is missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided article reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota/list": {
+      "get": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Retrieve a list of all created SoTA grouped by it reference",
+        "operationId": "getAllUsingGET_1",
+        "responses": {
+          "200": {
+            "description": "List of grouped SoTA",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota/{reference}": {
+      "get": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Retrieve a specific SoTA by it reference",
+        "operationId": "getUsingGET_1",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully registered",
+            "schema": {
+              "$ref": "#/definitions/SOTA"
+            }
+          },
+          "400": {
+            "description": "The SoTA reference is missing"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "put",
+        "operationId": "putUsingPUT",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "description": "data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SOTA"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "delete",
+        "operationId": "deleteUsingDELETE",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota/{reference}/bookmark": {
+      "post": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Create a new bookmark on a state of the art",
+        "operationId": "addBookmarkUsingPOST_1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "note",
+            "description": "A note about the bookmark",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BookmarkDTO"
+            }
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Successfully created",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "Remove a bookmark on a state of the art",
+        "operationId": "removeBookmarkUsingDELETE_1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": false,
+            "type": "string",
+            "default": "The sota reference"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully removed",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided reference doesn't exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/sota/{reference}/bookmarked": {
+      "get": {
+        "tags": [
+          "state-of-the-art-controller"
+        ],
+        "summary": "isBookmarked",
+        "operationId": "isBookmarkedUsingGET_1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reference",
+            "in": "path",
+            "description": "reference",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/tags": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Perform an search based on a bunch of tags",
+        "operationId": "getTagsUsingGET",
+        "parameters": [
+          {
+            "name": "k",
+            "in": "query",
+            "description": "k",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tags",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/tags/list": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Retrieve a list of all created tags",
+        "operationId": "getAllTagsUsingGET",
+        "responses": {
+          "200": {
+            "description": "List of tags",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/team": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Retrieve the list of team members",
+        "operationId": "getTeamMembersUsingGET",
+        "responses": {
+          "200": {
+            "description": "List of each person with it avatar, full name, role and short description",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "If some shit hit the fan :-)"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/changepwd": {
+      "put": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Change the user password",
+        "operationId": "changePasswordUsingPUT",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "passwordChangeDTO",
+            "description": "The new && old password",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PasswordChange"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Some required fields are invalid"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "If the username or password is not recognized"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/profile/update": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "updateProfile",
+        "operationId": "updateProfileUsingPOST",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "updateDTO",
+            "description": "updateDTO",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProfileUpdateDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/follow": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "follow",
+        "operationId": "followUsingPOST",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/followed": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "isFollowed",
+        "operationId": "isFollowedUsingGET",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/base": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Retrieve the basic profile information",
+        "operationId": "getBasicInfoUsingGET",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "Username of the profile owner",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The profile data",
+            "schema": {
+              "$ref": "#/definitions/ProfileBasicInfo"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided username does not exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/bookmarks": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getBookmarks",
+        "operationId": "getBookmarksUsingGET",
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "description": "p",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32"
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/followers": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Retrieve the user followers",
+        "operationId": "getFollowersUsingGET",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The following users",
+            "schema": {
+              "$ref": "#/definitions/ProfileBasicInfo"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided username does not exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/follows": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Retrieve the users followed by an user",
+        "operationId": "getFollowsUsingGET",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The followed users",
+            "schema": {
+              "$ref": "#/definitions/ProfileBasicInfo"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided username does not exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/pro": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getProInfo",
+        "operationId": "getProInfoUsingGET",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/profile/social": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "Retrieve the social profile information",
+        "operationId": "getSocialInfoUsingGET",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "Username of the profile owner",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The profile social data",
+            "schema": {
+              "$ref": "#/definitions/ProfileBasicInfo"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "The provided username does not exist"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/user/{username}/unfollow": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "unfollow",
+        "operationId": "unfollowUsingPOST",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/zen": {
+      "get": {
+        "tags": [
+          "main-controller"
+        ],
+        "summary": "Ping endpoint to ensure, the API is effectively online",
+        "operationId": "yelloUsingGET_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "Article": {
+      "type": "object",
+      "properties": {
+        "abstract": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        },
+        "journal": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "month": {
+          "type": "string"
+        },
+        "nb_citations": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "nb_views": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "nbrePage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "number": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "publication_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ARTICLE",
+            "BOOK",
+            "BOOKLET",
+            "CONFERENCE",
+            "INBOOK",
+            "INCOLLECTION",
+            "INPROCEEDINGS",
+            "MANUAL",
+            "MASTERSTHESIS",
+            "MISC",
+            "PHDTHESIS",
+            "PROCEEDINGS",
+            "TECHREPORT",
+            "UNPUBLISHED"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "volume": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "Article",
+      "description": "Model representing an Article"
+    },
+    "Author": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Article"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "title": "Author",
+      "description": "Model representing an article author"
+    },
+    "BookmarkDTO": {
+      "type": "object",
+      "properties": {
+        "article": {
+          "$ref": "#/definitions/Article"
+        },
+        "note": {
+          "type": "string"
+        },
+        "sota": {
+          "$ref": "#/definitions/SOTA"
+        }
+      },
+      "title": "BookmarkDTO",
+      "description": "Model representing an bookmark on an article or sota"
+    },
+    "PasswordChange": {
+      "type": "object",
+      "properties": {
+        "newPassword": {
+          "type": "string"
+        },
+        "oldPassword": {
+          "type": "string"
+        }
+      },
+      "title": "PasswordChange",
+      "description": "Model representing an PasswordChange"
+    },
+    "ProfileBasicInfo": {
+      "type": "object",
+      "properties": {
+        "avatar_url": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "university": {
+          "$ref": "#/definitions/UniversityInfo"
+        }
+      },
+      "title": "ProfileBasicInfo",
+      "description": "Model representing an user's profile basic information"
+    },
+    "ProfileUpdateDTO": {
+      "type": "object",
+      "properties": {
+        "avatar_url": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "interests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "research_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "university": {
+          "type": "string"
+        }
+      },
+      "title": "ProfileUpdateDTO"
+    },
+    "ResponseEntity": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "object"
+        },
+        "statusCode": {
+          "type": "string",
+          "enum": [
+            "100 CONTINUE",
+            "101 SWITCHING_PROTOCOLS",
+            "102 PROCESSING",
+            "103 CHECKPOINT",
+            "200 OK",
+            "201 CREATED",
+            "202 ACCEPTED",
+            "203 NON_AUTHORITATIVE_INFORMATION",
+            "204 NO_CONTENT",
+            "205 RESET_CONTENT",
+            "206 PARTIAL_CONTENT",
+            "207 MULTI_STATUS",
+            "208 ALREADY_REPORTED",
+            "226 IM_USED",
+            "300 MULTIPLE_CHOICES",
+            "301 MOVED_PERMANENTLY",
+            "302 FOUND",
+            "302 MOVED_TEMPORARILY",
+            "303 SEE_OTHER",
+            "304 NOT_MODIFIED",
+            "305 USE_PROXY",
+            "307 TEMPORARY_REDIRECT",
+            "308 PERMANENT_REDIRECT",
+            "400 BAD_REQUEST",
+            "401 UNAUTHORIZED",
+            "402 PAYMENT_REQUIRED",
+            "403 FORBIDDEN",
+            "404 NOT_FOUND",
+            "405 METHOD_NOT_ALLOWED",
+            "406 NOT_ACCEPTABLE",
+            "407 PROXY_AUTHENTICATION_REQUIRED",
+            "408 REQUEST_TIMEOUT",
+            "409 CONFLICT",
+            "410 GONE",
+            "411 LENGTH_REQUIRED",
+            "412 PRECONDITION_FAILED",
+            "413 PAYLOAD_TOO_LARGE",
+            "413 REQUEST_ENTITY_TOO_LARGE",
+            "414 URI_TOO_LONG",
+            "414 REQUEST_URI_TOO_LONG",
+            "415 UNSUPPORTED_MEDIA_TYPE",
+            "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+            "417 EXPECTATION_FAILED",
+            "418 I_AM_A_TEAPOT",
+            "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+            "420 METHOD_FAILURE",
+            "421 DESTINATION_LOCKED",
+            "422 UNPROCESSABLE_ENTITY",
+            "423 LOCKED",
+            "424 FAILED_DEPENDENCY",
+            "426 UPGRADE_REQUIRED",
+            "428 PRECONDITION_REQUIRED",
+            "429 TOO_MANY_REQUESTS",
+            "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+            "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+            "500 INTERNAL_SERVER_ERROR",
+            "501 NOT_IMPLEMENTED",
+            "502 BAD_GATEWAY",
+            "503 SERVICE_UNAVAILABLE",
+            "504 GATEWAY_TIMEOUT",
+            "505 HTTP_VERSION_NOT_SUPPORTED",
+            "506 VARIANT_ALSO_NEGOTIATES",
+            "507 INSUFFICIENT_STORAGE",
+            "508 LOOP_DETECTED",
+            "509 BANDWIDTH_LIMIT_EXCEEDED",
+            "510 NOT_EXTENDED",
+            "511 NETWORK_AUTHENTICATION_REQUIRED"
+          ]
+        },
+        "statusCodeValue": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "ResponseEntity"
+    },
+    "SOTA": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reference": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "title": "SOTA",
+      "description": "Model representing a State Of The Art"
+    },
+    "SearchResult": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Article"
+          }
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Author"
+          }
+        },
+        "metas": {
+          "$ref": "#/definitions/SearchResultMetaDTO"
+        },
+        "sotas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SOTA"
+          }
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "title": "SearchResult",
+      "description": "Model representing a result of successful search"
+    },
+    "SearchResultMetaDTO": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "authors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "sotas": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "users": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      },
+      "title": "SearchResultMetaDTO",
+      "description": "Model representing meta data about the successful search results"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "title": "Tag",
+      "description": "Model representing an Tag or Category"
+    },
+    "UniversityInfo": {
+      "type": "object",
+      "properties": {
+        "abbreviation": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      },
+      "title": "UniversityInfo",
+      "description": "Model representing an information about an university"
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "avatar": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "title": "User",
+      "description": "Model representing an user data"
+    }
+  }
+}
