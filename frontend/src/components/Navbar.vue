@@ -31,7 +31,7 @@
             <md-menu-content>
               <md-menu-item @click="$router.push({ name : 'myProfile' })">
                 <md-icon>perm_identity</md-icon>
-                <span>Profile</span>
+                <span>My profile</span>
               </md-menu-item>
 
               <md-menu-item @click="$router.push({ name : 'sotaHelper' })">
@@ -40,8 +40,15 @@
               </md-menu-item>
 
               <md-menu-item @click="$router.push({ name : 'updateProfile' })">
+                <md-icon>how_to_reg</md-icon>
+                <span>Update my profile</span>
+              </md-menu-item>
+
+              <md-divider></md-divider>
+
+              <md-menu-item @click="$router.push({ name : 'about' })">
                 <md-icon>info</md-icon>
-                <span>Change my information's</span>
+                <span>About us</span>
               </md-menu-item>
 
               <md-divider></md-divider>
