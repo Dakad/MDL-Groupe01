@@ -24,7 +24,12 @@
               </p>
             </div>
             <div class="keyword">
-              <p>Main subject: {{sota.subject}}</p>
+              <p>
+                Main subject:
+                <span
+                  :style="{'color': getSubjectColor(sota.subject)}"
+                >{{sota.subject}}</span>
+              </p>
             </div>
             <div class="date">
               <p>Published on the: {{sota.created_at}}</p>
@@ -51,6 +56,7 @@
 <script>
 import { Pagination } from "@/components";
 import { isLogged } from "@/services/api-user";
+import { getColorHashOf } from "@/services/util";
 
 export default {
   name: "SotaList",
@@ -87,6 +93,11 @@ export default {
     },
     page() {
       return this.meta || {};
+    }
+  },
+  methods: {
+    getSubjectColor(subject) {
+      return getColorHashOf(subject)[0];
     }
   }
 };
